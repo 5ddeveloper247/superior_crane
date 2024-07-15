@@ -1,0 +1,159 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: "poppins";
+}
+
+body,
+html {
+    height: 100%;
+    width: 100%;
+}
+
+::-webkit-scrollbar {
+    width: 0px;
+}
+
+.login {
+    background-image: url('https://images.pexels.com/photos/439416/pexels-photo-439416.jpeg?auto=compress&cs=tinysrgb&w=1900');
+    background-position: center;
+    background-size: cover;
+    height: 100vh;
+    width: 100%;
+    position: relative;
+
+    .form {
+        position: relative;
+        z-index: 2;
+    }
+
+    .overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        background: linear-gradient(to right, #b83432f5, #500e0d, #500e0dea, #00000085);
+        height: 100%;
+        width: 100%;
+    }
+
+    .login-content {
+        background: linear-gradient(to right, #dc2e2b02, #202020, #541211, #9f211fe6);
+    }
+
+    button {
+        background: linear-gradient(to right, #333, #555);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+
+    button:hover {
+        background: linear-gradient(to right, #555, #777);
+    }
+
+    .forget-pass {
+        color: rgb(97, 97, 250);
+    }
+}
+
+a {
+    color: #fff !important;
+    font-size: 14px !important;
+    text-decoration: none !important;
+}
+
+.nav-link:hover {
+    font-weight: 600 !important;
+}
+
+.nav-item .nav-link.active {
+    color: red !important;
+    font-weight: 600;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+.collapse-btn {
+    background-color: transparent;
+    border: none;
+}
+
+.filter,
+.job-list {
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    background-color: #fff;
+    border-radius: 5px;
+}
+
+
+.filter button,
+.exp-btn {
+    background-color: #DC2F2B;
+    border: none
+}
+
+.table-container {
+    overflow-x: auto;
+}
+
+.table-responsive {
+    border: 1.5px solid #0000001d;
+}
+
+div.dt-container div.dt-layout-row.dt-layout-table {
+    overflow-x: auto;
+}
+
+
+@media (max-width: 776px) {
+    div.dt-container .dt-length,
+    div.dt-container .dt-search,
+    div.dt-container .dt-info,
+    div.dt-container .dt-processing,
+    div.dt-container .dt-paging {
+        text-align: left !important;
+    }
+}
+
+thead {
+    position: sticky;
+    top: -0.01%;
+    left: 0;
+}
+
+div.dt-container.dt-empty-footer tbody>tr:last-child>* {
+    border-bottom: none !important;
+}
+
+tr,
+th,
+td {
+    font-size: 13px;
+    border-bottom: none !important;
+}
+
+.edit,
+.del {
+    background-color: #fff;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    padding: .2rem .4rem;
+    border-radius: 4px
+}
+
+div.dt-container select.dt-input {
+    margin-right: 7px;
+}
