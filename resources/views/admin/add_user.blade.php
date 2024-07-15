@@ -1,6 +1,6 @@
 @extends('layouts.admin.admin_master')
 @push('styles')
-    <style>
+    <style> 
         .add-user {
             background: #DC2F2B0D;
             height: calc(100vh - 75.67px);
