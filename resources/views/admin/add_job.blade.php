@@ -129,7 +129,7 @@
             <label class="pb-2" for="date">
                 Date
             </label>
-            <input class="rounded-1 py-1 px-2 w-100" id="date" type="text" placeholder="Enter Client Name Here">
+            <input class="rounded-1 py-1 px-2 w-100" id="date" type="date" placeholder="Enter Client Name Here">
         </div>
 
         <div class="col-12 col-md-6 d-flex flex-column">
@@ -141,16 +141,16 @@
 
         <div class="col-12 col-md-6 d-flex flex-column">
             <label class="pb-2" for="notes">
-                Date
+                Notes
             </label>
             <textarea name="" id="notes" rows="5" placeholder="Type Notes Here....."></textarea>
         </div>
 
         <div class="col-12 col-md-6 d-flex flex-column">
             <label class="pb-2" for="address">
-                Address
+                Supplier Name
             </label>
-            <input class="rounded-1 py-1 px-2 w-100" id="address" type="text" placeholder="Enter Address Here">
+            <input class="rounded-1 py-1 px-2 w-100" id="address" type="text" placeholder="Enter Supplier Name Here">
             <span class="pt-3">
                 Upload Images
             </span>
