@@ -94,7 +94,7 @@ class LoginController extends Controller
             $mailData['otp'] = $otp;
             $mailData['username'] = $user->name;
             $body = view('emails.forgot_password', $mailData);
-            sendMail($user->name, $user->email, 'Superior Crane', 'Password Reset Request', $body); // send_to_name, send_to_email, email_from_name, subject, body
+            sendMail($user->name, $user->email, 'Superior Crane', 'Password Reset Request', $body,''); // send_to_name, send_to_email, email_from_name, subject, body
 
 
 

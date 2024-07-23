@@ -8,6 +8,7 @@ use App\Http\Controllers\API\RegistrationController;
 use App\Http\Controllers\API\LoginController;
 use App\Http\Controllers\API\RigerTicketController;
 use App\Http\Controllers\API\PayDutyController;
+use App\Http\Controllers\API\TransportationTicketController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -52,6 +53,7 @@ Route::post('riggerticket/sendtomail', [RigerTicketController::class,'sendtomail
 Route::post('payduty/add', [PayDutyController::class,'add_pay_duty'])->name('payduty/add');
 
 // Transportation Tickets 
+Route::post('transportationticket/add', [TransportationTicketController::class,'add_transportation_ticket'])->name('transportationticket/add');
 
 
 
