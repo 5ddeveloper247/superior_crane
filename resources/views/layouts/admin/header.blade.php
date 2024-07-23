@@ -241,7 +241,7 @@
             </span>
           </button>
           <ul class="dropdown-menu text-center">
-            <li><a class="dropdown-item" href="#">Profile</a></li>
+            <li><a class="dropdown-item" href="{{url('profile')}}">Profile</a></li>
             <hr class="my-1 mx-4" style="border: 1px solid red">
             <li><a class="dropdown-item" href="#">Logout</a></li>
           </ul>

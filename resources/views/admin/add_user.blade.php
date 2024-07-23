@@ -35,7 +35,6 @@
             font-size: 14px;
         }
 
-        .add-form,
         .filter {
             background-color: #fff;
             box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
@@ -141,7 +140,7 @@
                             <thead>
                                 <tr">
                                     <th class="text-start" scope="col">Serial #</th>
-                                    <th scope="col">Admin Name</th>
+                                    <th scope="col">Name</th>
                                     <th scope="col">Email Address</th>
                                     <th scope="col">Actions</th>
                                     </tr>
@@ -307,7 +306,7 @@
                             <thead>
                                 <tr>
                                     <th class="text-start" scope="col">Serial #</th>
-                                    <th scope="col">Manager Name</th>
+                                    <th scope="col">Name</th>
                                     <th scope="col">Email Address</th>
                                     <th scope="col">Actions</th>
                                 </tr>
@@ -512,8 +511,9 @@
                             <thead>
                                 <tr>
                                     <th class="text-start" scope="col">Serial #</th>
-                                    <th scope="col">Basic User Name</th>
+                                    <th scope="col">Name</th>
                                     <th scope="col">Email Address</th>
+                                    <th scope="col">Role</th>
                                     <th scope="col">Actions</th>
                                 </tr>
                             </thead>
@@ -522,6 +522,7 @@
                                     <td class="text-start">01</td>
                                     <td>Adnan Yar</td>
                                     <td>adnan@gmail.com</td>
+                                    <td>Rigger</td>
                                     <td class="d-flex gap-2">
                                         <div class="edit">
                                             <svg width="15" viewBox="0 0 11 10" fill="none"
@@ -559,6 +560,7 @@
                                     <td class="text-start">01</td>
                                     <td>Adnan Yar</td>
                                     <td>adnan@gmail.com</td>
+                                    <td>Transporter</td>
                                     <td class="d-flex gap-2">
                                         <div class="edit">
                                             <svg width="15" viewBox="0 0 11 10" fill="none"
@@ -596,6 +598,7 @@
                                     <td class="text-start">01</td>
                                     <td>Adnan Yar</td>
                                     <td>adnan@gmail.com</td>
+                                    <td>Rigger</td>
                                     <td class="d-flex gap-2">
                                         <div class="edit">
                                             <svg width="15" viewBox="0 0 11 10" fill="none"
@@ -633,6 +636,7 @@
                                     <td class="text-start">01</td>
                                     <td>Adnan Yar</td>
                                     <td>adnan@gmail.com</td>
+                                    <td>Rigger</td>
                                     <td class="d-flex gap-2">
                                         <div class="edit">
                                             <svg width="15" viewBox="0 0 11 10" fill="none"
@@ -739,9 +743,10 @@
                                 Role
                             </label>
                             <select class="py-1 rounded-1 px-2 pb-2" name="" id="">
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
+                                <option value="1">Admin</option>
+                                <option value="2">Manager</option>
+                                <option value="3">Rigger</option>
+                                <option value="4">Transporter</option>
                             </select>
                         </div>
                     </div>
