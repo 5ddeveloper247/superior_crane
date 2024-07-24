@@ -231,15 +231,27 @@
             <div id="calendar"></div>
         </div>
         <!-- Modal to add event -->
-        <div id="add_eventModal" class="modal fade" tabindex="-1" aria-labelledby="addEventModalLabel" aria-hidden="true">
+        <div id="add_eventModal" class="modal fade modal-lg" tabindex="-1" aria-labelledby="addEventModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="addEventModalLabel">Add Event</h5>
+                        <h5 class="modal-title" id="addEventModalLabel">Add Job</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <form id="add_eventForm">
+                            <div class="row">
+                                <div class="mb-3 col-md-2">
+                                    <input type="radio" name="job_type[]" id="job_type_logistic" class="mt-2" value="Logistic Job" checked>
+                                    <label class="form-label" for="job_type">Logistic Job</label>
+                                    
+                                </div>
+                                <div class="mb-3 col-md-6">
+                                    <input type="radio" name="job_type[]" id="job_type_crane" class="mt-2" value="Crane Job">
+                                    <label class="form-label" for="job_type">Crane Job</label>
+                                    
+                                </div>
+                            </div>
                             <div class="row">
                                 <div class="mb-3 col-md-6">
                                     <label for="add_job_time" class="form-label">Job Time<span class="text-danger">*</span>
@@ -276,11 +288,11 @@
                             </div>
                             <div class="d-flex">
                                 <div class="mb-3 m-1 col-md-6">
-                                    <label for="add_eventStart" class="form-label">Start Time<span
+                                    <label for="add_eventStart" class="form-label">Date<span
                                             class="text-danger">*</span></label>
-                                    <input type="datetime-local" class="form-control" id="add_eventStart"
-                                        name="add_eventStart" required>
-                                    <span class="text-danger" id="start_date_error"></span>
+                                    <input type="date" class="form-control" id="add_date"
+                                        name="add_date" required>
+                                    <span class="text-danger" id="add_date_error"></span>
                                 </div>
                                 <div class="mb-3 m-1 col-md-6">
                                     <label for="add_address" class="form-label">Address<span
@@ -288,6 +300,22 @@
                                     <input type="text" class="form-control" id="add_address" name="add_address"
                                         required>
                                     <span class="text-danger" id="add_address_error"></span>
+                                </div>
+                            </div>
+                            <div class="d-flex">
+                                <div class="mb-3 m-1 col-md-6">
+                                    <label for="add_eventStart" class="form-label">Start Time<span
+                                            class="text-danger">*</span></label>
+                                    <input type="datetime-local" class="form-control" id="add_eventStart"
+                                        name="add_eventStart" required>
+                                    <span class="text-danger" id="start_date_error"></span>
+                                </div>
+                                <div class="mb-3 m-1 col-md-6">
+                                    <label for="add_eventEnd" class="form-label">End Time<span
+                                            class="text-danger">*</span></label>
+                                    <input type="datetime-local" class="form-control" id="add_eventEnd" name="add_eventEnd"
+                                        required>
+                                    <span class="text-danger" id="add_eventEnd_error"></span>
                                 </div>
                             </div>
                             <div class="mb-3">

@@ -747,6 +747,7 @@
                                 <option value="2">Manager</option>
                                 <option value="3">Rigger</option>
                                 <option value="4">Transporter</option>
+                                <option value="5">Both Rigger & Transporter</option>
                             </select>
                         </div>
                     </div>

@@ -44,6 +44,14 @@
                     d="m6 9l6 6l6-6" />
             </svg>
         </button>
+
+        <div class="d-flex gap-2">
+           
+
+            <button class="px-4 py-1 exp-btn text-white rounded-1">
+                EXPORT
+            </button>
+        </div>
     </div>
 
     <div class="collapse mb-4" id="filterSection">
