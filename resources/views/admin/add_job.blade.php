@@ -95,6 +95,7 @@
         ADD JOB
     </h5>
 
+   <form action="">
     <div class="row p-3 mx-1 add-form rounded-1">
         <div class="col-12 col-md-6 d-flex flex-column">
             <label class="pb-2" for="job_time">
@@ -172,6 +173,7 @@
             </button>
         </div>
     </div>
+</form>
 
 </div>
 @endsection
