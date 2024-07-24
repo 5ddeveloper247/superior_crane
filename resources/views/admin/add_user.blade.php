@@ -1,6 +1,6 @@
 @extends('layouts.admin.admin_master')
 @push('styles')
-    <style> 
+    <style>
         .add-user {
             background: #DC2F2B0D;
             height: calc(100vh - 75.67px);
@@ -75,7 +75,7 @@
             <h5 class="mb-0">
                 FILTER
             </h5>
-            <svg xmlns="http://www.w3.org/2000/svg" width="1.4em" height="1.4em" viewBox="0 0 24 24">
+            <svg id="filterArrow" xmlns="http://www.w3.org/2000/svg" width="1.4em" height="1.4em" viewBox="0 0 24 24">
                 <path fill="none" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="m6 9l6 6l6-6" />
             </svg>
@@ -765,5 +765,16 @@
         let table = new DataTable('#myTable');
         let table2 = new DataTable('#myTable2');
         let table3 = new DataTable('#myTable3');
+
+        var filterArrow = document.getElementById('filterArrow');
+        var filterSection = document.getElementById('filterSection');
+
+        filterSection.addEventListener('shown.bs.collapse', function () {
+            filterArrow.classList.add('rotate');
+        });
+
+        filterSection.addEventListener('hidden.bs.collapse', function () {
+            filterArrow.classList.remove('rotate');
+        });
     </script>
 @endpush

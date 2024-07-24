@@ -153,7 +153,7 @@
             padding: 5px;
             cursor: pointer;
             /* position: absolute;
-                    z-index: 1000; */
+            z-index: 1000; */
         }
 
         .status-dropdown li:hover {
@@ -188,13 +188,13 @@
             <h5 class="mb-0 fw-bold">
                 FILTER
             </h5>
-            <svg xmlns="http://www.w3.org/2000/svg" width="1.4em" height="1.4em" viewBox="0 0 24 24">
+            <svg id="filterArrow" xmlns="http://www.w3.org/2000/svg" width="1.4em" height="1.4em" viewBox="0 0 24 24">
                 <path fill="none" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="m6 9l6 6l6-6" />
             </svg>
         </button>
-
     </div>
+
     <div class="collapse mb-4" id="filterSection">
         <div class="filter p-4 mx-1 border rounded">
             <div class="row">
@@ -293,6 +293,18 @@
 @push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+
+            var filterArrow = document.getElementById('filterArrow');
+            var filterSection = document.getElementById('filterSection');
+
+            filterSection.addEventListener('shown.bs.collapse', function () {
+                filterArrow.classList.add('rotate');
+            });
+
+            filterSection.addEventListener('hidden.bs.collapse', function () {
+                filterArrow.classList.remove('rotate');
+            });
+
             var calendarEl = document.getElementById('calendar');
             var add_eventModal = new bootstrap.Modal(document.getElementById('add_eventModal'));
 
@@ -476,8 +488,8 @@
                     var statusDropdown = document.createElement('ul');
                     statusDropdown.className = 'status-dropdown';
                     statusDropdown.innerHTML = `<li data-status="1" ${event.extendedProps.status == 1 ? 'style="background-color:#C9FFBB;"' : ''}>Good To Go</li>
-                                                            <li data-status="2" ${event.extendedProps.status == 2 ? 'style="background-color:#FFBBBB;"' : ''}>Problem</li>
-                                                            <li data-status="3" ${event.extendedProps.status == 3 ? 'style="background-color:#FFFCBB;"' : ''}>Draft</li>`;
+                                                                        <li data-status="2" ${event.extendedProps.status == 2 ? 'style="background-color:#FFBBBB;"' : ''}>Problem</li>
+                                                                        <li data-status="3" ${event.extendedProps.status == 3 ? 'style="background-color:#FFFCBB;"' : ''}>Draft</li>`;
                     statusDropdown.style.display = 'block';
                     statusDropdown.querySelectorAll('li').forEach(function (li) {
                         li.onclick = function () {

@@ -36,24 +36,21 @@
     <div class="d-flex align-items-center justify-content-between mb-4">
         <button class="collapse-btn d-flex align-items-center gap-1" type="button" data-bs-toggle="collapse"
             data-bs-target="#filterSection" aria-expanded="false" aria-controls="filterSection">
-            <h5 class="mb-0">
+            <h5 class="mb-0 fw-bold">
                 FILTER
             </h5>
-            <svg xmlns="http://www.w3.org/2000/svg" width="1.4em" height="1.4em" viewBox="0 0 24 24">
+            <svg id="filterArrow" xmlns="http://www.w3.org/2000/svg" width="1.4em" height="1.4em" viewBox="0 0 24 24">
                 <path fill="none" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="m6 9l6 6l6-6" />
             </svg>
         </button>
-
-        <button class="px-4 py-1 exp-btn text-white rounded-1">
-            EXPORT
-        </button>
     </div>
-    <div class="collapse" id="filterSection">
+
+    <div class="collapse mb-4" id="filterSection">
         <div class="filter p-4 mx-1 border rounded">
             <div class="row">
                 <div class="col">
-                    <h6>Client Name</h6>
+                    <h6>Name</h6>
                     <input class="py-1 px-3 rounded-1 form-control" type="text" placeholder="Enter Customer Name">
                 </div>
                 <div class="col">
@@ -248,5 +245,16 @@
 @push('scripts')
     <script>
         let table = new DataTable('#myTable');
+
+        var filterArrow = document.getElementById('filterArrow');
+        var filterSection = document.getElementById('filterSection');
+
+        filterSection.addEventListener('shown.bs.collapse', function () {
+            filterArrow.classList.add('rotate');
+        });
+
+        filterSection.addEventListener('hidden.bs.collapse', function () {
+            filterArrow.classList.remove('rotate');
+        });
     </script>
 @endpush

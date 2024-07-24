@@ -107,6 +107,11 @@ input[type=number] {
     border: none;
 }
 
+.rotate {
+    transform: rotate(180deg);
+    transition: transform 0.4s ease;
+}
+
 /* h6 {
     font-size: clamp(14px, 1.5vw, 16px) !important;
 } */
