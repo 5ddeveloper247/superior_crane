@@ -72,3 +72,8 @@ Route::get('/profile', function () {
     $pageTitle = 'Profile';
     return view('admin/profile', compact('pageTitle'));
 });
+
+Route::get('/notification', function () {
+    $pageTitle = 'Notification';
+    return view('admin/notification', compact('pageTitle'));
+});
