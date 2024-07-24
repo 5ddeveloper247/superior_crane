@@ -267,7 +267,7 @@
                 <div class="card card-user">
                     <div class="card-image">
                         <img class="object-fit-cover"
-                            src="https://ununsplash.imgix.net/photo-1431578500526-4d9613015464?fit=crop&amp;fm=jpg&amp;h=300&amp;q=75&amp;w=400"
+                            src="{{asset('assets/images/lb-min.jpg')}}"
                             width="100%" alt="...">
                     </div>
                     <div class="card-body">

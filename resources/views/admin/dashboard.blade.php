@@ -208,7 +208,7 @@
                     </div>
                     <div class="col">
                         <h6>Date</h6>
-                        <input class="py-1 px-3 rounded-1 form-control" type="date" placeholder="Enter Customer Name">
+                        <input class="py-1 px-3 rounded-1 form-control" name="filter_daterange" type="text" placeholder="Enter Customer Name">
                     </div>
                 </div>
                 <button class="mt-3 py-1 px-5 text-white rounded-1">
@@ -614,5 +614,9 @@
                 openDropdown = null;
             }
         });
+
+        $(document).ready(function() {
+            $('input[name="filter_daterange"]').daterangepicker();
+        })
     </script>
 @endpush

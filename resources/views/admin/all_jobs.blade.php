@@ -28,6 +28,22 @@
         h6 {
             font-weight: 600;
         }
+
+        .add-btn {
+            background-color: #DC2F2B;
+            color: #fff;
+            border: none
+        }
+
+        .add-form {
+            background-color: #fff;
+            box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+            overflow-y: auto;
+        }
+
+        .add-job {
+            display: none
+        }
     </style>
 @endpush
 
@@ -46,7 +62,7 @@
         </button>
 
         <div class="d-flex gap-2">
-           
+
 
             <button class="px-4 py-1 exp-btn text-white rounded-1">
                 EXPORT
@@ -244,7 +260,130 @@
                 </tbody>
             </table>
         </div>
+    </div>
 
+
+    <div class="add-job px-4 py-4">
+        <h5>
+            EDIT JOB
+        </h5>
+
+        <form action="">
+            <div class="row p-3 mx-1 add-form rounded-1">
+                <div class="row">
+                    <div class="mb-3 col-md-2">
+                        <input type="radio" name="job_type[]" id="job_type_logistic" class="mt-2" value="Logistic Job"
+                            checked>
+                        <label class="form-label" for="job_type">Logistic Job</label>
+
+                    </div>
+                    <div class="mb-3 col-md-6">
+                        <input type="radio" name="job_type[]" id="job_type_crane" class="mt-2" value="Crane Job">
+                        <label class="form-label" for="job_type">Crane Job</label>
+
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6 d-flex flex-column">
+                    <label class="pb-2" for="job_time">
+                        Job Time
+                    </label>
+                    <input class="rounded-1 py-1 px-2 w-100" id="job_time" type="text"
+                        placeholder="Enter a Job Time. Here">
+                </div>
+
+                <div class="col-12 col-md-6 d-flex flex-column">
+                    <label class="pb-2" for="equip">
+                        Equipment To Be Used
+                    </label>
+                    <input class="rounded-1 py-1 px-2 w-100" id="equip" type="text"
+                        placeholder="Enter Equipment To Be Used Here">
+                </div>
+
+                <div class="col-12 col-md-6 d-flex flex-column">
+                    <label class="pb-2" for="client">
+                        Client Name
+                    </label>
+                    <input class="rounded-1 py-1 px-2 w-100" id="client" type="text"
+                        placeholder="Enter Client Name Here">
+                </div>
+
+                <div class="col-12 col-md-6 d-flex flex-column">
+                    <label class="pb-2" for="rigger">
+                        Rigger Assigned
+                    </label>
+                    <input class="rounded-1 py-1 px-2 w-100" id="rigger" type="text"
+                        placeholder="Enter Rigger Assigned Here">
+                </div>
+
+                <div class="col-12 col-md-6 d-flex flex-column">
+                    <label class="pb-2" for="date">
+                        Date
+                    </label>
+                    <input class="rounded-1 py-1 px-2 w-100" id="date" type="date" placeholder="Enter Client Name Here">
+                </div>
+
+                <div class="col-12 col-md-6 d-flex flex-column">
+                    <label class="pb-2" for="address">
+                        Address
+                    </label>
+                    <input class="rounded-1 py-1 px-2 w-100" id="address" type="text" placeholder="Enter Address Here">
+                </div>
+
+
+                <div class="col-12 col-md-6 d-flex flex-column">
+                    <label for="add_eventStart" class="pb-2">Start Time</label>
+                    <input type="datetime-local" class="rounded-1 py-1 px-2 w-100" id="add_eventStart"
+                        name="add_eventStart" required>
+                </div>
+
+                <div class="col-12 col-md-6 d-flex flex-column">
+                    <label for="add_eventEnd" class="pb-2">End Time</label>
+                    <input type="datetime-local" class="rounded-1 py-1 px-2 w-100" id="add_eventEnd" name="add_eventEnd"
+                        required>
+                </div>
+
+
+
+
+
+                <div class="col-12 col-md-6 d-flex flex-column">
+                    <label class="pb-2" for="notes">
+                        Notes
+                    </label>
+                    <textarea name="" id="notes" rows="5" placeholder="Type Notes Here....."></textarea>
+                </div>
+
+                <div class="col-12 col-md-6 d-flex flex-column">
+                    <label class="pb-2" for="address">
+                        Supplier Name
+                    </label>
+                    <input class="rounded-1 py-1 px-2 w-100" id="address" type="text"
+                        placeholder="Enter Supplier Name Here">
+                    <span class="pt-3">
+                        Upload Images
+                    </span>
+                    <div class="d-flex align-items-center gap-2 mt-2">
+                        <button class="px-3 py-1">
+                            Choose File
+                        </button>
+                        <span>No Choosen File</span>
+                    </div>
+                </div>
+
+
+                <div>
+                    <input type="checkbox" name="" id="scc">
+                    <label class="scci" for="scc">SCCI</label>
+                    <br><br>
+                    <div class="d-flex justify-content-center">
+                    <button class="update-btn py-1 px-5 add-btn rounded-1">
+                        UPDATE
+                    </button>
+                    </div>
+                </div>
+            </div>
+        </form>
 
     </div>
 </div>
@@ -257,6 +396,18 @@
         var filterArrow = document.getElementById('filterArrow');
         var filterSection = document.getElementById('filterSection');
 
+        $('.edit').click(function () {
+            $('.job-list').hide();
+            $('.add-job').show();
+        })
+
+        $('.update-btn').click(function () {
+            $('.job-list').show();
+            $('.add-job').hide();
+        })
+
+
+
         filterSection.addEventListener('shown.bs.collapse', function () {
             filterArrow.classList.add('rotate');
         });
@@ -264,5 +415,6 @@
         filterSection.addEventListener('hidden.bs.collapse', function () {
             filterArrow.classList.remove('rotate');
         });
+
     </script>
 @endpush
