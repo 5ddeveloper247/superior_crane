@@ -23,7 +23,7 @@ Route::get('/all_jobs', function () {
     return view('admin/all_jobs', compact('pageTitle'));
 });
 
-Route::get('/add_job', function () {
+Route::get('/add_job', function () {    
     $pageTitle = 'Add-jobs';
     return view('admin/add_job', compact('pageTitle'));
 });
@@ -61,4 +61,19 @@ Route::get('/transportation', function () {
 Route::get('/pay_duty', function () {
     $pageTitle = 'Pay_duty';
     return view('admin/pay_duty', compact('pageTitle'));
+});
+
+Route::get('/inventory', function () {
+    $pageTitle = 'Inventory';
+    return view('admin/inventory', compact('pageTitle'));
+});
+
+Route::get('/profile', function () {
+    $pageTitle = 'Profile';
+    return view('admin/profile', compact('pageTitle'));
+});
+
+Route::get('/notification', function () {
+    $pageTitle = 'Notification';
+    return view('admin/notification', compact('pageTitle'));
 });

@@ -128,13 +128,9 @@
 
                 <li class="nav-item pt-2">
                   <a href="#rigger" data-bs-toggle="collapse" class="nav-link d-flex align-items-center gap-2">
-                    <svg width="16" height="19" viewBox="0 0 16 19" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path
-                        d="M7.91771 18.908C6.15476 18.8807 4.34324 18.6676 2.61186 17.9938C1.85848 17.7011 1.15306 17.3254 0.599404 16.7159C0.195698 16.2715 -0.0149574 15.7555 0.000826587 15.1466C0.0566776 13.0157 0.818559 11.1836 2.30468 9.65434C2.61854 9.33138 3.05685 9.30892 3.35796 9.59121C3.66878 9.88321 3.67364 10.3282 3.34885 10.6615C2.349 11.685 1.73767 12.9004 1.52459 14.3143C1.48756 14.5607 1.48634 14.8121 1.45538 15.0598C1.41107 15.4137 1.56891 15.6741 1.81841 15.8969C2.25612 16.2867 2.77699 16.5258 3.32032 16.7225C4.67228 17.2124 6.07827 17.4067 7.50733 17.4425C9.26663 17.4868 11.0041 17.3326 12.6693 16.7189C13.1191 16.5532 13.5465 16.314 13.9612 16.0687C14.4177 15.7986 14.5907 15.39 14.5397 14.8388C14.391 13.224 13.7887 11.8271 12.6493 10.6688C12.4702 10.4866 12.3536 10.2821 12.3834 10.0216C12.4174 9.72537 12.577 9.51411 12.8581 9.41091C13.1501 9.30345 13.4111 9.37569 13.6291 9.59121C14.499 10.4514 15.1383 11.4586 15.5456 12.6126C15.8249 13.4036 15.959 14.2202 15.9973 15.0573C16.0313 15.8089 15.7441 16.4117 15.2063 16.9119C14.5427 17.5287 13.7396 17.8942 12.8939 18.1747C11.3046 18.7028 9.66306 18.8904 7.91771 18.908Z"
-                        fill="white" fill-opacity="0.7" />
-                      <path
-                        d="M8.00883 9.83245e-06C10.8439 0.00547352 13.0919 2.29112 13.0864 5.16198C13.081 7.90293 10.765 10.1874 7.99912 10.1789C5.16893 10.1704 2.89967 7.8835 2.90878 5.04967C2.91789 2.26683 5.21263 -0.00545386 8.00883 9.83245e-06ZM7.99365 8.72309C10.0085 8.72066 11.6319 7.09673 11.6331 5.08185C11.6337 3.07728 9.99883 1.45335 7.9809 1.45396C6.00183 1.45457 4.36394 3.09306 4.36394 5.07274C4.36334 7.09066 5.98969 8.72552 7.99365 8.72309Z"
-                        fill="white" fill-opacity="0.7" />
+                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 56 56">
+                      <path fill="white" fill-rule="evenodd"
+                        d="m49.336 12.768l1.152 4.298a3.2 3.2 0 0 1-.967 3.22l-.155.13a5.001 5.001 0 0 0 2.218 8.87l.216.033a3.077 3.077 0 0 1 2.575 2.255l1.173 4.376a4 4 0 0 1-2.828 4.9L12.15 51.72a4 4 0 0 1-4.898-2.829l-1.103-4.117a3.485 3.485 0 0 1 .997-3.459l.163-.14a5.001 5.001 0 0 0-2.37-8.813a3.46 3.46 0 0 1-2.791-2.52L1.04 25.709a4 4 0 0 1 2.83-4.899L44.437 9.94a4 4 0 0 1 4.9 2.828m-4.165.607L4.951 24.152c-.555.149-.885.72-.736 1.275l.791 2.953a9.368 9.368 0 0 1 7.2 6.76a9.368 9.368 0 0 1-2.855 9.455l.791 2.953c.15.555.72.885 1.275.736l40.22-10.777c.555-.149.885-.72.736-1.275l-.79-2.952a9.369 9.369 0 0 1-7.2-6.761a9.368 9.368 0 0 1 2.854-9.455l-.791-2.953a1.041 1.041 0 0 0-1.275-.736m-1.283 21.559a3 3 0 1 1-5.796 1.552a3 3 0 0 1 5.796-1.552m-2.07-7.728a3 3 0 1 1-5.796 1.553a3 3 0 0 1 5.795-1.553m-2.071-7.727a3 3 0 1 1-5.796 1.553a3 3 0 0 1 5.796-1.553M29.383 6.347l2.552 3.644c.037.054.073.109.107.164L7.627 16.697L23.812 5.364a4 4 0 0 1 5.57.983" />
                     </svg>
                     <span>Rigger</span>
                   </a>
@@ -190,8 +186,10 @@
           </button>
           <ul class="dropdown-menu text-center">
             <li>
-              <a class="dropdown-item d-flex gap-2" href="#">
-                <img class="rounded-5" src="https://img.freepik.com/free-vector/people-white_24877-49457.jpg?size=626&ext=jpg" width="40" height="40" alt="img">
+              <a class="dropdown-item d-flex gap-2" href="{{url('notification')}}">
+                <img class="rounded-5"
+                  src="https://img.freepik.com/free-vector/people-white_24877-49457.jpg?size=626&ext=jpg" width="40"
+                  height="40" alt="img">
                 <div class="text-start">
                   <span class="fw-bold">John Doe</span>
                   <br>
@@ -206,8 +204,10 @@
             </li>
             <hr class="my-1 mx-4" style="border: 1px solid red">
             <li>
-              <a class="dropdown-item d-flex gap-2" href="#">
-              <img class="rounded-5" src="https://img.freepik.com/free-vector/people-white_24877-49457.jpg?size=626&ext=jpg" width="40" height="40" alt="img">
+              <a class="dropdown-item d-flex gap-2" href="{{url('notification')}}">
+                <img class="rounded-5"
+                  src="https://img.freepik.com/free-vector/people-white_24877-49457.jpg?size=626&ext=jpg" width="40"
+                  height="40" alt="img">
                 <div class="text-start">
                   <span class="fw-bold">John Doe</span>
                   <br>
@@ -220,6 +220,25 @@
                 </div>
               </a>
             </li>
+            <hr class="my-1 mx-4" style="border: 1px solid red">
+            <li>
+              <a class="dropdown-item d-flex gap-2" href="{{url('notification')}}">
+                <img class="rounded-5"
+                  src="https://img.freepik.com/free-vector/people-white_24877-49457.jpg?size=626&ext=jpg" width="40"
+                  height="40" alt="img">
+                <div class="text-start">
+                  <span class="fw-bold">John Doe</span>
+                  <br>
+                  <small>Mentioned you in a comment</small>
+                  <br>
+                  <div class="d-flex align-items-center gap-3">
+                    <small>01, August, 2024</small>
+                    <small>11:00 am</small>
+                  </div>
+                </div>
+              </a>
+            </li>
+            <a class="text-dark d-flex justify-content-end px-3 py-2" href="{{url('notification')}}">View All</a>
           </ul>
         </div>
 
@@ -241,7 +260,7 @@
             </span>
           </button>
           <ul class="dropdown-menu text-center">
-            <li><a class="dropdown-item" href="#">Profile</a></li>
+            <li><a class="dropdown-item" href="{{url('profile')}}">Profile</a></li>
             <hr class="my-1 mx-4" style="border: 1px solid red">
             <li><a class="dropdown-item" href="#">Logout</a></li>
           </ul>
