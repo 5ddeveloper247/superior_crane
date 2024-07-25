@@ -563,16 +563,23 @@
                     }
                     var statusDropdown = document.createElement('ul');
                     statusDropdown.className = 'status-dropdown';
-                    statusDropdown.innerHTML =
-                        `<li data-status="1" ${event.extendedProps.status == 1 ? 'style="background-color:#C9FFBB;"' : ''}>Good To Go</li>
-                                                                        <li data-status="2" ${event.extendedProps.status == 2 ? 'style="background-color:#FFBBBB;"' : ''}>Problem</li>
-                                                                        <li data-status="3" ${event.extendedProps.status == 3 ? 'style="background-color:#FFFCBB;"' : ''}>Draft</li>`;
+                    statusDropdown.innerHTML = `
+                <li class="close-dropdown" style="text-align: right; cursor: pointer;">&times;</li>
+                <li data-status="1" ${event.extendedProps.status == 1 ? 'style="background-color:#C9FFBB;"' : ''}>Good To Go</li>
+                <li data-status="2" ${event.extendedProps.status == 2 ? 'style="background-color:#FFBBBB;"' : ''}>Problem</li>
+                <li data-status="3" ${event.extendedProps.status == 3 ? 'style="background-color:#FFFCBB;"' : ''}>Draft</li>
+            `;
                     statusDropdown.style.display = 'block';
                     statusDropdown.querySelectorAll('li').forEach(function(li) {
                         li.onclick = function() {
-                            window.location.reload();
+                            statusDropdown.remove();
+                openDropdown = null;
                         }
                     })
+            //         statusDropdown.querySelector('.close-dropdown').onclick = function() {
+            //     statusDropdown.remove();
+            //     openDropdown = null;
+            // }
                     eventEl.appendChild(statusDropdown);
                     openDropdown = statusDropdown;
                 },
