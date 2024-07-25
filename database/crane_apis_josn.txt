@@ -1,0 +1,245 @@
+registration api
+
+url: http://127.0.0.1:8000/api/sc/v1/register
+
+{
+    "name": "zaid",
+    "email": "zaid@gmail.com",
+    "password": "12345678Zk@",
+    "password_confirmation": "12345678Zk@"
+}
+
+
+
+login api
+url: http://127.0.0.1:8000/api/sc/v1/login
+
+
+{
+    "email": "zaid@gmail.com",
+    "password": "12345678Zk@"
+    
+}
+
+
+
+
+forget password api
+step1 : validate email and send otp
+
+url: http://127.0.0.1:8000/api/sc/v1/validateemail
+
+
+{
+    "email":"zaid@gmail.com"
+}
+
+
+step 2
+
+verify otp
+
+url: http://127.0.0.1:8000/api/sc/v1/verifyotp
+
+{
+    "email":"zaid@gmail.com",
+    "otp":"29773"
+}
+
+
+step 3 
+update password
+
+url: http://127.0.0.1:8000/api/sc/v1/resetpassword
+
+
+
+{
+    "email":"zaid@gmail.com",
+    "password":"12345678Zk@",
+    "password_confirmation":"12345678Zk@"
+}
+
+
+
+
+Add Job Api
+url: http://127.0.0.1:8000/api/sc/v1/job/add
+
+//job_image optional
+{
+    "client_name": "John Doe",
+    "job_time": "14:30",
+    "date": "2024-07-18",
+    "address": "123 Main St, Springfield, IL",
+    "equipment_to_be_used": "Crane Model X",
+    "rigger_assigned": "1",
+    "supplier_name": "ABC Equipment Supplies",
+    "notes": "Urgent job, please prioritize.",
+    "scci": true,
+    "created_by": 2
+}
+
+
+
+Filter Jobs
+
+url: http://127.0.0.1:8000/api/sc/v1/job/filtered_jobs
+
+{
+    "month":"07",
+    "year":"2023",
+    "day": "18"
+}
+
+
+get job details API
+
+url: http://127.0.0.1:8000/api/sc/v1/job/job_details
+
+
+{
+    "job_id":"2"
+}
+
+Change job status api
+
+url: http://127.0.0.1:8000/api/sc/v1/job/changestatus
+
+
+{
+    "job_id":"1",
+    "status":"3"
+}
+
+
+
+update job api
+
+url:  http://127.0.0.1:8000/api/sc/v1/job/updatejob
+
+
+//job_image optional
+{
+    "job_id":"1",
+    "client_name": "John Doe",
+    "job_time": "14:30",
+    "date": "2024-07-18",
+    "address": "123 Main St, Springfield, IL",
+    "equipment_to_be_used": "Crane Model X",
+    "rigger_assigned": "1",
+    "supplier_name": "ABC Equipment Supplies",
+    "notes": "Urgent job, please prioritize.",
+    "scci": true,
+    "created_by": 2
+    
+}
+
+
+
+
+Rigger Tickets add api
+
+url: http://127.0.0.1:8000/api/sc/v1/riggerticket/add
+
+
+// site_pic is optional
+{
+    "specifications_remarks": "Additional specifications and remarks for the job.",
+    "customer_name": "John Doe",
+    "location": "1234 Crane St, Lift City",
+    "po_number": "PO123456",
+    "date": "2024-07-18",
+    "leave_yard": "07:00 AM",
+    "start_job": "08:00 AM",
+    "finish_job": "05:00 PM",
+    "arrival_yard": "06:00 PM",
+    "lunch": "12:00 PM - 01:00 PM",
+    "travel_time": "1 hour",
+    "crane_time": "8 hours",
+    "total_hours": "9 hours",
+    "crane_number": "CR1234",
+    "rating": "5 stars",
+    "boom_length": "60 feet",
+    "operator": "Jane Smith",
+    "other_equipment": "Hook, Chains",
+    "email": "john.doe@example.com",
+    "notes": "Job went smoothly with no issues.",
+    "signature": "John Doe's Signature",
+    "created_by": 1
+}
+
+Rigger Ticket Send Mail API
+
+url:http://127.0.0.1:8000/api/sc/v1/riggerticket/sendtomail
+
+{
+    "rigger_ticket_id":"2"
+}
+
+
+
+
+Add pay duty API
+
+url: http://127.0.0.1:8000/api/sc/v1/payduty/add
+
+// site_pic is optional
+
+
+{
+    "date": "2024-07-18",
+    "location": "Headquarters",
+    "start_time": "08:00",
+    "finish_time": "16:00",
+    "total_hours": "8",
+    "officer": "Officer123",
+    "officer_name": "John Doe",
+    "division": "Operations",
+    "email": "johndoe@example.com",
+    "signature": "John Doe Signature",
+    "created_by": "1"
+}
+
+
+Add transportation Ticket API
+
+url:http://127.0.0.1:8000/api/sc/v1/transportationticket/add
+
+
+//site_pic is optional
+
+
+{
+    "pickup_address": "123 Pickup St",
+    "delivery_address": "456 Delivery Ave",
+    "time_in": "08:00",
+    "time_out": "17:00",
+    "notes": "Handle with care",
+    "job_number": "JN123456",
+    "job_special_instructions": "Deliver by noon",
+    "po_number": "PO789012",
+    "po_special_instructions": "Include all items",
+    "site_contact_name": "John Doe",
+    "site_contact_name_special_instructions": "Ask for John",
+    "site_contact_number": "1234567890",
+    "site_contact_number_special_instructions": "Call ahead",
+    "shipper_name": "Jane Smith",
+    "shipper_signature": "Jane's Signature",
+    "shipper_signature_date": "2024-07-18",
+    "shipper_time_in": "08:30",
+    "shipper_time_out": "09:00",
+    "pickup_driver_name": "Mike Johnson",
+    "pickup_driver_signature": "Mike's Signature",
+    "pickup_driver_signature_date": "2024-07-18",
+    "pickup_driver_time_in": "08:00",
+    "pickup_driver_time_out": "08:30",
+    "customer_name": "Alice Brown",
+    "customer_email": "alice.brown@example.com",
+    "customer_signature": "Alice's Signature",
+    "customer_signature_date": "2024-07-18",
+    "customer_time_in": "16:30",
+    "customer_time_out": "17:00",
+    "signed_status": 1,
+    "created_by": "1"
+}
