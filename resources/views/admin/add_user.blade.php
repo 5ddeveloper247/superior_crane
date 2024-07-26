@@ -17,6 +17,25 @@
             color: #000 !important;
         }
 
+        .form-label {
+            font-size: 12px !important;
+        }
+
+        .form-control {
+            padding: .1rem .5rem !important;
+            font-size: 13px;
+        }
+
+        label,
+        textarea {
+            font-size: 14px !important;
+        }
+
+        #dt-length-0,
+        .dt-length label {
+            font-size: 12px !important;
+        }
+
         input,
         textarea,
         select {
@@ -69,53 +88,7 @@
 
 @section('content')
 <div class="add-user px-4 py-4">
-    <div class="d-flex align-items-center justify-content-between mb-4">
-        <button class="collapse-btn d-flex align-items-center gap-1" type="button" data-bs-toggle="collapse"
-            data-bs-target="#filterSection" aria-expanded="false" aria-controls="filterSection">
-            <h5 class="mb-0">
-                FILTER
-            </h5>
-            <svg id="filterArrow" xmlns="http://www.w3.org/2000/svg" width="1.4em" height="1.4em" viewBox="0 0 24 24">
-                <path fill="none" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="m6 9l6 6l6-6" />
-            </svg>
-        </button>
-
-        <div class="d-flex gap-2">
-            <button type="button" class="py-1 px-4 add-btn rounded-1" data-bs-toggle="modal"
-                data-bs-target="#exampleModal">
-                ADD NEW
-            </button>
-
-            <button class="px-4 py-1 exp-btn text-white rounded-1">
-                EXPORT
-            </button>
-        </div>
-    </div>
-    <div class="collapse" id="filterSection">
-        <div class="filter p-4 mx-1 border rounded">
-            <div class="row">
-                <div class="col">
-                    <h6>Client Name</h6>
-                    <input class="py-1 px-3 rounded-1 form-control" type="text" placeholder="Enter Customer Name">
-                </div>
-                <div class="col">
-                    <h6>Address</h6>
-                    <input class="py-1 px-3 rounded-1 form-control" type="text" placeholder="Enter Customer Name">
-                </div>
-                <div class="col">
-                    <h6>Date</h6>
-                    <input class="py-1 px-3 rounded-1 form-control" type="date" placeholder="Enter Customer Name">
-                </div>
-            </div>
-            <button class="mt-3 py-1 px-5 text-white rounded-1">
-                FILTER
-            </button>
-        </div>
-    </div>
-
-
-    <ul class="nav nav-tabs d-flex gap-0 gap-md-5 mt-4" id="myTab" role="tablist">
+    <ul class="nav nav-tabs mt-4" id="myTab" role="tablist">
         <li class="nav-item" role="presentation">
             <button class="nav-link active" id="admin-tab" data-bs-toggle="tab" data-bs-target="#admin-tab-pane"
                 type="button" role="tab" aria-controls="admin-tab-pane" aria-selected="true">Admin</button>
@@ -132,9 +105,61 @@
     <div class="tab-content" id="myTabContent">
         <div class="tab-pane fade show active" id="admin-tab-pane" role="tabpanel" aria-labelledby="admin-tab"
             tabindex="0">
+            <div class="d-flex align-items-center justify-content-between my-4">
+                <button class="collapse-btn d-flex align-items-center gap-1" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#filterSection-1" aria-expanded="false" aria-controls="filterSection-1">
+                    <h6 class="mb-0">
+                        ADVANCE SEARCH
+                    </h6>
+                    <svg id="filterArrow-1" xmlns="http://www.w3.org/2000/svg" width="1.4em" height="1.4em"
+                        viewBox="0 0 24 24">
+                        <path fill="none" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="m6 9l6 6l6-6" />
+                    </svg>
+                </button>
+
+                <div class="d-flex gap-2">
+                    <button type="button" class="py-1 px-4 add-btn rounded-1" data-bs-toggle="modal"
+                        data-bs-target="#exampleModal">
+                        ADD NEW
+                    </button>
+
+                    <button class="px-4 py-1 exp-btn text-white rounded-1">
+                        EXPORT
+                    </button>
+                </div>
+            </div>
+            <div class="collapse" id="filterSection-1">
+                <div class="filter p-4 mx-1 border rounded">
+                    <div class="row gy-3">
+                        <div class="col-6 col-md-4">
+                            <h6>Client Name</h6>
+                            <input class="py-1 px-3 rounded-1 form-control" type="text"
+                                placeholder="Enter Client Name here">
+                        </div>
+                        <div class="col-6 col-md-4">
+                            <h6>Email</h6>
+                            <input class="py-1 px-3 rounded-1 form-control" type="text" placeholder="Enter Email here">
+                        </div>
+                        <div class="col-6 col-md-4">
+                            <h6>Phone Number</h6>
+                            <input class="py-1 px-3 rounded-1 form-control" type="number"
+                                placeholder="Enter number here">
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-end gap-2">
+                        <button class="mt-3 py-1 px-5 text-white rounded-1">
+                            Clear Filter
+                        </button>
+                        <button class="mt-3 py-1 px-5 text-white rounded-1">
+                            Search
+                        </button>
+                    </div>
+                </div>
+            </div>
             <div class="py-4">
                 <div class="p-4 mx-1 job-list">
-                    <h5>ADMINS</h5>
+                    <!-- <h5>ADMINS</h5> -->
                     <div class="table-container">
                         <table id="myTable" class="table-responsive w-100">
                             <thead>
@@ -296,11 +321,63 @@
             </div>
         </div>
         <div class="tab-pane fade" id="manager-tab-pane" role="tabpanel" aria-labelledby="manager-tab" tabindex="0">
+            <div class="d-flex align-items-center justify-content-between my-4">
+                <button class="collapse-btn d-flex align-items-center gap-1" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#filterSection-2" aria-expanded="false" aria-controls="filterSection-2">
+                    <h6 class="mb-0">
+                        ADVANCE SEARCH
+                    </h6>
+                    <svg id="filterArrow-2" xmlns="http://www.w3.org/2000/svg" width="1.4em" height="1.4em"
+                        viewBox="0 0 24 24">
+                        <path fill="none" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="m6 9l6 6l6-6" />
+                    </svg>
+                </button>
+
+                <div class="d-flex gap-2">
+                    <button type="button" class="py-1 px-4 add-btn rounded-1" data-bs-toggle="modal"
+                        data-bs-target="#exampleModal">
+                        ADD NEW
+                    </button>
+
+                    <button class="px-4 py-1 exp-btn text-white rounded-1">
+                        EXPORT
+                    </button>
+                </div>
+            </div>
+            <div class="collapse" id="filterSection-2">
+                <div class="filter p-4 mx-1 border rounded">
+                    <div class="row gy-3">
+                        <div class="col-6 col-md-4">
+                            <h6>Client Name</h6>
+                            <input class="py-1 px-3 rounded-1 form-control" type="text"
+                                placeholder="Enter Client Name here">
+                        </div>
+                        <div class="col-6 col-md-4">
+                            <h6>Email</h6>
+                            <input class="py-1 px-3 rounded-1 form-control" type="text" placeholder="Enter Email here">
+                        </div>
+                        <div class="col-6 col-md-4">
+                            <h6>Phone Number</h6>
+                            <input class="py-1 px-3 rounded-1 form-control" type="number"
+                                placeholder="Enter number here">
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-end gap-2">
+                        <button class="mt-3 py-1 px-5 text-white rounded-1">
+                            Clear Filter
+                        </button>
+                        <button class="mt-3 py-1 px-5 text-white rounded-1">
+                            Search
+                        </button>
+                    </div>
+                </div>
+            </div>
             <div class="py-4">
                 <div class="p-4 mx-1 job-list">
-                    <h5 class="mt-3">
+                    <!-- <h5 class="mt-3">
                         MANAGERS
-                    </h5>
+                    </h5> -->
                     <div class="table-container">
                         <table id="myTable2" class="table-responsive w-100">
                             <thead>
@@ -501,10 +578,62 @@
             </div>
         </div>
         <div class="tab-pane fade" id="user-tab-pane" role="tabpanel" aria-labelledby="user-tab" tabindex="0">
+            <div class="d-flex align-items-center justify-content-between my-4">
+                <button class="collapse-btn d-flex align-items-center gap-1" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#filterSection-3" aria-expanded="false" aria-controls="filterSection-3">
+                    <h6 class="mb-0">
+                        ADVANCE SEARCH
+                    </h6>
+                    <svg id="filterArrow-3" xmlns="http://www.w3.org/2000/svg" width="1.4em" height="1.4em"
+                        viewBox="0 0 24 24">
+                        <path fill="none" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="m6 9l6 6l6-6" />
+                    </svg>
+                </button>
+
+                <div class="d-flex gap-2">
+                    <button type="button" class="py-1 px-4 add-btn rounded-1" data-bs-toggle="modal"
+                        data-bs-target="#exampleModal">
+                        ADD NEW
+                    </button>
+
+                    <button class="px-4 py-1 exp-btn text-white rounded-1">
+                        EXPORT
+                    </button>
+                </div>
+            </div>
+            <div class="collapse" id="filterSection-3">
+                <div class="filter p-4 mx-1 border rounded">
+                    <div class="row gy-3">
+                        <div class="col-6 col-md-4">
+                            <h6>Client Name</h6>
+                            <input class="py-1 px-3 rounded-1 form-control" type="text"
+                                placeholder="Enter Client Name here">
+                        </div>
+                        <div class="col-6 col-md-4">
+                            <h6>Email</h6>
+                            <input class="py-1 px-3 rounded-1 form-control" type="text" placeholder="Enter Email here">
+                        </div>
+                        <div class="col-6 col-md-4">
+                            <h6>Phone Number</h6>
+                            <input class="py-1 px-3 rounded-1 form-control" type="number"
+                                placeholder="Enter number here">
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-end gap-2">
+                        <button class="mt-3 py-1 px-5 text-white rounded-1">
+                            Clear Filter
+                        </button>
+                        <button class="mt-3 py-1 px-5 text-white rounded-1">
+                            Search
+                        </button>
+                    </div>
+                </div>
+            </div>
             <div class="py-4">
-                <h5 class="mt-3">
+                <!-- <h5 class="mt-3">
                     BASIC USERS
-                </h5>
+                </h5> -->
                 <div class="p-4 mx-1 job-list">
                     <div class="table-container">
                         <table id="myTable3" class="table-responsive w-100">
@@ -689,23 +818,6 @@
                 </div>
                 <div class="modal-body">
                     <div class="row p-3 mx-1 add-form rounded-1 align-items-center">
-                        {{-- <div class="col-12 d-flex align-items-center gap-3">
-                            <div>
-                                <input type="radio" name="a" id="admin">
-                                <label class="mt-0" for="admin">ADMIN</label>
-                            </div>
-
-                            <div>
-                                <input type="radio" name="a" id="manager">
-                                <label class="mt-0" for="manager">MANAGER</label>
-                            </div>
-
-                            <div>
-                                <input type="radio" name="a" id="user">
-                                <label class="mt-0" for="user">BASIC USER</label>
-                            </div>
-                        </div> --}}
-
                         <div class="col-12 col-md-6 d-flex flex-column">
                             <label class="pb-2" for="name">
                                 Name
@@ -715,19 +827,19 @@
                         </div>
 
                         <div class="col-12 col-md-6 d-flex flex-column">
-                            <label class="pb-2" for="pass">
-                                Password
-                            </label>
-                            <input class="rounded-1 py-2 px-2 w-100" id="pass" type="number"
-                                placeholder="Enter Password Here">
-                        </div>
-
-                        <div class="col-12 col-md-6 d-flex flex-column">
                             <label class="pb-2" for="email">
                                 Email
                             </label>
                             <input class="rounded-1 py-2 px-2 w-100" id="email" type="text"
                                 placeholder="Enter Email Address Here">
+                        </div>
+
+                        <div class="col-12 col-md-6 d-flex flex-column">
+                            <label class="pb-2" for="pass">
+                                Password
+                            </label>
+                            <input class="rounded-1 py-2 px-2 w-100" id="pass" type="number"
+                                placeholder="Enter Password Here">
                         </div>
 
                         <div class="col-12 col-md-6 d-flex flex-column">
@@ -767,15 +879,35 @@
         let table2 = new DataTable('#myTable2');
         let table3 = new DataTable('#myTable3');
 
-        var filterArrow = document.getElementById('filterArrow');
-        var filterSection = document.getElementById('filterSection');
+        var filterArrow1 = document.getElementById('filterArrow-1');
+        var filterSection1 = document.getElementById('filterSection-1');
+        var filterArrow2 = document.getElementById('filterArrow-2');
+        var filterSection2 = document.getElementById('filterSection-2');
+        var filterArrow3 = document.getElementById('filterArrow-3');
+        var filterSection3 = document.getElementById('filterSection-3');
 
-        filterSection.addEventListener('shown.bs.collapse', function () {
-            filterArrow.classList.add('rotate');
+        filterSection1.addEventListener('shown.bs.collapse', function () {
+            filterArrow1.classList.add('rotate');
         });
 
-        filterSection.addEventListener('hidden.bs.collapse', function () {
-            filterArrow.classList.remove('rotate');
+        filterSection1.addEventListener('hidden.bs.collapse', function () {
+            filterArrow1.classList.remove('rotate');
+        });
+
+        filterSection2.addEventListener('shown.bs.collapse', function () {
+            filterArrow2.classList.add('rotate');
+        });
+
+        filterSection2.addEventListener('hidden.bs.collapse', function () {
+            filterArrow2.classList.remove('rotate');
+        });
+
+        filterSection3.addEventListener('shown.bs.collapse', function () {
+            filterArrow3.classList.add('rotate');
+        });
+
+        filterSection3.addEventListener('hidden.bs.collapse', function () {
+            filterArrow3.classList.remove('rotate');
         });
     </script>
 @endpush

@@ -26,7 +26,7 @@
 
 
 <nav class="w-100">
-  <div class="px-4 py-2">
+  <div class="p-2">
     <div class="d-flex align-items-center justify-content-between justify-content-lg-end">
 
       <button class="d-block d-lg-none res-btn" type="button" data-bs-toggle="offcanvas"

@@ -68,6 +68,11 @@ Route::get('/inventory', function () {
     return view('admin/inventory', compact('pageTitle'));
 });
 
+Route::get('/inventory_form', function () {
+    $pageTitle = 'InventoryForm';
+    return view('admin/inventory_form', compact('pageTitle'));
+});
+
 Route::get('/profile', function () {
     $pageTitle = 'Profile';
     return view('admin/profile', compact('pageTitle'));

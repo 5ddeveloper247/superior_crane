@@ -5,7 +5,8 @@
             background: #DC2F2B0D;
             height: calc(100vh - 75.67px);
             width: 100%;
-            overflow: hidden;
+            overflow-x: hidden;
+            overflow-y: auto;
         }
 
         h5 {
@@ -32,8 +33,8 @@
         .add-form {
             background-color: #fff;
             box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-            height: calc(100vh - 155.67px);
-            overflow-y: auto;
+            /* height: calc(100vh - 155.67px);
+            overflow-y: auto; */
         }
 
         .add-form button {
@@ -91,9 +92,9 @@
 
 @section('content')
     <div class="add-job px-4 py-4">
-        <h5>
+        <h6>
             ADD JOB
-        </h5>
+        </h6>
 
         <form action="">
             <div class="row p-3 mx-1 add-form rounded-1">

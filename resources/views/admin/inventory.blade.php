@@ -34,6 +34,25 @@
         h6 {
             font-weight: 600;
         }
+
+        .form-label {
+            font-size: 12px !important;
+        }
+
+        .form-control {
+            padding: .1rem .5rem !important;
+            font-size: 13px;
+        }
+
+        label,
+        textarea {
+            font-size: 14px !important;
+        }
+
+        #dt-length-0,
+        .dt-length label {
+            font-size: 12px !important;
+        }
     </style>
 @endpush
 
@@ -42,14 +61,26 @@
     <div class="d-flex align-items-center justify-content-between mb-4">
         <button class="collapse-btn d-flex align-items-center gap-1" type="button" data-bs-toggle="collapse"
             data-bs-target="#filterSection" aria-expanded="false" aria-controls="filterSection">
-            <h5 class="mb-0 fw-bold">
+            <h6 class="mb-0">
                 FILTER
-            </h5>
+            </h6>
             <svg id="filterArrow" xmlns="http://www.w3.org/2000/svg" width="1.4em" height="1.4em" viewBox="0 0 24 24">
                 <path fill="none" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="m6 9l6 6l6-6" />
             </svg>
         </button>
+
+        <div class="d-flex gap-2">
+            <a href="{{url('inventory_form')}}">
+                <button type="button" class="py-1 px-4 add-btn rounded-1">
+                    ADD NEW
+                </button>
+            </a>
+
+            <button class="px-4 py-1 exp-btn text-white rounded-1">
+                EXPORT
+            </button>
+        </div>
     </div>
 
     <div class="collapse mb-4" id="filterSection">
@@ -74,9 +105,9 @@
         </div>
     </div>
 
-    <h5 class="mt-3">
+    <h6 class="mt-3">
         Inventory
-    </h5>
+    </h6>
 
     <div class="p-4 mx-1 job-list">
         <div class="table-container">
