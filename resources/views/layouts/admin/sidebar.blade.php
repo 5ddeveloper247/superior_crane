@@ -1,6 +1,6 @@
 <style>
   .sidebar {
-    background-color: #DC2F2B;
+    background: linear-gradient(75deg, rgba(220,47,43,1) 19%, rgba(191,40,37,1) 43%, rgba(161,29,29,1) 61%, rgba(126,20,20,1) 100%);
     height: 100vh;
   }
 
@@ -19,10 +19,27 @@
   }
 
   .activenav {
-    /* -webkit-text-stroke:1px rgba(0, 0, 0, 0.176); */
     font-weight: 700;
     color: #fff !important;
-  }
+    background: linear-gradient(10deg, rgba(220,47,43,1) 19%, rgba(191,40,37,1) 43%, rgba(161,29,29,1) 61%, rgba(126,20,20,1) 100%);
+    border-radius: 10px;
+    transition: all ease-in-out .4s;
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;    scale: 1 !important;
+    margin: 0 .3rem;
+    /* width: fit-content; */
+    padding-top: .9rem;
+    padding-bottom: .9rem;
+    padding-right: 2rem;
+    }
+
+    .nav .nav-item .nav-link {
+      scale: .94;
+    }
+
+    .nav .nav-item .nav-link:hover {
+      scale: 1;
+      transition: scale ease-in-out .3s;
+    }
 </style>
 
 
@@ -42,7 +59,7 @@
       <ul class="nav flex-column">
         <li class="nav-item pt-3 ">
           <a href="{{url('dashboard')}}"
-            class="nav-link d-flex align-items-center gap-2 px-3 {{$pageTitle == 'Dashboard' ? 'activenav' : ''}}"
+            class="nav-link d-flex align-items-center gap-2 {{$pageTitle == 'Dashboard' ? 'activenav' : ''}}"
             href="#">
             <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 32 32">
               <path fill="white"
@@ -53,35 +70,6 @@
             </span>
           </a>
         </li>
-
-
-        <!-- <li class="nav-item pt-2">
-          <a class="nav-link d-flex align-items-center gap-2" data-bs-toggle="collapse" href="#sidebar-crane"
-            role="button" aria-expanded="false" aria-controls="collapseExample">
-            <span class="dropdown-indicator-icon-wrapper">
-              <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 1200 1200">
-                <path fill="white"
-                  d="M600 0c-65.168 0-115.356 54.372-115.356 119.385c0 62.619-.439 117.407-.439 117.407h-115.87c-2.181 0-4.291.241-6.372.586h-32.227v112.573h540.527V237.378h-32.227c-2.081-.345-4.191-.586-6.372-.586H715.796s1.318-49.596 1.318-117.041C717.114 57.131 665.168 0 600 0M175.195 114.185V1200h849.609V114.185H755.64v78.662h191.382v928.345h-693.97V192.847H444.36v-78.662zM600 115.649c21.35 0 38.599 17.18 38.599 38.452c0 21.311-17.249 38.525-38.599 38.525s-38.599-17.215-38.599-38.525c0-21.271 17.249-38.452 38.599-38.452M329.736 426.27v38.525h38.599V426.27zm115.869.732v38.525h424.658v-38.525zm-115.869 144.58v38.525h38.599v-38.525zm115.869.732v38.599h424.658v-38.599zM329.736 716.895v38.525h38.599v-38.525zm115.869.805v38.525h424.658V717.7zM329.736 862.28v38.525h38.599V862.28zm115.869.806v38.525h424.658v-38.525zm-115.869 144.507v38.525h38.599v-38.525zm115.869.805v38.525h424.658v-38.525z" />
-              </svg>
-            </span>
-            <span>Job Lists</span>
-          </a>
-
-          <div class="collapse sidebar-inner-content" id="sidebar-crane">
-            <ul class="nav flex-column">
-              <li class="nav-item ">
-                <a href="{{url('all_jobs')}}" class="{{$pageTitle == 'all_jobs' ? 'activenav' : ''}} ps-5" href="#">
-                  <span>All Jobs</span>
-                </a>
-              </li>
-              <li class="nav-item pt-3">
-                <a href="{{url('add_job')}}" class="ps-5 {{$pageTitle == 'add_job' ? 'activenav' : ''}}" href="#">
-                  <span>Add Jobs</span>
-                </a>
-              </li>
-            </ul>
-          </div>
-        </li> -->
 
         <li class="nav-item pt-2">
           <a class="nav-link d-flex align-items-center gap-2 {{$pageTitle == 'All-jobs' ? 'activenav' : ''}}"

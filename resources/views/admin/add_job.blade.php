@@ -22,7 +22,7 @@
 
         .add-job label {
             font-weight: 600;
-            margin-top: 1.4rem;
+            margin-top: 1rem;
         }
 
         .add-job span {
@@ -87,6 +87,21 @@
             background-color: #DC2F2B;
             color: #fff
         }
+
+        .add-job label {
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+
+        label,
+        textarea {
+            font-size: 14px;
+        }
+
+        #dt-length-0,
+        .dt-length label {
+            font-size: 12px !important;
+        }
     </style>
 @endpush
 
@@ -99,16 +114,15 @@
         <form action="">
             <div class="row p-3 mx-1 add-form rounded-1">
                 <div class="row">
-                    <div class="mb-3 col-md-2">
-                        <input type="radio" name="job_type[]" id="job_type_logistic" class="mt-2" value="Logistic Job"
+                    <div class="mb-3 d-flex align-items-center gap-1 col-md-2">
+                        <input type="radio" name="job_type[]" id="job_type_logistic" value="Logistic Job"
                             checked>
-                        <label class="form-label" for="job_type">Logistic Job</label>
+                        <label class="form-label m-0" for="job_type_logistic">Logistic Job</label>
 
                     </div>
-                    <div class="mb-3 col-md-6">
-                        <input type="radio" name="job_type[]" id="job_type_crane" class="mt-2" value="Crane Job">
-                        <label class="form-label" for="job_type">Crane Job</label>
-
+                    <div class="mb-3 d-flex align-items-center gap-1 col-md-6">
+                        <input type="radio" name="job_type[]" id="job_type_crane" value="Crane Job">
+                        <label class="form-label m-0" for="job_type_crane">Crane Job</label>
                     </div>
                 </div>
 
@@ -206,7 +220,7 @@
                     <label class="scci" for="scc">SCCI</label>
                     <br><br>
                     <button class="py-1 px-5 add-btn rounded-1">
-                        ADD NEW
+                        Save
                     </button>
                 </div>
             </div>
