@@ -32,31 +32,51 @@ html {
         position: absolute;
         top: 0;
         left: 0;
-        background: linear-gradient(to right, #b83432f5, #500e0d, #500e0dea, #00000085);
+        background-color: #500e0d90;
+        /* background: linear-gradient(to right, #793f3edd, #541211, #500e0dea, #00000085); */
         height: 100%;
         width: 100%;
     }
 
     .login-content {
-        background: linear-gradient(to right, #dc2e2b02, #202020, #541211, #9f211fe6);
+        background: linear-gradient(to right, #202020c8, #202020c8);
+        width: 50%;
     }
 
     button {
-        background: linear-gradient(to right, #e73835f5, #500e0d, #500e0dea, #e73835f5);
+        background: #bc1c1c;
         color: white;
         border: none;
         padding: 10px 20px;
         border-radius: 5px;
         cursor: pointer;
-        transition: background 0.3s ease;
+        /* transition: all ease .4s; */
     }
 
     button:hover {
-        background: linear-gradient(to right, #f49494, #db0707);
+        background: linear-gradient(to right, #e73835f5, #500e0d, #500e0dea, #e73835f5);
     }
 
     .forget-pass {
         color: rgb(97, 97, 250);
+        font-size: 13px !important;
+    }
+
+    .forget-pass:hover {
+        text-decoration: underline !important;
+        transition: all ease-in-out .4s;
+    }
+}
+
+@media (max-width: 1024px) {
+    .login-content {
+        width: 80% !important;
+    }
+}
+
+@media (max-width: 776px) {
+    .login-content {
+        width: 90% !important;
     }
 }
 
@@ -67,8 +87,12 @@ a {
     cursor: pointer;
 }
 
+button {
+    font-size: 14px !important;
+}
+
 .nav-link:hover {
-    font-weight: 600 !important;
+    color: #fff !important;
 }
 
 .nav-item .nav-link.active {
@@ -100,6 +124,11 @@ input[type=number] {
     border-radius: 5px;
 }
 
+.add-btn {
+    background-color: #DC2F2B;
+    color: #fff;
+    border: none;
+}
 
 .filter button,
 .exp-btn {
@@ -107,14 +136,14 @@ input[type=number] {
     border: none;
 }
 
+h6 {
+    font-weight: 600 !important;
+}
+
 .rotate {
     transform: rotate(180deg);
     transition: transform 0.4s ease;
 }
-
-/* h6 {
-    font-size: clamp(14px, 1.5vw, 16px) !important;
-} */
 
 .table-container {
     overflow-x: auto;
@@ -130,6 +159,7 @@ div.dt-container div.dt-layout-row.dt-layout-table {
 
 
 @media (max-width: 776px) {
+
     div.dt-container .dt-length,
     div.dt-container .dt-search,
     div.dt-container .dt-info,

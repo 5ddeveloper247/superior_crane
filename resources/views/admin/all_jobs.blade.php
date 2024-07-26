@@ -18,6 +18,15 @@
             font-size: 12px;
         }
 
+        .form-label {
+            font-size: 12px !important;
+        }
+
+        .form-control {
+            padding: .1rem .5rem !important;
+            font-size: 13px;
+        }
+
         .filter,
         .job-list {
             box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
@@ -32,7 +41,7 @@
         .add-btn {
             background-color: #DC2F2B;
             color: #fff;
-            border: none
+            border: none;
         }
 
         .add-form {
@@ -44,17 +53,33 @@
         .add-job {
             display: none
         }
+
+        label,
+        textarea {
+            font-size: 14px;
+        }
+
+        #dt-length-0,
+        .dt-length label {
+            font-size: 12px !important;
+        }
+
+        .modal-body {
+            height: 500px;
+            overflow-y: auto;
+        }
     </style>
 @endpush
 
 @section('content')
+
 <div class="all-jobs px-4 py-4">
     <div class="d-flex align-items-center justify-content-between mb-4">
         <button class="collapse-btn d-flex align-items-center gap-1" type="button" data-bs-toggle="collapse"
             data-bs-target="#filterSection" aria-expanded="false" aria-controls="filterSection">
-            <h5 class="mb-0 fw-bold">
-                FILTER
-            </h5>
+            <h6 class="mb-0">
+                ADVANCE SEARCH
+            </h6>
             <svg id="filterArrow" xmlns="http://www.w3.org/2000/svg" width="1.4em" height="1.4em" viewBox="0 0 24 24">
                 <path fill="none" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="m6 9l6 6l6-6" />
@@ -62,43 +87,65 @@
         </button>
 
         <div class="d-flex gap-2">
-
-
-            <button class="px-4 py-1 exp-btn text-white rounded-1">
-                EXPORT
-            </button>
+            <a href="{{url('add_job')}}">
+                <button type="button" class="py-1 px-4 add-btn rounded-1">
+                    Add New
+                </button>
+            </a>
         </div>
     </div>
 
     <div class="collapse mb-4" id="filterSection">
         <div class="filter p-4 mx-1 border rounded">
-            <div class="row">
-                <div class="col">
-                    <h6>Name</h6>
-                    <input class="py-1 px-3 rounded-1 form-control" type="text" placeholder="Enter Customer Name">
+            <div class="row gy-3">
+                <div class="col-6 col-md-4">
+                    <h6>Client Name</h6>
+                    <input class="py-1 px-3 rounded-1 form-control" type="text" placeholder="Enter Client Name here">
                 </div>
-                <div class="col">
+                <div class="col-6 col-md-4">
                     <h6>Address</h6>
-                    <input class="py-1 px-3 rounded-1 form-control" type="text" placeholder="Enter Customer Name">
+                    <input class="py-1 px-3 rounded-1 form-control" type="text" placeholder="Enter Address here">
                 </div>
-                <div class="col">
+                <div class="col-6 col-md-4">
                     <h6>Date</h6>
-                    <input class="py-1 px-3 rounded-1 form-control" type="date" placeholder="Enter Customer Name">
+                    <input class="py-1 px-3 rounded-1 form-control" name="filter_daterange" type="text">
+                </div>
+                <div class="col-6 col-md-4">
+                    <h6>Rigger Assigned</h6>
+                    <select class="form-control" name="" id="">
+                        <option value="1">Adnan Yar</option>
+                        <option value="2">Hamza Waheed</option>
+                        <option value="3">Arsam Javed</option>
+                    </select>
+                </div>
+                <div class="col-6 col-md-4">
+                    <h6>Supplier Name</h6>
+                    <input class="py-1 px-3 rounded-1 form-control" type="text" placeholder="Enter Supplier Name here">
                 </div>
             </div>
-            <button class="mt-3 py-1 px-5 text-white rounded-1">
-                FILTER
-            </button>
+            <div class="d-flex justify-content-end gap-2">
+                <button class="mt-3 py-1 px-5 text-white rounded-1">
+                    Clear Filter
+                </button>
+                <button class="mt-3 py-1 px-5 text-white rounded-1">
+                    Search
+                </button>
+            </div>
         </div>
     </div>
 
-    <h5 class="mt-3">
-        JOB LISTS
-    </h5>
+    <h6 class="mt-3">
+        JOB LIST
+    </h6>
 
     <div class="p-4 mx-1 job-list">
         <div class="table-container">
-            <table id="myTable" class="table-responsive">
+            <table id="myTable" class="table-responsive w-100">
+                <div class="d-flex justify-content-end mb-2">
+                    <button type="button" class="py-1 px-4 add-btn rounded-1">
+                        Export
+                    </button>
+                </div>
                 <thead>
                     <tr>
                         <th scope="col">Job time</th>
@@ -377,9 +424,9 @@
                     <label class="scci" for="scc">SCCI</label>
                     <br><br>
                     <div class="d-flex justify-content-center">
-                    <button class="update-btn py-1 px-5 add-btn rounded-1">
-                        UPDATE
-                    </button>
+                        <button class="update-btn py-1 px-5 add-btn rounded-1">
+                            UPDATE
+                        </button>
                     </div>
                 </div>
             </div>
@@ -391,7 +438,16 @@
 
 @push('scripts')
     <script>
-        let table = new DataTable('#myTable');
+        // let table = document.getElementById('myTable');
+        $('#myTable').DataTable(
+            {
+                // dom: 'Bfrtip',
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ]
+            }
+        );
+
 
         var filterArrow = document.getElementById('filterArrow');
         var filterSection = document.getElementById('filterSection');
