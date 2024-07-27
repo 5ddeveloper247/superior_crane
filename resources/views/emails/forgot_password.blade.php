@@ -8,7 +8,7 @@
 <body style="font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #F4F4F4;">
     <div style="max-width: 600px; margin: auto; background-color: #FFFFFF; border: 1px solid #DDDDDD;">
         <div style="background-color: red; color: white; padding: 20px; text-align: center;">
-            <h2 style="max-width: 150px;"> Superior Crane Notification</h2>
+            <h2 style="max-width: 100%;"> Superior Crane Notification</h2>
         </div>
         <div style="padding: 20px;">
             <h2 style="color: #333333;">Password Reset Request</h2>

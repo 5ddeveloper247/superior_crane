@@ -14,5 +14,10 @@ class JobModel extends Model
         'client_name','job_time','date','address','equipment_to_be_used','rigger_assigned','supplier_name','notes','job_image','scci','created_by','status'
     ];
     
+
+    public function jobImages()
+    {
+    	return $this->hasMany(JobImages::class, 'job_id');
+    }
     
 }

@@ -43,4 +43,9 @@ class TransportationTicketModel extends Model
         'site_pic',
         'created_by',
     ];
+
+    public function ticketImages()
+    {
+    	return $this->hasMany(TransportationTicketImages::class, 'ticket_id');
+    }
 }

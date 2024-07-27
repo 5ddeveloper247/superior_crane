@@ -5,11 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class RigerTicket extends Model
+class RiggerTicket extends Model
 {
     use HasFactory;
     protected $table = "rigger_tickets";
     protected $fillable = [
+        'user_id',
         'specifications_remarks',
         'customer_name',
         'location',
@@ -34,4 +35,9 @@ class RigerTicket extends Model
         'site_pic',
         'created_by',
     ];
+
+    public function ticketImages()
+    {
+    	return $this->hasMany(RiggerTicketImages::class, 'ticket_id');
+    }
 }
