@@ -183,9 +183,9 @@
           <div class="collapse sidebar-inner-content" id="web_api">
             <ul class="nav flex-column mx-3">
               <li class="nav-item ps-4 pt-1">
-                <a href="{{url('web_api_jobs')}}" class="list-item"
+                <a href="{{url('web_api_users')}}" class="list-item"
                   href="#">
-                  <span>Jobs</span>
+                  <span>Users API</span>
                 </a>
               </li>
               <li class="nav-item ps-4 pt-1">
