@@ -1,8 +1,9 @@
 @extends('layouts.admin.admin_master')
 @push('styles')
     <style>
-        .all-jobs {
-            background: #DC2F2B0D;
+        .all-jobs,
+        .edit-user {
+            /* background: #DC2F2B0D; */
             height: calc(100vh - 75.67px);
             width: 100%;
             overflow-x: hidden;
@@ -18,9 +19,8 @@
             font-size: 12px;
         }
 
-        .filter,
         .job-list {
-            box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+            /* box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px; */
             background-color: #fff;
             border-radius: 5px;
         }
@@ -31,16 +31,47 @@
             border: none
         }
 
+        .table-container {
+            overflow-x: auto;
+        }
+
+        #myTable {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        tbody {
+            border-spacing: 10px 10px !important;
+        }
+
+        #myTable th,
+        #myTable td {
+            border-bottom: none;
+        }
+
+        #myTable th {
+            background-color: #f7f7f7;
+        }
+
+        .job-list .edit,
+        .job-list .del {
+            display: flex;
+            align-items: center;
+        }
+
+
         h6 {
             font-weight: 600;
         }
 
         .form-label {
-            font-size: 12px !important;
+            font-size: 14px !important;
+            margin-bottom: 0rem !important;
+            margin-top: .6rem !important;
         }
 
         .form-control {
-            padding: .1rem .5rem !important;
+            padding: .4rem .5rem !important;
             font-size: 13px;
         }
 
@@ -53,104 +84,211 @@
         .dt-length label {
             font-size: 12px !important;
         }
+
+        .dt-button {
+            background-color: #DC2F2B !important;
+            padding: .1rem 1rem !important;
+            border: 1px solid #DC2F2B !important;
+            border-radius: 4px !important;
+            color: white !important;
+        }
+
+        .dt-buttons {
+            float: right !important;
+            margin-bottom: 10px !important;
+        }
+
+        .dt-search {
+            margin-bottom: 10px !important;
+        }
+
+        .dt-paging nav {
+            box-shadow: none;
+            float: right !important;
+        }
     </style>
 @endpush
 
 @section('content')
-<div class="all-jobs px-4 py-4">
-    <div class="d-flex align-items-center justify-content-between mb-4">
-        <button class="collapse-btn d-flex align-items-center gap-1" type="button" data-bs-toggle="collapse"
-            data-bs-target="#filterSection" aria-expanded="false" aria-controls="filterSection">
-            <h6 class="mb-0">
-                FILTER
-            </h6>
-            <svg id="filterArrow" xmlns="http://www.w3.org/2000/svg" width="1.4em" height="1.4em" viewBox="0 0 24 24">
-                <path fill="none" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="m6 9l6 6l6-6" />
+<div class="all-jobs py-4 px-3">
+    <div class="breadcrumb mb-0 d-flex align-items-center gap-1">
+        <a class="d-flex" href="{{url('dashboard')}}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" viewBox="0 0 24 24">
+                <path fill="red"
+                    d="M3 13h1v7c0 1.103.897 2 2 2h12c1.103 0 2-.897 2-2v-7h1a1 1 0 0 0 .707-1.707l-9-9a.999.999 0 0 0-1.414 0l-9 9A1 1 0 0 0 3 13m7 7v-5h4v5zm2-15.586l6 6V15l.001 5H16v-5c0-1.103-.897-2-2-2h-4c-1.103 0-2 .897-2 2v5H6v-9.586z" />
             </svg>
-        </button>
+            <small>
+                Dashboard
+            </small>
+        </a>
+        <small class="fw-semibold">
+            >> Transportation Tickets
+        </small>
     </div>
-
-    <div class="collapse mb-4" id="filterSection">
-        <div class="filter p-4 mx-1 border rounded">
-            <div class="row gy-3">
-                <div class="col-6 col-md-4">
-                    <h6>Customer Name</h6>
-                    <input class="py-1 px-3 rounded-1 form-control" type="text" placeholder="Enter Customer Name here">
-                </div>
-                <div class="col-6 col-md-4">
-                    <h6>Transporter Name</h6>
-                    <input class="py-1 px-3 rounded-1 form-control" type="text" placeholder="Enter Rigger Name here">
-                </div>
-                <div class="col-6 col-md-4">
-                    <h6>Email</h6>
-                    <input class="py-1 px-3 rounded-1 form-control" type="text" placeholder="Enter Email here">
-                </div>
-                <div class="col-6 col-md-4">
-                    <h6>Address</h6>
-                    <input class="py-1 px-3 rounded-1 form-control" type="text" placeholder="Enter Address here">
-                </div>
-                <div class="col-6 col-md-4">
-                    <h6>Date</h6>
-                    <input class="py-1 px-3 rounded-1 form-control" type="date">
-                </div>
-                <div class="col-6 col-md-4">
-                    <h6>Status</h6>
-                    <select class="form-control" name="" id="">
-                        <option value="1">Draft</option>
-                        <option value="2">Issued</option>
-                        <option value="3">Completed</option>
-                    </select>
+    <div class="row align-items-center my-3 g-0 pe-2">
+        <div class="col-6 col-md-3">
+            <div class="counters d-flex gap-2 align-items-center">
+                <img src="{{asset('assets/images/ticket.png')}}" width="40" alt="">
+                <div class="pt-2">
+                    <h6 class="mb-0">
+                        Total Tickets
+                    </h6>
+                    <small>
+                        1323
+                    </small>
                 </div>
             </div>
-            <div class="d-flex justify-content-end gap-2">
-                <button class="mt-3 py-1 px-5 text-white rounded-1">
-                    Clear Filter
-                </button>
-                <button class="mt-3 py-1 px-5 text-white rounded-1">
-                    Search
-                </button>
+        </div>
+
+
+        <div class="col-6 col-md-3">
+            <div class="counters d-flex gap-2 align-items-center justify-content-md-center">
+                <img src="{{asset('assets/images/logistics-delivery.png')}}" width="50" alt="">
+                <div class="pt-2">
+                    <h6 class="mb-0">
+                        Total Transporters
+                    </h6>
+                    <small>
+                        1323
+                    </small>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-6 col-md-3">
+            <div class="counters d-flex gap-2 align-items-center justify-content-md-end">
+                <img src="{{asset('assets/images/check.png')}}" width="50" alt="">
+                <div class="pt-2">
+                    <h6 class="mb-0">
+                        Active Transporters
+                    </h6>
+                    <small>
+                        1323
+                    </small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6 col-md-3">
+            <div class="counters d-flex gap-2 align-items-center justify-content-md-end">
+                <img src="{{asset('assets/images/sluggish.png')}}" width="50" alt="">
+                <div class="pt-2">
+                    <h6 class="mb-0">
+                        Inactive Transporters
+                    </h6>
+                    <small>
+                        1323
+                    </small>
+                </div>
             </div>
         </div>
     </div>
 
-    <h6 class="mt-3">
-        TRANSPORTATION TICKETS
-    </h6>
+    <!-- <h6 class="mt-3">
+        Inventory
+    </h6> -->
 
-    <div class="p-4 mx-1 job-list">
+    <div class="job-list">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <button class="collapse-btn d-flex align-items-center gap-1" type="button" data-bs-toggle="collapse"
+                data-bs-target="#filterSection" aria-expanded="false" aria-controls="filterSection">
+                <svg id="filterArrow" style="rotate: 90deg" xmlns="http://www.w3.org/2000/svg" width="1.4em"
+                    height="1.4em" viewBox="0 0 24 24">
+                    <g fill="red">
+                        <path d="m14.829 11.948l1.414-1.414L12 6.29l-4.243 4.243l1.415 1.414L11 10.12v7.537h2V10.12z" />
+                        <path fill-rule="evenodd"
+                            d="M19.778 4.222c-4.296-4.296-11.26-4.296-15.556 0c-4.296 4.296-4.296 11.26 0 15.556c4.296 4.296 11.26 4.296 15.556 0c4.296-4.296 4.296-11.26 0-15.556m-1.414 1.414A9 9 0 1 0 5.636 18.364A9 9 0 0 0 18.364 5.636"
+                            clip-rule="evenodd" />
+                    </g>
+                </svg>
+                <h6 class="mb-0 text-danger">
+                    Advance search
+                </h6>
+            </button>
+        </div>
+
+        <div class="collapse mb-4" id="filterSection">
+            <div class="filter">
+                <div class="row gy-3">
+                    <div class="col-4">
+                        <label class="fw-semibold">Transporter Name</label>
+                        <input class="py-1 px-3 rounded-1 form-control" type="text" placeholder="Type here...">
+                    </div>
+                    <div class="col-4">
+                        <label class="fw-semibold">Customer Name</label>
+                        <input class="py-1 px-3 rounded-1 form-control" type="text" placeholder="Type here...">
+                    </div>
+                    <div class="col-4">
+                        <label class="fw-semibold">Pickup Address</label>
+                        <input class="py-1 px-3 rounded-1 form-control" type="text" placeholder="Type here...">
+                    </div>
+                    <div class="col-4">
+                        <label class="fw-semibold">Delivery Address</label>
+                        <input class="py-1 px-3 rounded-1 form-control" type="text" placeholder="Type here...">
+                    </div>
+                    <div class="col-4">
+                        <label class="fw-semibold">Date</label>
+                        <input class="py-1 px-3 rounded-1 form-control" type="date" placeholder="Type here...">
+                    </div>
+                    <div class="col-4">
+                        <label class="fw-semibold">Status</label>
+                        <select class="form-control" name="" id="">
+                            <option selected>Choose</option>
+                            <option value="1">Draft</option>
+                            <option value="2">Complete</option>
+                            <option value="3">Incomplete</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-end gap-2">
+                    <button class="mt-3 py-1 px-3 text-white rounded-1">
+                        Clear Filter
+                    </button>
+                    <button class="mt-3 py-1 px-3 text-white rounded-1">
+                        Search
+                    </button>
+                </div>
+            </div>
+        </div>
         <div class="table-container">
-        <table id="myTable" class="table-responsive w-100">
+            <table id="myTable" class="table-responsive w-100">
                 <thead>
                     <tr>
-                        <th scope="col">Customer Name</th>
-                        <th scope="col">Transporter Name</th>
-                        <th scope="col">Email</th>
-                        <th scope="col">Location</th>
-                        <th scope="col">Date</th>
-                        <th scope="col">PO-Number</th>
-                        <th scope="col">Status</th>
+                        <th class="px3" scope="col">Customer Name</th>
+                        <th class="px-3" scope="col">Pickup Address</th>
+                        <th class="px-3" scope="col">Pickup Date</th>
+                        <th class="px3" scope="col">Delivery Address</th>
+                        <th class="px3" scope="col">Delivery Date</th>
+                        <th class="px3" scope="col">Transporter Name</th>
+                        <th class="px3" scope="col">Job Number</th>
+                        <th class="px3" scope="col">P.O Number</th>
+                        <th class="px3" scope="col">Site Contract</th>
                         <th scope="col">Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>Qazi Usman</td>
-                        <td>Hamza Waheed</td>
-                        <td>someone@example.com</td>
-                        <td>900 Bay St, T.O</td>
-                        <td>17 Oct 2022</td>
+                        <td>Justin</td>
+                        <td>2-99 Great Gulf
+                            Dr, Concord</td>
+                        <td>2-99 Great Gulf
+                            Dr, Concord</td>
+                        <td>2190 Spears Rd, OAkville</td>
+                        <td>2190 Spears Rd, OAkville</td>
+                        <td>Justin</td>
                         <td>-</td>
-                        <td>Draft</td>
+                        <td>-</td>
+                        <td>-</td>
                         <td class="d-flex gap-2 ">
                             <div class="edit">
-                                <svg width="15" viewBox="0 0 11 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path
-                                        d="M0.00561523 9.70695C0.0634926 9.49154 0.124427 9.27694 0.17884 9.06072C0.324756 8.48052 0.466596 7.8993 0.614754 7.31971C0.630039 7.2602 0.665703 7.19825 0.709314 7.15463C2.51329 5.34719 4.31911 3.54178 6.12472 1.73617C6.14286 1.71803 6.16242 1.70092 6.17302 1.69093C6.88589 2.4036 7.59631 3.11402 8.31489 3.8326C8.30552 3.84279 8.2833 3.86867 8.25905 3.89271C6.46241 5.68895 4.66617 7.4856 2.86728 9.27959C2.81511 9.33176 2.74134 9.37497 2.67001 9.3931C1.89172 9.5918 1.11201 9.78459 0.332908 9.97942C0.314566 9.98411 0.297244 9.99307 0.27931 10C0.240182 10 0.201053 10 0.161925 10C0.109754 9.94783 0.0575826 9.89566 0.00561523 9.84369C0.00561523 9.79804 0.00561523 9.75239 0.00561523 9.70695Z"
-                                        fill="black" />
-                                    <path
-                                        d="M8.9559 3.19677C8.23855 2.47962 7.52751 1.76858 6.81036 1.05164C7.00336 0.858643 7.19961 0.660149 7.39851 0.464303C7.48879 0.375449 7.57704 0.281908 7.67832 0.206912C8.07796 -0.0883852 8.66631 -0.0667831 9.03375 0.267642C9.28401 0.49528 9.52428 0.735756 9.75131 0.986422C10.0884 1.35855 10.1029 1.9253 9.80246 2.32963C9.76374 2.38159 9.72033 2.43091 9.67468 2.47697C9.43441 2.71887 9.19271 2.95975 8.9559 3.19677Z"
-                                        fill="black" />
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" viewBox="0 0 24 24">
+                                    <g fill="none" stroke="green" stroke-linecap="round" stroke-linejoin="round"
+                                        stroke-width="1.5" color="white">
+                                        <path
+                                            d="M21.544 11.045c.304.426.456.64.456.955c0 .316-.152.529-.456.955C20.178 14.871 16.689 19 12 19c-4.69 0-8.178-4.13-9.544-6.045C2.152 12.529 2 12.315 2 12c0-.316.152-.529.456-.955C3.822 9.129 7.311 5 12 5c4.69 0 8.178 4.13 9.544 6.045" />
+                                        <path d="M15 12a3 3 0 1 0-6 0a3 3 0 0 0 6 0" />
+                                    </g>
                                 </svg>
                             </div>
                             <div class="del">
@@ -172,24 +310,27 @@
                         </td>
                     </tr>
 
-
                     <tr>
-                        <td>Adnan Yar</td>
-                        <td>Arsam Javed</td>
-                        <td>someone@example.com</td>
-                        <td>900 Bay St, T.O</td>
-                        <td>17 Oct 2022</td>
+                        <td>Justin</td>
+                        <td>2-99 Great Gulf
+                            Dr, Concord</td>
+                        <td>2-99 Great Gulf
+                            Dr, Concord</td>
+                        <td>2190 Spears Rd, OAkville</td>
+                        <td>2190 Spears Rd, OAkville</td>
+                        <td>Justin</td>
                         <td>-</td>
-                        <td>Completed</td>
+                        <td>-</td>
+                        <td>-</td>
                         <td class="d-flex gap-2 ">
                             <div class="edit">
-                                <svg width="15" viewBox="0 0 11 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path
-                                        d="M0.00561523 9.70695C0.0634926 9.49154 0.124427 9.27694 0.17884 9.06072C0.324756 8.48052 0.466596 7.8993 0.614754 7.31971C0.630039 7.2602 0.665703 7.19825 0.709314 7.15463C2.51329 5.34719 4.31911 3.54178 6.12472 1.73617C6.14286 1.71803 6.16242 1.70092 6.17302 1.69093C6.88589 2.4036 7.59631 3.11402 8.31489 3.8326C8.30552 3.84279 8.2833 3.86867 8.25905 3.89271C6.46241 5.68895 4.66617 7.4856 2.86728 9.27959C2.81511 9.33176 2.74134 9.37497 2.67001 9.3931C1.89172 9.5918 1.11201 9.78459 0.332908 9.97942C0.314566 9.98411 0.297244 9.99307 0.27931 10C0.240182 10 0.201053 10 0.161925 10C0.109754 9.94783 0.0575826 9.89566 0.00561523 9.84369C0.00561523 9.79804 0.00561523 9.75239 0.00561523 9.70695Z"
-                                        fill="black" />
-                                    <path
-                                        d="M8.9559 3.19677C8.23855 2.47962 7.52751 1.76858 6.81036 1.05164C7.00336 0.858643 7.19961 0.660149 7.39851 0.464303C7.48879 0.375449 7.57704 0.281908 7.67832 0.206912C8.07796 -0.0883852 8.66631 -0.0667831 9.03375 0.267642C9.28401 0.49528 9.52428 0.735756 9.75131 0.986422C10.0884 1.35855 10.1029 1.9253 9.80246 2.32963C9.76374 2.38159 9.72033 2.43091 9.67468 2.47697C9.43441 2.71887 9.19271 2.95975 8.9559 3.19677Z"
-                                        fill="black" />
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" viewBox="0 0 24 24">
+                                    <g fill="none" stroke="green" stroke-linecap="round" stroke-linejoin="round"
+                                        stroke-width="1.5" color="white">
+                                        <path
+                                            d="M21.544 11.045c.304.426.456.64.456.955c0 .316-.152.529-.456.955C20.178 14.871 16.689 19 12 19c-4.69 0-8.178-4.13-9.544-6.045C2.152 12.529 2 12.315 2 12c0-.316.152-.529.456-.955C3.822 9.129 7.311 5 12 5c4.69 0 8.178 4.13 9.544 6.045" />
+                                        <path d="M15 12a3 3 0 1 0-6 0a3 3 0 0 0 6 0" />
+                                    </g>
                                 </svg>
                             </div>
                             <div class="del">
@@ -211,24 +352,27 @@
                         </td>
                     </tr>
 
-
                     <tr>
-                        <td>Zaid Khurshid</td>
-                        <td>Obaid</td>
-                        <td>someone@example.com</td>
-                        <td>900 Bay St, T.O</td>
-                        <td>17 Oct 2022</td>
+                        <td>Justin</td>
+                        <td>2-99 Great Gulf
+                            Dr, Concord</td>
+                        <td>2-99 Great Gulf
+                            Dr, Concord</td>
+                        <td>2190 Spears Rd, OAkville</td>
+                        <td>2190 Spears Rd, OAkville</td>
+                        <td>Justin</td>
                         <td>-</td>
-                        <td>Issued</td>
+                        <td>-</td>
+                        <td>-</td>
                         <td class="d-flex gap-2 ">
                             <div class="edit">
-                                <svg width="15" viewBox="0 0 11 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path
-                                        d="M0.00561523 9.70695C0.0634926 9.49154 0.124427 9.27694 0.17884 9.06072C0.324756 8.48052 0.466596 7.8993 0.614754 7.31971C0.630039 7.2602 0.665703 7.19825 0.709314 7.15463C2.51329 5.34719 4.31911 3.54178 6.12472 1.73617C6.14286 1.71803 6.16242 1.70092 6.17302 1.69093C6.88589 2.4036 7.59631 3.11402 8.31489 3.8326C8.30552 3.84279 8.2833 3.86867 8.25905 3.89271C6.46241 5.68895 4.66617 7.4856 2.86728 9.27959C2.81511 9.33176 2.74134 9.37497 2.67001 9.3931C1.89172 9.5918 1.11201 9.78459 0.332908 9.97942C0.314566 9.98411 0.297244 9.99307 0.27931 10C0.240182 10 0.201053 10 0.161925 10C0.109754 9.94783 0.0575826 9.89566 0.00561523 9.84369C0.00561523 9.79804 0.00561523 9.75239 0.00561523 9.70695Z"
-                                        fill="black" />
-                                    <path
-                                        d="M8.9559 3.19677C8.23855 2.47962 7.52751 1.76858 6.81036 1.05164C7.00336 0.858643 7.19961 0.660149 7.39851 0.464303C7.48879 0.375449 7.57704 0.281908 7.67832 0.206912C8.07796 -0.0883852 8.66631 -0.0667831 9.03375 0.267642C9.28401 0.49528 9.52428 0.735756 9.75131 0.986422C10.0884 1.35855 10.1029 1.9253 9.80246 2.32963C9.76374 2.38159 9.72033 2.43091 9.67468 2.47697C9.43441 2.71887 9.19271 2.95975 8.9559 3.19677Z"
-                                        fill="black" />
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" viewBox="0 0 24 24">
+                                    <g fill="none" stroke="green" stroke-linecap="round" stroke-linejoin="round"
+                                        stroke-width="1.5" color="white">
+                                        <path
+                                            d="M21.544 11.045c.304.426.456.64.456.955c0 .316-.152.529-.456.955C20.178 14.871 16.689 19 12 19c-4.69 0-8.178-4.13-9.544-6.045C2.152 12.529 2 12.315 2 12c0-.316.152-.529.456-.955C3.822 9.129 7.311 5 12 5c4.69 0 8.178 4.13 9.544 6.045" />
+                                        <path d="M15 12a3 3 0 1 0-6 0a3 3 0 0 0 6 0" />
+                                    </g>
                                 </svg>
                             </div>
                             <div class="del">
@@ -254,11 +398,121 @@
         </div>
     </div>
 </div>
+
+<div class="edit-user py-4 px-3">
+    <div class="">
+        <h1 class="fs-6 fw-semibold text-danger" id="exampleModalLabel">
+            View Details
+        </h1>
+        <div class="edit-form">
+            <div class="row gy-2 py-4 add-form rounded-1 align-items-center">
+                <div class="col-12 col-md-6 d-flex flex-column">
+                    <label class="form-label fw-semibold" for="name">
+                        Customer Name
+                    </label>
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="name" type="text"
+                        placeholder="Type here...">
+                </div>
+
+                <div class="col-12 col-md-6 d-flex flex-column">
+                    <label class="fw-semibold form-label" for="email">
+                        Pickup Address
+                    </label>
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="email" type="text"
+                        placeholder="Type here...">
+                </div>
+
+                <div class="col-12 col-md-6 d-flex flex-column">
+                    <label class="fw-semibold form-label" for="pass">
+                        Pickup Date
+                    </label>
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="pass" type="date"
+                        placeholder="Type here...">
+                </div>
+
+                <div class="col-12 col-md-6 d-flex flex-column">
+                    <label class="fw-semibold form-label" for="c-pass">
+                        Delivery Address
+                    </label>
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="c-pass" type="number"
+                        placeholder="Type here...">
+                </div>
+
+                <div class="col-12 col-md-6 d-flex flex-column">
+                    <label class="fw-semibold form-label" for="c-pass">
+                        Delivery Date
+                    </label>
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="c-pass" type="date"
+                        placeholder="Type here...">
+                </div>
+
+                <div class="col-12 col-md-6 d-flex flex-column">
+                    <label class="fw-semibold form-label" for="c-pass">
+                        Transporter Name
+                    </label>
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="c-pass" type="date"
+                        placeholder="Type here...">
+                </div>
+
+                <div class="col-12 col-md-6 d-flex flex-column">
+                    <label class="fw-semibold form-label" for="c-pass">
+                        Job Number
+                    </label>
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" type="number">
+                </div>
+
+                <div class="col-12 col-md-6 d-flex flex-column">
+                    <label class="fw-semibold form-label" for="c-pass">
+                        PO Number
+                    </label>
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" type="number">
+                </div>
+
+                <div class="col-12 col-md-6 d-flex flex-column">
+                    <label class="fw-semibold form-label" for="c-pass">
+                        Site Contract
+                    </label>
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" type="text">
+                </div>
+            </div>
+            <div class="d-flex justify-content-center gap-2">
+                <button id="save-btn" class="py-1 px-4 add-btn rounded-1">
+                    Back
+                </button>
+                <button id="save-btn" type="button" class="add-btn px-4 py-1 rounded-1">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @push('scripts')
     <script>
-        let table = new DataTable('#myTable');
+        $(document).ready(function () {
+            $('#myTable').DataTable({
+                dom: 'Bfrtip',
+                pageLength: 10,
+                buttons: [{
+                    extend: 'csv',
+                    text: 'Export'
+                },
+                ],
+                lengthMenu: [5, 10, 25, 50, 75, 100]
+
+            });
+
+            $('.edit').click(function () {
+                $('.all-jobs').hide();
+                $('.edit-user').show();
+            });
+
+
+            $('#save-btn').click(function () {
+                $('.all-jobs').show();
+                $('.edit-user').hide();
+            });
+        });
+
 
         var filterArrow = document.getElementById('filterArrow');
         var filterSection = document.getElementById('filterSection');

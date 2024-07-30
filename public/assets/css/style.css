@@ -80,6 +80,15 @@ html {
     }
 }
 
+.clear-btn {
+    border: none !important;
+    color: red;
+}
+
+.edit-user {
+    display: none;
+}
+
 a {
     color: #fff !important;
     font-size: 14px !important;
@@ -112,16 +121,26 @@ input[type=number] {
     -moz-appearance: textfield;
 }
 
+.counters {
+    /* background-color: #fff1f1; */
+    /* background-color: #fff; */
+    /* box-shadow: rgba(17, 12, 46, 0.15) 0px 48px 100px 0px; */
+    border-radius: 8px;
+
+    h6 {
+        font-size: 14px;
+        color: #4e4e4e;
+    }
+
+    small {
+        font-size: 14px;
+        font-weight: 600;
+    }
+}
+
 .collapse-btn {
     background-color: transparent;
     border: none;
-}
-
-.filter,
-.job-list {
-    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-    background-color: #fff;
-    border-radius: 5px;
 }
 
 .add-btn {
@@ -136,12 +155,18 @@ input[type=number] {
     border: none;
 }
 
+input::placeholder,
+textarea::placeholder {
+    font-size: 12px;
+    color: #a4a4a4;
+}
+
 h6 {
     font-weight: 600 !important;
 }
 
 .rotate {
-    transform: rotate(180deg);
+    transform: rotate(90deg);
     transition: transform 0.4s ease;
 }
 
@@ -149,9 +174,9 @@ h6 {
     overflow-x: auto;
 }
 
-.table-responsive {
+/* .table-responsive {
     border: 1.5px solid #0000001d;
-}
+} */
 
 div.dt-container div.dt-layout-row.dt-layout-table {
     overflow-x: auto;
@@ -182,8 +207,20 @@ div.dt-container.dt-empty-footer tbody>tr:last-child>* {
 tr,
 th,
 td {
-    font-size: 13px;
+    font-size: 10px;
     border-bottom: none !important;
+    padding: 20px 10px !important;
+}
+
+
+/* tbody tr:hover {
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;  
+    scale: 0.99;
+    transition: all ease .4s;
+} */
+
+div.dt-container .dt-search input {
+    border-radius: 50px !important;
 }
 
 .edit,

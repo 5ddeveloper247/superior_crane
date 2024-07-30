@@ -1,8 +1,9 @@
 @extends('layouts.admin.admin_master')
 @push('styles')
     <style>
-        .all-jobs {
-            background: #DC2F2B0D;
+        .all-jobs,
+        .edit-user {
+            /* background: #DC2F2B0D; */
             height: calc(100vh - 75.67px);
             width: 100%;
             overflow-x: hidden;
@@ -18,9 +19,8 @@
             font-size: 12px;
         }
 
-        .filter,
         .job-list {
-            box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+            /* box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px; */
             background-color: #fff;
             border-radius: 5px;
         }
@@ -31,67 +31,236 @@
             border: none
         }
 
+        .table-container {
+            overflow-x: auto;
+        }
+
+        #myTable {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        tbody {
+            border-spacing: 10px 10px !important;
+        }
+
+        #myTable th,
+        #myTable td {
+            border-bottom: none;
+        }
+
+        #myTable th {
+            background-color: #f7f7f7;
+        }
+
+        .job-list .edit,
+        .job-list .del {
+            display: flex;
+            align-items: center;
+        }
+
+
         h6 {
             font-weight: 600;
+        }
+
+        .form-label {
+            font-size: 14px !important;
+            margin-bottom: 0rem !important;
+            margin-top: .6rem !important;
+        }
+
+        .form-control {
+            padding: .4rem .5rem !important;
+            font-size: 13px;
+        }
+
+        label,
+        textarea {
+            font-size: 14px !important;
+        }
+
+        #dt-length-0,
+        .dt-length label {
+            font-size: 12px !important;
+        }
+
+        .dt-button {
+            background-color: #DC2F2B !important;
+            padding: .1rem 1rem !important;
+            border: 1px solid #DC2F2B !important;
+            border-radius: 4px !important;
+            color: white !important;
+        }
+
+        .dt-buttons {
+            float: right !important;
+            margin-bottom: 10px !important;
+        }
+
+        .dt-search {
+            margin-bottom: 10px !important;
+        }
+
+        .dt-paging nav {
+            box-shadow: none;
+            float: right !important;
         }
     </style>
 @endpush
 
 @section('content')
-<div class="all-jobs px-4 py-4">
-    <div class="d-flex align-items-center justify-content-between mb-4">
-        <button class="collapse-btn d-flex align-items-center gap-1" type="button" data-bs-toggle="collapse"
-            data-bs-target="#filterSection" aria-expanded="false" aria-controls="filterSection">
-            <h5 class="mb-0">
-                FILTER
-            </h5>
-            <svg id="filterArrow" xmlns="http://www.w3.org/2000/svg" width="1.4em" height="1.4em" viewBox="0 0 24 24">
-                <path fill="none" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="m6 9l6 6l6-6" />
+<div class="all-jobs py-4 px-3">
+    <div class="breadcrumb mb-0 d-flex align-items-center gap-1">
+        <a class="d-flex" href="{{url('dashboard')}}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" viewBox="0 0 24 24">
+                <path fill="red"
+                    d="M3 13h1v7c0 1.103.897 2 2 2h12c1.103 0 2-.897 2-2v-7h1a1 1 0 0 0 .707-1.707l-9-9a.999.999 0 0 0-1.414 0l-9 9A1 1 0 0 0 3 13m7 7v-5h4v5zm2-15.586l6 6V15l.001 5H16v-5c0-1.103-.897-2-2-2h-4c-1.103 0-2 .897-2 2v5H6v-9.586z" />
             </svg>
-        </button>
+            <small>
+                Dashboard
+            </small>
+        </a>
+        <small class="fw-semibold">
+            >> Pay Duty Form
+        </small>
     </div>
+    <div class="row align-items-center my-4 g-0">
+        <div class="col-6 col-md-3">
+            <div class="counters">
+                <a class="d-flex gap-2 align-items-center" href="{{ url('pay_duty_add_form') }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 20 20">
+                        <path fill="#C02825"
+                            d="M11 9V5H9v4H5v2h4v4h2v-4h4V9zm-1 11a10 10 0 1 1 0-20a10 10 0 0 1 0 20" />
+                    </svg>
+                    <h6 class="mb-0">
+                        ADD NEW
+                    </h6>
+                </a>
+            </div>
+        </div>
 
-    <div class="collapse mb-4" id="filterSection">
-        <div class="filter p-4 mx-1 border rounded">
-            <div class="row">
-                <div class="col">
-                    <h6>Name</h6>
-                    <input class="py-1 px-3 rounded-1 form-control" type="text" placeholder="Enter Customer Name">
-                </div>
-                <div class="col">
-                    <h6>Address</h6>
-                    <input class="py-1 px-3 rounded-1 form-control" type="text" placeholder="Enter Customer Name">
-                </div>
-                <div class="col">
-                    <h6>Date</h6>
-                    <input class="py-1 px-3 rounded-1 form-control" type="date" placeholder="Enter Customer Name">
+
+        <div class="col-6 col-md-3">
+            <div class="counters d-flex gap-2 align-items-center justify-content-md-center">
+                <img src="{{asset('assets/images/assigment.png')}}" width="40" alt="">
+                <div class="pt-2">
+                    <h6 class="mb-0">
+                        Total Forms
+                    </h6>
+                    <small>
+                        1323
+                    </small>
                 </div>
             </div>
-            <button class="mt-3 py-1 px-5 text-white rounded-1">
-                FILTER
-            </button>
+        </div>
+
+
+        <div class="col-6 col-md-3">
+            <div class="counters d-flex gap-2 align-items-center justify-content-md-center">
+                <img src="{{asset('assets/images/book.png')}}" width="40" alt="">
+                <div class="pt-2">
+                    <h6 class="mb-0">
+                        Read Forms
+                    </h6>
+                    <small>
+                        1323
+                    </small>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-6 col-md-3">
+            <div class="counters d-flex gap-2 align-items-center justify-content-md-end">
+                <img src="{{asset('assets/images/email.png')}}" width="40" alt="">
+                <div class="pt-2">
+                    <h6 class="mb-0">
+                        Unread Forms
+                    </h6>
+                    <small>
+                        1323
+                    </small>
+                </div>
+            </div>
         </div>
     </div>
 
-    <h5 class="mt-3">
-        Pay Duty Form
-    </h5>
+    <!-- <h6 class="mt-3">
+        Inventory
+    </h6> -->
 
-    <div class="p-4 mx-1 job-list">
+    <div class="job-list">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <button class="collapse-btn d-flex align-items-center gap-1" type="button" data-bs-toggle="collapse"
+                data-bs-target="#filterSection" aria-expanded="false" aria-controls="filterSection">
+                <svg id="filterArrow" style="rotate: 90deg" xmlns="http://www.w3.org/2000/svg" width="1.4em"
+                    height="1.4em" viewBox="0 0 24 24">
+                    <g fill="red">
+                        <path d="m14.829 11.948l1.414-1.414L12 6.29l-4.243 4.243l1.415 1.414L11 10.12v7.537h2V10.12z" />
+                        <path fill-rule="evenodd"
+                            d="M19.778 4.222c-4.296-4.296-11.26-4.296-15.556 0c-4.296 4.296-4.296 11.26 0 15.556c4.296 4.296 11.26 4.296 15.556 0c4.296-4.296 4.296-11.26 0-15.556m-1.414 1.414A9 9 0 1 0 5.636 18.364A9 9 0 0 0 18.364 5.636"
+                            clip-rule="evenodd" />
+                    </g>
+                </svg>
+                <h6 class="mb-0 text-danger">
+                    Advance search
+                </h6>
+            </button>
+        </div>
+
+        <div class="collapse mb-4" id="filterSection">
+            <div class="filter">
+                <div class="row gy-3">
+                    <div class="col-4 col-md-3">
+                        <label class="fw-semibold">Officer Name</label>
+                        <input class="py-1 px-3 rounded-1 form-control" type="text" placeholder="type here...">
+                    </div>
+                    <div class="col-4 col-md-3">
+                        <label class="fw-semibold">Officer Number</label>
+                        <input class="py-1 px-3 rounded-1 form-control" type="number" placeholder="type here...">
+                    </div>
+                    <div class="col-4 col-md-3">
+                        <label class="fw-semibold">Issued By</label>
+                        <input class="py-1 px-3 rounded-1 form-control" type="text" placeholder="type here...">
+                    </div>
+                    <div class="col-4 col-md-3">
+                        <label class="fw-semibold">Date</label>
+                        <input class="py-1 px-3 rounded-1 form-control" type="date" placeholder="type here...">
+                    </div>
+                    <div class="col-4 col-md-3">
+                        <label class="fw-semibold">Location</label>
+                        <input class="py-1 px-3 rounded-1 form-control" type="text" placeholder="type here...">
+                    </div>
+                    <div class="col-4 col-md-3">
+                        <label class="fw-semibold">Division</label>
+                        <input class="py-1 px-3 rounded-1 form-control" type="text  " placeholder="type here...">
+                    </div>
+                </div>
+                <div class="d-flex justify-content-end gap-2">
+                    <button class="mt-3 py-1 px-3 text-white rounded-1">
+                        Clear Filter
+                    </button>
+                    <button class="mt-3 py-1 px-3 text-white rounded-1">
+                        Search
+                    </button>
+                </div>
+            </div>
+        </div>
         <div class="table-container">
             <table id="myTable" class="table-responsive w-100">
                 <thead>
                     <tr>
-                        <th scope="col">Date</th>
-                        <th scope="col">Location</th>
-                        <th scope="col">Start Time</th>
-                        <th scope="col">Finish Time</th>
-                        <th scope="col">Total Hours</th>
-                        <th scope="col">Officer</th>
-                        <th scope="col">Officer Name</th>
-                        <th scope="col">Division</th>
-                        <th style="max-width: 40px; min-width: 60px; width: 23px;" scope="col">Action</th>
+                        <th class="px-3" scope="col">Date</th>
+                        <th class="px3" scope="col">Location</th>
+                        <th class="px3" scope="col">Start Time</th>
+                        <th class="px3" scope="col">Finish Time</th>
+                        <th class="px3" scope="col">Total Hours</th>
+                        <th class="px3" scope="col">Officer</th>
+                        <th class="px3" scope="col">Officer Name</th>
+                        <th class="px3" scope="col">Issued By</th>
+                        <th class="text-start" scope="col">Division</th>
+                        <th scope="col">Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -103,16 +272,17 @@
                         <td>4 Hours</td>
                         <td>Cardillo</td>
                         <td>Daniela Cardillo</td>
-                        <td>30</td>
+                        <td>Daniela Cardillo</td>
+                        <td class="text-center">30</td>
                         <td class="d-flex gap-2 ">
                             <div class="edit">
-                                <svg width="15" viewBox="0 0 11 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path
-                                        d="M0.00561523 9.70695C0.0634926 9.49154 0.124427 9.27694 0.17884 9.06072C0.324756 8.48052 0.466596 7.8993 0.614754 7.31971C0.630039 7.2602 0.665703 7.19825 0.709314 7.15463C2.51329 5.34719 4.31911 3.54178 6.12472 1.73617C6.14286 1.71803 6.16242 1.70092 6.17302 1.69093C6.88589 2.4036 7.59631 3.11402 8.31489 3.8326C8.30552 3.84279 8.2833 3.86867 8.25905 3.89271C6.46241 5.68895 4.66617 7.4856 2.86728 9.27959C2.81511 9.33176 2.74134 9.37497 2.67001 9.3931C1.89172 9.5918 1.11201 9.78459 0.332908 9.97942C0.314566 9.98411 0.297244 9.99307 0.27931 10C0.240182 10 0.201053 10 0.161925 10C0.109754 9.94783 0.0575826 9.89566 0.00561523 9.84369C0.00561523 9.79804 0.00561523 9.75239 0.00561523 9.70695Z"
-                                        fill="black" />
-                                    <path
-                                        d="M8.9559 3.19677C8.23855 2.47962 7.52751 1.76858 6.81036 1.05164C7.00336 0.858643 7.19961 0.660149 7.39851 0.464303C7.48879 0.375449 7.57704 0.281908 7.67832 0.206912C8.07796 -0.0883852 8.66631 -0.0667831 9.03375 0.267642C9.28401 0.49528 9.52428 0.735756 9.75131 0.986422C10.0884 1.35855 10.1029 1.9253 9.80246 2.32963C9.76374 2.38159 9.72033 2.43091 9.67468 2.47697C9.43441 2.71887 9.19271 2.95975 8.9559 3.19677Z"
-                                        fill="black" />
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" viewBox="0 0 24 24">
+                                    <g fill="none" stroke="green" stroke-linecap="round" stroke-linejoin="round"
+                                        stroke-width="1.5" color="white">
+                                        <path
+                                            d="M21.544 11.045c.304.426.456.64.456.955c0 .316-.152.529-.456.955C20.178 14.871 16.689 19 12 19c-4.69 0-8.178-4.13-9.544-6.045C2.152 12.529 2 12.315 2 12c0-.316.152-.529.456-.955C3.822 9.129 7.311 5 12 5c4.69 0 8.178 4.13 9.544 6.045" />
+                                        <path d="M15 12a3 3 0 1 0-6 0a3 3 0 0 0 6 0" />
+                                    </g>
                                 </svg>
                             </div>
                             <div class="del">
@@ -143,16 +313,17 @@
                         <td>4 Hours</td>
                         <td>Cardillo</td>
                         <td>Daniela Cardillo</td>
-                        <td>30</td>
+                        <td>Daniela Cardillo</td>
+                        <td class="text-center">30</td>
                         <td class="d-flex gap-2 ">
                             <div class="edit">
-                                <svg width="15" viewBox="0 0 11 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path
-                                        d="M0.00561523 9.70695C0.0634926 9.49154 0.124427 9.27694 0.17884 9.06072C0.324756 8.48052 0.466596 7.8993 0.614754 7.31971C0.630039 7.2602 0.665703 7.19825 0.709314 7.15463C2.51329 5.34719 4.31911 3.54178 6.12472 1.73617C6.14286 1.71803 6.16242 1.70092 6.17302 1.69093C6.88589 2.4036 7.59631 3.11402 8.31489 3.8326C8.30552 3.84279 8.2833 3.86867 8.25905 3.89271C6.46241 5.68895 4.66617 7.4856 2.86728 9.27959C2.81511 9.33176 2.74134 9.37497 2.67001 9.3931C1.89172 9.5918 1.11201 9.78459 0.332908 9.97942C0.314566 9.98411 0.297244 9.99307 0.27931 10C0.240182 10 0.201053 10 0.161925 10C0.109754 9.94783 0.0575826 9.89566 0.00561523 9.84369C0.00561523 9.79804 0.00561523 9.75239 0.00561523 9.70695Z"
-                                        fill="black" />
-                                    <path
-                                        d="M8.9559 3.19677C8.23855 2.47962 7.52751 1.76858 6.81036 1.05164C7.00336 0.858643 7.19961 0.660149 7.39851 0.464303C7.48879 0.375449 7.57704 0.281908 7.67832 0.206912C8.07796 -0.0883852 8.66631 -0.0667831 9.03375 0.267642C9.28401 0.49528 9.52428 0.735756 9.75131 0.986422C10.0884 1.35855 10.1029 1.9253 9.80246 2.32963C9.76374 2.38159 9.72033 2.43091 9.67468 2.47697C9.43441 2.71887 9.19271 2.95975 8.9559 3.19677Z"
-                                        fill="black" />
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" viewBox="0 0 24 24">
+                                    <g fill="none" stroke="green" stroke-linecap="round" stroke-linejoin="round"
+                                        stroke-width="1.5" color="white">
+                                        <path
+                                            d="M21.544 11.045c.304.426.456.64.456.955c0 .316-.152.529-.456.955C20.178 14.871 16.689 19 12 19c-4.69 0-8.178-4.13-9.544-6.045C2.152 12.529 2 12.315 2 12c0-.316.152-.529.456-.955C3.822 9.129 7.311 5 12 5c4.69 0 8.178 4.13 9.544 6.045" />
+                                        <path d="M15 12a3 3 0 1 0-6 0a3 3 0 0 0 6 0" />
+                                    </g>
                                 </svg>
                             </div>
                             <div class="del">
@@ -183,16 +354,17 @@
                         <td>4 Hours</td>
                         <td>Cardillo</td>
                         <td>Daniela Cardillo</td>
-                        <td>30</td>
+                        <td>Daniela Cardillo</td>
+                        <td class="text-center">30</td>
                         <td class="d-flex gap-2 ">
                             <div class="edit">
-                                <svg width="15" viewBox="0 0 11 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path
-                                        d="M0.00561523 9.70695C0.0634926 9.49154 0.124427 9.27694 0.17884 9.06072C0.324756 8.48052 0.466596 7.8993 0.614754 7.31971C0.630039 7.2602 0.665703 7.19825 0.709314 7.15463C2.51329 5.34719 4.31911 3.54178 6.12472 1.73617C6.14286 1.71803 6.16242 1.70092 6.17302 1.69093C6.88589 2.4036 7.59631 3.11402 8.31489 3.8326C8.30552 3.84279 8.2833 3.86867 8.25905 3.89271C6.46241 5.68895 4.66617 7.4856 2.86728 9.27959C2.81511 9.33176 2.74134 9.37497 2.67001 9.3931C1.89172 9.5918 1.11201 9.78459 0.332908 9.97942C0.314566 9.98411 0.297244 9.99307 0.27931 10C0.240182 10 0.201053 10 0.161925 10C0.109754 9.94783 0.0575826 9.89566 0.00561523 9.84369C0.00561523 9.79804 0.00561523 9.75239 0.00561523 9.70695Z"
-                                        fill="black" />
-                                    <path
-                                        d="M8.9559 3.19677C8.23855 2.47962 7.52751 1.76858 6.81036 1.05164C7.00336 0.858643 7.19961 0.660149 7.39851 0.464303C7.48879 0.375449 7.57704 0.281908 7.67832 0.206912C8.07796 -0.0883852 8.66631 -0.0667831 9.03375 0.267642C9.28401 0.49528 9.52428 0.735756 9.75131 0.986422C10.0884 1.35855 10.1029 1.9253 9.80246 2.32963C9.76374 2.38159 9.72033 2.43091 9.67468 2.47697C9.43441 2.71887 9.19271 2.95975 8.9559 3.19677Z"
-                                        fill="black" />
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" viewBox="0 0 24 24">
+                                    <g fill="none" stroke="green" stroke-linecap="round" stroke-linejoin="round"
+                                        stroke-width="1.5" color="white">
+                                        <path
+                                            d="M21.544 11.045c.304.426.456.64.456.955c0 .316-.152.529-.456.955C20.178 14.871 16.689 19 12 19c-4.69 0-8.178-4.13-9.544-6.045C2.152 12.529 2 12.315 2 12c0-.316.152-.529.456-.955C3.822 9.129 7.311 5 12 5c4.69 0 8.178 4.13 9.544 6.045" />
+                                        <path d="M15 12a3 3 0 1 0-6 0a3 3 0 0 0 6 0" />
+                                    </g>
                                 </svg>
                             </div>
                             <div class="del">
@@ -223,16 +395,17 @@
                         <td>4 Hours</td>
                         <td>Cardillo</td>
                         <td>Daniela Cardillo</td>
-                        <td>30</td>
+                        <td>Daniela Cardillo</td>
+                        <td class="text-center">30</td>
                         <td class="d-flex gap-2 ">
                             <div class="edit">
-                                <svg width="15" viewBox="0 0 11 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path
-                                        d="M0.00561523 9.70695C0.0634926 9.49154 0.124427 9.27694 0.17884 9.06072C0.324756 8.48052 0.466596 7.8993 0.614754 7.31971C0.630039 7.2602 0.665703 7.19825 0.709314 7.15463C2.51329 5.34719 4.31911 3.54178 6.12472 1.73617C6.14286 1.71803 6.16242 1.70092 6.17302 1.69093C6.88589 2.4036 7.59631 3.11402 8.31489 3.8326C8.30552 3.84279 8.2833 3.86867 8.25905 3.89271C6.46241 5.68895 4.66617 7.4856 2.86728 9.27959C2.81511 9.33176 2.74134 9.37497 2.67001 9.3931C1.89172 9.5918 1.11201 9.78459 0.332908 9.97942C0.314566 9.98411 0.297244 9.99307 0.27931 10C0.240182 10 0.201053 10 0.161925 10C0.109754 9.94783 0.0575826 9.89566 0.00561523 9.84369C0.00561523 9.79804 0.00561523 9.75239 0.00561523 9.70695Z"
-                                        fill="black" />
-                                    <path
-                                        d="M8.9559 3.19677C8.23855 2.47962 7.52751 1.76858 6.81036 1.05164C7.00336 0.858643 7.19961 0.660149 7.39851 0.464303C7.48879 0.375449 7.57704 0.281908 7.67832 0.206912C8.07796 -0.0883852 8.66631 -0.0667831 9.03375 0.267642C9.28401 0.49528 9.52428 0.735756 9.75131 0.986422C10.0884 1.35855 10.1029 1.9253 9.80246 2.32963C9.76374 2.38159 9.72033 2.43091 9.67468 2.47697C9.43441 2.71887 9.19271 2.95975 8.9559 3.19677Z"
-                                        fill="black" />
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" viewBox="0 0 24 24">
+                                    <g fill="none" stroke="green" stroke-linecap="round" stroke-linejoin="round"
+                                        stroke-width="1.5" color="white">
+                                        <path
+                                            d="M21.544 11.045c.304.426.456.64.456.955c0 .316-.152.529-.456.955C20.178 14.871 16.689 19 12 19c-4.69 0-8.178-4.13-9.544-6.045C2.152 12.529 2 12.315 2 12c0-.316.152-.529.456-.955C3.822 9.129 7.311 5 12 5c4.69 0 8.178 4.13 9.544 6.045" />
+                                        <path d="M15 12a3 3 0 1 0-6 0a3 3 0 0 0 6 0" />
+                                    </g>
                                 </svg>
                             </div>
                             <div class="del">
@@ -258,11 +431,122 @@
         </div>
     </div>
 </div>
+
+<div class="edit-user py-4 px-3">
+    <div class="">
+        <h1 class="fs-6 fw-semibold text-danger" id="exampleModalLabel">
+            View Details
+        </h1>
+        <div class="edit-form">
+            <div class="row gy-2 py-4 add-form rounded-1 align-items-center">
+                <div class="col-12 col-md-6 d-flex flex-column">
+                    <label class="form-label fw-semibold" for="name">
+                        Date
+                    </label>
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="name" type="date"
+                        placeholder="Type here...">
+                </div>
+
+                <div class="col-12 col-md-6 d-flex flex-column">
+                    <label class="fw-semibold form-label" for="email">
+                        Location
+                    </label>
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="email" type="location"
+                        placeholder="Type here...">
+                </div>
+
+                <div class="col-12 col-md-6 d-flex flex-column">
+                    <label class="fw-semibold form-label" for="pass">
+                        Start Time
+                    </label>
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="pass" type="time"
+                        placeholder="Type here...">
+                </div>
+
+                <div class="col-12 col-md-6 d-flex flex-column">
+                    <label class="fw-semibold form-label" for="c-pass">
+                        Finish Time
+                    </label>
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="c-pass" type="time"
+                        placeholder="Type here...">
+                </div>
+
+                <div class="col-12 col-md-6 d-flex flex-column">
+                    <label class="fw-semibold form-label" for="c-pass">
+                        Total Hours
+                    </label>
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="c-pass" type="number"
+                        placeholder="Type here...">
+                </div>
+
+                <div class="col-12 col-md-6 d-flex flex-column">
+                    <label class="fw-semibold form-label" for="c-pass">
+                        Officer Number
+                    </label>
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="c-pass" type="date"
+                        placeholder="Type here...">
+                </div>
+
+                <div class="col-12 col-md-6 d-flex flex-column">
+                    <label class="fw-semibold form-label" for="c-pass">
+                        Officer Name
+                    </label>
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" type="text">
+                </div>
+
+                <div class="col-12 col-md-6 d-flex flex-column">
+                    <label class="fw-semibold form-label" for="c-pass">
+                        Issued By
+                    </label>
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" type="text">
+                </div>
+
+                <div class="col-12 col-md-6 d-flex flex-column">
+                    <label class="fw-semibold form-label" for="c-pass">
+                        Division
+                    </label>
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" type="text">
+                </div>
+            </div>
+            <div class="d-flex justify-content-center gap-2">
+                <button id="save-btn" class="py-1 px-4 add-btn rounded-1">
+                    Back
+                </button>
+                <button id="save-btn" type="button" class="add-btn px-4 py-1 rounded-1">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @push('scripts')
     <script>
-        let table = new DataTable('#myTable');
+        $(document).ready(function () {
+            $('#myTable').DataTable({
+                dom: 'Bfrtip',
+                pageLength: 10,
+                buttons: [{
+                    extend: 'csv',
+                    text: 'Export'
+                },
+                ],
+                lengthMenu: [5, 10, 25, 50, 75, 100]
+
+            });
+
+
+            $('.edit').click(function () {
+                $('.all-jobs').hide();
+                $('.edit-user').show();
+            });
+
+
+            $('#save-btn').click(function () {
+                $('.all-jobs').show();
+                $('.edit-user').hide();
+            });
+        });
+
 
         var filterArrow = document.getElementById('filterArrow');
         var filterSection = document.getElementById('filterSection');

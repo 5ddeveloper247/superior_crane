@@ -1,11 +1,11 @@
 <style>
   .sidebar {
-    background: linear-gradient(75deg, rgba(220,47,43,1) 19%, rgba(191,40,37,1) 43%, rgba(161,29,29,1) 61%, rgba(126,20,20,1) 100%);
+    background: linear-gradient(75deg, rgba(220, 47, 43, 1) 19%, rgba(191, 40, 37, 1) 43%, rgba(161, 29, 29, 1) 61%, rgba(126, 20, 20, 1) 100%);
     height: 100vh;
   }
 
   #sidebar {
-    width: 250px;
+    width: 220px;
     transition: width .6s;
   }
 
@@ -21,46 +21,59 @@
   .activenav {
     font-weight: 700;
     color: #fff !important;
-    background: linear-gradient(10deg, rgba(220,47,43,1) 19%, rgba(191,40,37,1) 43%, rgba(161,29,29,1) 61%, rgba(126,20,20,1) 100%);
+    background: linear-gradient(10deg, rgba(220, 47, 43, 1) 19%, rgba(191, 40, 37, 1) 43%, rgba(161, 29, 29, 1) 61%, rgba(126, 20, 20, 1) 100%);
     border-radius: 10px;
     transition: all ease-in-out .4s;
-    box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;    scale: 1 !important;
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+    scale: 1 !important;
     margin: 0 .3rem;
     /* width: fit-content; */
-    padding-top: .9rem;
-    padding-bottom: .9rem;
+    padding-top: .6rem;
+    padding-bottom: .6rem;
     padding-right: 2rem;
-    }
+  }
 
-    .nav .nav-item .nav-link {
-      scale: .94;
-    }
+  .nav .nav-item .nav-link {
+    scale: .94;
+  }
 
-    .nav .nav-item .nav-link:hover {
-      scale: 1;
-      transition: scale ease-in-out .3s;
-    }
+  .nav .nav-item .nav-link:hover {
+    scale: 1;
+    transition: scale ease-in-out .3s;
+  }
+
+  .logo {
+    transition: width 0.5s ease-in-out, opacity 0.5s ease-in-out, padding 0.5s ease-in-out;
+    opacity: 1;
+    width: 140px;
+    padding: 1rem 0 0 2rem;
+  }
+
+  .logo.hidden {
+    opacity: 0;
+    width: 0px;
+    padding: 0;
+  }
 </style>
 
 
 <div class="sidebar border-end d-none d-lg-block">
-  <button class="navbar-toggler d-lg-flex justify-content-end w-100 p-4" type="button" data-bs-toggle="collapse"
-    data-bs-target="#sidebar" aria-controls="sidebar" aria-expanded="false" aria-label="Toggle navigation">
-    <svg xmlns="http://www.w3.org/2000/svg" width="1.4em" height="1.4em" viewBox="0 0 28 24">
-      <path fill="white"
-        d="M7.184 0H27.65v5.219H7.184zm0 9.39H27.65v5.219H7.184zm0 9.391H27.65V24H7.184zM0 0h5.219v5.219H0zm0 9.39h5.219v5.219H0zm0 9.391h5.219V24H0z" />
-    </svg>
-  </button>
+  <div class="d-flex justify-content-end">
+    <img class="logo" src="{{asset('assets/images/logo.png')}}" alt="">
+    <button class="navbar-toggler d-lg-flex justify-content-end w-100 p-4" type="button" data-bs-toggle="collapse"
+      data-bs-target="#sidebar" aria-controls="sidebar" aria-expanded="false" aria-label="Toggle navigation">
+      <svg xmlns="http://www.w3.org/2000/svg" width="1.4em" height="1.4em" viewBox="0 0 28 24">
+        <path fill="white"
+          d="M7.184 0H27.65v5.219H7.184zm0 9.39H27.65v5.219H7.184zm0 9.391H27.65V24H7.184zM0 0h5.219v5.219H0zm0 9.39h5.219v5.219H0zm0 9.391h5.219V24H0z" />
+      </svg>
+    </button>
+  </div>
   <div>
     <div id="sidebar" class="collapse show">
-      <div class="d-flex align-items-center justify-content-center px-5 mx-4">
-        <img src="{{asset('assets/images/logo.png')}}" width="100" alt="">
-      </div>
       <ul class="nav flex-column">
         <li class="nav-item pt-3 ">
           <a href="{{url('dashboard')}}"
-            class="nav-link d-flex align-items-center gap-2 {{$pageTitle == 'Dashboard' ? 'activenav' : ''}}"
-            href="#">
+            class="nav-link d-flex align-items-center gap-2 {{$pageTitle == 'Dashboard' ? 'activenav' : ''}}" href="#">
             <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 32 32">
               <path fill="white"
                 d="M16.612 2.214a1.01 1.01 0 0 0-1.242 0L1 13.419l1.243 1.572L4 13.621V26a2.004 2.004 0 0 0 2 2h20a2.004 2.004 0 0 0 2-2V13.63L29.757 15L31 13.428ZM18 26h-4v-8h4Zm2 0v-8a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v8H6V12.062l10-7.79l10 7.8V26Z" />
@@ -74,11 +87,11 @@
         <li class="nav-item pt-2">
           <a class="nav-link d-flex align-items-center gap-2 {{$pageTitle == 'All-jobs' ? 'activenav' : ''}}"
             href="{{url('all_jobs')}}">
-              <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 1200 1200">
-                <path fill="white"
-                  d="M600 0c-65.168 0-115.356 54.372-115.356 119.385c0 62.619-.439 117.407-.439 117.407h-115.87c-2.181 0-4.291.241-6.372.586h-32.227v112.573h540.527V237.378h-32.227c-2.081-.345-4.191-.586-6.372-.586H715.796s1.318-49.596 1.318-117.041C717.114 57.131 665.168 0 600 0M175.195 114.185V1200h849.609V114.185H755.64v78.662h191.382v928.345h-693.97V192.847H444.36v-78.662zM600 115.649c21.35 0 38.599 17.18 38.599 38.452c0 21.311-17.249 38.525-38.599 38.525s-38.599-17.215-38.599-38.525c0-21.271 17.249-38.452 38.599-38.452M329.736 426.27v38.525h38.599V426.27zm115.869.732v38.525h424.658v-38.525zm-115.869 144.58v38.525h38.599v-38.525zm115.869.732v38.599h424.658v-38.599zM329.736 716.895v38.525h38.599v-38.525zm115.869.805v38.525h424.658V717.7zM329.736 862.28v38.525h38.599V862.28zm115.869.806v38.525h424.658v-38.525zm-115.869 144.507v38.525h38.599v-38.525zm115.869.805v38.525h424.658v-38.525z" />
-              </svg>
-              <span>Job List</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 1200 1200">
+              <path fill="white"
+                d="M600 0c-65.168 0-115.356 54.372-115.356 119.385c0 62.619-.439 117.407-.439 117.407h-115.87c-2.181 0-4.291.241-6.372.586h-32.227v112.573h540.527V237.378h-32.227c-2.081-.345-4.191-.586-6.372-.586H715.796s1.318-49.596 1.318-117.041C717.114 57.131 665.168 0 600 0M175.195 114.185V1200h849.609V114.185H755.64v78.662h191.382v928.345h-693.97V192.847H444.36v-78.662zM600 115.649c21.35 0 38.599 17.18 38.599 38.452c0 21.311-17.249 38.525-38.599 38.525s-38.599-17.215-38.599-38.525c0-21.271 17.249-38.452 38.599-38.452M329.736 426.27v38.525h38.599V426.27zm115.869.732v38.525h424.658v-38.525zm-115.869 144.58v38.525h38.599v-38.525zm115.869.732v38.599h424.658v-38.599zM329.736 716.895v38.525h38.599v-38.525zm115.869.805v38.525h424.658V717.7zM329.736 862.28v38.525h38.599V862.28zm115.869.806v38.525h424.658v-38.525zm-115.869 144.507v38.525h38.599v-38.525zm115.869.805v38.525h424.658v-38.525z" />
+            </svg>
+            <span>Job List</span>
           </a>
         </li>
 
@@ -150,6 +163,18 @@
             <span>Inventory</span>
           </a>
         </li>
+
+
+        <li class="nav-item pt-2">
+          <a href="{{url('web_api')}}"
+            class="nav-link d-flex align-items-center gap-2 {{$pageTitle == 'Web_api' ? 'activenav' : ''}}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 512 512">
+              <path fill="white"
+                d="M421.415 309.528c-7.209 0-14.186.938-20.909 2.54l-.636-1.005l-83.542-131.894c18.528-16.698 30.257-40.888 30.257-67.894c0-50.366-40.556-91.197-90.585-91.197s-90.585 40.83-90.585 91.197c0 27.006 11.728 51.196 30.257 67.894L112.13 311.063l-.636 1.005c-6.723-1.602-13.7-2.54-20.91-2.54C40.557 309.528 0 350.358 0 400.725s40.556 91.197 90.585 91.197s90.584-40.83 90.584-91.197c0-34.507-19.045-64.525-47.122-80.016l81.138-128.098c12.276 6.257 26.114 9.86 40.815 9.86s28.54-3.603 40.816-9.86l81.137 128.098c-28.077 15.49-47.122 45.509-47.122 80.016c0 50.366 40.556 91.197 90.584 91.197S512 451.092 512 400.725s-40.556-91.197-90.585-91.197M90.353 443.791c-23.319 0-42.223-18.903-42.223-42.222s18.904-42.223 42.223-42.223s42.222 18.904 42.222 42.223s-18.903 42.222-42.222 42.222" />
+            </svg>
+            <span>Web Api's</span>
+          </a>
+        </li>
       </ul>
     </div>
   </div>
@@ -159,5 +184,14 @@
 <script>
   document.querySelector('.navbar-toggler').addEventListener('click', function () {
     document.querySelector('#sidebar').classList.toggle('collapsed');
+    let logo = document.querySelector('.logo');
+
+    if (logo.classList.contains('hidden')) {
+      logo.classList.remove('hidden');
+    } else {
+      logo.classList.add('hidden');
+    }
   });
+
+
 </script>

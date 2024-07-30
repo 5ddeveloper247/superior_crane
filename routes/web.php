@@ -63,6 +63,11 @@ Route::get('/pay_duty', function () {
     return view('admin/pay_duty', compact('pageTitle'));
 });
 
+Route::get('/pay_duty_add_form', function () {
+    $pageTitle = 'Pay_duty_add_form';
+    return view('admin/pay_duty_add_form', compact('pageTitle'));
+});
+
 Route::get('/inventory', function () {
     $pageTitle = 'Inventory';
     return view('admin/inventory', compact('pageTitle'));
@@ -81,4 +86,9 @@ Route::get('/profile', function () {
 Route::get('/notification', function () {
     $pageTitle = 'Notification';
     return view('admin/notification', compact('pageTitle'));
+});
+
+Route::get('/web_api', function () {
+    $pageTitle = 'Web_api';
+    return view('admin/web_api', compact('pageTitle'));
 });

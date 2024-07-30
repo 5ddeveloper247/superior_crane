@@ -1,7 +1,7 @@
 @extends('layouts.admin.admin_master')
 @push('styles')
     <style>
-        .inventory-form {
+        .add-job {
             height: calc(100vh - 75.67px);
             width: 100%;
             overflow-x: hidden;
@@ -20,13 +20,13 @@
             background-color: transparent;
         }
 
-        .inventory-form label {
+        .add-job label {
             font-weight: 600;
-            margin-top: 1.4rem;
+            margin-top: 1rem;
             font-size: 14px;
         }
 
-        .inventory-form span {
+        .add-job span {
             font-weight: 600;
             font-size: 14px;
         }
@@ -35,7 +35,7 @@
             background-color: #fff;
             /* box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px; */
             /* height: calc(100vh - 155.67px);
-                                        overflow-y: auto; */
+                                    overflow-y: auto; */
         }
 
         .add-form button {
@@ -80,112 +80,93 @@
 @endpush
 
 @section('content')
-<div class="inventory-form px-3 py-4">
+<div class="add-job px-3 py-4">
     <h6 class="text-danger">
-        INVENTORY FORM
+        Pay Duty Form
     </h6>
 
     <form action="">
         <div class="row add-form rounded-1">
+            <!-- <div class="row">
+                    <div class="mb-3 col-md-2">
+                        <input type="radio" name="job_type[]" id="job_type_logistic" class="mt-2" value="Logistic Job"
+                            checked>
+                        <label class="form-label" for="job_type">Logistic Job</label>
+
+                    </div>
+                    <div class="mb-3 col-md-6">
+                        <input type="radio" name="job_type[]" id="job_type_crane" class="mt-2" value="Crane Job">
+                        <label class="form-label" for="job_type">Crane Job</label>
+
+                    </div>
+                </div> -->
 
             <div class="col-12 col-md-6 d-flex flex-column">
-                <label class="pb-2" for="client">
-                    Customer Name
+                <label class="pb-2" for="date">
+                    Date
                 </label>
-                <input class="rounded-1 py-1 px-2 w-100" id="client" type="text" placeholder="Enter Customer Name Here">
-            </div>
-
-            <div class="col-12 col-md-6 d-flex flex-column">
-                <label class="pb-2" for="rigger">
-                    Site Address
-                </label>
-                <input class="rounded-1 py-1 px-2 w-100" id="rigger" type="text" placeholder="Enter Site Address Here">
-            </div>
-
-            <div class="col-12 col-md-6 d-flex flex-column">
-                <label class="pb-2" for="notes">
-                    Item
-                </label>
-                <input class="rounded-1 py-1 px-2 w-100" id="address" type="text" placeholder="Enter Item Here">
-            </div>
-
-            <div class="col-12 col-md-6 d-flex flex-column">
-                <label class="pb-2" for="address">
-                    Pieces
-                </label>
-                <input class="rounded-1 py-1 px-2 w-100" id="address" type="text" placeholder="Enter Pieces Here">
-            </div>
-
-            <div class="col-12 col-md-6 d-flex flex-column">
-                <label class="pb-2" for="job_time">
-                    Status
-                </label>
-                <select class="form-control" name="" id="">
-                    <option value="1">Active</option>
-                    <option value="2">Inactive</option>
-                </select>
+                <input class="rounded-1 py-1 px-2 w-100" id="date" type="date" placeholder="Enter location here">
             </div>
 
             <div class="col-12 col-md-6 d-flex flex-column">
                 <label class="pb-2" for="equip">
-                    Inventory Location
+                    Location
                 </label>
                 <input class="rounded-1 py-1 px-2 w-100" id="equip" type="text" placeholder="Enter location here">
             </div>
 
             <div class="col-12 col-md-6 d-flex flex-column">
+                <label for="add_eventStart" class="pb-2">Start Time</label>
+                <input type="time" class="rounded-1 py-1 px-2 w-100" id="add_eventStart" name="add_eventStart" required>
+            </div>
+
+            <div class="col-12 col-md-6 d-flex flex-column">
+                <label for="add_eventStart" class="pb-2">Finish Time</label>
+                <input type="time" class="rounded-1 py-1 px-2 w-100" id="add_eventStart" name="add_eventStart" required>
+            </div>
+
+            <div class="col-12 col-md-6 d-flex flex-column">
                 <label class="pb-2" for="date">
-                    Date Recieved
+                    Total Hours
                 </label>
-                <input class="rounded-1 py-1 px-2 w-100" id="date" type="date">
+                <input class="rounded-1 py-1 px-2 w-100" id="date" type="number">
             </div>
 
             <div class="col-12 col-md-6 d-flex flex-column">
                 <label class="pb-2" for="address">
-                    Date Shipped
+                    Officer
                 </label>
-                <input class="rounded-1 py-1 px-2 w-100" id="address" type="date">
+                <input class="rounded-1 py-1 px-2 w-100" id="address" type="text">
             </div>
 
 
             <div class="col-12 col-md-6 d-flex flex-column">
-                <label for="add_eventStart" class="pb-2">Days in Yard</label>
+                <label for="add_eventStart" class="pb-2">Officer Name (Print)</label>
                 <input type="text" class="rounded-1 py-1 px-2 w-100" id="add_eventStart" name="add_eventStart" required>
             </div>
 
             <div class="col-12 col-md-6 d-flex flex-column">
-                <label for="add_eventEnd" class="pb-2">Offload Equipment (if applicable)</label>
-                <input type="text" class="rounded-1 py-1 px-2 w-100" id="add_eventEnd" name="add_eventEnd" required>
+                <label for="add_eventEnd" class="pb-2">Division</label>
+                <input type="number" class="rounded-1 py-1 px-2 w-100" id="add_eventEnd" name="add_eventEnd" required>
             </div>
 
             <div class="col-12 col-md-6 d-flex flex-column">
-                <label class="pb-2" for="address">
-                    Dimensions
+                <label class="pb-2" for="notes">
+                    Signature
                 </label>
-                <input class="rounded-1 py-1 px-2 w-100" id="address" type="text" placeholder="Enter Dimensions Here">
-            </div>
-
-            <div class="col-12 col-md-6 d-flex flex-column">
-                <label class="pb-2" for="address">
-                    Sq Ft
-                </label>
-                <input class="rounded-1 py-1 px-2 w-100" id="address" type="text" placeholder="Enter Sq Ft Here">
-            </div>
-
-            <div class="col-12 col-md-6 d-flex flex-column">
-                <label class="pb-2" for="address">
-                    Comment
-                </label>
-                <textarea class="rounded-1" name="" id=""></textarea>
+                <canvas id="signature" width="450" height="150" style="border: 1px solid #ddd;"></canvas>
+                <div class="d-flex justify-content-end ">
+                    <button class="px-4 rounded-1 py-1 clear-btn" id="clear-signature">Clear</button>
+                </div>
             </div>
 
             <div class="mt-3 d-flex gap-2 justify-content-center">
-                <a href="{{ url('inventory') }}">
+                <a href="{{ url('pay_duty') }}">
                     <span class="py-1 px-5 add-btn rounded-1">
                         Back
                     </span>
                 </a>
-                <a href="{{ url('inventory') }}">
+                <a href="{{ url('pay_duty') }}">
                     <span class="py-1 px-5 add-btn rounded-1">
                         Save
                     </span>
@@ -198,5 +179,16 @@
 @endsection
 
 @push('scripts')
-    <script></script>
+    <script>
+        jQuery(document).ready(function ($) {
+
+            var canvas = document.getElementById("signature");
+            var signaturePad = new SignaturePad(canvas);
+
+            $('#clear-signature').on('click', function () {
+                signaturePad.clear();
+            });
+
+        });
+    </script>
 @endpush
