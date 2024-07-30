@@ -23,4 +23,9 @@ class PayDutyModel extends Model
         'site_pic',
         'created_by',
     ];
+
+    public function dutyImages()
+    {
+    	return $this->hasMany(PayDutytImages::class, 'pay_duty_id');
+    }
 }
