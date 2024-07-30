@@ -7,6 +7,8 @@
   #sidebar {
     width: 220px;
     transition: width .6s;
+    overflow-y: auto;
+    height: calc(100vh - 104px);
   }
 
   #sidebar.collapsed {
@@ -53,6 +55,10 @@
     opacity: 0;
     width: 0px;
     padding: 0;
+  }
+
+  .list-item {
+    font-size: 12px !important;
   }
 </style>
 
@@ -166,7 +172,7 @@
 
 
         <li class="nav-item pt-2">
-          <a href="{{url('web_api')}}"
+          <a href="#web_api"  data-bs-toggle="collapse" aria-expanded="false" aria-controls="collapseExample"
             class="nav-link d-flex align-items-center gap-2 {{$pageTitle == 'Web_api' ? 'activenav' : ''}}">
             <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 512 512">
               <path fill="white"
@@ -174,6 +180,34 @@
             </svg>
             <span>Web Api's</span>
           </a>
+          <div class="collapse sidebar-inner-content" id="web_api">
+            <ul class="nav flex-column mx-3">
+              <li class="nav-item ps-4 pt-1">
+                <a href="{{url('web_api_jobs')}}" class="list-item"
+                  href="#">
+                  <span>Jobs</span>
+                </a>
+              </li>
+              <li class="nav-item ps-4 pt-1">
+                <a href="{{url('')}}" class="list-item"
+                  href="#">
+                  <span>Rigger Ticket</span>
+                </a>
+              </li>
+              <li class="nav-item ps-4 pt-1">
+                <a href="{{url('')}}" class="list-item"
+                  href="#">
+                  <span>Transportation Ticket</span>
+                </a>
+              </li>
+              <li class="nav-item ps-4 pt-1">
+                <a href="{{url('')}}" class="list-item"
+                  href="#">
+                  <span>Pay Duty Form</span>
+                </a>
+              </li>
+            </ul>
+          </div>
         </li>
       </ul>
     </div>

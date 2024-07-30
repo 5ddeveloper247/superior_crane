@@ -88,7 +88,7 @@ Route::get('/notification', function () {
     return view('admin/notification', compact('pageTitle'));
 });
 
-Route::get('/web_api', function () {
-    $pageTitle = 'Web_api';
-    return view('admin/web_api', compact('pageTitle'));
+Route::get('/web_api_jobs', function () {
+    $pageTitle = 'Web_api_jobs';
+    return view('admin/web_api_jobs', compact('pageTitle'));
 });
