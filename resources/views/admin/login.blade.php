@@ -49,32 +49,45 @@
     <div class="container form d-flex align-items-center justify-content-center">
         <div class="login-content p-5 rounded-3 text-end">
             <div class="text-start">
-                <div class="text-center">
-                    <img src="{{asset('assets/images/logo.png')}}" width="120" alt="">
-                    <!-- <h2 class="text-white fw-bolder mt-3">
-                        LOGIN
-                    </h2> -->
-                </div>
-                <div class="mt-4 text-white">
-                    <label for="">Email</label>
-                    <br>
-                    <input class="w-100 p-2 mt-1" type="text" placeholder="someone@example.com" autocomplete="off">
-                </div>
-                <div class="mt-3 text-white">
-                    <label for="">Password</label>
-                    <br>
-                    <div class="position-relative">
-                        <input id="passwordInput" class="w-100 p-2 mt-1" type="password"
-                            placeholder="Enter your password" autocomplete="off">
-                        <i id="showIcon" class="fa-regular fa-eye position-absolute"></i>
-                        <i id="hideIcon" class="fa-regular fa-eye-slash position-absolute d-none"></i>
+                <form class="mx-5 px-5 mx-lg-0 px-lg-0" action="{{route('loginSubmit')}}" method="POST">
+                    @csrf
+                    <div class="text-center">
+                        <img src="{{asset('assets/images/logo.png')}}" width="120" alt="">
+                        <!-- <h2 class="text-white fw-bolder mt-3">
+                            LOGIN
+                        </h2> -->
                     </div>
-                </div>
-                <a href="{{url('dashboard')}}">
-                    <button class="py-2 px-4 mt-4 mb-3 w-100">
-                        Sign In
-                    </button>
-                </a>
+                    @if(session('error'))
+                        <div class="alert alert-danger">
+                            {{session('error')}}
+                        </div>
+                    @elseif($errors->any())
+                        <div class="alert alert-danger">
+                            @foreach ($errors->all() as $error)
+                                <p class="mb-0">{{ $error }}</p>
+                            @endforeach
+                        </div>
+                    @endif
+                    <div class="mt-4 text-white">
+                        <label for="">Email</label>
+                        <br>
+                        <input class="w-100 p-2 mt-1" type="text" name="email" placeholder="someone@example.com" autocomplete="off">
+                    </div>
+                    <div class="mt-3 text-white">
+                        <label for="">Password</label>
+                        <br>
+                        <div class="position-relative">
+                            <input type="password"  name="password" id="passwordInput" class="w-100 p-2 mt-1" placeholder="Enter your password" autocomplete="off">
+                            <i id="showIcon" class="fa-regular fa-eye position-absolute"></i>
+                            <i id="hideIcon" class="fa-regular fa-eye-slash position-absolute d-none"></i>
+                        </div>
+                    </div>
+                    <a href="{{url('dashboard')}}">
+                        <button class="py-2 px-4 mt-4 mb-3 w-100">
+                            Sign In
+                        </button>
+                    </a>
+                </form>
             </div>
             <a class="forget-pass" href="{{url('forget_password')}}">Forget password?</a>
         </div>

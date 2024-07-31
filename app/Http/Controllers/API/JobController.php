@@ -217,9 +217,7 @@ class JobController extends Controller
     public function filter_jobs(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'year' => 'required',
-            'month' => 'required|numeric',
-            'day' => 'required|numeric',
+            'date' => 'required|date_format:Y-m-d',
         ]);
         // Check if validation fails
         if ($validator->fails()) {
