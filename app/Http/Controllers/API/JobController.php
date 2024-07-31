@@ -57,9 +57,13 @@ class JobController extends Controller
             $job->scci = $request->scci ?? false;
             $job->status = $request->status;
             $job->created_by = $request->created_by;
+            
             $job->save();
     
-
+            return response()->json([
+                'success' => true,
+                'message' => 'Job added successfully'
+            ], 200);
             $req_file = 'job_image';
             $path = '/uploads/job_images/' . $job->id;
 

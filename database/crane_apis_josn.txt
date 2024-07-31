@@ -30,7 +30,6 @@ step1 : validate email and send otp
 
 url: http://127.0.0.1:8000/api/sc/v1/validateemail
 
-
 {
     "email":"zaid@gmail.com"
 }

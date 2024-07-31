@@ -139,7 +139,7 @@ class LoginController extends Controller
             } 
             else{
                 return response()->json([
-                    'success' => true,
+                    'success' => false,
                     'message' => 'Otp verification failed'
                 ], 401);
             } 
