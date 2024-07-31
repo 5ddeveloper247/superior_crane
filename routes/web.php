@@ -135,3 +135,18 @@ Route::get('/web_api_add_job', function () {
     $pageTitle = 'Web_api_add_job';
     return view('admin/web_api_add_job', compact('pageTitle'));
 });
+
+Route::get('/web_api_rigger', function () {
+    $pageTitle = 'Web_api_rigger';
+    return view('admin/web_api_rigger', compact('pageTitle'));
+});
+
+Route::get('/web_api_payduty', function () {
+    $pageTitle = 'Web_api_payduty';
+    return view('admin/web_api_payduty', compact('pageTitle'));
+});
+
+Route::get('/web_api_transportation', function () {
+    $pageTitle = 'Web_api_transportation';
+    return view('admin/web_api_transportation', compact('pageTitle'));
+});

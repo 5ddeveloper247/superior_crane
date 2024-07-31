@@ -172,38 +172,46 @@
 
 
         <li class="nav-item pt-2">
-          <a href="#web_api"  data-bs-toggle="collapse" aria-expanded="false" aria-controls="collapseExample"
+          <a href="#web_api" data-bs-toggle="collapse" aria-expanded="false" aria-controls="collapseExample"
             class="nav-link d-flex align-items-center gap-2 {{$pageTitle == 'Web_api' ? 'activenav' : ''}}">
             <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 512 512">
               <path fill="white"
                 d="M421.415 309.528c-7.209 0-14.186.938-20.909 2.54l-.636-1.005l-83.542-131.894c18.528-16.698 30.257-40.888 30.257-67.894c0-50.366-40.556-91.197-90.585-91.197s-90.585 40.83-90.585 91.197c0 27.006 11.728 51.196 30.257 67.894L112.13 311.063l-.636 1.005c-6.723-1.602-13.7-2.54-20.91-2.54C40.557 309.528 0 350.358 0 400.725s40.556 91.197 90.585 91.197s90.584-40.83 90.584-91.197c0-34.507-19.045-64.525-47.122-80.016l81.138-128.098c12.276 6.257 26.114 9.86 40.815 9.86s28.54-3.603 40.816-9.86l81.137 128.098c-28.077 15.49-47.122 45.509-47.122 80.016c0 50.366 40.556 91.197 90.584 91.197S512 451.092 512 400.725s-40.556-91.197-90.585-91.197M90.353 443.791c-23.319 0-42.223-18.903-42.223-42.222s18.904-42.223 42.223-42.223s42.222 18.904 42.222 42.223s-18.903 42.222-42.222 42.222" />
             </svg>
-            <span>Web Api's</span>
+            <span class="d-flex align-items-center justify-content-between w-100">Web Api's
+            <i class="fa-solid fa-chevron-down"></i>
+            </span>
           </a>
           <div class="collapse sidebar-inner-content" id="web_api">
-            <ul class="nav flex-column mx-3">
-              <li class="nav-item ps-4 pt-1">
+            <ul class="nav flex-column">
+              <li class="nav-item ps-5 pt-1">
                 <a href="{{url('web_api_users')}}" class="list-item"
                   href="#">
                   <span>Users API</span>
                 </a>
               </li>
-              <li class="nav-item ps-4 pt-1">
+              <li class="nav-item ps-5 pt-1">
                 <a href="{{url('web_api_add_job')}}" class="list-item"
                   href="#">
                   <span>Add Job API</span>
                 </a>
               </li>
-              <li class="nav-item ps-4 pt-1">
-                <a href="{{url('')}}" class="list-item"
+              <li class="nav-item ps-5 pt-1">
+                <a href="{{url('web_api_rigger')}}" class="list-item"
                   href="#">
-                  <span>Transportation Ticket</span>
+                  <span>Rigger Ticket API</span>
                 </a>
               </li>
-              <li class="nav-item ps-4 pt-1">
-                <a href="{{url('')}}" class="list-item"
+              <li class="nav-item ps-5 pt-1">
+                <a href="{{url('web_api_payduty')}}" class="list-item"
                   href="#">
-                  <span>Pay Duty Form</span>
+                  <span>Pay Duty Formn API</span>
+                </a>
+              </li>
+              <li class="nav-item ps-5 pt-1">
+                <a href="{{url('web_api_transportation')}}" class="list-item"
+                  href="#">
+                  <span>Transportaion API</span>
                 </a>
               </li>
             </ul>

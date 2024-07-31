@@ -56,7 +56,7 @@
                     POST
                 </button>
                 <small>
-                    http://127.0.0.1:8000/api/sc/v1/register
+                    https://beta.scserver.org/api/sc/v1/register
                 </small>
             </div>
         </div>
@@ -170,7 +170,7 @@
                     POST
                 </button>
                 <small>
-                    http://127.0.0.1:8000/api/sc/v1/login
+                    https://beta.scserver.org/api/sc/v1/login
                 </small>
             </div>
         </div>
@@ -267,7 +267,7 @@
                     POST
                 </button>
                 <small>
-                    http://127.0.0.1:8000/api/sc/v1/validateemail
+                    https://beta.scserver.org/api/sc/v1/validateemail
                 </small>
             </div>
         </div>
@@ -348,7 +348,7 @@
                     POST
                 </button>
                 <small>
-                    http://127.0.0.1:8000/api/sc/v1/verifyotp
+                    https://beta.scserver.org/api/sc/v1/verifyotp
                 </small>
             </div>
         </div>
@@ -431,7 +431,7 @@
                     POST
                 </button>
                 <small>
-                    http://127.0.0.1:8000/api/sc/v1/resetpassword
+                    https://beta.scserver.org/api/sc/v1/resetpassword
                 </small>
             </div>
         </div>
