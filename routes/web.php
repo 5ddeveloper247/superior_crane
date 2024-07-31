@@ -4,33 +4,36 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 
 
+Route::get('/', function () {
+    return redirect('/login');// view('welcome');
+});
 Route::group(['prefix' => '/'], function () {
-
+    
     Route::get('/', [AdminController::class, 'login'])->name('/');
-    Route::get('/login', [AdminController::class, 'login'])->name('admin.login');
-    Route::post('/loginSubmit', [AdminController::class, 'loginSubmit'])->name('admin.loginSubmit');
-    Route::get('/logout', [AdminController::class, 'logout'])->name('admin.logout');
-    Route::get('/noaccess', [AdminController::class, 'noaccess'])->name('admin.noaccess');
+    Route::get('/login', [AdminController::class, 'login'])->name('login');
+    Route::post('/loginSubmit', [AdminController::class, 'loginSubmit'])->name('loginSubmit');
+    // Route::get('/logout', [AdminController::class, 'logout'])->name('admin.logout');
+    // Route::get('/noaccess', [AdminController::class, 'noaccess'])->name('admin.noaccess');
 
     Route::group(['middleware' => ['AdminAuth']], function () {
 
         /************** PAGE ROUTES ******************/
-        Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard')->middleware('check.subadmin.access:true');
-        Route::get('/admin_user', [AdminController::class, 'adminUser'])->name('admin.admin_user');
-        Route::get('/subscription', [AdminController::class, 'subscription'])->name('admin.subscription');
-        Route::get('/landlord', [AdminController::class, 'landlord'])->name('admin.landlord');
-        Route::get('/tenant', [AdminController::class, 'tenant'])->name('admin.tenant');
-        Route::get('/api_settings', [AdminController::class, 'apiSettings'])->name('admin.api_settings');
-        Route::get('/user_payments', [AdminController::class, 'userPayments'])->name('admin.user_payments');
-        Route::get('/user_subscriptions', [AdminController::class, 'userSubscriptions'])->name('admin.user_subscriptions');
-        Route::get('/contact_us', [AdminController::class, 'contactUs'])->name('admin.contact_us');
-        Route::get('/my_account', [AdminController::class, 'my_account'])->name('admin.my_account');
+        // Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard')->middleware('check.subadmin.access:true');
+        // Route::get('/admin_user', [AdminController::class, 'adminUser'])->name('admin.admin_user');
+        // Route::get('/subscription', [AdminController::class, 'subscription'])->name('admin.subscription');
+        // Route::get('/landlord', [AdminController::class, 'landlord'])->name('admin.landlord');
+        // Route::get('/tenant', [AdminController::class, 'tenant'])->name('admin.tenant');
+        // Route::get('/api_settings', [AdminController::class, 'apiSettings'])->name('admin.api_settings');
+        // Route::get('/user_payments', [AdminController::class, 'userPayments'])->name('admin.user_payments');
+        // Route::get('/user_subscriptions', [AdminController::class, 'userSubscriptions'])->name('admin.user_subscriptions');
+        // Route::get('/contact_us', [AdminController::class, 'contactUs'])->name('admin.contact_us');
+        // Route::get('/my_account', [AdminController::class, 'my_account'])->name('admin.my_account');
         
-        Route::get('/property_matches', [AdminController::class, 'propertyMatches'])->name('admin.property_matches');
+        // Route::get('/property_matches', [AdminController::class, 'propertyMatches'])->name('admin.property_matches');
         
-        // Route::get('/enquiry_process', [AdminController::class, 'enquiryProcess'])->name('admin.enquiry_process');
-        Route::get('/required_documents', [AdminController::class, 'required_documents'])->name('admin.required_documents');
-        Route::get('/enquiry_requests', [AdminController::class, 'enquiry_requests'])->name('admin.enquiry_requests');
+        // // Route::get('/enquiry_process', [AdminController::class, 'enquiryProcess'])->name('admin.enquiry_process');
+        // Route::get('/required_documents', [AdminController::class, 'required_documents'])->name('admin.required_documents');
+        // Route::get('/enquiry_requests', [AdminController::class, 'enquiry_requests'])->name('admin.enquiry_requests');
             
         
         /************** AJAX ROUTES ******************/
@@ -41,10 +44,7 @@ Route::group(['prefix' => '/'], function () {
     });
 });
 
-Route::get('/', function () {
-    $pageTitle = 'Login';
-    return view('admin/login_form', compact('pageTitle'));
-});
+
 
 Route::get('/forget_password', function () {
     $pageTitle = 'Forget Password';
@@ -129,9 +129,4 @@ Route::get('/notification', function () {
 Route::get('/web_api_users', function () {
     $pageTitle = 'Web_api_users';
     return view('admin/web_api_users', compact('pageTitle'));
-});
-
-Route::get('/web_api_add_job', function () {
-    $pageTitle = 'Web_api_add_job';
-    return view('admin/web_api_add_job', compact('pageTitle'));
 });
