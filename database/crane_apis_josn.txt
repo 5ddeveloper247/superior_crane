@@ -68,7 +68,7 @@ url: http://127.0.0.1:8000/api/sc/v1/job/add
 
 //job_image optional
 {
-    "job_type": "logistic", // 1=>logistic , 2=>crane
+    "job_type": "1", // 1=>logistic , 2=>crane
     "job_time": "14:30",
     "equipment_to_be_used": "Crane Model X",
     "client_name": "John Doe",
@@ -92,7 +92,7 @@ url:  http://127.0.0.1:8000/api/sc/v1/job/updatejob
 
 {   
     "job_id": "1",
-    "job_type": "logistic", // logistic , crane
+    "job_type": "1", // 1=>logistic , 2=>crane
     "job_time": "14:30",
     "equipment_to_be_used": "Crane Model X",
     "client_name": "John Doe",
@@ -105,8 +105,8 @@ url:  http://127.0.0.1:8000/api/sc/v1/job/updatejob
     "notes": "Urgent job, please prioritize.",
     "scci": true,
     "job_image": "Job Image",   // multiple images
-    "status": 1
-    "created_by": 2
+    "status": "1",
+    "created_by": "2"
 }
 
 Filter Jobs

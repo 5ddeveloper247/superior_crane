@@ -36,7 +36,7 @@
 
 @section('content')
 <div class="web-api px-3 py-4">
-    <div class="registration-api">
+    <div class="add-job-api">
         <div>
             <h6 class="text-danger">
                 Add Job Api
@@ -75,7 +75,7 @@
                 <tr>
                     <td>job_type</td>
                     <td>LOV</td>
-                    <td>Specifies the type of job, either 'logistic' or 'crane'.</td>
+                    <td>Specifies the type of job, 1 is for 'logistic' or 2 is for 'crane'.</td>
                 </tr>
 
                 <tr>
@@ -165,7 +165,7 @@
         </table>
 
         <h6 class="text-danger my-3 mb-4">
-            Registration Response
+            Add Job Response
         </h6>
 
         <span class="fw-semibold text-success">
@@ -176,7 +176,7 @@
             <textarea rows="5" disabled cols="50" name="" id="">
         {
             "success": true,
-            "message": "Signup successfull"
+            "message": "Job added successfull"
         }
         </textarea>
         </small>
@@ -186,38 +186,28 @@
         </span>
         <br>
         <small>
-            <textarea rows="5" disabled cols="80" name="" id="">
-        {
-            "success": false,
-            "message": "Signup failed"
-        }
-        </textarea>
-        </small>
-        <br>
-
-        <small>
             <textarea rows="9" disabled cols="80" name="" id="">
-        {
-            "success": false,
-            "errors": {
-            "email": [
-                "The email field is required."
-                ]
+            {
+                "success": false,
+                "errors": {
+                    "job_type": [
+                        "The job type field is required."
+                    ]
+                }
             }
-        }
         </textarea>
         </small>
     </div>
 
     <hr class="my-3" style="border: 1px solid red">
 
-    <div class="login-api">
+    <div class="update-job-api">
         <div>
             <h6 class="text-danger">
-                Login API
+                Update Job API
             </h6>
             <small>
-                The login API allows you to create, view, update, and delete individual, or a batch, of customers.
+                The update job api allows you to create, view, update, and delete individual, or a batch, of customers.
             </small>
         </div>
 
@@ -230,13 +220,13 @@
                     POST
                 </button>
                 <small>
-                    http://127.0.0.1:8000/api/sc/v1/login
+                http://127.0.0.1:8000/api/sc/v1/job/updatejob
                 </small>
             </div>
         </div>
         <br>
         <h6 class="text-danger">
-            Login Attribute
+            Update Job API Attribute
         </h6>
 
         <table>
@@ -247,21 +237,99 @@
             </thead>
             <tbody>
                 <tr>
-                    <td>email</td>
-                    <td>email</td>
-                    <td>user email must be unique</td>
+                    <td>job_type</td>
+                    <td>LOV</td>
+                    <td>Specifies the type of job, 1 is for 'logistic' or 2 is for 'crane'.</td>
                 </tr>
 
                 <tr>
-                    <td>password</td>
+                    <td>job_time</td>
+                    <td>time</td>
+                    <td>Indicates the scheduled time for the job in HH:mm format.</td>
+                </tr>
+
+                <tr>
+                    <td>equipment_to_be_used</td>
+                    <td>text</td>
+                    <td>Details the equipment required for the job, e.g., 'Crane Model X'.</td>
+                </tr>
+
+                <tr>
+                    <td>client_name</td>
+                    <td>text</td>
+                    <td>Name of the client for whom the job is being performed.</td>
+                </tr>
+
+                <tr>
+                    <td>rigger_assigned</td>
                     <td>number</td>
-                    <td>must have numbers and special characters</td>
+                    <td>ID of the rigger assigned to the job.</td>
+                </tr>
+
+                <tr>
+                    <td>date</td>
+                    <td>date</td>
+                    <td>The date on which the job is scheduled, in YYYY-MM-DD format.</td>
+                </tr>
+
+                <tr>
+                    <td>address</td>
+                    <td>text</td>
+                    <td>The location where the job will be performed.</td>
+                </tr>
+
+                <tr>
+                    <td>start_time</td>
+                    <td>time</td>
+                    <td>The scheduled start time of the job in YYYY-MM-DD HH:mm:ss format.</td>
+                </tr>
+
+                <tr>
+                    <td>end_time</td>
+                    <td>time</td>
+                    <td>The scheduled end time of the job in YYYY-MM-DD HH:mm:ss format.</td>
+                </tr>
+
+                <tr>
+                    <td>supplier_name</td>
+                    <td>text</td>
+                    <td>Name of the supplier providing the equipment.</td>
+                </tr>
+
+                <tr>
+                    <td>notes</td>
+                    <td>text</td>
+                    <td>Additional notes or special instructions related to the job.</td>
+                </tr>
+
+                <tr>
+                    <td>scci</td>
+                    <td>checkbox</td>
+                    <td>Indicates if the job requires special consideration or priority.</td>
+                </tr>
+
+                <tr>
+                    <td>job_image</td>
+                    <td>file</td>
+                    <td>An array of images related to the job.</td>
+                </tr>
+
+                <tr>
+                    <td>status</td>
+                    <td>LOV</td>
+                    <td>Current status of the job. Typically represented by an integer code.</td>
+                </tr>
+
+                <tr>
+                    <td>created_by</td>
+                    <td>number</td>
+                    <td>ID of the user who created the job entry.</td>
                 </tr>
             </tbody>
         </table>
 
         <h6 class="text-danger my-3 mb-4">
-            Login Response
+            Update Job Response
         </h6>
 
         <span class="fw-semibold text-success">
@@ -272,7 +340,7 @@
             <textarea rows="5" disabled cols="80" name="" id="">
             {
                 "success": true,
-                "message": "Logged in successfully"
+                "message": "Job updated successfully"
             }
         </textarea>
         </small>
@@ -282,38 +350,28 @@
         </span>
         <br>
         <small>
-            <textarea rows="5" disabled cols="80" name="" id="">
-        {
-            "success": false,
-            "message": "Invalid Credentials"
-        }
-        </textarea>
-        </small>
-        <br>
-
-        <small>
             <textarea rows="9" disabled cols="80" name="" id="">
-        {
-            "success": false,
-            "errors": {
-            "email": [
-            "The email field is required."
-            ]
-           }
-        }
+            {
+                "success": false,
+                "errors": {
+                    "job_id": [
+                        "The job id field is required."
+                    ]
+                }
+            }
         </textarea>
         </small>
     </div>
 
     <hr class="my-3" style="border: 1px solid red">
 
-    <div class="forget_password-api">
+    <div class="filter-job-api">
         <div>
             <h6 class="text-danger">
-                1-Forget Password API (validate email and send otp)
+                Filter Job API
             </h6>
             <small>
-                The Forget Password API allows you to create, view, update, and delete individual, or a batch, of
+                The filter job API allows you to create, view, update, and delete individual, or a batch, of
                 customers.
             </small>
         </div>
@@ -327,13 +385,13 @@
                     POST
                 </button>
                 <small>
-                    http://127.0.0.1:8000/api/sc/v1/validateemail
+                    http://127.0.0.1:8000/api/sc/v1/job/filter_jobs
                 </small>
             </div>
         </div>
         <br>
         <h6 class="text-danger">
-            Forget Password Attribute
+            Filter Job Attribute
         </h6>
 
         <table>
