@@ -37,7 +37,7 @@ class AdminController extends Controller
         $validatedData = $request->validate([
             'email' => 'required|exists:users,email',
         ]);
-        
+
         $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
@@ -46,21 +46,21 @@ class AdminController extends Controller
             if($user->status == 1){
                 $request->session()->put('user', $user);
                 // Authentication passed...
-                return redirect()->intended('/admin/dashboard');
+                return redirect()->intended('/dashboard');
             }else{
                 $request->session()->flash('error', 'The user is not active, please contact admin.');
-                return redirect('admin/login');
+                return redirect('login');
             }
         }
 
         $request->session()->flash('error', 'The provided credentials do not match our records.');
-        return redirect('admin/login');
+        return redirect('login');
     }
 
     public function logout(Request $request)
     {
         $request->session()->forget('user');
-        return redirect('admin');
+        return redirect('login');
     }
 
     

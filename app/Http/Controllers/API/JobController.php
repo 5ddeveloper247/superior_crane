@@ -212,8 +212,6 @@ class JobController extends Controller
         }  
     }
 
-
-
     public function filter_jobs(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -229,7 +227,7 @@ class JobController extends Controller
 
         try {
             
-            $date = $request->year . '-' . sprintf('%02d', $request->month) . '-' . sprintf('%02d', $request->day);
+            $date = $request->date;
             $jobs = JobModel::where('date', $date)->with(['jobImages'])->get();
             if(count($jobs) > 0) {
             return response()->json([
