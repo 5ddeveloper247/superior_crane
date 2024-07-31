@@ -189,9 +189,9 @@
                 </a>
               </li>
               <li class="nav-item ps-4 pt-1">
-                <a href="{{url('')}}" class="list-item"
+                <a href="{{url('web_api_add_job')}}" class="list-item"
                   href="#">
-                  <span>Rigger Ticket</span>
+                  <span>Add Job API</span>
                 </a>
               </li>
               <li class="nav-item ps-4 pt-1">

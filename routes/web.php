@@ -92,3 +92,8 @@ Route::get('/web_api_users', function () {
     $pageTitle = 'Web_api_users';
     return view('admin/web_api_users', compact('pageTitle'));
 });
+
+Route::get('/web_api_add_job', function () {
+    $pageTitle = 'Web_api_add_job';
+    return view('admin/web_api_add_job', compact('pageTitle'));
+});

@@ -39,10 +39,10 @@
     <div class="registration-api">
         <div>
             <h6 class="text-danger">
-                Registration API
+                Add Job Api
             </h6>
             <small>
-                The registration API allows you to create, view, update, and delete individual, or a batch, of
+                The add job Api allows you to create, view, update, and delete individual, or a batch, of
                 customers.
             </small>
         </div>
@@ -56,13 +56,13 @@
                     POST
                 </button>
                 <small>
-                    http://127.0.0.1:8000/api/sc/v1/register
+                    http://127.0.0.1:8000/api/sc/v1/job/add
                 </small>
             </div>
         </div>
         <br>
         <h6 class="text-danger">
-            Registration Attribute
+            Add Job Attribute
         </h6>
 
         <table>
@@ -73,33 +73,93 @@
             </thead>
             <tbody>
                 <tr>
-                    <td>name</td>
+                    <td>job_type</td>
+                    <td>LOV</td>
+                    <td>Specifies the type of job, either 'logistic' or 'crane'.</td>
+                </tr>
+
+                <tr>
+                    <td>job_time</td>
+                    <td>time</td>
+                    <td>Indicates the scheduled time for the job in HH:mm format.</td>
+                </tr>
+
+                <tr>
+                    <td>equipment_to_be_used</td>
                     <td>text</td>
-                    <td>user name in text format</td>
+                    <td>Details the equipment required for the job, e.g., 'Crane Model X'.</td>
                 </tr>
 
                 <tr>
-                    <td>email</td>
-                    <td>email</td>
-                    <td>user email must be unique</td>
+                    <td>client_name</td>
+                    <td>text</td>
+                    <td>Name of the client for whom the job is being performed.</td>
                 </tr>
 
                 <tr>
-                    <td>role</td>
+                    <td>rigger_assigned</td>
                     <td>number</td>
-                    <td>3 is for rigger, 4 is for transporter, 5 is for rigger and transporter</td>
+                    <td>ID of the rigger assigned to the job.</td>
                 </tr>
 
                 <tr>
-                    <td>password</td>
-                    <td>number</td>
-                    <td>must have numbers and special characters</td>
+                    <td>date</td>
+                    <td>date</td>
+                    <td>The date on which the job is scheduled, in YYYY-MM-DD format.</td>
                 </tr>
 
                 <tr>
-                    <td>password_confirmation</td>
+                    <td>address</td>
+                    <td>text</td>
+                    <td>The location where the job will be performed.</td>
+                </tr>
+
+                <tr>
+                    <td>start_time</td>
+                    <td>time</td>
+                    <td>The scheduled start time of the job in YYYY-MM-DD HH:mm:ss format.</td>
+                </tr>
+
+                <tr>
+                    <td>end_time</td>
+                    <td>time</td>
+                    <td>The scheduled end time of the job in YYYY-MM-DD HH:mm:ss format.</td>
+                </tr>
+
+                <tr>
+                    <td>supplier_name</td>
+                    <td>text</td>
+                    <td>Name of the supplier providing the equipment.</td>
+                </tr>
+
+                <tr>
+                    <td>notes</td>
+                    <td>text</td>
+                    <td>Additional notes or special instructions related to the job.</td>
+                </tr>
+
+                <tr>
+                    <td>scci</td>
+                    <td>checkbox</td>
+                    <td>Indicates if the job requires special consideration or priority.</td>
+                </tr>
+
+                <tr>
+                    <td>job_image</td>
+                    <td>file</td>
+                    <td>An array of images related to the job.</td>
+                </tr>
+
+                <tr>
+                    <td>status</td>
+                    <td>LOV</td>
+                    <td>Current status of the job. Typically represented by an integer code.</td>
+                </tr>
+
+                <tr>
+                    <td>created_by</td>
                     <td>number</td>
-                    <td>confirm password must be match with password </td>
+                    <td>ID of the user who created the job entry.</td>
                 </tr>
             </tbody>
         </table>
