@@ -402,15 +402,15 @@
             </thead>
             <tbody>
                 <tr>
-                    <td>email</td>
-                    <td>email</td>
-                    <td>user email must be unique</td>
+                    <td>date</td>
+                    <td>date</td>
+                    <td>The date must be in YYYY-MM-DD format.</td>
                 </tr>
             </tbody>
         </table>
 
         <h6 class="text-danger my-3 mb-4">
-            Forget Password Response
+            Filter Job Response
         </h6>
 
         <span class="fw-semibold text-success">
@@ -431,14 +431,10 @@
         </span>
         <br>
         <small>
-            <textarea rows="10" disabled cols="90" name="" id="">
+            <textarea rows="5" disabled cols="90" name="" id="">
             {
                 "success": false,
-                "errors": {
-                    "email": [
-                        "The email field must be a valid email address."
-                    ]
-                }
+                "message": "No Jobs Found"
             }
         </textarea>
         </small>
