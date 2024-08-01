@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ForgetPasswordController;
 
 
 Route::get('/', function () {
@@ -9,36 +10,27 @@ Route::get('/', function () {
 });
 Route::group(['prefix' => '/'], function () {
     
-    Route::get('/', [AdminController::class, 'login'])->name('/');
     Route::get('/login', [AdminController::class, 'login'])->name('login');
     Route::post('/loginSubmit', [AdminController::class, 'loginSubmit'])->name('loginSubmit');
-    // Route::get('/logout', [AdminController::class, 'logout'])->name('admin.logout');
-    // Route::get('/noaccess', [AdminController::class, 'noaccess'])->name('admin.noaccess');
+    Route::get('/logout', [AdminController::class, 'logout'])->name('logout');
+
+    Route::get('/forget_password', [ForgetPasswordController::class, 'forget_password'])->name('forget_password');
+    Route::post('/forget_password/otp', [ForgetPasswordController::class, 'forgetPassword_step1'])->name('forget_password.step1');
+    Route::post('/forget_password/reset', [ForgetPasswordController::class, 'forgetPassword_step2'])->name('forget_password.step2');
+    Route::post('/forget_password/change', [ForgetPasswordController::class, 'forgetPassword_step3'])->name('forget_password.step3');
+
+   
 
     Route::group(['middleware' => ['AdminAuth']], function () {
 
         /************** PAGE ROUTES ******************/
-        // Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard')->middleware('check.subadmin.access:true');
-        // Route::get('/admin_user', [AdminController::class, 'adminUser'])->name('admin.admin_user');
-        // Route::get('/subscription', [AdminController::class, 'subscription'])->name('admin.subscription');
-        // Route::get('/landlord', [AdminController::class, 'landlord'])->name('admin.landlord');
-        // Route::get('/tenant', [AdminController::class, 'tenant'])->name('admin.tenant');
-        // Route::get('/api_settings', [AdminController::class, 'apiSettings'])->name('admin.api_settings');
-        // Route::get('/user_payments', [AdminController::class, 'userPayments'])->name('admin.user_payments');
-        // Route::get('/user_subscriptions', [AdminController::class, 'userSubscriptions'])->name('admin.user_subscriptions');
-        // Route::get('/contact_us', [AdminController::class, 'contactUs'])->name('admin.contact_us');
-        // Route::get('/my_account', [AdminController::class, 'my_account'])->name('admin.my_account');
-        
-        // Route::get('/property_matches', [AdminController::class, 'propertyMatches'])->name('admin.property_matches');
-        
-        // // Route::get('/enquiry_process', [AdminController::class, 'enquiryProcess'])->name('admin.enquiry_process');
-        // Route::get('/required_documents', [AdminController::class, 'required_documents'])->name('admin.required_documents');
-        // Route::get('/enquiry_requests', [AdminController::class, 'enquiry_requests'])->name('admin.enquiry_requests');
-            
-        
-        /************** AJAX ROUTES ******************/
-        // Route::post('/editSpecificPlan', [AdminController::class, 'editSpecificPlan'])->name('admin.editSpecificPlan');
+        Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+        Route::get('/profile', [AdminController::class, 'profile'])->name('profile');
        
+        /************** AJAX ROUTES ******************/
+        Route::post('/admin/getProfilePageData', [AdminController::class, 'getProfilePageData'])->name('admin.getProfilePageData');
+        Route::post('/admin/updateAdminProfile', [AdminController::class, 'updateAdminProfile'])->name('admin.updateAdminProfile');
+        
         
         
     });
@@ -46,15 +38,12 @@ Route::group(['prefix' => '/'], function () {
 
 
 
-Route::get('/forget_password', function () {
-    $pageTitle = 'Forget Password';
-    return view('admin/forget_password', compact('pageTitle'));
-});
 
-Route::get('/dashboard', function () {
-    $pageTitle = 'Dashboard';
-    return view('admin/dashboard', compact('pageTitle'));
-});
+
+// Route::get('/dashboard', function () {
+//     $pageTitle = 'Dashboard';
+//     return view('admin/dashboard', compact('pageTitle'));
+// });
 
 Route::get('/all_jobs', function () {
     $pageTitle = 'All-jobs';
@@ -116,10 +105,10 @@ Route::get('/inventory_form', function () {
     return view('admin/inventory_form', compact('pageTitle'));
 });
 
-Route::get('/profile', function () {
-    $pageTitle = 'Profile';
-    return view('admin/profile', compact('pageTitle'));
-});
+// Route::get('/profile', function () {
+//     $pageTitle = 'Profile';
+//     return view('admin/profile', compact('pageTitle'));
+// });
 
 Route::get('/notification', function () {
     $pageTitle = 'Notification';

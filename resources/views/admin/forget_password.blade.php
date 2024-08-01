@@ -1,3 +1,4 @@
+
 @extends('layouts.admin.admin_master')
 
 <style>
@@ -46,72 +47,114 @@
     <div class="container form d-flex align-items-center justify-content-center">
         <div class="login-content p-5 rounded-3 text-center">
             <div class="text-start">
-                <div class="text-center">
-                    <img src="{{asset('assets/images/logo.png')}}" width="120" alt="">
-                </div>
-
-                <section id="section-1">
-                    <div class="mt-3 text-white">
-                        <label for="">Email</label>
-                        <br>
-                        <input class="w-100 p-2 mt-1" type="email" placeholder="someone@example.com">
+                
+                
+                    <div class="text-center">
+                        <img src="{{asset('assets/images/logo.png')}}" width="120" alt="">
                     </div>
-                    <button class="email-btn py-2 px-4 mt-4 mb-2 w-100">
-                        Next
-                    </button>
-                </section>
-
-
-
-                <section id="section-2" class="d-none text-center">
-                    <div class="mt-3 text-white text-center">
-                        <label class="pb-3" for="">Enter OTP here</label>
-                        <div class="d-flex align-items-center justify-content-center gap-2">
-                            <input style="width: 35px" class="p-2 mt-1 otp-input" type="number" maxlength="1">
-                            <input style="width: 35px" class="p-2 mt-1 otp-input" type="number" maxlength="1">
-                            <input style="width: 35px" class="p-2 mt-1 otp-input" type="number" maxlength="1">
-                            <input style="width: 35px" class="p-2 mt-1 otp-input" type="number" maxlength="1">
-                            <input style="width: 35px" class="p-2 mt-1 otp-input" type="number" maxlength="1">
+                    @if(session('error'))
+                        <div class="alert alert-danger">
+                            {{session('error')}}
                         </div>
-                    </div>
-                    <button class="otp-btn py-2 px-4 mt-4 mb-2 w-50">
-                        Verify
-                    </button>
-                </section>
-
-
-
-                <section id="section-3" class="d-none">
-                    <div class="row text-white">
-                        <div class="col">
-                            <div class="mt-3">
-                                <label for="">New Password</label>
-                                <br>
-                                <div class="position-relative">
-                                    <input id="passwordInput" class="w-100 p-2 mt-1" type="password"
-                                        placeholder="Enter your password" autocomplete="off">
-                                    <i id="showIcon" class="fa-regular fa-eye position-absolute"></i>
-                                    <i id="hideIcon" class="fa-regular fa-eye-slash position-absolute d-none"></i>
+                    @elseif($errors->any())
+                        <div class="alert alert-danger">
+                            @foreach ($errors->all() as $error)
+                                <p class="mb-0">{{ $error }}</p>
+                            @endforeach
+                        </div>
+                    @elseif(session('success'))
+                        <div class="alert alert-success">
+                            {{session('success')}}
+                        </div>
+                    @endif
+                    @if(@$step == "1") <!-- email  -->
+                        <form class="mx-5 px-5 mx-lg-0 px-lg-0" action="{{route('forget_password.step1')}}" method="POST">
+                            @csrf
+                            <section id="section-1">
+                                <div class="mt-3 text-white">
+                                    <label for="">Email</label>
+                                    <br>
+                                    <input type="email" name="email" class="w-100 p-2 mt-1" placeholder="someone@example.com">
                                 </div>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="mt-3">
-                                <label for="">Confirm Password</label>
-                                <br>
-                                <div class="position-relative">
-                                    <input id="confirm_passwordInput" class="w-100 p-2 mt-1" type="password"
-                                        placeholder="Enter your password" autocomplete="off">
-                                    <i id="showIcon2" class="fa-regular fa-eye position-absolute"></i>
-                                    <i id="hideIcon2" class="fa-regular fa-eye-slash position-absolute d-none"></i>
+                                <button type="submit" class="email-btn py-2 px-4 mt-4 mb-2 w-100">
+                                    Next
+                                </button>
+                            </section>
+                        </form>
+                    @elseif(@$step == "2")
+                        <form class="mx-5 px-5 mx-lg-0 px-lg-0" action="{{route('forget_password.step2')}}" method="POST">
+                            @csrf
+                            <section id="section-2" class="text-center">
+                                <div class="mt-3 text-white text-center">
+                                    <p>{{@$email}}</p>
+                                    <label class="pb-3" for="">Enter OTP here</label>
+                                    <input type="hidden" name="email" value="{{@$email}}">
+                                    <div class="d-flex align-items-center justify-content-center gap-2">
+                                        <input style="width: 35px" class="p-2 mt-1 otp-input" type="number" name="otp1" maxlength="1">
+                                        <input style="width: 35px" class="p-2 mt-1 otp-input" type="number" name="otp2" maxlength="1">
+                                        <input style="width: 35px" class="p-2 mt-1 otp-input" type="number" name="otp3" maxlength="1">
+                                        <input style="width: 35px" class="p-2 mt-1 otp-input" type="number" name="otp4" maxlength="1">
+                                        <input style="width: 35px" class="p-2 mt-1 otp-input" type="number" name="otp5" maxlength="1">
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                    <button class="password-btn py-2 px-4 mt-4 mb-2 w-100">
-                        Submit
-                    </button>
-                </section>
+                                <button type="submit" class="otp-btn py-2 px-4 mt-4 mb-2 w-50">
+                                    Verify
+                                </button>
+                            </section>
+                        </form>
+                    @elseif(@$step == '3')
+                        <form class="mx-5 px-5 mx-lg-0 px-lg-0" action="{{route('forget_password.step3')}}" method="POST">
+                            @csrf
+                            <section id="section-3" class="">
+                                <div class="row text-white">
+                                    <input type="hidden" name="email" value="{{@$email}}">
+                                    <div class="col">
+                                        <div class="mt-3">
+                                            <label for="">New Password</label>
+                                            <br>
+                                            <div class="position-relative">
+                                                <input type="password" name="password" id="passwordInput" class="w-100 p-2 mt-1" 
+                                                    placeholder="Enter your password" autocomplete="off" 
+                                                    value="{{@$password}}">
+                                                <i id="showIcon" class="fa-regular fa-eye position-absolute"></i>
+                                                <i id="hideIcon" class="fa-regular fa-eye-slash position-absolute d-none"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="mt-3">
+                                            <label for="">Confirm Password</label>
+                                            <br>
+                                            <div class="position-relative">
+                                                <input id="confirm_passwordInput" name="password_confirmation" class="w-100 p-2 mt-1" type="password"
+                                                    placeholder="Enter your password" autocomplete="off" 
+                                                    value="{{@$password_confirmation}}">
+                                                <i id="showIcon2" class="fa-regular fa-eye position-absolute"></i>
+                                                <i id="hideIcon2" class="fa-regular fa-eye-slash position-absolute d-none"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="submit" class="password-btn py-2 px-4 mt-4 mb-2 w-100">
+                                    Submit
+                                </button>
+                            </section>
+                        </form>
+                    @else
+                        <form class="mx-5 px-5 mx-lg-0 px-lg-0" action="{{route('forget_password.step1')}}" method="POST">
+                            @csrf
+                            <section id="section-1">
+                                <div class="mt-3 text-white">
+                                    <label for="">Email</label>
+                                    <br>
+                                    <input type="email" name="email" class="w-100 p-2 mt-1" placeholder="someone@example.com" required>
+                                </div>
+                                <button type="submit" class="email-btn py-2 px-4 mt-4 mb-2 w-100">
+                                    Next
+                                </button>
+                            </section>
+                        </form>
+                    @endif
 
                 <section id="section-4" class="d-none text-center">
                     <h5 class="text-white text-center pt-3">Password updated successfully,<br> please login </h5>
@@ -160,18 +203,18 @@
             })
 
 
-            $('.email-btn').click(function () {
-                $('#section-1').addClass('d-none');
-                $('#section-2').removeClass('d-none');
-            });
-            $('.otp-btn').click(function () {
-                $('#section-2').addClass('d-none');
-                $('#section-3').removeClass('d-none');
-            });
-            $('.password-btn').click(function () {
-                $('#section-3').addClass('d-none');
-                $('#section-4').removeClass('d-none');
-            });
+            // $('.email-btn').click(function () {
+            //     $('#section-1').addClass('d-none');
+            //     $('#section-2').removeClass('d-none');
+            // });
+            // $('.otp-btn').click(function () {
+            //     $('#section-2').addClass('d-none');
+            //     $('#section-3').removeClass('d-none');
+            // });
+            // $('.password-btn').click(function () {
+            //     $('#section-3').addClass('d-none');
+            //     $('#section-4').removeClass('d-none');
+            // });
 
 
         });

@@ -131,6 +131,7 @@
             font-size: 14px;
             border-radius: 5px;
         }
+        
     </style>
     <section>
         <div class="profile">
@@ -139,57 +140,40 @@
                     <div class="edit-profile">
                         <div class="card">
                             <div class="card-body">
-                                <form id="profileform">
+                                <form id="profileform" action="" method="">
                                     <div class="row">
-                                        <div class="col-md-6 pr-1">
-                                            <div class="form-group">
-                                                <label>Email</label>
-                                                <br>
-                                                <p  class="form-control"id="email">abc@gmail.com</p>
-                                            </div>
-                                        </div>
                                         <div class="col-md-6 pr-1">
                                             <div class="form-group">
                                                 <label>Username<span class="text-danger">*</span></label>
-                                                <input type="text" class="form-control" placeholder="Username"
-                                                    value="" id="user_name" name="user_name">
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                    <div class="row">
-                                        {{-- <div class="col-md-6 pr-1">
-                                            <div class="form-group">
-                                                <label>Middle Name</label>
-                                                <input type="text" class="form-control" placeholder="Middle Name"
-                                                    value="" id="middle_name" name="middle_name">
+                                                <input type="text" class="form-control" id="first_name" name="first_name" maxlength="50" value="Username" placeholder="Username" autocomplete="off">
                                             </div>
                                         </div>
                                         <div class="col-md-6 pr-1">
                                             <div class="form-group">
-                                                <label>Last Name<span class="text-danger">*</span></label>
-                                                <input type="text" class="form-control" placeholder="Last Name"
-                                                    value="" id="last_name" name="last_name">
+                                                <label>Email<span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" id="user_email" disabled>
                                             </div>
-                                        </div> --}}
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        
                                         <div class="col-md-6 pl-1">
-                                            <div class="form-group">
-                                                <label>Contact Number<span class="text-danger">*</span></label>
-                                                <input type="number" class="form-control" placeholder="Contact Number"
-                                                    value="" id="contact_number" name="contact_number">
+                                            <div class="">
+                                                <label>Phone Number<span class="text-danger">*</span></label>
+                                                <input type="number" class="form-control" id="phone_number" name="phone_number" maxlength="18" placeholder="Phone Number" autocomplete="off">
                                             </div>
                                         </div>
                                         <div class="col-md-6 pl-1">
-                                            <div class="form-group">
+                                            <div class="">
                                                 <label>Account Type</label>
-                                                <p class="form-control" id="account_type">Rigger</p>
+                                                <input type="text" class="form-control" id="account_type" disabled>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-6 pr-1">
                                             <div class="form-group pb-3" style="display: flex; align-items: center;">
-                                                <input type="checkbox" id="passwordchange_check" name="passwordchange_check"
+                                                <input type="checkbox" id="passwordchange_check" name="passwordchange_check" value="1"
                                                     style="margin-right: 10px;">
                                                 <label style="font-size: 13px" for="passwordchange_check">Want to change
                                                     password?</label>
@@ -201,17 +185,8 @@
                                             <div class="col-md-6 ">
                                                 <div class="form-group" style="position:relative">
                                                     <label>Old Password<span class="text-danger">*</span></label>
-                                                    <input type="password" class="form-control" placeholder="Old Password"
-                                                        value="" id="old_password" name="old_password" autofill="off">
-                                                    <svg style="position:absolute; top: 65%; right: 2%"
-                                                        xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                        fill="currentColor" class="bi bi-eye oldpasswordeye"
-                                                        viewBox="0 0 16 16">
-                                                        <path
-                                                            d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zm-8 4.5c-2.8 0-5.2-2-6.7-4.5C2.8 5.5 5.2 3.5 8 3.5c2.8 0 5.2 2 6.7 4.5-1.5 2.5-3.9 4.5-6.7 4.5z" />
-                                                        <path
-                                                            d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zm0 4a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" />
-                                                    </svg>
+                                                    <input type="password" class="form-control" id="old_password" name="old_password" placeholder="Old Password"  autofill="off">
+                                                    <i class="fa fa-eye position-absolute view_pass" style="top: 68%; right: 2%;font-size:12px;"></i>
                                                 </div>
                                             </div>
 
@@ -220,34 +195,15 @@
                                             <div class="col-md-6 pr-1">
                                                 <div class="form-group" style="position:relative">
                                                     <label>New Password<span class="text-danger">*</span></label>
-                                                    <input type="password" class="form-control" placeholder="New Password"
-                                                        value="" id="password" name="password">
-                                                    <svg style="position:absolute; top: 65%; right: 2%"
-                                                        xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                        fill="currentColor" class="bi bi-eye newpasswordeye"
-                                                        viewBox="0 0 16 16">
-                                                        <path
-                                                            d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zm-8 4.5c-2.8 0-5.2-2-6.7-4.5C2.8 5.5 5.2 3.5 8 3.5c2.8 0 5.2 2 6.7 4.5-1.5 2.5-3.9 4.5-6.7 4.5z" />
-                                                        <path
-                                                            d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zm0 4a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" />
-                                                    </svg>
+                                                    <input type="password" class="form-control" id="password" name="password" placeholder="New Password" >
+                                                    <i class="fa fa-eye position-absolute view_pass" style="top: 68%; right: 2%;font-size:12px;"></i>
                                                 </div>
                                             </div>
                                             <div class="col-md-6 px-1">
                                                 <div class="form-group" style="position:relative">
                                                     <label>Confirm New Password<span class="text-danger">*</span></label>
-                                                    <input type="password" class="form-control"
-                                                        placeholder="Confirm New Password" value=""
-                                                        id="password_confirmation" name="password_confirmation">
-                                                    <svg style="position:absolute; top: 65%; right: 2%"
-                                                        xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                        fill="currentColor" class="bi bi-eye confirmpasswordeye"
-                                                        viewBox="0 0 16 16">
-                                                        <path
-                                                            d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zm-8 4.5c-2.8 0-5.2-2-6.7-4.5C2.8 5.5 5.2 3.5 8 3.5c2.8 0 5.2 2 6.7 4.5-1.5 2.5-3.9 4.5-6.7 4.5z" />
-                                                        <path
-                                                            d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zm0 4a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" />
-                                                    </svg>
+                                                    <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" placeholder="Confirm New Password" value="">
+                                                    <i class="fa fa-eye position-absolute view_pass" style="top: 68%; right: 2%;font-size:12px;"></i>
                                                 </div>
                                             </div>
 
@@ -255,8 +211,7 @@
                                     </div>
                                     <input type="file" class="d-none" name="profile_image" id="profile_image">
                                     <div class="text-center " style="margin-top:12px">
-                                        <button type="submit" class="site_btn text-center"
-                                            id="update_btn">Update</button>
+                                        <button type="button" class="site_btn text-center" id="update_btn">Update</button>
                                     </div>
                                     <div class="clearfix"></div>
                                 </form>
@@ -274,7 +229,7 @@
                             <div class="author" id="profile_image_div">
                                 <a href="#" id="profile_image_input_select" class="profile-container">
                                     <img class="avatar border-gray profile_preview"
-                                        src="https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541"
+                                        src="{{asset('/assets/images/profile_placeholder.png')}}"
                                         alt="...">
                                     <div class="overlay">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor"
@@ -298,33 +253,35 @@
     </section>
 @endsection
 
+
+
 @push('scripts')
     <script>
         $(document).ready(function() {
             $('.image_overlay').click(function() {
                 $('#profile_image').click();
             });
-
-
+            
             $('#profile_image').on('change', function(event) {
                 const file = event.target.files[0];
                 const preview = $('.profile_preview');
-
+                
                 if (file) {
+                    // Check if the file is an image
+                    const validImageTypes = ['image/jpeg', 'image/png', 'image/gif'];
+                    if (!validImageTypes.includes(file.type)) {
+                        toastr.error('Please select a valid image file (JPEG, PNG, GIF).', '', {timeOut: 3000});
+                        $("#profile_image").val('');
+                        return;
+                    }
                     const reader = new FileReader();
-
                     reader.onload = function(e) {
                         preview.attr('src', e.target.result);
                         preview.show();
                     }
-
                     reader.readAsDataURL(file);
                 }
             });
-
-
-
-
             $('#passwordchange_check').click(function() {
                 if ($(this).prop('checked')) {
                     $('.passworddiv').removeClass('d-none');
@@ -332,7 +289,6 @@
                     $('.passworddiv').addClass('d-none');
                 }
             });
-
             $('.oldpasswordeye').click(function() {
                 if ($('#old_password').attr('type') === 'password') {
                     $('#old_password').attr('type', 'text');
@@ -354,25 +310,7 @@
                     $('#password_confirmation').attr('type', 'password');
                 }
             });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         });
     </script>
+    <script src="{{ asset('assets_admin/customjs/script_profile.js') }}"></script>
 @endpush
