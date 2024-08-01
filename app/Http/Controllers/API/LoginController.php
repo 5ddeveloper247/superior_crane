@@ -32,9 +32,11 @@ class LoginController extends Controller
             $credentials = $request->only('email', 'password');
 
             if (Auth::attempt($credentials)) {
+                $user = User::where('email', $request->email)->first();
                 return response()->json([
                     'success' => true,
-                    'message' => 'Logged in successfully'
+                    'message' => 'Logged in successfully',
+                    'user' => $user
                 ], 200);
             }
 

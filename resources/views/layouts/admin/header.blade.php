@@ -254,7 +254,7 @@
           <ul class="dropdown-menu text-center">
             <li><a class="dropdown-item" href="{{url('profile')}}">Profile</a></li>
             <hr class="my-1 mx-4" style="border: 1px solid red">
-            <li><a class="dropdown-item" href="#">Logout</a></li>
+            <li><a class="dropdown-item" href="{{route('logout')}}">Logout</a></li>
           </ul>
         </div>
       </div>
