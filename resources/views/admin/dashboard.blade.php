@@ -272,7 +272,7 @@
             padding: 5px;
             cursor: pointer;
             /* position: absolute;
-                                                                                                                z-index: 1000; */
+                                                                                                                                        z-index: 1000; */
         }
 
         .status-dropdown li:hover {
@@ -286,6 +286,31 @@
 
         .fc .fc-daygrid-event {
             z-index: unset !important;
+        }
+
+        .fc-daygrid-event-dot {
+            height: 15px;
+            width: 6px;
+            border-radius: 0px !important;
+            border: none;
+
+        }
+
+        .atc-btn {
+            background-color: transparent;
+            border: 1px solid red;
+            font-size: 12px !important;
+            padding: .3rem .8rem;
+            border-radius: 4px;
+        }
+
+        .upload-btn {
+            background-color: red;
+            border: none;
+            padding: .4rem .8rem;
+            color: #fff !important;
+            font-size: 12px !important;
+            border-radius: 4px;
         }
 
         .save-btn {
@@ -312,7 +337,21 @@
                 </small>
             </a>
         </div>
-        <div class="d-flex">
+        <div class="d-flex align-items-center">
+            <div class="legends d-flex gap-3 align-items-center justify-content-center me-3">
+                <div class="d-flex align-items-center gap-1">
+                    <div style="background-color: red; height: 13px; width: 7px;"></div>
+                    <small>Problem</small>
+                </div>
+                <div class="d-flex align-items-center gap-1">
+                    <div style="background-color: yellow; height: 13px; width: 7px;"></div>
+                    <small>Draft</small>
+                </div>
+                <div class="d-flex align-items-center gap-1">
+                    <div style="background-color: lightgreen; height: 13px; width: 7px;"></div>
+                    <small>Good To Go</small>
+                </div>
+            </div>
             <li class="nav-item" role="presentation">
                 <button class="nav-link active" id="calender-tab" data-bs-toggle="tab"
                     data-bs-target="#calender-tab-pane" type="button" role="tab" aria-controls="calender-tab-pane"
@@ -351,15 +390,17 @@
                                     <div class="mb-3 d-flex align-items-center gap-1 col-md-2">
                                         <input type="radio" name="job_type[]" id="job_type_logistic"
                                             value="Logistic Job" checked>
-                                        <label class="form-label m-0" for="job_type_logistic">Logistic Job</label>
+                                        <label class="form-label m-0" style="margin-top: 0rem !important"
+                                            for="job_type_logistic">Logistic Job</label>
 
                                     </div>
                                     <div class="mb-3 d-flex align-items-center gap-1 col-md-6">
                                         <input type="radio" name="job_type[]" id="job_type_crane" value="Crane Job">
-                                        <label class="form-label m-0" for="job_type_crane">Crane Job</label>
+                                        <label class="form-label m-0" style="margin-top: 0rem !important"
+                                            for="job_type_crane">Crane Job</label>
                                     </div>
                                 </div>
-                                <div class="row">
+                                <div class="row gx-2">
                                     <div class="mb-3 col-md-6">
                                         <label for="add_job_time" class="form-label">Job Time<span
                                                 class="text-danger">*</span>
@@ -377,7 +418,7 @@
                                     </div>
                                 </div>
 
-                                <div class="row">
+                                <div class="row gx-2">
                                     <div class="mb-3 col-md-6">
                                         <label for="add_client_name" class="form-label">Client Name<span
                                                 class="text-danger">*</span>
@@ -389,7 +430,8 @@
                                     <div class="mb-3 col-md-6">
                                         <label for="add_rigger_assigned" class="form-label">Assign Rigger<span
                                                 class="text-danger">*</span></label>
-                                        <select class="form-control" name="add_rigger_assigned" id="add_rigger_assigned" required>
+                                        <select class="form-control" name="add_rigger_assigned" id="add_rigger_assigned"
+                                            required>
                                             <option selected>Choose</option>
                                             <option value="1">1</option>
                                             <option value="2">2</option>
@@ -397,14 +439,14 @@
                                         <span class="text-danger" id="add_rigger_assigned_error"></span>
                                     </div>
                                 </div>
-                                <div class="d-flex">
-                                    <div class="mb-3 m-1 col-md-6">
+                                <div class="row gx-2">
+                                    <div class="mb-3 col-md-6">
                                         <label for="add_eventStart" class="form-label">Date<span
                                                 class="text-danger">*</span></label>
                                         <input type="date" class="form-control" id="add_date" name="add_date" required>
                                         <span class="text-danger" id="add_date_error"></span>
                                     </div>
-                                    <div class="mb-3 m-1 col-md-6">
+                                    <div class="mb-3 col-md-6">
                                         <label for="add_address" class="form-label">Address<span
                                                 class="text-danger">*</span></label>
                                         <input type="text" class="form-control" id="add_address" name="add_address"
@@ -412,15 +454,15 @@
                                         <span class="text-danger" id="add_address_error"></span>
                                     </div>
                                 </div>
-                                <div class="d-flex">
-                                    <div class="mb-3 m-1 col-md-6">
+                                <div class="row gx-2">
+                                    <div class="mb-3 col-md-6">
                                         <label for="add_eventStart" class="form-label">Start Time<span
                                                 class="text-danger">*</span></label>
                                         <input type="datetime-local" class="form-control" id="add_eventStart"
                                             name="add_eventStart" required>
                                         <span class="text-danger" id="start_date_error"></span>
                                     </div>
-                                    <div class="mb-3 m-1 col-md-6">
+                                    <div class="mb-3 col-md-6">
                                         <label for="add_eventEnd" class="form-label">End Time<span
                                                 class="text-danger">*</span></label>
                                         <input type="datetime-local" class="form-control" id="add_eventEnd"
@@ -435,7 +477,7 @@
                                     <span class="text-danger" id="add_notes_error"></span>
                                 </div>
 
-                                <div class="row">
+                                <div class="row gx-2">
                                     <div class="mb-3 col-md-6">
                                         <label for="add_supplier_name" class="form-label">Supplier Name<span
                                                 class="text-danger">*</span></label>
@@ -457,11 +499,19 @@
                                     </div>
                                 </div>
 
-                                <div class="mb-3 py-2 rounded rounded-1 ps-1">
-                                    <label for="add_image" class="form-label">Upload Image<span
-                                            class="text-danger">*</span></label>
+                                <div class="mb-3 py-2 ps-1">
+                                    <button class="atc-btn w-25">Attachment<span class="text-danger">*</span></button>
                                     <br>
-                                    <input type="file" name="add_image" id="add_image" required>
+                                    <div class="row">
+                                        <div class="col-md-6 d-flex align-items-center gap-2 mt-2">
+                                            <!-- <input class="form-control w-50"
+                                            style="border: none; background-color: #FFBBBB;" type="file"> -->
+                                            <button class="text-dark upload-btn #000 w-50">Upload Image</button>
+                                            <input type="text" class="form-control" placeholder="Title">
+                                            <i class="fa-solid fa-xmark"></i>
+                                        </div>
+                                    </div>
+                                    <!-- <input style="border: none; background-color: #FFBBBB;" class="mt-2" type="file" name="add_image" id="add_image" required> -->
                                     <span class="text-danger" id="add_image_error"></span>
                                 </div>
 
@@ -471,7 +521,8 @@
 
                                 </div>
                                 <div class="modal-footer text-center justify-content-center">
-                                    <button data-bs-dismiss="modal" type="button" class="save-btn px-5" id="add_saveEvent">Close</button>
+                                    <button data-bs-dismiss="modal" type="button" class="save-btn px-5"
+                                        id="add_saveEvent">Close</button>
                                     <button type="button" class="save-btn px-5" id="add_saveEvent">Save</button>
                                 </div>
                             </form>
@@ -735,7 +786,7 @@
             </div>
 
 
-            <div class="add-job px-3 py-4">
+            <div class="add-job px-3">
                 <h6 class="text-danger">
                     ADD JOB
                 </h6>
@@ -832,15 +883,13 @@
                             </label>
                             <input class="form-control rounded-1 py-1 px-2 w-100" id="address" type="text"
                                 placeholder="Enter Supplier Name Here">
-                            <span class="pt-3">
-                                Upload Images
-                            </span>
+                            <button class="atc-btn w-25 mt-2">Attachment<span class="text-danger">*</span></button>
                             <div class="d-flex align-items-center gap-2 mt-2">
-                                <button class="form-label px-3 py-1">
-                                    Choose File
-                                </button>
-                                <span>No Choosen File</span>
+                                <button class="text-dark upload-btn #000 w-50 px-0">Upload Image</button>
+                                <input type="text" class="form-control" placeholder="Title">
+                                <i class="fa-solid fa-xmark"></i>
                             </div>
+
                         </div>
 
 
