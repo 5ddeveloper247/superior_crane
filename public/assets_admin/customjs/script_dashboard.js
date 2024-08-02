@@ -145,6 +145,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     var filterArrow = document.getElementById('filterArrow');
     var filterSection = document.getElementById('filterSection');
+    var eventDot = document.querySelector('.fc-daygrid-event-dot');
 
     filterSection.addEventListener('shown.bs.collapse', function () {
         filterArrow.classList.add('rotate');
@@ -361,15 +362,20 @@ document.addEventListener('DOMContentLoaded', function () {
             eventEl.appendChild(statusDropdown);
             openDropdown = statusDropdown;
         },
-        eventDidMount: function (info) {
+
+        eventDidMount: function(info) {
             if (info.event.extendedProps.status === 1) {
+                info.el.querySelector('.fc-daygrid-event-dot').style.backgroundColor = '#59ff2f';
                 info.el.style.backgroundColor = '#C9FFBB';
             } else if (info.event.extendedProps.status === 2) {
+                info.el.querySelector('.fc-daygrid-event-dot').style.backgroundColor = 'blue';
                 info.el.style.backgroundColor = '#FFBBBB';
             } else if (info.event.extendedProps.status === 3) {
+                info.el.querySelector('.fc-daygrid-event-dot').style.backgroundColor = 'red';
                 info.el.style.backgroundColor = '#FFFCBB';
             }
         }
+        
     });
     calendar.render();
     document.getElementById("add_saveEvent").onclick = function () {

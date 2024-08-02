@@ -272,7 +272,7 @@
             padding: 5px;
             cursor: pointer;
             /* position: absolute;
-                                                                                                                                    z-index: 1000; */
+                                                                                                                                        z-index: 1000; */
         }
 
         .status-dropdown li:hover {
@@ -286,6 +286,14 @@
 
         .fc .fc-daygrid-event {
             z-index: unset !important;
+        }
+
+        .fc-daygrid-event-dot {
+            height: 15px;
+            width: 6px;
+            border-radius: 0px !important;
+            border: none;
+
         }
 
         .atc-btn {
@@ -329,7 +337,21 @@
                 </small>
             </a>
         </div>
-        <div class="d-flex">
+        <div class="d-flex align-items-center">
+            <div class="legends d-flex gap-3 align-items-center justify-content-center me-3">
+                <div class="d-flex align-items-center gap-1">
+                    <div style="background-color: red; height: 13px; width: 7px;"></div>
+                    <small>Problem</small>
+                </div>
+                <div class="d-flex align-items-center gap-1">
+                    <div style="background-color: yellow; height: 13px; width: 7px;"></div>
+                    <small>Draft</small>
+                </div>
+                <div class="d-flex align-items-center gap-1">
+                    <div style="background-color: lightgreen; height: 13px; width: 7px;"></div>
+                    <small>Good To Go</small>
+                </div>
+            </div>
             <li class="nav-item" role="presentation">
                 <button class="nav-link active" id="calender-tab" data-bs-toggle="tab"
                     data-bs-target="#calender-tab-pane" type="button" role="tab" aria-controls="calender-tab-pane"
@@ -368,12 +390,14 @@
                                     <div class="mb-3 d-flex align-items-center gap-1 col-md-2">
                                         <input type="radio" name="job_type[]" id="job_type_logistic"
                                             value="Logistic Job" checked>
-                                        <label class="form-label m-0" style="margin-top: 0rem !important" for="job_type_logistic">Logistic Job</label>
+                                        <label class="form-label m-0" style="margin-top: 0rem !important"
+                                            for="job_type_logistic">Logistic Job</label>
 
                                     </div>
                                     <div class="mb-3 d-flex align-items-center gap-1 col-md-6">
                                         <input type="radio" name="job_type[]" id="job_type_crane" value="Crane Job">
-                                        <label class="form-label m-0" style="margin-top: 0rem !important" for="job_type_crane">Crane Job</label>
+                                        <label class="form-label m-0" style="margin-top: 0rem !important"
+                                            for="job_type_crane">Crane Job</label>
                                     </div>
                                 </div>
                                 <div class="row gx-2">
@@ -861,7 +885,7 @@
                                 placeholder="Enter Supplier Name Here">
                             <button class="atc-btn w-25 mt-2">Attachment<span class="text-danger">*</span></button>
                             <div class="d-flex align-items-center gap-2 mt-2">
-                                <button class="text-dark upload-btn #000 w-50 px-0" >Upload Image</button>
+                                <button class="text-dark upload-btn #000 w-50 px-0">Upload Image</button>
                                 <input type="text" class="form-control" placeholder="Title">
                                 <i class="fa-solid fa-xmark"></i>
                             </div>
