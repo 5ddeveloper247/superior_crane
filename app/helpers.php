@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
+use App\Models\Roles;
 
 if (!function_exists('saveMultipleImages')) {
 
@@ -129,6 +130,53 @@ if (!function_exists('sendMailAttachment')) {
             Log::error($e->getMessage());
             echo "An error occurred while sending the email: " . $e->getMessage();
             return false;
+        }
+    }
+
+    if (!function_exists('sendMailAttachment')) {
+        function sendMailAttachment($send_to_name, $send_to_email, $email_from_name, $subject, $body, $attachment_path)
+        {
+            try {
+                $mail_val = [
+                    'send_to_name' => $send_to_name,
+                    'send_to' => $send_to_email,
+                    'email_from' => 'noreply@pancard.com',
+                    'email_from_name' => $email_from_name,
+                    'subject' => $subject,
+                ];
+
+                Mail::send('emails.mail', ['body' => $body], function ($send) use ($mail_val, $attachment_path) {
+                    $send->from($mail_val['email_from'], $mail_val['email_from_name']);
+                    $send->replyTo($mail_val['email_from'], $mail_val['email_from_name']);
+                    $send->to($mail_val['send_to'], $mail_val['send_to_name'])->subject($mail_val['subject']);
+                    
+                    // Attach the file
+                    if (!empty($attachment_path) && file_exists($attachment_path)) {
+                        $send->attach($attachment_path);
+                    }
+                });
+
+                return true;
+            } catch (\Exception $e) {
+                Log::error($e->getMessage());
+                echo "An error occurred while sending the email: " . $e->getMessage();
+                return false;
+            }
+        }
+    }
+
+    if (!function_exists('getRoles')) {
+        function getRoles()
+        {
+            try {
+                
+                $roles = Roles::get();
+                return $roles;
+            } catch (\Exception $e) {
+                Log::error($e->getMessage());
+                echo "An error occurred while sending the email: " . $e->getMessage();
+                return false;
+            }
         }
     }
 }

@@ -32,6 +32,11 @@ Route::group(['prefix' => '/'], function () {
         Route::post('/admin/getProfilePageData', [AdminController::class, 'getProfilePageData'])->name('admin.getProfilePageData');
         Route::post('/admin/updateAdminProfile', [AdminController::class, 'updateAdminProfile'])->name('admin.updateAdminProfile');
         
+        Route::post('/admin/getUsersPageData', [AdminController::class, 'getUsersPageData'])->name('admin.getUsersPageData');
+        Route::post('/admin/saveUserData', [AdminController::class, 'saveUserData'])->name('admin.saveUserData');
+        Route::post('/admin/changeUserStatus', [AdminController::class, 'changeUserStatus'])->name('admin.changeUserStatus');
+        Route::post('/admin/getSpecificUserDetails', [AdminController::class, 'getSpecificUserDetails'])->name('admin.getSpecificUserDetails');
+        
         
         
     });

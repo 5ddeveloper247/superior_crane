@@ -27,7 +27,7 @@ class JobController extends Controller
             'end_time' => 'required|date_format:Y-m-d H:i:s',
             'supplier_name' => 'required|string|max:50',
             'notes' => 'nullable|string',
-            'scci' => 'boolean',
+            // 'scci' => 'boolean',
             'job_images' => 'required',
             // 'job_images.*' => 'image|mimes:jpeg,png,jpg,gif|max:1024',
             'status' => 'required',
@@ -55,7 +55,7 @@ class JobController extends Controller
             $job->end_time = $request->end_time;
             $job->supplier_name = $request->supplier_name;
             $job->notes = $request->notes;
-            $job->scci = $request->scci ?? false;
+            // $job->scci = $request->scci ?? false;
             $job->status = $request->status;
             $job->created_by = $request->created_by;
             
@@ -124,7 +124,7 @@ class JobController extends Controller
             'end_time' => 'required|date_format:Y-m-d H:i:s',
             'supplier_name' => 'required|string|max:50',
             'notes' => 'nullable|string',
-            'scci' => 'boolean',
+            // 'scci' => 'boolean',
             'job_images' => 'required',
             // 'job_image.*' => 'image|mimes:jpeg,png,jpg,gif|max:1024',
             'status' => 'required',
@@ -153,7 +153,7 @@ class JobController extends Controller
                 $job->end_time = $request->end_time;
                 $job->supplier_name = $request->supplier_name;
                 $job->notes = $request->notes;
-                $job->scci = $request->scci ?? false;
+                // $job->scci = $request->scci ?? false;
                 $job->status = $request->status;
                 $job->created_by = $request->created_by;
                 $job->save();

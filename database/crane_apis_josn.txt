@@ -76,7 +76,7 @@ live url: https://beta.scserver.org/api/sc/v1/job/add
 
 //job_image optional
 {
-    "job_type": "1",
+    "job_type": "1",    //1=>scci(logistic), 2=>crane job, 3=> other
     "job_time": "14:30",
     "equipment_to_be_used": "Crane Model X",
     "client_name": "John Doe",
@@ -87,7 +87,6 @@ live url: https://beta.scserver.org/api/sc/v1/job/add
     "end_time": "2024-07-18 17:30:20",
     "supplier_name": "ABC Equipment Supplies",
     "notes": "Urgent job, please prioritize.",
-    "scci": true,
     "job_images": [
         {
             "file": "/9j/4AAQSkZJRgABAQEAAAAAAAD/4QBWRXhpZgAATU0AKgAAAAgAAYdpAAQA ...", 
@@ -110,7 +109,7 @@ live url: https://beta.scserver.org/api/sc/v1/job/updatejob
 
 {   
     "job_id": "1",
-    "job_type": "1", // 1=>logistic , 2=>crane
+    "job_type": "1",    //1=>scci(logistic), 2=>crane job, 3=> other
     "job_time": "14:30",
     "equipment_to_be_used": "Crane Model X",
     "client_name": "John Doe",
@@ -121,7 +120,6 @@ live url: https://beta.scserver.org/api/sc/v1/job/updatejob
     "end_time": "2024-07-18 17:30:20",
     "supplier_name": "ABC Equipment Supplies",
     "notes": "Urgent job, please prioritize.",
-    "scci": true,
     "job_image": [
         {
             "file": "/9j/4AAQSkZJRgABAQEAAAAAAAD/4QBWRXhpZgAATU0AKgAAAAgAAYdpAAQA ...", 
@@ -133,7 +131,7 @@ live url: https://beta.scserver.org/api/sc/v1/job/updatejob
         }
     ],
     "status": "1",      //0=>problem, 1=>good to go, 2=> draft  
-    "created_by": 2
+    "created_by": 2     // current login user id
 }
 
 Filter Jobs

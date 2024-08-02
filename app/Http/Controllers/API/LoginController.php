@@ -30,14 +30,20 @@ class LoginController extends Controller
         try {
         
             $credentials = $request->only('email', 'password');
-
             if (Auth::attempt($credentials)) {
                 $user = User::where('email', $request->email)->first();
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Logged in successfully',
-                    'user' => $user
-                ], 200);
+                if($user->role_id == '2' || $user->role_id == '3' || $user->role_id == '4' || $user->role_id == '5'){
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Logged in successfully',
+                        'user' => $user
+                    ], 200);
+                }else{
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Invalid Credentials'
+                    ], 401);
+                }
             }
 
             return response()->json([

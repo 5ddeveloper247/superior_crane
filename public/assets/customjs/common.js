@@ -156,12 +156,10 @@ function readAllNotificationsResponse(response) {
 }
 
 
-$('input').on('keyup', function() {
+$('input, textarea, select').on('keyup, change', function() {
     $(this).removeClass('is-invalid');
 });
-$('textarea').on('keyup', function() {
-    $(this).removeClass('is-invalid');
-});
+;
 
 $(document).on('click', '.filter-toggle', function (e) {
 	
