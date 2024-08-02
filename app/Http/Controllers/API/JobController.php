@@ -13,6 +13,7 @@ class JobController extends Controller
 {
     public function add_job(Request $request)
     {
+        
         $validator = Validator::make($request->all(), [
             'job_type' => 'required|string|max:50',
             'job_time' => 'required|date_format:H:i',
@@ -27,8 +28,8 @@ class JobController extends Controller
             'supplier_name' => 'required|string|max:50',
             'notes' => 'nullable|string',
             'scci' => 'boolean',
-            'job_image' => 'required',
-            'job_image.*' => 'image|mimes:jpeg,png,jpg,gif|max:1024',
+            'job_images' => 'required',
+            // 'job_images.*' => 'image|mimes:jpeg,png,jpg,gif|max:1024',
             'status' => 'required',
             'created_by' => 'required|integer'
         ]);
@@ -64,7 +65,7 @@ class JobController extends Controller
                 'success' => true,
                 'message' => 'Job added successfully'
             ], 200);
-            $req_file = 'job_image';
+            $req_file = 'job_images';
             $path = '/uploads/job_images/' . $job->id;
 
             if ($request->hasFile($req_file)) {
@@ -73,9 +74,12 @@ class JobController extends Controller
                     File::makeDirectory(public_path($path), 0777, true);
                 }
                 
-                $uploadedFiles = $request->file($req_file);
+                // $uploadedFiles = $request->file($req_file);
+                $uploadedFiles = $request->job_images;
 
-                foreach ($uploadedFiles as $file) {
+                foreach ($uploadedFiles as $value) {
+                    $file = $value->file;
+                    $file_title = $value->title;
                     $file_extension = $file->getClientOriginalExtension();
                     $date_append = Str::random(32);
                     $file->move(public_path($path), $date_append . '.' . $file_extension);
@@ -84,7 +88,7 @@ class JobController extends Controller
 
                     $JobImages = new JobImages();
                     $JobImages->landlord_id = $job->id;
-                    $JobImages->file_name = $file->getClientOriginalName();
+                    $JobImages->file_name = $file_title;//$file->getClientOriginalName();
                     $JobImages->path = $savedFilePaths;
                     $JobImages->save();
                 }
@@ -121,8 +125,8 @@ class JobController extends Controller
             'supplier_name' => 'required|string|max:50',
             'notes' => 'nullable|string',
             'scci' => 'boolean',
-            'job_image' => 'required',
-            'job_image.*' => 'image|mimes:jpeg,png,jpg,gif|max:1024',
+            'job_images' => 'required',
+            // 'job_image.*' => 'image|mimes:jpeg,png,jpg,gif|max:1024',
             'status' => 'required',
             'created_by' => 'required|integer'
         ]);
@@ -155,7 +159,7 @@ class JobController extends Controller
                 $job->save();
     
 
-                $req_file = 'job_image';
+                $req_file = 'job_images';
                 $path = '/uploads/job_images/' . $job->id;
 
                 if ($request->hasFile($req_file)) {
@@ -173,9 +177,12 @@ class JobController extends Controller
                         File::makeDirectory(public_path($path), 0777, true);
                     }
                     
-                    $uploadedFiles = $request->file($req_file);
+                    // $uploadedFiles = $request->file($req_file);
+                $uploadedFiles = $request->job_images;
 
-                    foreach ($uploadedFiles as $file) {
+                    foreach ($uploadedFiles as $value) {
+                        $file = $value->file;
+                        $file_title = $value->title;
                         $file_extension = $file->getClientOriginalExtension();
                         $date_append = Str::random(32);
                         $file->move(public_path($path), $date_append . '.' . $file_extension);
@@ -184,7 +191,7 @@ class JobController extends Controller
 
                         $JobImages = new JobImages();
                         $JobImages->landlord_id = $job->id;
-                        $JobImages->file_name = $file->getClientOriginalName();
+                        $JobImages->file_name = $file_title;//$file->getClientOriginalName();
                         $JobImages->path = $savedFilePaths;
                         $JobImages->save();
                     }

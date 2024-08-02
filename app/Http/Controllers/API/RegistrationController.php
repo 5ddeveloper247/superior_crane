@@ -57,4 +57,32 @@ class RegistrationController extends Controller
             ], 500);
         }
     }
+
+    public function getAllUsersList(Request $request)
+    {
+        try {
+
+            $users = User::whereIn('role_id', ['3','4','5'])->get();
+            
+            if($users) {
+                return response()->json([
+                    'success' => true,
+                    'users_list' => $users,
+                ], 200);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No Data Found',
+                ], 401);
+            }
+
+        } catch (\Exception $e) {
+            // Log the error for debugging purposes
+            Log::error('Error loading job: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => "Oops! Network Error",
+            ], 500);
+        }
+    }
 }

@@ -64,14 +64,19 @@ live url: https://beta.scserver.org/api/sc/v1/resetpassword
 }
 
 
+Get all users list for lov Api
+url: http://127.0.0.1:8000/api/sc/v1/userslist
+live url: https://beta.scserver.org/api/sc/v1/userslist
+type: GET
 
 
 Add Job Api
 url: http://127.0.0.1:8000/api/sc/v1/job/add
+live url: https://beta.scserver.org/api/sc/v1/job/add
 
 //job_image optional
 {
-    "job_type": "1", // 1=>logistic , 2=>crane
+    "job_type": "1",
     "job_time": "14:30",
     "equipment_to_be_used": "Crane Model X",
     "client_name": "John Doe",
@@ -83,8 +88,17 @@ url: http://127.0.0.1:8000/api/sc/v1/job/add
     "supplier_name": "ABC Equipment Supplies",
     "notes": "Urgent job, please prioritize.",
     "scci": true,
-    "job_image": "Job Image",   // multiple images
-    "status": "1",
+    "job_images": [
+        {
+            "file": "/9j/4AAQSkZJRgABAQEAAAAAAAD/4QBWRXhpZgAATU0AKgAAAAgAAYdpAAQA ...", 
+            "title": "Title for Image 1"
+        },
+        {
+            "file": "/9j/4AAQSkZJRgABAQEAAAAAAAD/2wBDAAYEBQYEBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcU ...", 
+            "title": "Title for Image 2"
+        }
+    ],
+    "status": "2",
     "created_by": 2
 }
 
@@ -92,6 +106,7 @@ url: http://127.0.0.1:8000/api/sc/v1/job/add
 update job api
 
 url:  http://127.0.0.1:8000/api/sc/v1/job/updatejob
+live url: https://beta.scserver.org/api/sc/v1/job/updatejob
 
 {   
     "job_id": "1",
@@ -107,14 +122,24 @@ url:  http://127.0.0.1:8000/api/sc/v1/job/updatejob
     "supplier_name": "ABC Equipment Supplies",
     "notes": "Urgent job, please prioritize.",
     "scci": true,
-    "job_image": "Job Image",   // multiple images
-    "status": "1",
+    "job_image": [
+        {
+            "file": "/9j/4AAQSkZJRgABAQEAAAAAAAD/4QBWRXhpZgAATU0AKgAAAAgAAYdpAAQA ...", 
+            "title": "Title for Image 1"
+        },
+        {
+            "file": "/9j/4AAQSkZJRgABAQEAAAAAAAD/2wBDAAYEBQYEBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcU ...", 
+            "title": "Title for Image 2"
+        }
+    ],
+    "status": "1",      //0=>problem, 1=>good to go, 2=> draft  
     "created_by": 2
 }
 
 Filter Jobs
 
 url: http://127.0.0.1:8000/api/sc/v1/job/filter_jobs
+live url: https://beta.scserver.org/api/sc/v1/job/filter_jobs
 
 {
     "date":"2024-12-10"
@@ -123,6 +148,7 @@ url: http://127.0.0.1:8000/api/sc/v1/job/filter_jobs
 Advance Filter Jobs
 
 url: http://127.0.0.1:8000/api/sc/v1/job/advance_filter_jobs
+live url: https://beta.scserver.org/api/sc/v1/job/advance_filter_jobs
 
 {
     "job_type":"1",     // 1=>logistic, 2=>crane
@@ -133,14 +159,14 @@ url: http://127.0.0.1:8000/api/sc/v1/job/advance_filter_jobs
     "end_date":"2024-01-19",
     "assigned_rigger_transporter":"1",  // userid
     "supplier_name": "ABC Equipment Supplies1",
-    "status": "1"
+    "status": "1"   //0=>problem, 1=>good to go, 2=> draft  
 }
 
 
 get job details API
 
 url: http://127.0.0.1:8000/api/sc/v1/job/job_details
-
+live url: https://beta.scserver.org/api/sc/v1/job/job_details
 
 {
     "job_id":"2"
@@ -149,11 +175,11 @@ url: http://127.0.0.1:8000/api/sc/v1/job/job_details
 Change job status api
 
 url: http://127.0.0.1:8000/api/sc/v1/job/changestatus
-
+live url: https://beta.scserver.org/api/sc/v1/job/changestatus
 
 {
     "job_id":"1",
-    "status":"3"
+    "status":"1"    //0=>problem, 1=>good to go, 2=> draft  
 }
 
 

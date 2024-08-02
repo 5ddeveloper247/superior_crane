@@ -26,7 +26,8 @@ Route::group(['prefix' => '/'], function () {
         /************** PAGE ROUTES ******************/
         Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
         Route::get('/profile', [AdminController::class, 'profile'])->name('profile');
-       
+        Route::get('/users', [AdminController::class, 'users'])->name('users');
+        
         /************** AJAX ROUTES ******************/
         Route::post('/admin/getProfilePageData', [AdminController::class, 'getProfilePageData'])->name('admin.getProfilePageData');
         Route::post('/admin/updateAdminProfile', [AdminController::class, 'updateAdminProfile'])->name('admin.updateAdminProfile');

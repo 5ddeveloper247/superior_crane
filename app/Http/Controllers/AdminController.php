@@ -84,6 +84,12 @@ class AdminController extends Controller
         $data['pageTitle'] = 'Profile';
         return view('admin/profile')->with($data);
     }
+
+    public function users(Request $request)
+    {
+        $data['pageTitle'] = 'Users';
+        return view('admin/users')->with($data);
+    }
     
     public function getProfilePageData(Request $request){
 

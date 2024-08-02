@@ -867,10 +867,5 @@
 @endsection
 
 @push('scripts')
-    <script>
-
-        
-    </script>
-
     <script src="{{ asset('assets_admin/customjs/script_dashboard.js') }}"></script>
 @endpush
