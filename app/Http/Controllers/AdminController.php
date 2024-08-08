@@ -14,6 +14,16 @@ use Illuminate\Support\Str;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Roles;
+use App\Models\JobModel;
+use App\Models\JobImages;
+use App\Models\RiggerTicket;
+use App\Models\RiggerTicketImages;
+
+use App\Models\TransportationTicketModel;
+use App\Models\TransportationTicketImages;
+
+
+
 
 class AdminController extends Controller
 {
@@ -90,6 +100,26 @@ class AdminController extends Controller
         $data['pageTitle'] = 'Users';
         return view('admin/users')->with($data);
     }
+
+    public function Jobs(Request $request)
+    {
+        $data['pageTitle'] = 'Jobs';
+        return view('admin/Jobs')->with($data);
+    }
+
+    public function rigger_tickets(Request $request)
+    {
+        $data['pageTitle'] = 'Rigger_tickets';
+        return view('admin/rigger_tickets')->with($data);
+    }
+
+    public function transportation(Request $request)
+    {
+        $data['pageTitle'] = 'Transportation';
+        return view('admin/transportation')->with($data);
+    }
+
+
     
     public function getProfilePageData(Request $request){
 
@@ -146,6 +176,7 @@ class AdminController extends Controller
 
         $user->name = $request->first_name;
         $user->phone_number = $request->phone_number;
+        $user->updated_by = Auth::user()->id;
 
         if($request->passwordchange_check == 1){
             $user->password= bcrypt($request->password);
@@ -221,7 +252,9 @@ class AdminController extends Controller
             $user->email = $request->email;
             $user->role_id = $request->user_role;
             $user->password= bcrypt($request->password);
+            $user->created_by = Auth::user()->id;
         }else{
+            $user->updated_by = Auth::user()->id;
             if($request->password != ''){
                 $user->password= bcrypt($request->password);
             }
@@ -269,7 +302,7 @@ class AdminController extends Controller
 
     public function getSpecificUserDetails(Request $request){
         $user_id = $request->user_id;
-        $user = User::where('id', $user_id)->where('role_id','!=','0')->with(['role'])->first();
+        $user = User::where('id', $user_id)->where('role_id','!=','0')->with(['role','createdBy','updatedBy'])->first();
         if($user){
             $data['user_detail'] = $user;
             return response()->json(['status' => 200, 'message' => "", 'data'=> $data]);
@@ -277,5 +310,489 @@ class AdminController extends Controller
             return response()->json(['status' => 402, 'message' => "Something went wrong..."]);
         }
     }
+
+    public function searchAdminListing(Request $request){
+        $search_user_num = str_replace(['U','u', '-'], '', $request->user_number);
+        $search_name = $request->name;
+        $search_email = $request->email;
+        $search_phone = $request->phone_number;
+        $search_status = $request->status;
+        $search_flag = $request->flag;
+
+        if($search_user_num == '' && $search_name == '' && $search_email == '' && $search_phone == '' && $search_status == ''){
+            return response()->json(['status' => 402, 'message' => 'Choose atleast one filter first!']);
+        }
+
+        
+        if($search_flag == 'admin'){
+            $query = User::where('role_id', '1');
+        }
+        if($search_flag == 'manager'){
+            $query = User::where('role_id', '2');
+        }
+        if($search_flag == 'user'){
+            $query = User::whereIn('role_id', ['3','4','5']);
+        }
+        
+
+        if (!is_null($search_user_num)) {
+            $query->where('id', $search_user_num);
+        }
+        if (!is_null($search_name)) {
+            $query->where('name', 'like', '%' . $search_name . '%');
+        }
+
+        if (!is_null($search_email)) {
+            $query->where('email', 'like', '%' . $search_email . '%');
+        }
+
+        if (!is_null($search_phone)) {
+            // $query->where('phone_number', $search_phone);
+            $query->where('phone_number', 'like', '%' . $search_phone . '%');
+        }
+
+        if (!is_null($search_status)) {
+            $query->where('status', $search_status);
+        }
+
+        $data['listing'] = $query->get();
+        $data['flag'] = $search_flag;
+
+        return response()->json(['status' => 200, 'data' => $data]);
+    }
+
+    public function deleteSpecificUser(Request $request){
+        $user_id = $request->user_id;
+        $user = User::where('id', $user_id)->where('role_id','!=','0')->first();
+        if($user){
+            User::where('id', $user_id)->delete();
+            return response()->json(['status' => 200, 'message' => "User deleted successfully"]);
+        }else{
+            return response()->json(['status' => 402, 'message' => "Something went wrong..."]);
+        }
+    }
     
+    public function getDashboardPageData(Request $request){
+
+        $users_list = User::whereIn('role_id', ['3','4','5'])->get();
+        $data['users_list'] = $users_list;
+        $data['jobs_list'] = JobModel::with(['userAssigned'])->orderBy('id','desc')->get();
+        $data['total_scci'] = JobModel::where('job_type', '1')->count();
+        $data['total_crane'] = JobModel::where('job_type', '2')->count();
+        $data['total_other'] = JobModel::where('job_type', '3')->count();
+        $data['total_jobs'] = JobModel::count();
+        
+        return response()->json(['status' => 200, 'message' => "",'data' => $data]);
+    }
+
+    public function getAllJobs(Request $request){
+
+        
+        $jobs = JobModel::all(); // Retrieve job data from the database
+        $events = $jobs->map(function ($job) {
+            return [
+                'id' => $job->id,
+                'title' => $job->client_name,
+                'start' => $job->start_time,
+                'end' => $job->end_time,
+                'end' => $job->end_time,
+                'extendedProps' => [
+                    'type' => $job->job_type,
+                    'status' => $job->status,
+                ],
+            ];
+        });
+        
+        return response()->json($events);
+    }
+
+    public function saveJobData(Request $request){
+        
+        if($request->job_id == ''){
+            $validatedData = $request->validate([
+                'job_type' => 'required',
+                'job_time' => 'required|date_format:H:i',
+                'client_name' => 'required|string|max:50',
+                'equipment_to_be_used' => 'required|string|max:255',
+                'rigger_assigned' => 'required|numeric',
+                'date' => 'required|date',
+                'address' => 'required|string|max:200',
+                'start_time' => 'required|date_format:Y-m-d\TH:i:s',
+                'end_time' => 'required|date_format:Y-m-d\TH:i:s',
+                'supplier_name' => 'required|string|max:50',
+                'notes' => 'nullable|string',
+                // 'scci' => 'boolean',
+                'job_images' => 'required',
+                'job_images.*' => 'required|image|mimes:jpeg,png,jpg,gif,svg,pdf|max:2048',
+                'job_images_title' => 'required',
+                'job_images_title.*' => 'required|string|max:255',
+                // 'status' => 'required',
+            ]); 
+        }else{
+            $validatedData = $request->validate([
+                'job_id' => 'required',
+                'job_type' => 'required',
+                'job_time' => 'required|date_format:H:i',
+                'client_name' => 'required|string|max:50',
+                'equipment_to_be_used' => 'required|string|max:255',
+                'rigger_assigned' => 'required|numeric',
+                'date' => 'required|date',
+                'address' => 'required|string|max:200',
+                'start_time' => 'required|date_format:Y-m-d\TH:i:s',
+                'end_time' => 'required|date_format:Y-m-d\TH:i:s',
+                'supplier_name' => 'required|string|max:50',
+                'notes' => 'nullable|string',
+                // 'job_images' => 'required',
+                'job_images.*' => 'required|image|mimes:jpeg,png,jpg,gif,svg,pdf|max:2048',
+                // 'job_images_title' => 'required',
+                'job_images_title.*' => 'required|string|max:255',
+                'status' => 'required',
+            ]); 
+        }
+        
+        if($request->job_id == ''){
+            $job = new JobModel;
+            $job->created_by = Auth::user()->id;
+        }else{
+            $job = JobModel::where('id', $request->job_id)->first();
+            $job->updated_by = Auth::user()->id;
+        }
+        
+        $job->job_type = $request->job_type;
+        $job->job_time = $request->job_time;
+        $job->equipment_to_be_used = $request->equipment_to_be_used;
+        $job->client_name = $request->client_name;
+        $job->rigger_assigned = $request->rigger_assigned;
+        $job->date = $request->date;
+        $job->address = $request->address;
+        $job->start_time = $request->start_time;
+        $job->end_time = $request->end_time;
+        $job->supplier_name = $request->supplier_name;
+        $job->notes = $request->notes;
+        $job->status = $request->status;
+        
+        $job->save();
+
+        if(isset($request->deletedFileIds) && $request->deletedFileIds != ''){
+            $deletedIdsArr = explode(',', $request->deletedFileIds);
+            foreach($deletedIdsArr as $index => $value){
+                $JobImage = JobImages::where('id', $value)->first();
+                deleteImage(str_replace(url('/public'),"",$JobImage->path));
+                JobImages::where('id', $value)->delete();
+            }   
+        }
+
+        $req_file = 'job_images';
+        $path = '/uploads/job_images/' . $job->id;
+
+        if ($request->hasFile($req_file)) {
+
+            if (!File::isDirectory(public_path($path))) {
+                File::makeDirectory(public_path($path), 0777, true);
+            }
+            
+            // $uploadedFiles = $request->file($req_file);
+            $uploadedFiles = $request->job_images;
+            $uploadedFilesTitle = $request->job_images_title;
+
+            foreach ($uploadedFiles as $index => $file) {
+                
+                $file_title = $uploadedFilesTitle[$index];
+
+                $file_extension = $file->getClientOriginalExtension();
+                $date_append = Str::random(32);
+                $file->move(public_path($path), $date_append . '.' . $file_extension);
+
+                $savedFilePaths = '/public' . $path . '/' . $date_append . '.' . $file_extension;//
+
+                $JobImages = new JobImages();
+                $JobImages->job_id = $job->id;
+                $JobImages->file_name = $file_title;//$file->getClientOriginalName();
+                $JobImages->path = $savedFilePaths;
+                $JobImages->save();
+            }
+        }
+
+        if($request->job_id == ''){
+            return response()->json(['status' => 200, 'message' => 'Job Added Successfully']);
+        }else{
+            return response()->json(['status' => 200, 'message' => 'Job Updated Successfully']);
+        }
+    }
+
+    public function changeJobStatus(Request $request){
+        $job_id = $request->job_id;
+        $status = $request->status;
+        $job = JobModel::where('id', $job_id)->first();
+        if($job){
+            $job->status = $status;
+            $job->save();
+            return response()->json(['status' => 200, 'message' => "Job status updated successfully."]);
+        }else{
+            return response()->json(['status' => 402, 'message' => "Something went wrong..."]);
+        }
+    }
+
+    public function viewJobDetails(Request $request){
+        $job_id = $request->job_id;
+        
+        $job = JobModel::where('id', $job_id)->with(['jobImages','createdBy','updatedBy'])->first();
+        if($job){
+            $data['job_detail'] = $job;
+            return response()->json(['status' => 200, 'message' => "", 'data' => $data]);
+        }else{
+            return response()->json(['status' => 402, 'message' => "Job not found..."]);
+        }
+    }
+    
+    public function deleteSpecificJob(Request $request){
+        $job_id = $request->job_id;
+        $job = JobModel::where('id', $job_id)->with(['jobImages'])->first();
+        if($job){
+            $job_images = $job->job_images != null ? $job->job_images : array();
+            if(count($job_images) > 0){
+                foreach($job_images as $image){
+                    deleteImage(str_replace(url('/public'),"",$image->path));
+                    JobImages::where('id', $image->id)->delete();
+                } 
+            }
+            JobModel::where('id', $job_id)->delete();
+            return response()->json(['status' => 200, 'message' => "Job deleted successfully"]);
+        }else{
+            return response()->json(['status' => 402, 'message' => "Something went wrong..."]);
+        }
+    }
+
+    public function searchJobsListing(Request $request){
+        $search_job_no = str_replace(['J','j', '-'], '', $request->search_job_no);
+        $search_client = $request->search_client;
+        $search_address = $request->search_address;
+        $search_job_type = $request->search_job_type;
+        $search_status = $request->search_status;
+        $search_date = $request->search_date;
+        $search_assigned_user = $request->search_assigned_user;
+        $search_supplier = $request->search_supplier;
+
+        if($search_job_no == '' && $search_client == '' && $search_address == '' && $search_job_type == '' && $search_status == '' &&
+            $search_date == '' && $search_assigned_user == '' && $search_supplier == ''){
+            return response()->json(['status' => 402, 'message' => 'Choose atleast one filter first!']);
+        }
+
+        $query = JobModel::query();
+        
+        if ($search_job_no != '') {
+            $query->where('id', $search_job_no);
+        }
+        if ($search_client != '') {
+            $query->where('client_name', 'like', '%' . $search_client . '%');
+        }
+        if ($search_address != '') {
+            $query->where('address', 'like', '%' . $search_address . '%');
+        }
+        if ($search_job_type != '') {
+            $query->where('job_type', $search_job_type);
+        }
+        if (!is_null($search_status)) {
+            $query->where('status', $search_status);
+        }
+
+        if ($search_date != '') {
+            $query->whereDate('date', '=', $search_date);
+        }
+        if ($search_assigned_user != '') {
+            $query->where('rigger_assigned', $search_assigned_user);
+        }
+        if ($search_supplier != '') {
+            $query->where('supplier_name', 'like', '%' . $search_supplier . '%');
+        }
+
+        $data['jobs_list'] = $query->get();
+
+        return response()->json(['status' => 200, 'data' => $data]);
+    }
+
+    public function getJobsPageData(Request $request){
+
+        $users_list = User::whereIn('role_id', ['3','4','5'])->get();
+        $data['users_list'] = $users_list;
+        $data['jobs_list'] = JobModel::with(['userAssigned'])->orderBy('id','desc')->get();
+        $data['total_scci'] = JobModel::where('job_type', '1')->count();
+        $data['total_crane'] = JobModel::where('job_type', '2')->count();
+        $data['total_other'] = JobModel::where('job_type', '3')->count();
+        $data['total_jobs'] = JobModel::count();
+        
+        return response()->json(['status' => 200, 'message' => "",'data' => $data]);
+    }
+
+    public function getRiggerTicketPageData(Request $request){
+
+        $data['tickets_list'] = RiggerTicket::with(['jobDetail','userDetail'])->get();
+        $data['total_tickets'] = RiggerTicket::count();
+        $data['total_draft'] = RiggerTicket::where('status', '1')->count();
+        $data['total_completed'] = RiggerTicket::where('status', '3')->count();
+        
+        return response()->json(['status' => 200, 'message' => "",'data' => $data]);
+    }
+
+    public function searchRiggerTicketListing(Request $request){
+        $ticket_number = str_replace(['R','r', '-'], '', $request->search_ticket_number);
+        $customer_name = $request->search_customer_name;
+        $rigger_name = $request->search_rigger_name;
+        $email = $request->search_email;
+        $location = $request->search_location;
+        $date = $request->search_date;
+        $status = $request->search_status;
+
+        if($ticket_number == '' && $customer_name == '' && $rigger_name == '' && $email == '' && $location == '' &&
+            $date == '' && $status == ''){
+            return response()->json(['status' => 402, 'message' => 'Choose atleast one filter first!']);
+        }
+
+        $query = RiggerTicket::with(['jobDetail','userDetail']);
+        
+        if ($ticket_number != '') {
+            $query->where('id', $ticket_number);
+        }
+        if ($customer_name != '') {
+            $query->where('customer_name', 'like', '%' . $customer_name . '%');
+        }
+        if ($rigger_name != '') {
+            $query->whereHas('userDetail', function ($subQuery) use ($rigger_name) {
+                $subQuery->where('name', 'like', '%' . $rigger_name . '%');
+            });
+        }
+        if ($email != '') {
+            $query->where('email', 'like', '%' . $email . '%');
+        }
+        if ($location != '') {
+            $query->where('location', 'like', '%' . $location . '%');
+        }
+        if ($date != '') {
+            $query->whereDate('date', '=', $date);
+        }
+        if ($status != '') {
+            $query->where('status', $status);
+        }
+
+        $data['tickets_list'] = $query->get();
+
+        return response()->json(['status' => 200, 'data' => $data]);
+    }
+
+    public function viewRiggerTicketDetails(Request $request){
+        $ticket_id = $request->ticket_id;
+        
+        $ticket = RiggerTicket::where('id', $ticket_id)->with(['jobDetail','userDetail','ticketImages'])->first();
+        if($ticket){
+            $data['ticket_detail'] = $ticket;
+            return response()->json(['status' => 200, 'message' => "", 'data' => $data]);
+        }else{
+            return response()->json(['status' => 402, 'message' => "Job not found..."]);
+        }
+    }
+
+    public function deleteSpecificRiggerTicket(Request $request){
+        $ticket_id = $request->ticket_id;
+        $ticket = RiggerTicket::where('id', $ticket_id)->with(['ticketImages'])->first();
+        if($ticket){
+            $ticket_images = $ticket->ticket_images != null ? $ticket->ticket_images : array();
+            if(count($ticket_images) > 0){
+                foreach($ticket_images as $image){
+                    deleteImage(str_replace(url('/public'),"",$image->path));
+                    RiggerTicketImages::where('id', $image->id)->delete();
+                } 
+            }
+            RiggerTicket::where('id', $ticket_id)->delete();
+            return response()->json(['status' => 200, 'message' => "Ticket deleted successfully"]);
+        }else{
+            return response()->json(['status' => 402, 'message' => "Something went wrong..."]);
+        }
+    }
+
+    public function getTransporterTicketPageData(Request $request){
+
+        $data['tickets_list'] = TransportationTicketModel::with(['jobDetail','userDetail'])->get();
+        $data['total_tickets'] = TransportationTicketModel::count();
+        $data['total_draft'] = TransportationTicketModel::where('status', '1')->count();
+        $data['total_completed'] = TransportationTicketModel::where('status', '3')->count();
+        
+        return response()->json(['status' => 200, 'message' => "",'data' => $data]);
+    }
+
+    public function searchTransporterTicketListing(Request $request){
+        $ticket_number = str_replace(['T','t', '-'], '', $request->search_ticket_number);
+        $transporter_name = $request->search_transporter_name;
+        $job_client_name = $request->search_job_client_name;
+        $pickup_address = $request->search_pickup_address;
+        $delivery_address = $request->search_delivery_address;
+        $customer_email = $request->search_customer_email;
+        $status = $request->search_status;
+
+        if($ticket_number == '' && $transporter_name == '' && $job_client_name == '' && $pickup_address == '' && $delivery_address == '' &&
+            $customer_email == '' && $status == ''){
+            return response()->json(['status' => 402, 'message' => 'Choose atleast one filter first!']);
+        }
+
+        $query = TransportationTicketModel::with(['jobDetail','userDetail']);
+        
+        if ($ticket_number != '') {
+            $query->where('id', $ticket_number);
+        }
+        if ($transporter_name != '') {
+            $query->whereHas('userDetail', function ($subQuery) use ($transporter_name) {
+                $subQuery->where('name', 'like', '%' . $transporter_name . '%');
+            });
+        }
+        if ($job_client_name != '') {
+            $query->whereHas('jobDetail', function ($subQuery) use ($job_client_name) {
+                $subQuery->where('client_name', 'like', '%' . $job_client_name . '%');
+            });
+        }
+        if ($pickup_address != '') {
+            $query->where('pickup_address', 'like', '%' . $pickup_address . '%');
+        }
+        if ($delivery_address != '') {
+            $query->where('delivery_address', 'like', '%' . $delivery_address . '%');
+        }
+        if ($customer_email != '') {
+            $query->where('customer_email', 'like', '%' . $customer_email . '%');
+        }
+        if ($status != '') {
+            $query->where('status', $status);
+        }
+
+        $data['tickets_list'] = $query->get();
+
+        return response()->json(['status' => 200, 'data' => $data]);
+    }
+
+    public function viewTransporterTicketDetails(Request $request){
+        $ticket_id = $request->ticket_id;
+        
+        $ticket = TransportationTicketModel::where('id', $ticket_id)->with(['jobDetail','userDetail','ticketImages'])->first();
+        if($ticket){
+            $data['ticket_detail'] = $ticket;
+            return response()->json(['status' => 200, 'message' => "", 'data' => $data]);
+        }else{
+            return response()->json(['status' => 402, 'message' => "Job not found..."]);
+        }
+    }
+
+    public function deleteSpecificTransportationTicket(Request $request){
+        $ticket_id = $request->ticket_id;
+        $ticket = TransportationTicketModel::where('id', $ticket_id)->with(['ticketImages'])->first();
+        if($ticket){
+            $ticket_images = $ticket->ticket_images != null ? $ticket->ticket_images : array();
+            if(count($ticket_images) > 0){
+                foreach($ticket_images as $image){
+                    deleteImage(str_replace(url('/public'),"",$image->path));
+                    TransportationTicketImages::where('id', $image->id)->delete();
+                } 
+            }
+            TransportationTicketModel::where('id', $ticket_id)->delete();
+            return response()->json(['status' => 200, 'message' => "Ticket deleted successfully"]);
+        }else{
+            return response()->json(['status' => 402, 'message' => "Something went wrong..."]);
+        }
+    }
 }

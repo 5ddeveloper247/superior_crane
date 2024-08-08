@@ -10,14 +10,24 @@ class JobModel extends Model
     use HasFactory;
 
     protected $table = "jobs";
-    protected $fillable = [
-        'client_name','job_time','date','address','equipment_to_be_used','rigger_assigned','supplier_name','notes','job_image','scci','created_by','status'
-    ];
     
+    
+    public function userAssigned()
+    {
+        return $this->belongsTo(User::class, 'rigger_assigned');
+    }
 
     public function jobImages()
     {
     	return $this->hasMany(JobImages::class, 'job_id');
     }
     
+    public function createdBy()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+    public function updatedBy()
+    {
+        return $this->belongsTo(User::class, 'updated_by');
+    }
 }

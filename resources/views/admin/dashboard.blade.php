@@ -298,7 +298,7 @@
 
         .atc-btn {
             background-color: transparent;
-            border: 1px solid red;
+            border: 1px solid red !important;
             font-size: 12px !important;
             padding: .3rem .8rem;
             border-radius: 4px;
@@ -320,6 +320,13 @@
             color: #fff;
             padding: .3rem .8rem;
         }
+        .upload-btn {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: inline-block;
+            max-width: 100%;
+        }
     </style>
 @endpush
 
@@ -340,28 +347,28 @@
         <div class="d-flex align-items-center">
             <div class="legends d-flex gap-3 align-items-center justify-content-center me-3">
                 <div class="d-flex align-items-center gap-1">
-                    <div style="background-color: red; height: 13px; width: 7px;"></div>
-                    <small>Problem</small>
+                    <div style="background-color: #0000ff; height: 13px; width: 7px;"></div>
+                    <small>SCCI(Logistic)</small>
                 </div>
                 <div class="d-flex align-items-center gap-1">
-                    <div style="background-color: yellow; height: 13px; width: 7px;"></div>
-                    <small>Draft</small>
+                    <div style="background-color: #ffa500; height: 13px; width: 7px;"></div>
+                    <small>Crane</small>
                 </div>
                 <div class="d-flex align-items-center gap-1">
-                    <div style="background-color: lightgreen; height: 13px; width: 7px;"></div>
-                    <small>Good To Go</small>
+                    <div style="background-color: #800080; height: 13px; width: 7px;"></div>
+                    <small>Other</small>
                 </div>
             </div>
             <li class="nav-item" role="presentation">
                 <button class="nav-link active" id="calender-tab" data-bs-toggle="tab"
                     data-bs-target="#calender-tab-pane" type="button" role="tab" aria-controls="calender-tab-pane"
-                    aria-selected="true">
+                    aria-selected="true" title="Calendar View">
                     <i class="fa-regular fa-calendar-days fs-5"></i>
                 </button>
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="list-tab" data-bs-toggle="tab" data-bs-target="#list-tab-pane"
-                    type="button" role="tab" aria-controls="list-tab-pane" aria-selected="false">
+                    type="button" role="tab" aria-controls="list-tab-pane" aria-selected="false" title="List View">
                     <i class="fa-solid fa-table-list fs-5"></i>
                 </button>
             </li>
@@ -375,161 +382,7 @@
             <div id="container">
                 <div id="calendar"></div>
             </div>
-            <!-- Modal to add event -->
-            <div id="addJob_modal" class="modal fade modal-lg" tabindex="-1" aria-labelledby="addEventModalLabel"
-                aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="addEventModalLabel">Add Job</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form id="add_eventForm">
-                                <div class="row">
-                                    <div class="mb-3 d-flex align-items-center gap-1 col-md-2">
-                                        <input type="radio" name="job_type[]" id="job_type_logistic"
-                                            value="Logistic Job" checked>
-                                        <label class="form-label m-0" style="margin-top: 0rem !important"
-                                            for="job_type_logistic">Logistic Job</label>
-
-                                    </div>
-                                    <div class="mb-3 d-flex align-items-center gap-1 col-md-6">
-                                        <input type="radio" name="job_type[]" id="job_type_crane" value="Crane Job">
-                                        <label class="form-label m-0" style="margin-top: 0rem !important"
-                                            for="job_type_crane">Crane Job</label>
-                                    </div>
-                                </div>
-                                <div class="row gx-2">
-                                    <div class="mb-3 col-md-6">
-                                        <label for="add_job_time" class="form-label">Job Time<span
-                                                class="text-danger">*</span>
-                                        </label>
-                                        <input type="time" class="form-control" id="add_job_time" name="add_job_time"
-                                            required>
-                                        <span class="text-danger" id="add_job_time_error"></span>
-                                    </div>
-                                    <div class="mb-3 col-md-6">
-                                        <label for="add_equipment_to_use" class="form-label">Equipment To Be Used<span
-                                                class="text-danger">*</span></label>
-                                        <input type="text" class="form-control" id="add_equipment_to_use"
-                                            name="add_equipment_to_use" required>
-                                        <span class="text-danger" id="add_equipment_to_use_error"></span>
-                                    </div>
-                                </div>
-
-                                <div class="row gx-2">
-                                    <div class="mb-3 col-md-6">
-                                        <label for="add_client_name" class="form-label">Client Name<span
-                                                class="text-danger">*</span>
-                                        </label>
-                                        <input type="text" class="form-control" id="add_client_name"
-                                            name="add_client_name" required>
-                                        <span class="text-danger" id="add_client_name_error"></span>
-                                    </div>
-                                    <div class="mb-3 col-md-6">
-                                        <label for="add_rigger_assigned" class="form-label">Assign Rigger<span
-                                                class="text-danger">*</span></label>
-                                        <select class="form-control" name="add_rigger_assigned" id="add_rigger_assigned"
-                                            required>
-                                            <option selected>Choose</option>
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                        </select>
-                                        <span class="text-danger" id="add_rigger_assigned_error"></span>
-                                    </div>
-                                </div>
-                                <div class="row gx-2">
-                                    <div class="mb-3 col-md-6">
-                                        <label for="add_eventStart" class="form-label">Date<span
-                                                class="text-danger">*</span></label>
-                                        <input type="date" class="form-control" id="add_date" name="add_date" required>
-                                        <span class="text-danger" id="add_date_error"></span>
-                                    </div>
-                                    <div class="mb-3 col-md-6">
-                                        <label for="add_address" class="form-label">Address<span
-                                                class="text-danger">*</span></label>
-                                        <input type="text" class="form-control" id="add_address" name="add_address"
-                                            required>
-                                        <span class="text-danger" id="add_address_error"></span>
-                                    </div>
-                                </div>
-                                <div class="row gx-2">
-                                    <div class="mb-3 col-md-6">
-                                        <label for="add_eventStart" class="form-label">Start Time<span
-                                                class="text-danger">*</span></label>
-                                        <input type="datetime-local" class="form-control" id="add_eventStart"
-                                            name="add_eventStart" required>
-                                        <span class="text-danger" id="start_date_error"></span>
-                                    </div>
-                                    <div class="mb-3 col-md-6">
-                                        <label for="add_eventEnd" class="form-label">End Time<span
-                                                class="text-danger">*</span></label>
-                                        <input type="datetime-local" class="form-control" id="add_eventEnd"
-                                            name="add_eventEnd" required>
-                                        <span class="text-danger" id="add_eventEnd_error"></span>
-                                    </div>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="add_notes" class="form-label">Notes<span
-                                            class="text-danger">*</span></label>
-                                    <textarea class="form-control" id="add_notes" name="add_notes" required></textarea>
-                                    <span class="text-danger" id="add_notes_error"></span>
-                                </div>
-
-                                <div class="row gx-2">
-                                    <div class="mb-3 col-md-6">
-                                        <label for="add_supplier_name" class="form-label">Supplier Name<span
-                                                class="text-danger">*</span></label>
-                                        <input type="text" class="form-control" id="add_supplier_name"
-                                            name="add_supplier_name" required>
-                                        <span class="text-danger" id="add_supplier_name_error"></span>
-                                    </div>
-
-                                    <div class="mb-3 col-md-6">
-                                        <label for="add_status" class="form-label">Status<span
-                                                class="text-danger">*</span></label>
-                                        <select class="form-control" name="add_status" id="add_status" required>
-                                            <option value="">Select Status</option>
-                                            <option value="1">Good To Go</option>
-                                            <option value="2">Problem</option>
-                                            <option value="3">Draft</option>
-                                        </select>
-                                        <span class="text-danger" id="status_error"></span>
-                                    </div>
-                                </div>
-
-                                <div class="mb-3 py-2 ps-1">
-                                    <button class="atc-btn w-25">Attachment<span class="text-danger">*</span></button>
-                                    <br>
-                                    <div class="row">
-                                        <div class="col-md-6 d-flex align-items-center gap-2 mt-2">
-                                            <!-- <input class="form-control w-50"
-                                            style="border: none; background-color: #FFBBBB;" type="file"> -->
-                                            <button class="text-dark upload-btn #000 w-50">Upload Image</button>
-                                            <input type="text" class="form-control" placeholder="Title">
-                                            <i class="fa-solid fa-xmark"></i>
-                                        </div>
-                                    </div>
-                                    <!-- <input style="border: none; background-color: #FFBBBB;" class="mt-2" type="file" name="add_image" id="add_image" required> -->
-                                    <span class="text-danger" id="add_image_error"></span>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label class="form-label" for="scci">SCCI</label>
-                                    <input type="checkbox" name="scci" id="scci" class="mt-2">
-
-                                </div>
-                                <div class="modal-footer text-center justify-content-center">
-                                    <button data-bs-dismiss="modal" type="button" class="save-btn px-5"
-                                        id="add_saveEvent">Close</button>
-                                    <button type="button" class="save-btn px-5" id="add_saveEvent">Save</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            
         </div>
 
 
@@ -538,14 +391,11 @@
                 <div class="row align-items-center mb-5 g-0 pe-2">
                     <div class="col-6 col-md-3">
                         <div class="counters d-flex gap-2 align-items-center ">
-                            <img src="{{asset('assets/images/customer-service.png')}}" width="40" alt="">
+                            <!-- <img src="{{asset('assets/images/customer-service.png')}}" width="40" alt=""> -->
+                            <img src="{{asset('assets/images/supplier.png')}}" width="40" alt="">
                             <div class="pt-2">
-                                <h6 class="mb-0">
-                                    Total Customers
-                                </h6>
-                                <small>
-                                    1323
-                                </small>
+                                <h6 class="mb-0">Total SCCI (Logistics)</h6>
+                                <small id="total_scci">0</small>
                             </div>
                         </div>
                     </div>
@@ -553,14 +403,10 @@
 
                     <div class="col-6 col-md-3">
                         <div class="counters  d-flex gap-2 align-items-center justify-content-center">
-                            <img src="{{asset('assets/images/supplier.png')}}" width="40" alt="">
+                            <img src="{{asset('assets/images/tour.png')}}" width="50" alt="">
                             <div class="pt-2">
-                                <h6 class="mb-0">
-                                    Total Suppliers
-                                </h6>
-                                <small>
-                                    1323
-                                </small>
+                                <h6 class="mb-0">Total Crane Jobs</h6>
+                                <small id="total_crane">0</small>
                             </div>
                         </div>
                     </div>
@@ -568,14 +414,11 @@
 
                     <div class="col-6 col-md-3">
                         <div class="counters d-flex gap-2 align-items-center justify-content-end">
-                            <img src="{{asset('assets/images/tour.png')}}" width="50" alt="">
+                            <!-- <img src="{{asset('assets/images/tour.png')}}" width="50" alt=""> -->
+                            <img src="{{asset('assets/images/supplier.png')}}" width="40" alt="">
                             <div class="pt-2">
-                                <h6 class="mb-0">
-                                    Total Riggers
-                                </h6>
-                                <small>
-                                    1323
-                                </small>
+                                <h6 class="mb-0">Total Other Jobs</h6>
+                                <small id="total_other">0</small>
                             </div>
                         </div>
                     </div>
@@ -585,12 +428,8 @@
                         <div class="counters d-flex gap-2 align-items-center justify-content-end">
                             <img src="{{asset('assets/images/businessman.png')}}" width="50" alt="">
                             <div class="pt-2">
-                                <h6 class="mb-0">
-                                    SCCI Jobs
-                                </h6>
-                                <small>
-                                    1323
-                                </small>
+                                <h6 class="mb-0">Total Jobs</h6>
+                                <small id="total_jobs">0</small>
                             </div>
                         </div>
                     </div>
@@ -619,76 +458,73 @@
 
                     <div class="collapse mb-4" id="filterSection">
                         <div class="filter">
-                            <div class="row gy-3">
-                                <div class="col-4 col-md-3">
-                                    <label class="fw-semibold">Client Name</label>
-                                    <input class="py-1 px-3 rounded-1 form-control" type="text" placeholder="Type here">
+                            <form id="filterJobs_form">
+                                <div class="row gy-3">
+                                    <div class="col-4 col-md-3">
+                                        <label class="fw-semibold">Job Number</label>
+                                        <input type="text" class="py-1 px-3 rounded-1 form-control" id="search_job_no" name="search_job_no" placeholder="Type here">
+                                    </div>
+                                    <div class="col-4 col-md-3">
+                                        <label class="fw-semibold">Client Name</label>
+                                        <input type="text" class="py-1 px-3 rounded-1 form-control" id="search_client" name="search_client" placeholder="Type here">
+                                    </div>
+                                    <div class="col-4 col-md-3">
+                                        <label class="fw-semibold">Address</label>
+                                        <input type="text" class="py-1 px-3 rounded-1 form-control" id="search_address" name="search_address" placeholder="Type here">
+                                    </div>
+                                    
+                                    <div class="col-4 col-md-3">
+                                        <label class="fw-semibold">Job Type</label>
+                                        <select class="form-control" id="search_job_type" name="search_job_type">
+                                            <option value="">Choose</option>
+                                            <option value="1">SCCI(Logistic Job)</option>
+                                            <option value="2">Crane Job</option>
+                                            <option value="3">Other</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-4 col-md-3">
+                                        <label class="fw-semibold">Status</label>
+                                        <select class="form-control" id="search_status" name="search_status">
+                                            <option value="">Choose</option>
+                                            <option value="1">Good to go</option>
+                                            <option value="0">Problem</option>
+                                            <option value="2">On-Hold</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-4 col-md-3">
+                                        <label class="fw-semibold">Date</label>
+                                        <input type="date" class="py-1 px-3 rounded-1 form-control" id="search_date" name="search_date" 
+                                            placeholder="Enter Customer Name">
+                                    </div>
+                                    <div class="col-4 col-md-3">
+                                        <label class="fw-semibold">Assigned (Rigger/Driver)</label>
+                                        <select class="form-control" id="search_assigned_user" name="search_assigned_user" >
+                                            <option value="">Choose</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-4 col-md-3">
+                                        <label class="fw-semibold">Supplier Name</label>
+                                        <input type="text" class="py-1 px-3 rounded-1 form-control" id="search_supplier" name="search_supplier" placeholder="Type here">
+                                    </div>
                                 </div>
-                                <div class="col-4 col-md-3">
-                                    <label class="fw-semibold">Address</label>
-                                    <input class="py-1 px-3 rounded-1 form-control" type="text" placeholder="Type here">
+                                <div class="d-flex justify-content-end gap-2">
+                                    <button type="button" class="mt-3 py-1 px-3 text-white rounded-1 clear_filter">
+                                        Clear Filter
+                                    </button>
+                                    <button type="button" class="mt-3 py-1 px-3 text-white rounded-1 searchJob_btn">
+                                        Search
+                                    </button>
                                 </div>
-                                <div class="col-4 col-md-3">
-                                    <label class="fw-semibold">Job Catagory</label>
-                                    </label>
-                                    <select class="form-control" name="" id="">
-                                        <option value="1">Choose</option>
-                                        <option value="2">SCCI</option>
-                                        <option value="3">Other</option>
-                                    </select>
-                                    <span class="text-danger" id="add_job_time_error"></span>
-                                </div>
-                                <div class="col-4 col-md-3">
-                                    <label class="fw-semibold">Job Type</label>
-                                    <select class="form-control" name="" id="">
-                                        <option value="1">Choose</option>
-                                        <option value="2">Crane</option>
-                                        <option value="3">Logistics</option>
-                                    </select>
-                                    <span class="text-danger" id="add_equipment_to_use_error"></span>
-                                </div>
-                                <div class="col-4 col-md-3">
-                                    <label class="fw-semibold">Status</label>
-                                    <select class="form-control" name="" id="">
-                                        <option value="1">Choose</option>
-                                        <option value="2">Good to go</option>
-                                        <option value="3">Problem</option>
-                                        <option value="4">Draft</option>
-                                        <option value="5">Cancel</option>
-                                    </select>
-                                    <span class="text-danger" id="add_equipment_to_use_error"></span>
-                                </div>
-                                <div class="col-4 col-md-3">
-                                    <label class="fw-semibold">Date</label>
-                                    <input class="py-1 px-3 rounded-1 form-control" type="date"
-                                        placeholder="Enter Customer Name">
-                                </div>
-                                <div class="col-4 col-md-3">
-                                    <label class="fw-semibold">Assigned (Rigger/Driver)</label>
-                                    <input class="py-1 px-3 rounded-1 form-control" type="text" placeholder="Type here">
-                                </div>
-                                <div class="col-4 col-md-3">
-                                    <label class="fw-semibold">Supplier Name</label>
-                                    <input class="py-1 px-3 rounded-1 form-control" type="text" placeholder="Type here">
-                                </div>
-                            </div>
-                            <div class="d-flex justify-content-end gap-2">
-                                <button class="mt-3 py-1 px-3 text-white rounded-1">
-                                    Clear Filter
-                                </button>
-                                <button class="mt-3 py-1 px-3 text-white rounded-1">
-                                    Search
-                                </button>
-                            </div>
+                            </form>
                         </div>
                     </div>
                     <div class="table-container">
-                        <table id="myTable" class="table-responsive w-100">
+                        <table id="jobsListing_table" class="table-responsive w-100">
                             <thead>
                                 <tr>
+                                    <th class="px3" scope="col">Job No#</th>
                                     <th class="px3" scope="col">Client Name</th>
                                     <th class="px-3" scope="col">Address</th>
-                                    <th class="px3" scope="col">Job Catagory</th>
                                     <th class="px3" scope="col">Job Type</th>
                                     <th class="px3" scope="col">Status</th>
                                     <th class="px3" scope="col">Date</th>
@@ -697,88 +533,8 @@
                                     <th scope="col">Action</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Adnan Yar</td>
-                                    <td>900 Bay St, T.O </td>
-                                    <td>SCCI</td>
-                                    <td>Crane</td>
-                                    <td>Good To Go</td>
-                                    <td>7/Oct/2024</td>
-                                    <td>Arsam Javed</td>
-                                    <td>Zaid Khurshid</td>
-                                    <td class="d-flex gap-2 ">
-                                        <div class="edit">
-                                            <svg width="15" viewBox="0 0 11 10" fill="none"
-                                                xmlns="http://www.w3.org/2000/svg">
-                                                <path
-                                                    d="M0.00561523 9.70695C0.0634926 9.49154 0.124427 9.27694 0.17884 9.06072C0.324756 8.48052 0.466596 7.8993 0.614754 7.31971C0.630039 7.2602 0.665703 7.19825 0.709314 7.15463C2.51329 5.34719 4.31911 3.54178 6.12472 1.73617C6.14286 1.71803 6.16242 1.70092 6.17302 1.69093C6.88589 2.4036 7.59631 3.11402 8.31489 3.8326C8.30552 3.84279 8.2833 3.86867 8.25905 3.89271C6.46241 5.68895 4.66617 7.4856 2.86728 9.27959C2.81511 9.33176 2.74134 9.37497 2.67001 9.3931C1.89172 9.5918 1.11201 9.78459 0.332908 9.97942C0.314566 9.98411 0.297244 9.99307 0.27931 10C0.240182 10 0.201053 10 0.161925 10C0.109754 9.94783 0.0575826 9.89566 0.00561523 9.84369C0.00561523 9.79804 0.00561523 9.75239 0.00561523 9.70695Z"
-                                                    fill="black" />
-                                                <path
-                                                    d="M8.9559 3.19677C8.23855 2.47962 7.52751 1.76858 6.81036 1.05164C7.00336 0.858643 7.19961 0.660149 7.39851 0.464303C7.48879 0.375449 7.57704 0.281908 7.67832 0.206912C8.07796 -0.0883852 8.66631 -0.0667831 9.03375 0.267642C9.28401 0.49528 9.52428 0.735756 9.75131 0.986422C10.0884 1.35855 10.1029 1.9253 9.80246 2.32963C9.76374 2.38159 9.72033 2.43091 9.67468 2.47697C9.43441 2.71887 9.19271 2.95975 8.9559 3.19677Z"
-                                                    fill="black" />
-                                            </svg>
-                                        </div>
-                                        <div class="del">
-                                            <svg width="15" viewBox="0 0 9 11" fill="none"
-                                                xmlns="http://www.w3.org/2000/svg">
-                                                <path
-                                                    d="M0.488907 6.7101C0.488907 5.86704 0.488335 5.02398 0.489193 4.18092C0.48948 3.91325 0.634045 3.73004 0.872794 3.68825C1.13645 3.64187 1.38407 3.83539 1.40354 4.1042C1.4064 4.14341 1.40497 4.18263 1.40497 4.22214C1.40497 5.86904 1.40497 7.51566 1.40497 9.16257C1.40497 9.7102 1.77798 10.0826 2.32675 10.0829C3.54111 10.0829 4.75546 10.0829 5.96953 10.0829C6.51802 10.0829 6.89131 9.70992 6.89131 9.16257C6.89131 7.50164 6.89131 5.84042 6.8916 4.17948C6.8916 3.92213 7.0293 3.73834 7.2543 3.69225C7.5128 3.63901 7.75327 3.80304 7.79736 4.06469C7.80566 4.11364 7.80738 4.16403 7.80738 4.21384C7.80795 5.86761 7.80823 7.52168 7.80766 9.17545C7.80738 10.0821 7.20134 10.8103 6.31076 10.9724C6.20599 10.9915 6.09778 10.9981 5.991 10.9984C4.76233 11.0001 3.53395 11.0004 2.30528 10.9993C1.28445 10.9984 0.490338 10.2054 0.488907 9.18604C0.488048 8.36044 0.488907 7.53542 0.488907 6.7101Z"
-                                                    fill="#DC2F2B" />
-                                                <path
-                                                    d="M5.97563 2.30643C6.09529 2.30643 6.19835 2.30643 6.30169 2.30643C6.79436 2.30643 7.28703 2.30414 7.77999 2.30729C8.11406 2.30958 8.33392 2.59327 8.24317 2.89671C8.18935 3.07649 8.03133 3.20531 7.8444 3.22106C7.81949 3.22306 7.79459 3.22277 7.76939 3.22277C5.35586 3.22277 2.94204 3.22306 0.528505 3.22249C0.237656 3.22277 0.0315422 3.02897 0.0338324 2.76102C0.0361225 2.49823 0.240232 2.30786 0.527074 2.307C1.077 2.30528 1.62692 2.30643 2.17656 2.30643C2.21892 2.30643 2.26158 2.30643 2.32141 2.30643C2.32141 2.26091 2.32141 2.22341 2.32141 2.18591C2.32141 1.92884 2.31969 1.67177 2.32198 1.41441C2.32456 1.12728 2.51092 0.936343 2.79833 0.93577C3.69808 0.933194 4.59782 0.933194 5.49756 0.93577C5.78584 0.936629 5.97248 1.12643 5.97477 1.41384C5.97764 1.70583 5.97563 1.99811 5.97563 2.30643ZM3.23776 2.29698C3.85037 2.29698 4.45383 2.29698 5.05585 2.29698C5.05585 2.14354 5.05585 1.99983 5.05585 1.85756C4.44552 1.85756 3.84436 1.85756 3.23776 1.85756C3.23776 2.00527 3.23776 2.1464 3.23776 2.29698Z"
-                                                    fill="#DC2F2B" />
-                                                <path
-                                                    d="M2.77718 6.65314C2.77718 6.11753 2.77547 5.58221 2.77833 5.0466C2.77947 4.82302 2.93578 4.64411 3.15391 4.60174C3.35173 4.56338 3.56557 4.67016 3.6463 4.86053C3.67607 4.93066 3.69124 5.01225 3.69153 5.08868C3.69439 6.13127 3.69439 7.17358 3.69296 8.21617C3.69267 8.50788 3.49715 8.71313 3.22949 8.71056C2.96669 8.70798 2.77776 8.5033 2.77747 8.21703C2.77661 7.69573 2.7769 7.17444 2.77718 6.65314Z"
-                                                    fill="#DC2F2B" />
-                                                <path
-                                                    d="M5.52015 6.65514C5.52015 7.18702 5.52158 7.7192 5.51929 8.25109C5.51843 8.46722 5.38475 8.63698 5.18149 8.69308C4.98597 8.74719 4.77184 8.66847 4.67566 8.48898C4.63357 8.41054 4.60724 8.31349 4.60695 8.22475C4.60237 7.175 4.60266 6.12554 4.60495 5.07579C4.60552 4.79324 4.80648 4.59142 5.07071 4.59543C5.32949 4.59915 5.51929 4.80269 5.51986 5.08094C5.52101 5.60567 5.52044 6.1304 5.52015 6.65514Z"
-                                                    fill="#DC2F2B" />
-                                            </svg>
-                                        </div>
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td>Adnan Yar</td>
-                                    <td>900 Bay St, T.O </td>
-                                    <td>SCCI</td>
-                                    <td>Crane</td>
-                                    <td>Good To Go</td>
-                                    <td>7/Oct/2024</td>
-                                    <td>Arsam Javed</td>
-                                    <td>Zaid Khurshid</td>
-                                    <td class="d-flex gap-2 ">
-                                        <div class="edit">
-                                            <svg width="15" viewBox="0 0 11 10" fill="none"
-                                                xmlns="http://www.w3.org/2000/svg">
-                                                <path
-                                                    d="M0.00561523 9.70695C0.0634926 9.49154 0.124427 9.27694 0.17884 9.06072C0.324756 8.48052 0.466596 7.8993 0.614754 7.31971C0.630039 7.2602 0.665703 7.19825 0.709314 7.15463C2.51329 5.34719 4.31911 3.54178 6.12472 1.73617C6.14286 1.71803 6.16242 1.70092 6.17302 1.69093C6.88589 2.4036 7.59631 3.11402 8.31489 3.8326C8.30552 3.84279 8.2833 3.86867 8.25905 3.89271C6.46241 5.68895 4.66617 7.4856 2.86728 9.27959C2.81511 9.33176 2.74134 9.37497 2.67001 9.3931C1.89172 9.5918 1.11201 9.78459 0.332908 9.97942C0.314566 9.98411 0.297244 9.99307 0.27931 10C0.240182 10 0.201053 10 0.161925 10C0.109754 9.94783 0.0575826 9.89566 0.00561523 9.84369C0.00561523 9.79804 0.00561523 9.75239 0.00561523 9.70695Z"
-                                                    fill="black" />
-                                                <path
-                                                    d="M8.9559 3.19677C8.23855 2.47962 7.52751 1.76858 6.81036 1.05164C7.00336 0.858643 7.19961 0.660149 7.39851 0.464303C7.48879 0.375449 7.57704 0.281908 7.67832 0.206912C8.07796 -0.0883852 8.66631 -0.0667831 9.03375 0.267642C9.28401 0.49528 9.52428 0.735756 9.75131 0.986422C10.0884 1.35855 10.1029 1.9253 9.80246 2.32963C9.76374 2.38159 9.72033 2.43091 9.67468 2.47697C9.43441 2.71887 9.19271 2.95975 8.9559 3.19677Z"
-                                                    fill="black" />
-                                            </svg>
-                                        </div>
-                                        <div class="del">
-                                            <svg width="15" viewBox="0 0 9 11" fill="none"
-                                                xmlns="http://www.w3.org/2000/svg">
-                                                <path
-                                                    d="M0.488907 6.7101C0.488907 5.86704 0.488335 5.02398 0.489193 4.18092C0.48948 3.91325 0.634045 3.73004 0.872794 3.68825C1.13645 3.64187 1.38407 3.83539 1.40354 4.1042C1.4064 4.14341 1.40497 4.18263 1.40497 4.22214C1.40497 5.86904 1.40497 7.51566 1.40497 9.16257C1.40497 9.7102 1.77798 10.0826 2.32675 10.0829C3.54111 10.0829 4.75546 10.0829 5.96953 10.0829C6.51802 10.0829 6.89131 9.70992 6.89131 9.16257C6.89131 7.50164 6.89131 5.84042 6.8916 4.17948C6.8916 3.92213 7.0293 3.73834 7.2543 3.69225C7.5128 3.63901 7.75327 3.80304 7.79736 4.06469C7.80566 4.11364 7.80738 4.16403 7.80738 4.21384C7.80795 5.86761 7.80823 7.52168 7.80766 9.17545C7.80738 10.0821 7.20134 10.8103 6.31076 10.9724C6.20599 10.9915 6.09778 10.9981 5.991 10.9984C4.76233 11.0001 3.53395 11.0004 2.30528 10.9993C1.28445 10.9984 0.490338 10.2054 0.488907 9.18604C0.488048 8.36044 0.488907 7.53542 0.488907 6.7101Z"
-                                                    fill="#DC2F2B" />
-                                                <path
-                                                    d="M5.97563 2.30643C6.09529 2.30643 6.19835 2.30643 6.30169 2.30643C6.79436 2.30643 7.28703 2.30414 7.77999 2.30729C8.11406 2.30958 8.33392 2.59327 8.24317 2.89671C8.18935 3.07649 8.03133 3.20531 7.8444 3.22106C7.81949 3.22306 7.79459 3.22277 7.76939 3.22277C5.35586 3.22277 2.94204 3.22306 0.528505 3.22249C0.237656 3.22277 0.0315422 3.02897 0.0338324 2.76102C0.0361225 2.49823 0.240232 2.30786 0.527074 2.307C1.077 2.30528 1.62692 2.30643 2.17656 2.30643C2.21892 2.30643 2.26158 2.30643 2.32141 2.30643C2.32141 2.26091 2.32141 2.22341 2.32141 2.18591C2.32141 1.92884 2.31969 1.67177 2.32198 1.41441C2.32456 1.12728 2.51092 0.936343 2.79833 0.93577C3.69808 0.933194 4.59782 0.933194 5.49756 0.93577C5.78584 0.936629 5.97248 1.12643 5.97477 1.41384C5.97764 1.70583 5.97563 1.99811 5.97563 2.30643ZM3.23776 2.29698C3.85037 2.29698 4.45383 2.29698 5.05585 2.29698C5.05585 2.14354 5.05585 1.99983 5.05585 1.85756C4.44552 1.85756 3.84436 1.85756 3.23776 1.85756C3.23776 2.00527 3.23776 2.1464 3.23776 2.29698Z"
-                                                    fill="#DC2F2B" />
-                                                <path
-                                                    d="M2.77718 6.65314C2.77718 6.11753 2.77547 5.58221 2.77833 5.0466C2.77947 4.82302 2.93578 4.64411 3.15391 4.60174C3.35173 4.56338 3.56557 4.67016 3.6463 4.86053C3.67607 4.93066 3.69124 5.01225 3.69153 5.08868C3.69439 6.13127 3.69439 7.17358 3.69296 8.21617C3.69267 8.50788 3.49715 8.71313 3.22949 8.71056C2.96669 8.70798 2.77776 8.5033 2.77747 8.21703C2.77661 7.69573 2.7769 7.17444 2.77718 6.65314Z"
-                                                    fill="#DC2F2B" />
-                                                <path
-                                                    d="M5.52015 6.65514C5.52015 7.18702 5.52158 7.7192 5.51929 8.25109C5.51843 8.46722 5.38475 8.63698 5.18149 8.69308C4.98597 8.74719 4.77184 8.66847 4.67566 8.48898C4.63357 8.41054 4.60724 8.31349 4.60695 8.22475C4.60237 7.175 4.60266 6.12554 4.60495 5.07579C4.60552 4.79324 4.80648 4.59142 5.07071 4.59543C5.32949 4.59915 5.51929 4.80269 5.51986 5.08094C5.52101 5.60567 5.52044 6.1304 5.52015 6.65514Z"
-                                                    fill="#DC2F2B" />
-                                            </svg>
-                                        </div>
-                                    </td>
-                                </tr>
+                            <tbody id="jobsListing_body">
+                                
                             </tbody>
                         </table>
                     </div>
@@ -786,25 +542,31 @@
             </div>
 
 
-            <div class="add-job px-3">
+            <!-- <div class="add-job px-3">
                 <h6 class="text-danger">
-                    ADD JOB
+                    UPDATE JOB
                 </h6>
 
-                <form action="">
+                <form id="updateJob_form">
+                    <input type="hidden" id="update_job_id" name="job_id" value="">
                     <div class="row add-form rounded-1">
                         <div class="row">
                             <div class="mb-3 d-flex align-items-center gap-1 col-md-2">
-                                <input type="radio" name="job_type[]" id="job_type_logistic" value="Logistic Job"
+                                <input type="radio" name="job_type" id="job_type_logistic" value="1"
                                     checked>
                                 <label style="margin-top: 0rem !important" class="form-label m-0"
-                                    for="job_type_logistic">Logistic Job</label>
+                                    for="job_type_logistic">SCCI(Logistic Job)</label>
 
                             </div>
                             <div class="mb-3 d-flex align-items-center gap-1 col-md-6">
-                                <input type="radio" name="job_type[]" id="job_type_crane" value="Crane Job">
+                                <input type="radio" name="job_type" id="job_type_crane" value="2">
                                 <label style="margin-top: 0rem !important" class="form-label m-0"
                                     for="job_type_crane">Crane Job</label>
+                            </div>
+                            <div class="mb-3 d-flex align-items-center gap-1 col-md-6">
+                                <input type="radio" name="job_type" id="job_type_crane" value="3">
+                                <label style="margin-top: 0rem !important" class="form-label m-0"
+                                    for="job_type_crane">Other</label>
                             </div>
                         </div>
 
@@ -812,7 +574,7 @@
                             <label class="pb-2 form-label" for="job_time">
                                 Job Time
                             </label>
-                            <input class="rounded-1 py-1 px-2 w-100 form-control" id="job_time" type="text"
+                            <input class="rounded-1 py-1 px-2 w-100 form-control" id="job_time" name="job_time" type="text"
                                 placeholder="Enter a Job Time. Here">
                         </div>
 
@@ -820,24 +582,25 @@
                             <label class="pb-2 form-label" for="equip">
                                 Equipment To Be Used
                             </label>
-                            <input class="form-control rounded-1 py-1 px-2 w-100" id="equip" type="text"
+                            <input class="form-control rounded-1 py-1 px-2 w-100" id="equipment_to_be_used" 
+                                name="equipment_to_be_used" type="text"
                                 placeholder="Enter Equipment To Be Used Here">
                         </div>
 
                         <div class="col-12 col-md-6 d-flex flex-column">
-                            <label class="pb-2 form-label" for="client">
+                            <label class="pb-2 form-label" for="client_name">
                                 Client Name
                             </label>
-                            <input class="form-control rounded-1 py-1 px-2 w-100" id="client" type="text"
-                                placeholder="Enter Client Name Here">
+                            <input class="form-control rounded-1 py-1 px-2 w-100" id="client_name" type="text"
+                                name="client_name" placeholder="Enter Client Name Here">
                         </div>
 
                         <div class="col-12 col-md-6 d-flex flex-column">
-                            <label class="form-label pb-2" for="rigger">
+                            <label class="form-label pb-2" for="rigger_assigned">
                                 Rigger Assigned
                             </label>
-                            <input class="form-control rounded-1 py-1 px-2 w-100" id="rigger" type="text"
-                                placeholder="Enter Rigger Assigned Here">
+                            <input class="form-control rounded-1 py-1 px-2 w-100" id="rigger_assigned" type="text"
+                                name="rigger_assigned" placeholder="Enter Rigger Assigned Here">
                         </div>
 
                         <div class="col-12 col-md-6 d-flex flex-column">
@@ -845,7 +608,7 @@
                                 Date
                             </label>
                             <input class="form-control rounded-1 py-1 px-2 w-100" id="date" type="date"
-                                placeholder="Enter Client Name Here">
+                                name="date" placeholder="Enter Client Name Here">
                         </div>
 
                         <div class="col-12 col-md-6 d-flex flex-column">
@@ -853,20 +616,20 @@
                                 Address
                             </label>
                             <input class="form-control rounded-1 py-1 px-2 w-100" id="address" type="text"
-                                placeholder="Enter Address Here">
+                                name="address" placeholder="Enter Address Here">
                         </div>
 
 
                         <div class="col-12 col-md-6 d-flex flex-column">
-                            <label for="add_eventStart" class="pb-2 form-label">Start Time</label>
+                            <label for="start_time" class="pb-2 form-label">Start Time</label>
                             <input type="datetime-local" class="form-control rounded-1 py-1 px-2 w-100"
-                                id="add_eventStart" name="add_eventStart" required>
+                                id="start_time" name="start_time" required>
                         </div>
 
                         <div class="col-12 col-md-6 d-flex flex-column">
-                            <label for="add_eventEnd" class="pb-2 form-label">End Time</label>
+                            <label for="end_time" class="pb-2 form-label">End Time</label>
                             <input type="datetime-local" class="form-control rounded-1 py-1 px-2 w-100"
-                                id="add_eventEnd" name="add_eventEnd" required>
+                                id="end_time" name="end_time" required>
                         </div>
 
                         <div class="col-12 col-md-6 d-flex flex-column">
@@ -874,34 +637,32 @@
                                 Notes
                             </label>
                             <textarea class="form-control" name="" id="notes" rows="5"
-                                placeholder="Type Notes Here....."></textarea>
+                                name="notes" placeholder="Type Notes Here....."></textarea>
                         </div>
 
                         <div class="col-12 col-md-6 d-flex flex-column">
-                            <label class="pb-2 form-label" for="address">
+                            <label class="pb-2 form-label" for="supplier_name">
                                 Supplier Name
                             </label>
-                            <input class="form-control rounded-1 py-1 px-2 w-100" id="address" type="text"
-                                placeholder="Enter Supplier Name Here">
+                            <input class="form-control rounded-1 py-1 px-2 w-100" id="supplier_name" type="text"
+                                name="supplier_name" placeholder="Enter Supplier Name Here">
+                            
                             <button class="atc-btn w-25 mt-2">Attachment<span class="text-danger">*</span></button>
                             <div class="d-flex align-items-center gap-2 mt-2">
                                 <button class="text-dark upload-btn #000 w-50 px-0">Upload Image</button>
                                 <input type="text" class="form-control" placeholder="Title">
                                 <i class="fa-solid fa-xmark"></i>
                             </div>
-
                         </div>
 
 
                         <div>
-                            <input type="checkbox" name="" id="scc">
-                            <label class="scci" for="scc">SCCI</label>
-                            <br><br>
+                            
                             <div class="d-flex justify-content-center gap-2">
-                                <button id="save-btn" class="py-1 px-5 add-btn rounded-1">
+                                <button type="button" id="save-btn" class="py-1 px-5 add-btn rounded-1">
                                     Back
                                 </button>
-                                <button id="save-btn" class="py-1 px-5 add-btn rounded-1">
+                                <button type="button" id="saveJob_btn" class="py-1 px-5 add-btn rounded-1">
                                     Save
                                 </button>
                             </div>
@@ -909,6 +670,173 @@
                     </div>
                 </form>
 
+            </div> -->
+        </div>
+
+        <!-- Modal to add/update Job -->
+        <div id="addJob_modal" class="modal fade modal-lg" tabindex="-1" aria-labelledby="addEventModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addEventModalLabel">Job Details</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="addJob_from">
+                            <input type="hidden" id="add_job_id" name="job_id" value="">
+                            <div class="row add-form rounded-1">
+                                <div class="row">
+                                    <div class="mb-3 d-flex align-items-center gap-1 col-md-12">
+                                        <label style="margin-top: 0rem !important" class="form-label m-0">
+                                            Job Type<span class="text-danger">**</span>
+                                        </label>
+
+                                    </div>
+                                    <div class="mb-3 d-flex align-items-center gap-1 col-md-3">
+                                        <input type="radio" name="job_type" id="job_type_logistic" value="1">
+                                        <label style="margin-top: 0rem !important" class="form-label m-0"
+                                            for="job_type_logistic">SCCI(Logistic Job)</label>
+                                    </div>
+                                    <div class="mb-3 d-flex align-items-center gap-1 col-md-3">
+                                        <input type="radio" name="job_type" id="job_type_crane" value="2">
+                                        <label style="margin-top: 0rem !important" class="form-label m-0"
+                                            for="job_type_crane">Crane Job</label>
+                                    </div>
+                                    <div class="mb-3 d-flex align-items-center gap-1 col-md-3">
+                                        <input type="radio" name="job_type" id="job_type_other" value="3">
+                                        <label style="margin-top: 0rem !important" class="form-label m-0"
+                                            for="job_type_other">Other</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-md-6 d-flex flex-column">
+                                    <label class="pb-2 form-label" for="job_time">
+                                        Job Time
+                                    </label>
+                                    <input class="rounded-1 py-1 px-2 w-100 form-control" id="job_time" name="job_time" type="time"
+                                        placeholder="Enter a Job Time. Here">
+                                </div>
+
+                                <div class="col-12 col-md-6 d-flex flex-column">
+                                    <label class="pb-2 form-label" for="equip">
+                                        Equipment To Be Used<span class="text-danger">*</span>
+                                    </label>
+                                    <input class="form-control rounded-1 py-1 px-2 w-100" id="equipment_to_be_used" 
+                                        name="equipment_to_be_used" type="text"
+                                        placeholder="Enter Equipment To Be Used Here" maxlength="50">
+                                </div>
+
+                                <div class="col-12 col-md-6 d-flex flex-column">
+                                    <label class="pb-2 form-label" for="client_name">
+                                        Client Name<span class="text-danger">*</span>
+                                    </label>
+                                    <input class="form-control rounded-1 py-1 px-2 w-100" id="client_name" type="text"
+                                        name="client_name" placeholder="Enter Client Name Here" maxlength="50">
+                                </div>
+
+                                <div class="col-12 col-md-6 d-flex flex-column">
+                                    <label class="form-label pb-2" for="rigger_assigned">
+                                        <span id="riggerAssign_label">Rigger Assigned</span><span class="text-danger">*</span>
+                                    </label>
+                                    <!-- <input class="form-control rounded-1 py-1 px-2 w-100" id="rigger_assigned" type="text"
+                                        name="rigger_assigned" placeholder="Enter Rigger Assigned Here"> -->
+                                    <select class="form-control" name="rigger_assigned" id="rigger_assigned" required>
+                                        <option value="">Choose</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-12 col-md-6 d-flex flex-column">
+                                    <label class="form-label pb-2" for="date">
+                                        Date<span class="text-danger">*</span>
+                                    </label>
+                                    <input class="form-control rounded-1 py-1 px-2 w-100" id="date" type="date"
+                                        name="date" placeholder="Enter Client Name Here">
+                                </div>
+
+                                <div class="col-12 col-md-6 d-flex flex-column">
+                                    <label class="pb-2 form-label" for="address">
+                                        Address<span class="text-danger">*</span>
+                                    </label>
+                                    <input class="form-control rounded-1 py-1 px-2 w-100" id="address" type="text"
+                                        name="address" placeholder="Enter Address Here" maxlength="200">
+                                </div>
+
+
+                                <div class="col-12 col-md-6 d-flex flex-column">
+                                    <label for="add_eventStart" class="pb-2 form-label">Start Time<span class="text-danger">*</span></label>
+                                    <input type="datetime-local" class="form-control rounded-1 py-1 px-2 w-100"
+                                        id="add_eventStart" name="start_time" required>
+                                </div>
+
+                                <div class="col-12 col-md-6 d-flex flex-column">
+                                    <label for="add_eventEnd" class="pb-2 form-label">End Time<span class="text-danger">*</span></label>
+                                    <input type="datetime-local" class="form-control rounded-1 py-1 px-2 w-100"
+                                        id="add_eventEnd" name="end_time" required>
+                                </div>
+
+                                
+                                <div class="col-12 col-md-6 d-flex flex-column">
+                                    <label class="pb-2 form-label" for="supplier_name">
+                                        Supplier Name
+                                    </label>
+                                    <input class="form-control rounded-1 py-1 px-2 w-100" id="supplier_name" type="text"
+                                        name="supplier_name" placeholder="Enter Supplier Name Here" maxlength="50">
+                                </div>
+                                <div class="mb-3 col-md-6 status_input" style="display:none;">
+                                    <label for="add_status" class="pb-2 form-label">Status<span class="text-danger">*</span></label>
+                                    <select class="form-control" name="status" id="add_status" required>
+                                        <option value="">Select Status</option>
+                                        <option value="1">Good To Go</option>
+                                        <option value="0">Problem</option>
+                                        <option value="2">On-Hold</option>
+                                    </select>
+                                </div>
+                                <div class="col-12 col-md-12 d-flex flex-column">
+                                    <label class="pb-2 form-label" for="notes">
+                                        Notes
+                                    </label>
+                                    <textarea class="form-control" name="notes" id="add_notes" rows="5"
+                                        name="notes" placeholder="Type Notes Here....."></textarea>
+                                </div>
+
+                                <div class="mb-3 col-md-6 updatedInfo_div" style="display:none;">
+                                    <label class="form-label">Created By</label>
+                                    <p id="created_by"></p>
+                                </div>
+                                <div class="mb-3 col-md-6 updatedInfo_div" style="display:none;">
+                                    <label class="form-label">Updated By</label>
+                                    <p id="updated_by"></p>
+                                </div>
+
+                                <div class="col-12 col-md-6 d-flex flex-column">
+                                    <button type="button" class="atc-btn w-50 mt-2" id="addAttachment_btn">
+                                        Add Attachment<span class="text-danger">*</span>
+                                    </button>
+                                    <input type="hidden" id="deletedFileIds" name="deletedFileIds" value="">
+                                    <div id="uploads_section">
+                                        <!-- <div class="d-flex align-items-center gap-2 my-2">
+                                            <button class="text-dark upload-btn #000 w-50 px-0">Upload Image</button>
+                                            <input type="text" class="form-control" placeholder="Title">
+                                            <i class="fa-solid fa-xmark"></i>
+                                        </div> -->
+                                    </div>
+                                </div>
+
+                                <div>
+                                    
+                                    <div class="d-flex justify-content-center gap-2">
+                                        <button type="button" id="closeJob_modal" class="py-1 px-5 add-btn rounded-1">
+                                            Close
+                                        </button>
+                                        <button type="button" id="saveJob_btn" class="py-1 px-5 add-btn rounded-1">
+                                            Save
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

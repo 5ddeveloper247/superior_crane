@@ -45,6 +45,7 @@ Route::post('job/advance_filter_jobs', [JobController::class,'advance_filter_job
 Route::post('job/job_details', [JobController::class,'getJobDetails'])->name('job/job_details');
 Route::post('job/changestatus', [JobController::class,'changestatus'])->name('job/changestatus');
 Route::post('job/updatejob', [JobController::class,'updatejob'])->name('job/updatejob');
+Route::post('job/getAssignedJobs', [JobController::class,'getAssignedJobs'])->name('job/getAssignedJobs');
 
 // Rigger Tickets routes 
 Route::post('riggerticket/add', [RigerTicketController::class,'add_rigger_ticket'])->name('riggerticket/add');

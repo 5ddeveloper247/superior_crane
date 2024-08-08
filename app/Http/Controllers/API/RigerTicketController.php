@@ -8,6 +8,7 @@ use App\Models\RiggerTicket;
 use App\Models\RiggerTicketImages;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use setasign\Fpdi\Fpdi;
 
 
@@ -17,6 +18,7 @@ class RigerTicketController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'user_id' => 'required',
+            'job_id' => 'required',
             'specifications_remarks' => 'required|string',
             'customer_name' => 'required|string|max:100',
             'location' => 'required|string',
@@ -39,8 +41,10 @@ class RigerTicketController extends Controller
             'notes' => 'required|string',
             // 'signature' => 'required|string',
             'status' => 'required',
-            // 'site_images' => 'required',
-            'site_images.*' => 'image|mimes:jpeg,png,jpg,gif|max:1024',
+            'site_images' => 'required',
+            'site_images.*.file' => 'required|string',
+            'site_images.*.title' => 'required|string|max:255',
+            // 'site_images.*' => 'image|mimes:jpeg,png,jpg,gif|max:1024',
             'created_by' => 'required|integer',
         ]);
     
@@ -56,6 +60,7 @@ class RigerTicketController extends Controller
 
             $ticket = new RiggerTicket;
             $ticket->user_id = $request->user_id;
+            $ticket->job_id = $request->job_id;
             $ticket->specifications_remarks = $request->specifications_remarks;
             $ticket->customer_name = $request->customer_name;
             $ticket->location = $request->location;
@@ -91,32 +96,59 @@ class RigerTicketController extends Controller
                 $ticket->save();
             }
             
-            $req_file = 'site_images';
-            $path = '/uploads/rigger_tickets_images/' . $ticket->id .'/site';
+            // $req_file = 'site_images';
+            // $path = '/uploads/rigger_tickets_images/' . $ticket->id .'/site';
 
-            if ($request->hasFile($req_file)) {
+            // if ($request->hasFile($req_file)) {
 
-                if (!File::isDirectory(public_path($path))) {
-                    File::makeDirectory(public_path($path), 0777, true);
-                }
+            //     if (!File::isDirectory(public_path($path))) {
+            //         File::makeDirectory(public_path($path), 0777, true);
+            //     }
                 
-                $uploadedFiles = $request->file($req_file);
+            //     $uploadedFiles = $request->file($req_file);
 
-                foreach ($uploadedFiles as $file) {
-                    $file_extension = $file->getClientOriginalExtension();
-                    $date_append = Str::random(32);
-                    $file->move(public_path($path), $date_append . '.' . $file_extension);
+            //     foreach ($uploadedFiles as $file) {
+            //         $file_extension = $file->getClientOriginalExtension();
+            //         $date_append = Str::random(32);
+            //         $file->move(public_path($path), $date_append . '.' . $file_extension);
     
-                    $savedFilePaths = '/public' . $path . '/' . $date_append . '.' . $file_extension;
+            //         $savedFilePaths = '/public' . $path . '/' . $date_append . '.' . $file_extension;
 
+            //         $RiggerTicketImages = new RiggerTicketImages();
+            //         $RiggerTicketImages->ticket_id = $ticket->id;
+            //         $RiggerTicketImages->file_name = $file->getClientOriginalName();
+            //         $RiggerTicketImages->path = $savedFilePaths;
+            //         $RiggerTicketImages->save();
+            //     }
+            // }
+                
+            $site_images = $request->site_images;
+            if(count($site_images) > 0){
+                
+                foreach ($site_images as $index => $imageData) {
+                    $image = $imageData['file'];
+                    $title = $imageData['title'];
+            
+                    // Decode base64 string
+                    $image = str_replace('data:image/png;base64,', '', $image);
+                    $image = str_replace(' ', '+', $image);
+                    $imageName = Str::random(32).'.'.'png';
+                    $filePath = public_path('uploads/rigger_tickets_images/' . $ticket->id);
+            
+                    if (!file_exists($filePath)) {
+                        mkdir($filePath, 0777, true);
+                    }
+            
+                    \File::put($filePath . '/' . $imageName, base64_decode($image));
+            
+                    // Save image path and title to database
                     $RiggerTicketImages = new RiggerTicketImages();
                     $RiggerTicketImages->ticket_id = $ticket->id;
-                    $RiggerTicketImages->file_name = $file->getClientOriginalName();
-                    $RiggerTicketImages->path = $savedFilePaths;
+                    $RiggerTicketImages->path = 'uploads/rigger_tickets_images/' . $ticket->id . '/' . $imageName;
+                    $RiggerTicketImages->file_name = $title;
                     $RiggerTicketImages->save();
                 }
             }
-            
     
             return response()->json([
                 'success' => true,
@@ -158,8 +190,10 @@ class RigerTicketController extends Controller
             'notes' => 'required|string',
             // 'signature' => 'required|string',
             'status' => 'required',
-            // 'site_images' => 'required',
-            'site_images.*' => 'image|mimes:jpeg,png,jpg,gif|max:1024',
+            'site_images' => 'required',
+            'site_images.*.file' => 'required|string',
+            'site_images.*.title' => 'required|string|max:255',
+            // 'site_images.*' => 'image|mimes:jpeg,png,jpg,gif|max:1024',
             'created_by' => 'required|integer',
         ]);
     
@@ -209,10 +243,43 @@ class RigerTicketController extends Controller
                     $ticket->save();
                 }
                 
-                $req_file = 'site_images';
-                $path = '/uploads/rigger_tickets_images/' . $ticket->id .'/site';
+                // $req_file = 'site_images';
+                // $path = '/uploads/rigger_tickets_images/' . $ticket->id .'/site';
     
-                if ($request->hasFile($req_file)) {
+                // if ($request->hasFile($req_file)) {
+                    
+                //     $previous_images = RiggerTicketImages::where('ticket_id', $ticket->id)->get();
+                //     if(count($previous_images) > 0){
+                //         foreach($previous_images as $img){
+                //             $del_path = str_replace(url('/public/'), '', $img->path);
+                //             deleteImage($del_path);
+                //             RiggerTicketImages::where('id', $img->id)->delete();
+                //         }
+                //     }
+    
+                //     if (!File::isDirectory(public_path($path))) {
+                //         File::makeDirectory(public_path($path), 0777, true);
+                //     }
+                    
+                //     $uploadedFiles = $request->file($req_file);
+    
+                //     foreach ($uploadedFiles as $file) {
+                //         $file_extension = $file->getClientOriginalExtension();
+                //         $date_append = Str::random(32);
+                //         $file->move(public_path($path), $date_append . '.' . $file_extension);
+        
+                //         $savedFilePaths = '/public' . $path . '/' . $date_append . '.' . $file_extension;
+    
+                //         $RiggerTicketImages = new RiggerTicketImages();
+                //         $RiggerTicketImages->ticket_id = $ticket->id;
+                //         $RiggerTicketImages->file_name = $file->getClientOriginalName();
+                //         $RiggerTicketImages->path = $savedFilePaths;
+                //         $RiggerTicketImages->save();
+                //     }
+                // }
+
+                $site_images = $request->site_images;
+                if(count($site_images) > 0){
                     
                     $previous_images = RiggerTicketImages::where('ticket_id', $ticket->id)->get();
                     if(count($previous_images) > 0){
@@ -222,24 +289,28 @@ class RigerTicketController extends Controller
                             RiggerTicketImages::where('id', $img->id)->delete();
                         }
                     }
-    
-                    if (!File::isDirectory(public_path($path))) {
-                        File::makeDirectory(public_path($path), 0777, true);
-                    }
-                    
-                    $uploadedFiles = $request->file($req_file);
-    
-                    foreach ($uploadedFiles as $file) {
-                        $file_extension = $file->getClientOriginalExtension();
-                        $date_append = Str::random(32);
-                        $file->move(public_path($path), $date_append . '.' . $file_extension);
-        
-                        $savedFilePaths = '/public' . $path . '/' . $date_append . '.' . $file_extension;
-    
+
+                    foreach ($site_images as $index => $imageData) {
+                        $image = $imageData['file'];
+                        $title = $imageData['title'];
+                
+                        // Decode base64 string
+                        $image = str_replace('data:image/png;base64,', '', $image);
+                        $image = str_replace(' ', '+', $image);
+                        $imageName = Str::random(32).'.'.'png';
+                        $filePath = public_path('uploads/rigger_tickets_images/' . $ticket->id);
+                
+                        if (!file_exists($filePath)) {
+                            mkdir($filePath, 0777, true);
+                        }
+                
+                        \File::put($filePath . '/' . $imageName, base64_decode($image));
+                
+                        // Save image path and title to database
                         $RiggerTicketImages = new RiggerTicketImages();
                         $RiggerTicketImages->ticket_id = $ticket->id;
-                        $RiggerTicketImages->file_name = $file->getClientOriginalName();
-                        $RiggerTicketImages->path = $savedFilePaths;
+                        $RiggerTicketImages->path = 'uploads/rigger_tickets_images/' . $ticket->id . '/' . $imageName;
+                        $RiggerTicketImages->file_name = $title;
                         $RiggerTicketImages->save();
                     }
                 }

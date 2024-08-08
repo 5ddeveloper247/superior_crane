@@ -27,6 +27,9 @@ Route::group(['prefix' => '/'], function () {
         Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
         Route::get('/profile', [AdminController::class, 'profile'])->name('profile');
         Route::get('/users', [AdminController::class, 'users'])->name('users');
+        Route::get('/jobs', [AdminController::class, 'jobs'])->name('jobs');
+        Route::get('/rigger_tickets', [AdminController::class, 'rigger_tickets'])->name('rigger_tickets');
+        Route::get('/transportation', [AdminController::class, 'transportation'])->name('transportation');
         
         /************** AJAX ROUTES ******************/
         Route::post('/admin/getProfilePageData', [AdminController::class, 'getProfilePageData'])->name('admin.getProfilePageData');
@@ -36,7 +39,27 @@ Route::group(['prefix' => '/'], function () {
         Route::post('/admin/saveUserData', [AdminController::class, 'saveUserData'])->name('admin.saveUserData');
         Route::post('/admin/changeUserStatus', [AdminController::class, 'changeUserStatus'])->name('admin.changeUserStatus');
         Route::post('/admin/getSpecificUserDetails', [AdminController::class, 'getSpecificUserDetails'])->name('admin.getSpecificUserDetails');
+        Route::post('/admin/searchAdminListing', [AdminController::class, 'searchAdminListing'])->name('admin.searchAdminListing');
+        Route::post('/admin/deleteSpecificUser', [AdminController::class, 'deleteSpecificUser'])->name('admin.deleteSpecificUser');
         
+        Route::post('/admin/getDashboardPageData', [AdminController::class, 'getDashboardPageData'])->name('admin.getDashboardPageData');
+        Route::post('/admin/saveJobData', [AdminController::class, 'saveJobData'])->name('admin.saveJobData');
+        Route::get('/admin/getAllJobs', [AdminController::class, 'getAllJobs'])->name('admin.getAllJobs');
+        Route::post('/admin/changeJobStatus', [AdminController::class, 'changeJobStatus'])->name('admin.changeJobStatus');
+        Route::post('/admin/viewJobDetails', [AdminController::class, 'viewJobDetails'])->name('admin.viewJobDetails');
+        Route::post('/admin/deleteSpecificJob', [AdminController::class, 'deleteSpecificJob'])->name('admin.deleteSpecificJob');
+        Route::post('/admin/searchJobsListing', [AdminController::class, 'searchJobsListing'])->name('admin.searchJobsListing');
+        
+        Route::post('/admin/getJobsPageData', [AdminController::class, 'getJobsPageData'])->name('admin.getJobsPageData');
+        Route::post('/admin/getRiggerTicketPageData', [AdminController::class, 'getRiggerTicketPageData'])->name('admin.getRiggerTicketPageData');
+        Route::post('/admin/searchRiggerTicketListing', [AdminController::class, 'searchRiggerTicketListing'])->name('admin.searchRiggerTicketListing');
+        Route::post('/admin/viewRiggerTicketDetails', [AdminController::class, 'viewRiggerTicketDetails'])->name('admin.viewRiggerTicketDetails');
+        Route::post('/admin/deleteSpecificRiggerTicket', [AdminController::class, 'deleteSpecificRiggerTicket'])->name('admin.deleteSpecificRiggerTicket');
+        
+        Route::post('/admin/getTransporterTicketPageData', [AdminController::class, 'getTransporterTicketPageData'])->name('admin.getTransporterTicketPageData');
+        Route::post('/admin/viewTransporterTicketDetails', [AdminController::class, 'viewTransporterTicketDetails'])->name('admin.viewTransporterTicketDetails');
+        Route::post('/admin/searchTransporterTicketListing', [AdminController::class, 'searchTransporterTicketListing'])->name('admin.searchTransporterTicketListing');
+        Route::post('/admin/deleteSpecificTransportationTicket', [AdminController::class, 'deleteSpecificTransportationTicket'])->name('admin.deleteSpecificTransportationTicket');
         
         
     });
@@ -51,20 +74,20 @@ Route::group(['prefix' => '/'], function () {
 //     return view('admin/dashboard', compact('pageTitle'));
 // });
 
-Route::get('/all_jobs', function () {
-    $pageTitle = 'All-jobs';
-    return view('admin/all_jobs', compact('pageTitle'));
-});
+// Route::get('/all_jobs', function () {
+//     $pageTitle = 'All-jobs';
+//     return view('admin/all_jobs', compact('pageTitle'));
+// });
 
-Route::get('/add_job', function () {    
-    $pageTitle = 'Add-jobs';
-    return view('admin/add_job', compact('pageTitle'));
-});
+// Route::get('/add_job', function () {    
+//     $pageTitle = 'Add-jobs';
+//     return view('admin/add_job', compact('pageTitle'));
+// });
 
-Route::get('/add_user', function () {
-    $pageTitle = 'Add-users';
-    return view('admin/add_user', compact('pageTitle'));
-});
+// Route::get('/add_user', function () {
+//     $pageTitle = 'Add-users';
+//     return view('admin/add_user', compact('pageTitle'));
+// });
 
 Route::get('/admins', function () {
     $pageTitle = 'Admins';
@@ -81,15 +104,15 @@ Route::get('/basic_user', function () {
     return view('admin/basic_user', compact('pageTitle'));
 });
 
-Route::get('/rigger_tickets', function () {
-    $pageTitle = 'Rigger_tickets';
-    return view('admin/rigger_tickets', compact('pageTitle'));
-});
+// Route::get('/rigger_tickets', function () {
+//     $pageTitle = 'Rigger_tickets';
+//     return view('admin/rigger_tickets', compact('pageTitle'));
+// });
 
-Route::get('/transportation', function () {
-    $pageTitle = 'Transportation';
-    return view('admin/transportation', compact('pageTitle'));
-});
+// Route::get('/transportation', function () {
+//     $pageTitle = 'Transportation';
+//     return view('admin/transportation', compact('pageTitle'));
+// });
 
 Route::get('/pay_duty', function () {
     $pageTitle = 'Pay_duty';

@@ -89,11 +89,11 @@ live url: https://beta.scserver.org/api/sc/v1/job/add
     "notes": "Urgent job, please prioritize.",
     "job_images": [
         {
-            "file": "/9j/4AAQSkZJRgABAQEAAAAAAAD/4QBWRXhpZgAATU0AKgAAAAgAAYdpAAQA ...", 
+            "file": "/9j/4AAQSkZJRgABAQEAAAAAAAD/4QBWRXhpZgAATU0AKgAAAAgAAYdpAAQA", 
             "title": "Title for Image 1"
         },
         {
-            "file": "/9j/4AAQSkZJRgABAQEAAAAAAAD/2wBDAAYEBQYEBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcU ...", 
+            "file": "/9j/4AAQSkZJRgABAQEAAAAAAAD/4QBWRXhpZgAATU0AKgAAAAgAAYdpAAQA", 
             "title": "Title for Image 2"
         }
     ],
@@ -139,7 +139,9 @@ Filter Jobs
 url: http://127.0.0.1:8000/api/sc/v1/job/filter_jobs
 live url: https://beta.scserver.org/api/sc/v1/job/filter_jobs
 
-{
+{       
+    "user_id":"1",              // logged in user_id
+    "role_id":"2",              // logged in user role_id
     "date":"2024-07-18"
 }
 
@@ -149,6 +151,8 @@ url: http://127.0.0.1:8000/api/sc/v1/job/advance_filter_jobs
 live url: https://beta.scserver.org/api/sc/v1/job/advance_filter_jobs
 
 {
+    "user_id":"1",              // logged in user_id
+    "role_id":"2",              // logged in user role_id
     "job_type":"1",     // 1=>logistic, 2=>crane
     "job_category":"1",     // 0=>other, 1=>SCCI
     "client_name":"John Doe",
@@ -185,16 +189,25 @@ live url: https://beta.scserver.org/api/sc/v1/job/changestatus
 
 
 
+Assigned Jobs for Rigger page
+
+url: http://127.0.0.1:8000/api/sc/v1/job/getAssignedJobs
+live url: https://beta.scserver.org/api/sc/v1/job/getAssignedJobs
+
+{
+    "user_id":"1"
+}
 
 
 Rigger Tickets add api
 
 url: http://127.0.0.1:8000/api/sc/v1/riggerticket/add
-
+live url: https://beta.scserver.org/api/sc/v1/riggerticket/add
 
 // site_images is optional
 {
     "user_id": "1",
+    "job_id": "1",
     "specifications_remarks": "Additional specifications and remarks for the job.",
     "customer_name": "John Doe",
     "location": "1234 Crane St, Lift City",
@@ -216,14 +229,24 @@ url: http://127.0.0.1:8000/api/sc/v1/riggerticket/add
     "email": "john.doe@example.com",
     "notes": "Job went smoothly with no issues.",
     "signature": "",    // signature image
-    "site_images": "",  // site images
-    "status": "1",
+    "site_images": [
+        {
+            "file": "/9j/4AAQSkZJRgABAQEAAAAAAAD/4QBWRXhpZgAATU0AKgAAAAgAAYdpAAQA", 
+            "title": "Title for Image 1"
+        },
+        {
+            "file": "/9j/4AAQSkZJRgABAQEAAAAAAAD/4QBWRXhpZgAATU0AKgAAAAgAAYdpAAQA", 
+            "title": "Title for Image 2"
+        }
+    ],
+    "status": "1",      // 1=>draft, 2=>issued, 3=>complete
     "created_by": 1
 }
 
 Rigger Tickets update api
 
 url: http://127.0.0.1:8000/api/sc/v1/riggerticket/update
+live url: https://beta.scserver.org/api/sc/v1/riggerticket/update
 
 
 // site_images is optional
@@ -251,15 +274,24 @@ url: http://127.0.0.1:8000/api/sc/v1/riggerticket/update
     "email": "john.doe@example.com",
     "notes": "Job went smoothly with no issues.",
     "signature": "",    // signature image
-    "site_images": "",  // site images
-    "status": "1",
+    "site_images": [
+        {
+            "file": "/9j/4AAQSkZJRgABAQEAAAAAAAD/4QBWRXhpZgAATU0AKgAAAAgAAYdpAAQA", 
+            "title": "Title for Image 1"
+        },
+        {
+            "file": "/9j/4AAQSkZJRgABAQEAAAAAAAD/4QBWRXhpZgAATU0AKgAAAAgAAYdpAAQA", 
+            "title": "Title for Image 2"
+        }
+    ],
+    "status": "3",      // 1=>draft, 2=>issued, 3=>complete
     "created_by": 1
 }
 
 Rigger Ticket listing API
 
 url: http://127.0.0.1:8000/api/sc/v1/riggerticket/ticket_list
-
+live url: https://beta.scserver.org/api/sc/v1/riggerticket/ticket_list
 {
     "user_id":"1"
 }
@@ -267,7 +299,7 @@ url: http://127.0.0.1:8000/api/sc/v1/riggerticket/ticket_list
 Rigger Ticket detail API
 
 url: http://127.0.0.1:8000/api/sc/v1/riggerticket/ticket_detail
-
+live url: https://beta.scserver.org/api/sc/v1/riggerticket/ticket_detail
 {
     "ticket_id":"1"
 }
@@ -357,6 +389,7 @@ url: http://127.0.0.1:8000/api/sc/v1/transportationticket/add
 //images is optional
 {
     "user_id": "1",
+    "job_id": "1",
     "pickup_address": "123 Pickup St",
     "delivery_address": "456 Delivery Ave",
     "time_in": "08:00",
@@ -407,6 +440,7 @@ url: http://127.0.0.1:8000/api/sc/v1/transportationticket/update
 {
     "ticket_id": "1",
     "user_id": "1",
+    "job_id": "1",
     "pickup_address": "123 Pickup St",
     "delivery_address": "456 Delivery Ave",
     "time_in": "08:00",

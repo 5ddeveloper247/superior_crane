@@ -32,6 +32,7 @@ use Illuminate\Support\Facades\Auth;
      
     <script>
         var base_url = "{{url('/')}}";
+        var user_role = "{{@Auth::user()->role_id}}";
     </script>
 
     <body>

@@ -122,6 +122,18 @@ function formatDate(dateString) {
 
     return `${day} ${month} ${year}`;
 }
+function formatTime(timeString) {
+    // Split the time string into components
+    var timeParts = timeString.split(':');
+    
+    // Extract hours and minutes
+    var hours = timeParts[0];
+    var minutes = timeParts[1];
+    
+    // Return the formatted time
+    return hours + ':' + minutes;
+}
+
 
 function formatCurrency(amount) {
 	return amount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");

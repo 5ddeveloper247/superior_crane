@@ -8,6 +8,7 @@ use App\Models\JobImages;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class JobController extends Controller
 {
@@ -15,7 +16,7 @@ class JobController extends Controller
     {
         
         $validator = Validator::make($request->all(), [
-            'job_type' => 'required|string|max:50',
+            'job_type' => 'required',
             'job_time' => 'required|date_format:H:i',
             'client_name' => 'required|string|max:50',
             'equipment_to_be_used' => 'required|string|max:255',
@@ -30,7 +31,7 @@ class JobController extends Controller
             // 'scci' => 'boolean',
             'job_images' => 'required',
             // 'job_images.*' => 'image|mimes:jpeg,png,jpg,gif|max:1024',
-            'status' => 'required',
+            // 'status' => 'required',
             'created_by' => 'required|integer'
         ]);
         // Check if validation fails
@@ -61,39 +62,63 @@ class JobController extends Controller
             
             $job->save();
     
-            return response()->json([
-                'success' => true,
-                'message' => 'Job added successfully'
-            ], 200);
-            $req_file = 'job_images';
-            $path = '/uploads/job_images/' . $job->id;
+           
+            // $req_file = 'job_images';
+            // $path = '/uploads/job_images/' . $job->id;
 
-            if ($request->hasFile($req_file)) {
+            // if ($request->hasFile($req_file)) {
 
-                if (!File::isDirectory(public_path($path))) {
-                    File::makeDirectory(public_path($path), 0777, true);
-                }
+            //     if (!File::isDirectory(public_path($path))) {
+            //         File::makeDirectory(public_path($path), 0777, true);
+            //     }
                 
-                // $uploadedFiles = $request->file($req_file);
-                $uploadedFiles = $request->job_images;
+            //     // $uploadedFiles = $request->file($req_file);
+            //     $uploadedFiles = $request->job_images;
 
-                foreach ($uploadedFiles as $value) {
-                    $file = $value->file;
-                    $file_title = $value->title;
-                    $file_extension = $file->getClientOriginalExtension();
-                    $date_append = Str::random(32);
-                    $file->move(public_path($path), $date_append . '.' . $file_extension);
+            //     foreach ($uploadedFiles as $value) {
+            //         $file = $value->file;
+            //         $file_title = $value->title;
+            //         $file_extension = $file->getClientOriginalExtension();
+            //         $date_append = Str::random(32);
+            //         $file->move(public_path($path), $date_append . '.' . $file_extension);
     
-                    $savedFilePaths = '/public' . $path . '/' . $date_append . '.' . $file_extension;
+            //         $savedFilePaths = '/public' . $path . '/' . $date_append . '.' . $file_extension;
 
-                    $JobImages = new JobImages();
-                    $JobImages->landlord_id = $job->id;
-                    $JobImages->file_name = $file_title;//$file->getClientOriginalName();
-                    $JobImages->path = $savedFilePaths;
-                    $JobImages->save();
+            //         $JobImages = new JobImages();
+            //         $JobImages->job_id = $job->id;
+            //         $JobImages->file_name = $file_title;//$file->getClientOriginalName();
+            //         $JobImages->path = $savedFilePaths;
+            //         $JobImages->save();
+            //     }
+            // }
+            
+            $job_images = $request->job_images;
+            if(count($job_images) > 0){
+                foreach ($job_images as $index => $imageData) {
+                    $image = $imageData['file'];
+                    $title = $imageData['title'];
+            
+                    // Decode base64 string
+                    $image = str_replace('data:image/png;base64,', '', $image);
+                    $image = str_replace(' ', '+', $image);
+                    $imageName = Str::random(32).'.'.'png';
+                    $filePath = public_path('uploads/job_images/' . $job->id);
+            
+                    if (!file_exists($filePath)) {
+                        mkdir($filePath, 0777, true);
+                    }
+            
+                    \File::put($filePath . '/' . $imageName, base64_decode($image));
+            
+                    // Save image path and title to database
+                    $jobImage = new JobImages();
+                    $jobImage->job_id = $job->id;
+                    $jobImage->path = 'uploads/job_images/' . $job->id . '/' . $imageName;
+                    $jobImage->file_name = $title;
+                    $jobImage->save();
                 }
             }
-
+            
             return response()->json([
                 'success' => true,
                 'message' => 'Job added successfully'
@@ -155,14 +180,51 @@ class JobController extends Controller
                 $job->notes = $request->notes;
                 // $job->scci = $request->scci ?? false;
                 $job->status = $request->status;
-                $job->created_by = $request->created_by;
+                $job->updated_by = $request->created_by;
                 $job->save();
     
 
-                $req_file = 'job_images';
-                $path = '/uploads/job_images/' . $job->id;
+                // $req_file = 'job_images';
+                // $path = '/uploads/job_images/' . $job->id;
 
-                if ($request->hasFile($req_file)) {
+                // if ($request->hasFile($req_file)) {
+                    
+                //     $previous_images = JobImages::where('job_id', $job->id)->get();
+                //     if(count($previous_images) > 0){
+                //         foreach($previous_images as $img){
+                //             $del_path = str_replace(url('/public/'), '', $img->path);
+                //             deleteImage($del_path);
+                //             JobImages::where('id', $img->id)->delete();
+                //         }
+                //     }
+
+                //     if (!File::isDirectory(public_path($path))) {
+                //         File::makeDirectory(public_path($path), 0777, true);
+                //     }
+                    
+                //     // $uploadedFiles = $request->file($req_file);
+                // $uploadedFiles = $request->job_images;
+
+                //     foreach ($uploadedFiles as $value) {
+                //         $file = $value->file;
+                //         $file_title = $value->title;
+                //         $file_extension = $file->getClientOriginalExtension();
+                //         $date_append = Str::random(32);
+                //         $file->move(public_path($path), $date_append . '.' . $file_extension);
+        
+                //         $savedFilePaths = '/public' . $path . '/' . $date_append . '.' . $file_extension;
+
+                //         $JobImages = new JobImages();
+                //         $JobImages->landlord_id = $job->id;
+                //         $JobImages->file_name = $file_title;//$file->getClientOriginalName();
+                //         $JobImages->path = $savedFilePaths;
+                //         $JobImages->save();
+                //     }
+                // }
+
+                
+                $job_images = $request->job_images;
+                if(count($job_images) > 0){
                     
                     $previous_images = JobImages::where('job_id', $job->id)->get();
                     if(count($previous_images) > 0){
@@ -173,29 +235,31 @@ class JobController extends Controller
                         }
                     }
 
-                    if (!File::isDirectory(public_path($path))) {
-                        File::makeDirectory(public_path($path), 0777, true);
-                    }
-                    
-                    // $uploadedFiles = $request->file($req_file);
-                $uploadedFiles = $request->job_images;
-
-                    foreach ($uploadedFiles as $value) {
-                        $file = $value->file;
-                        $file_title = $value->title;
-                        $file_extension = $file->getClientOriginalExtension();
-                        $date_append = Str::random(32);
-                        $file->move(public_path($path), $date_append . '.' . $file_extension);
-        
-                        $savedFilePaths = '/public' . $path . '/' . $date_append . '.' . $file_extension;
-
-                        $JobImages = new JobImages();
-                        $JobImages->landlord_id = $job->id;
-                        $JobImages->file_name = $file_title;//$file->getClientOriginalName();
-                        $JobImages->path = $savedFilePaths;
-                        $JobImages->save();
+                    foreach ($job_images as $index => $imageData) {
+                        $image = $imageData['file'];
+                        $title = $imageData['title'];
+                
+                        // Decode base64 string
+                        $image = str_replace('data:image/png;base64,', '', $image);
+                        $image = str_replace(' ', '+', $image);
+                        $imageName = Str::random(32).'.'.'png';
+                        $filePath = public_path('uploads/job_images/' . $job->id);
+                
+                        if (!file_exists($filePath)) {
+                            mkdir($filePath, 0777, true);
+                        }
+                
+                        \File::put($filePath . '/' . $imageName, base64_decode($image));
+                
+                        // Save image path and title to database
+                        $jobImage = new JobImages();
+                        $jobImage->job_id = $job->id;
+                        $jobImage->path = 'uploads/job_images/' . $job->id . '/' . $imageName;
+                        $jobImage->file_name = $title;
+                        $jobImage->save();
                     }
                 }
+                
                
                 return response()->json([
                     'success' => true,
@@ -222,6 +286,8 @@ class JobController extends Controller
     public function filter_jobs(Request $request)
     {
         $validator = Validator::make($request->all(), [
+            'user_id' => 'required',
+            'role_id' => 'required',
             'date' => 'required|date_format:Y-m-d',
         ]);
         // Check if validation fails
@@ -235,18 +301,25 @@ class JobController extends Controller
         try {
             
             $date = $request->date;
-            $jobs = JobModel::where('date', $date)->with(['jobImages'])->get();
-            if(count($jobs) > 0) {
-            return response()->json([
-                'success' => true,
-                'jobs' => $jobs,
-            ], 200);
-        } else {
-            return response()->json([
-                'success' => false,
-                'message' => 'No Jobs Found',
-            ], 401);
-        }
+            if($request->role_id == '2'){
+                $jobs = JobModel::where('date', $date)->with(['jobImages'])->get();
+            }
+            if($request->role_id == '3' || $request->role_id == '4' || $request->role_id == '5'){
+                $jobs = JobModel::where('date', $date)->where('rigger_assigned',$request->user_id)->with(['jobImages'])->get();
+            }
+
+            
+            if(isset($jobs) && count($jobs) > 0) {
+                return response()->json([
+                    'success' => true,
+                    'jobs' => $jobs,
+                ], 200);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No Jobs Found',
+                ], 401);
+            }
 
         } catch (\Exception $e) {
             // Log the error for debugging purposes
@@ -260,6 +333,20 @@ class JobController extends Controller
 
     public function advance_filter_jobs(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required',
+            'role_id' => 'required',
+        ]);
+        // Check if validation fails
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+        
+        $user_id = isset($request->user_id) ? $request->user_id : '';
+        $role_id = isset($request->role_id) ? $request->role_id : '';
         $job_type = isset($request->job_type) ? $request->job_type : '';
         $job_category = isset($request->job_category) ? $request->job_category : '';
         $client_name = isset($request->client_name) ? $request->client_name : '';
@@ -283,7 +370,11 @@ class JobController extends Controller
         try {
             
             // make query for get listing
-            $query = JobModel::with(['jobImages']);
+            if($role_id == '2'){
+                $query = JobModel::with(['jobImages']);
+            }else{
+                $query = JobModel::where('rigger_assigned',$request->user_id)->with(['jobImages']);
+            }
             
             if ($job_type!='') {
                 $query->where('job_type', $job_type);
@@ -434,5 +525,41 @@ class JobController extends Controller
         }
     }
 
+    public function getAssignedJobs(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required',
+        ]);
+        // Check if validation fails
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        try {
+            
+            $jobs = JobModel::where('rigger_assigned', $request->user_id)->with(['jobImages'])->get();
+            if(count($jobs) > 0) {
+                return response()->json([
+                    'success' => true,
+                    'jobs' => $jobs,
+                ], 200);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No Jobs Found',
+                ], 401);
+            }
+        } catch (\Exception $e) {
+            // Log the error for debugging purposes
+            Log::error('Error loading jobs: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => "Oops! Network Error",
+            ], 500);
+        }
+    }
     
 }

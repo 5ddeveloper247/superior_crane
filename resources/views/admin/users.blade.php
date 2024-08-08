@@ -238,44 +238,47 @@
 
                 <div class="collapse mb-4" id="filterSection1">
                     <div class="filter">
-                        <div class="row gy-3">
-                            <div class="col-4 col-md-3">
-                                <label class="fw-semibold">Admin Name</label>
-                                <input class="py-1 px-3 rounded-1 form-control" type="text" placeholder="Type here...">
+                        <form id="admin_filters_form">
+                            <div class="row gy-3">
+                                <div class="col-4 col-md-3">
+                                    <label class="fw-semibold">User Number</label>
+                                    <input type="text" class="py-1 px-3 rounded-1 form-control" name="user_number"
+                                        placeholder="Enter User Number">
+                                </div>
+                                <div class="col-4 col-md-3">
+                                    <label class="fw-semibold">Admin Name</label>
+                                    <input type="text" class="py-1 px-3 rounded-1 form-control" name="name" placeholder="Type here...">
+                                </div>
+                                <div class="col-4 col-md-3">
+                                    <label class="fw-semibold">Email</label>
+                                    <input type="text" class="py-1 px-3 rounded-1 form-control" name="email" placeholder="Type here...">
+                                </div>
+                                <div class="col-4 col-md-3">
+                                    <label class="fw-semibold">Phone Number</label>
+                                    <input type="number" class="py-1 px-3 rounded-1 form-control" name="phone_number"
+                                            placeholder="Type here...">
+                                </div>
+                                <div class="col-4 col-md-3">
+                                    <label class="fw-semibold">Status</label>
+                                    <select class="form-control" name="status" id="">
+                                        <option value="">Choose</option>
+                                        <option value="1">Active</option>
+                                        <option value="0">InActive</option>
+                                    </select>
+                                </div>
                             </div>
-                            <div class="col-4 col-md-3">
-                                <label class="fw-semibold">Email</label>
-                                <input class="py-1 px-3 rounded-1 form-control" type="text" placeholder="Type here...">
+                            <div class="d-flex justify-content-end gap-2">
+                                <button type="button" class="mt-3 py-1 px-3 text-white rounded-1 clear_filter1">Clear Filter</button>
+                                <button type="button" class="mt-3 py-1 px-3 text-white rounded-1" id="search_admin_btn">Search</button>
                             </div>
-                            <div class="col-4 col-md-3">
-                                <label class="fw-semibold">Phone Number</label>
-                                <input class="py-1 px-3 rounded-1 form-control" type="number"
-                                    placeholder="Type here...">
-                            </div>
-                            <div class="col-4 col-md-3">
-                                <label class="fw-semibold">Status</label>
-                                <select class="form-control" name="" id="">
-                                    <option selected>Choose</option>
-                                    <option value="1">Active</option>
-                                    <option value="2">Deactive</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="d-flex justify-content-end gap-2">
-                            <button class="mt-3 py-1 px-3 text-white rounded-1">
-                                Clear Filter
-                            </button>
-                            <button class="mt-3 py-1 px-3 text-white rounded-1">
-                                Search
-                            </button>
-                        </div>
+                        </form>
                     </div>
                 </div>
                 <div class="table-container">
                     <table id="admins_listing_table" class="table-responsive w-100">
                         <thead>
                             <tr>
-                                <th class="px-3 text-start" scope="col">Serial #</th>
+                                <th class="px-3 text-start" scope="col">User No#</th>
                                 <th class="px-3" scope="col">Admin Name</th>
                                 <th class="px-3" scope="col">Email Address</th>
                                 <th class="px-3" scope="col">Status</th>
@@ -312,45 +315,49 @@
 
                 <div class="collapse mb-4" id="filterSection2">
                     <div class="filter">
-                        <div class="row gy-3">
-                            <div class="col-4 col-md-3">
-                                <label class="fw-semibold">Manager Name</label>
-                                <input class="py-1 px-3 rounded-1 form-control" type="text"
-                                    placeholder="Enter Customer Name">
+                        <form id="manager_filters_form">
+                            <div class="row gy-3">
+                                <div class="col-4 col-md-3">
+                                    <label class="fw-semibold">User Number</label>
+                                    <input type="text" class="py-1 px-3 rounded-1 form-control" name="user_number"
+                                        placeholder="Enter User Number">
+                                </div>
+                                <div class="col-4 col-md-3">
+                                    <label class="fw-semibold">User Name</label>
+                                    <input type="text" class="py-1 px-3 rounded-1 form-control" name="name"
+                                        placeholder="Enter Customer Name">
+                                </div>
+                                <div class="col-4 col-md-3">
+                                    <label class="fw-semibold">Email</label>
+                                    <input type="text" class="py-1 px-3 rounded-1 form-control" name="email"
+                                        placeholder="Type here...">
+                                </div>
+                                <div class="col-4 col-md-3">
+                                    <label class="fw-semibold">Phone Number</label>
+                                    <input type="number" class="py-1 px-3 rounded-1 form-control" name="phone_number"
+                                        placeholder="Type here...">
+                                </div>
+                                <div class="col-4 col-md-3">
+                                    <label class="fw-semibold">Status</label>
+                                    <select class="form-control" name="status" id="">
+                                        <option value="">Choose</option>
+                                        <option value="1">Active</option>
+                                        <option value="2">Deactive</option>
+                                    </select>
+                                </div>
                             </div>
-                            <div class="col-4 col-md-3">
-                                <label class="fw-semibold">Email</label>
-                                <input class="py-1 px-3 rounded-1 form-control" type="text" placeholder="Type here...">
+                            <div class="d-flex justify-content-end gap-2">
+                                <button type="button" class="mt-3 py-1 px-3 text-white rounded-1 clear_filter1">Clear Filter</button>
+                                <button type="button" class="mt-3 py-1 px-3 text-white rounded-1" id="search_manager_btn">Search</button>
                             </div>
-                            <div class="col-4 col-md-3">
-                                <label class="fw-semibold">Phone Number</label>
-                                <input class="py-1 px-3 rounded-1 form-control" type="number"
-                                    placeholder="Type here...">
-                            </div>
-                            <div class="col-4 col-md-3">
-                                <label class="fw-semibold">Status</label>
-                                <select class="form-control" name="" id="">
-                                    <option selected>Choose</option>
-                                    <option value="1">Active</option>
-                                    <option value="2">Deactive</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="d-flex justify-content-end gap-2">
-                            <button class="mt-3 py-1 px-3 text-white rounded-1">
-                                Clear Filter
-                            </button>
-                            <button class="mt-3 py-1 px-3 text-white rounded-1">
-                                Search
-                            </button>
-                        </div>
+                        </form>
                     </div>
                 </div>
                 <div class="table-container">
                     <table id="managers_listing_table" class="table-responsive w-100">
                         <thead>
                             <tr>
-                                <th class="px-3 text-start" scope="col">Serial #</th>
+                                <th class="px-3 text-start" scope="col">User No#</th>
                                 <th class="px-3" scope="col">Manager Name</th>
                                 <th class="px3" scope="col">Email Address</th>
                                 <th class="px-3" scope="col">Status</th>
@@ -387,52 +394,49 @@
 
                 <div class="collapse mb-4" id="filterSection3">
                     <div class="filter">
-                        <div class="row gy-3">
-                            <div class="col-4 col-md-3">
-                                <label class="fw-semibold">Basic User Name</label>
-                                <input class="py-1 px-3 rounded-1 form-control" type="text" placeholder="Type here...">
+                    <form id="user_filters_form">
+                            <div class="row gy-3">
+                                <div class="col-4 col-md-3">
+                                    <label class="fw-semibold">User Number</label>
+                                    <input type="text" class="py-1 px-3 rounded-1 form-control" name="user_number"
+                                        placeholder="Enter User Number">
+                                </div>
+                                <div class="col-4 col-md-3">
+                                    <label class="fw-semibold">Manager Name</label>
+                                    <input type="text" class="py-1 px-3 rounded-1 form-control" name="name"
+                                        placeholder="Enter Customer Name">
+                                </div>
+                                <div class="col-4 col-md-3">
+                                    <label class="fw-semibold">Email</label>
+                                    <input type="text" class="py-1 px-3 rounded-1 form-control" name="email"
+                                        placeholder="Type here...">
+                                </div>
+                                <div class="col-4 col-md-3">
+                                    <label class="fw-semibold">Phone Number</label>
+                                    <input type="number" class="py-1 px-3 rounded-1 form-control" name="phone_number"
+                                        placeholder="Type here...">
+                                </div>
+                                <div class="col-4 col-md-3">
+                                    <label class="fw-semibold">Status</label>
+                                    <select class="form-control" name="status" id="">
+                                        <option value="">Choose</option>
+                                        <option value="1">Active</option>
+                                        <option value="2">Deactive</option>
+                                    </select>
+                                </div>
                             </div>
-                            <div class="col-4 col-md-3">
-                                <label class="fw-semibold">Email</label>
-                                <input class="py-1 px-3 rounded-1 form-control" type="text" placeholder="Type here...">
+                            <div class="d-flex justify-content-end gap-2">
+                                <button type="button" class="mt-3 py-1 px-3 text-white rounded-1 clear_filter1">Clear Filter</button>
+                                <button type="button" class="mt-3 py-1 px-3 text-white rounded-1" id="search_user_btn">Search</button>
                             </div>
-                            <div class="col-4 col-md-3">
-                                <label class="fw-semibold">Phone Number</label>
-                                <input class="py-1 px-3 rounded-1 form-control" type="number"
-                                    placeholder="Type here...">
-                            </div>
-                            <div class="col-4 col-md-3">
-                                <label class="fw-semibold">Type</label>
-                                <select class="form-control" name="" id="">
-                                    <option selected>Choose</option>
-                                    <option value="1">Transporter</option>
-                                    <option value="2">Rigger</option>
-                                </select>
-                            </div>
-                            <div class="col-4 col-md-3">
-                                <label class="fw-semibold">Status</label>
-                                <select class="form-control" name="" id="">
-                                    <option selected>Choose</option>
-                                    <option value="1">Active</option>
-                                    <option value="2">Deactive</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="d-flex justify-content-end gap-2">
-                            <button class="mt-3 py-1 px-3 text-white rounded-1">
-                                Clear Filter
-                            </button>
-                            <button class="mt-3 py-1 px-3 text-white rounded-1">
-                                Search
-                            </button>
-                        </div>
+                        </form>
                     </div>
                 </div>
                 <div class="table-container">
                     <table id="users_listing_table" class="table-responsive w-100">
                         <thead>
                             <tr>
-                                <th class="px-3 text-start" scope="col">Serial #</th>
+                                <th class="px-3 text-start" scope="col">User No#</th>
                                 <th class="px-3" scope="col">Basic User Name</th>
                                 <th class="px-3" scope="col">Email Address</th>
                                 <th class="px-3" scope="col">Status</th>
@@ -510,6 +514,19 @@
                                     @endforeach
                                 </select>
                             </div>
+                            <div class="col-12 col-md-6 "></div>
+                            <div class="col-12 col-md-6 updatedInfo_div">
+                                <label class="fw-semibold form-label">
+                                    Created By
+                                </label>
+                                <p id="created_by"></p>
+                            </div>
+                            <div class="col-12 col-md-6 updatedInfo_div">
+                                <label class="fw-semibold form-label">
+                                    Updated By
+                                </label>
+                                <p id="updated_by"></p>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -522,70 +539,10 @@
     </div>
 </div>
 
-<div class="edit-user py-4 px-3">
-    <div class="">
-        <h1 class="fs-6 fw-semibold text-danger" id="exampleModalLabel">
-            ADD USER
-        </h1>
-        <div class="edit-form">
-            <div class="row gy-2 py-4 add-form rounded-1 align-items-center">
-                <div class="col-12 col-md-6 d-flex flex-column">
-                    <label class="form-label fw-semibold" for="name">
-                        Name
-                    </label>
-                    <input class="rounded-1 py-2 px-2 w-100 form-control" id="name" type="text"
-                        placeholder="Type here...">
-                </div>
 
-                <div class="col-12 col-md-6 d-flex flex-column">
-                    <label class="fw-semibold form-label" for="email">
-                        Email
-                    </label>
-                    <input class="rounded-1 py-2 px-2 w-100 form-control" id="email" type="text"
-                        placeholder="Type here...">
-                </div>
-
-                <div class="col-12 col-md-6 d-flex flex-column">
-                    <label class="fw-semibold form-label" for="pass">
-                        Password
-                    </label>
-                    <input class="rounded-1 py-2 px-2 w-100 form-control" id="pass" type="number"
-                        placeholder="Type here...">
-                </div>
-
-                <div class="col-12 col-md-6 d-flex flex-column">
-                    <label class="fw-semibold form-label" for="c-pass">
-                        Confirm Password
-                    </label>
-                    <input class="rounded-1 py-2 px-2 w-100 form-control" id="c-pass" type="number"
-                        placeholder="Type here...">
-                </div>
-
-                <div class="col-12 col-md-6 d-flex flex-column">
-                    <label class="fw-semibold form-label" for="date">
-                        Role
-                    </label>
-                    <select class="py-1 rounded-1 px-2 pb-2 form-control" name="" id="">
-                        <option selected>Choose</option>
-                        <option value="1">Admin</option>
-                        <option value="2">Manager</option>
-                        <option value="3">Rigger</option>
-                        <option value="4">Transporter</option>
-                        <option value="5">Both Rigger & Transporter</option>
-                    </select>
-                </div>
-            </div>
-            <div class="d-flex justify-content-center gap-2">
-                <button id="save-btn" class="py-1 px-4 add-btn rounded-1">
-                    Back
-                </button>
-                <button id="save-btn" type="button" class="add-btn px-4 py-1 rounded-1">Save</button>
-            </div>
-        </div>
-    </div>
-</div>
 @endsection
 
 @push('scripts')
+
 <script src="{{ asset('assets_admin/customjs/script_users.js') }}"></script>
 @endpush

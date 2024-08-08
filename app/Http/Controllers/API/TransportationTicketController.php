@@ -14,6 +14,7 @@ class TransportationTicketController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'user_id' => 'required',
+            'job_id' => 'required',
             'pickup_address' => 'required|string',
             'delivery_address' => 'required|string',
             'time_in' => 'required|date_format:H:i',
@@ -59,6 +60,7 @@ class TransportationTicketController extends Controller
         try {
             $record = new TransportationTicketModel; 
             $record->user_id = $request->user_id;
+            $record->job_id = $request->job_id;
             $record->pickup_address = $request->pickup_address;
             $record->delivery_address = $request->delivery_address;
             $record->time_in = $request->time_in;
@@ -164,6 +166,7 @@ class TransportationTicketController extends Controller
         $validator = Validator::make($request->all(), [
             'ticket_id' => 'required',
             'user_id' => 'required',
+            'job_id' => 'required',
             'pickup_address' => 'required|string',
             'delivery_address' => 'required|string',
             'time_in' => 'required|date_format:H:i',
@@ -210,6 +213,7 @@ class TransportationTicketController extends Controller
             $record = TransportationTicketModel::where('id', $request->ticket_id)->first();
             if($record){
                 $record->user_id = $request->user_id;
+                $record->job_id = $request->job_id;
                 $record->pickup_address = $request->pickup_address;
                 $record->delivery_address = $request->delivery_address;
                 $record->time_in = $request->time_in;

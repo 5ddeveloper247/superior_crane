@@ -106,16 +106,45 @@
             box-shadow: none;
             float: right !important;
         }
+        .atc-btn {
+            background-color: transparent;
+            border: 1px solid red !important;
+            font-size: 12px !important;
+            padding: .3rem .8rem;
+            border-radius: 4px;
+        }
+
+        .upload-btn {
+            background-color: red;
+            border: none;
+            padding: .4rem .8rem;
+            color: #fff !important;
+            font-size: 12px !important;
+            border-radius: 4px;
+        }
+        .form-label {
+            font-size: 14px !important;
+            margin-bottom: 0rem !important;
+            margin-top: .6rem !important;
+            font-weight: 600 !important;
+        }
+        .upload-btn {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: inline-block;
+            max-width: 100%;
+            text-align:center;
+        }
     </style>
 @endpush
-
+ 
 @section('content')
-<div class="all-jobs py-4 px-3">
+<div class="all-jobs py-4 px-3" id="listing_section">
     <div class="breadcrumb mb-0 d-flex align-items-center gap-1">
-        <a class="d-flex" href="{{url('dashboard')}}">
+        <a class="d-flex" href="{{route('dashboard')}}">
             <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" viewBox="0 0 24 24">
-                <path fill="red"
-                    d="M3 13h1v7c0 1.103.897 2 2 2h12c1.103 0 2-.897 2-2v-7h1a1 1 0 0 0 .707-1.707l-9-9a.999.999 0 0 0-1.414 0l-9 9A1 1 0 0 0 3 13m7 7v-5h4v5zm2-15.586l6 6V15l.001 5H16v-5c0-1.103-.897-2-2-2h-4c-1.103 0-2 .897-2 2v5H6v-9.586z" />
+                <path fill="red" d="M3 13h1v7c0 1.103.897 2 2 2h12c1.103 0 2-.897 2-2v-7h1a1 1 0 0 0 .707-1.707l-9-9a.999.999 0 0 0-1.414 0l-9 9A1 1 0 0 0 3 13m7 7v-5h4v5zm2-15.586l6 6V15l.001 5H16v-5c0-1.103-.897-2-2-2h-4c-1.103 0-2 .897-2 2v5H6v-9.586z" />
             </svg>
             <small>
                 Dashboard
@@ -133,9 +162,7 @@
                     <h6 class="mb-0">
                         Total Rigger Tickets
                     </h6>
-                    <small>
-                        1323
-                    </small>
+                    <small id="total_riggers">0</small>
                 </div>
             </div>
         </div>
@@ -146,11 +173,9 @@
                 <img src="{{asset('assets/images/tour.png')}}" width="50" alt="">
                 <div class="pt-2">
                     <h6 class="mb-0">
-                        Total Riggers
+                        Total Draft Tickets
                     </h6>
-                    <small>
-                        1323
-                    </small>
+                    <small id="total_draft">0</small>
                 </div>
             </div>
         </div>
@@ -161,28 +186,24 @@
                 <img src="{{asset('assets/images/check.png')}}" width="50" alt="">
                 <div class="pt-2">
                     <h6 class="mb-0">
-                        Active Riggers
+                        Total Completed Tickets
                     </h6>
-                    <small>
-                        1323
-                    </small>
+                    <small id="total_completed">0</small>
                 </div>
             </div>
         </div>
 
-        <div class="col-6 col-md-3">
+        <!-- <div class="col-6 col-md-3">
             <div class="counters d-flex gap-2 align-items-center justify-content-md-end">
                 <img src="{{asset('assets/images/sluggish.png')}}" width="50" alt="">
                 <div class="pt-2">
                     <h6 class="mb-0">
                         Inactive Riggers
                     </h6>
-                    <small>
-                        1323
-                    </small>
+                    <small>0</small>
                 </div>
             </div>
-        </div>
+        </div> -->
     </div>
 
     <!-- <h6 class="mt-3">
@@ -210,175 +231,79 @@
 
         <div class="collapse mb-4" id="filterSection">
             <div class="filter">
-                <div class="row gy-3">
-                    <div class="col-4 col-md-3">
-                        <label class="fw-semibold">Customer Name</label>
-                        <input class="py-1 px-3 rounded-1 form-control" type="text" placeholder="Type here...">
+                <form id="filterTicket_form">
+                    <div class="row gy-3">
+                        <div class="col-4 col-md-3">
+                            <label class="fw-semibold">Ticket Number</label>
+                            <input type="text" class="py-1 px-3 rounded-1 form-control" name="search_ticket_number" placeholder="Type here...">
+                        </div>
+                        <div class="col-4 col-md-3">
+                            <label class="fw-semibold">Customer Name</label>
+                            <input type="text" class="py-1 px-3 rounded-1 form-control" name="search_customer_name" placeholder="Type here...">
+                        </div>
+                        <div class="col-4 col-md-3">
+                            <label class="fw-semibold">Rigger Name</label>
+                            <input type="text"class="py-1 px-3 rounded-1 form-control" name="search_rigger_name" placeholder="Type here...">
+                        </div>
+                        <div class="col-4 col-md-3">
+                            <label class="fw-semibold">Email</label>
+                            <input type="text" class="py-1 px-3 rounded-1 form-control" name="search_email" placeholder="Type here...">
+                        </div>
+                        <div class="col-4 col-md-3">
+                            <label class="fw-semibold">Location</label>
+                            <input type="text" class="py-1 px-3 rounded-1 form-control" name="search_location" placeholder="Type here...">
+                        </div>
+                        <div class="col-4 col-md-3">
+                            <label class="fw-semibold">Date</label>
+                            <input type="date" class="py-1 px-3 rounded-1 form-control" name="search_date">
+                        </div>
+                        <div class="col-4 col-md-3">
+                            <label class="fw-semibold">Status</label>
+                            <select class="rounded-1 form-control" name="search_status" id="">
+                                <option value="">Choose</option>
+                                <option value="1">Draft</option>
+                                <!-- <option value="2">Issued</option> -->
+                                <option value="3">Completed</option>
+                            </select>
+                        </div>
                     </div>
-                    <div class="col-4 col-md-3">
-                        <label class="fw-semibold">Rigger Name</label>
-                        <input class="py-1 px-3 rounded-1 form-control" type="text" placeholder="Type here...">
+                    <div class="d-flex justify-content-end gap-2">
+                        <button type="button" class="mt-3 py-1 px-3 text-white rounded-1 clear_filter">
+                            Clear Filter
+                        </button>
+                        <button type="button" class="mt-3 py-1 px-3 text-white rounded-1 searchTicket_btn">
+                            Search
+                        </button>
                     </div>
-                    <div class="col-4 col-md-3">
-                        <label class="fw-semibold">Email</label>
-                        <input class="py-1 px-3 rounded-1 form-control" type="email" placeholder="Type here...">
-                    </div>
-                    <div class="col-4 col-md-3">
-                        <label class="fw-semibold">Address</label>
-                        <input class="py-1 px-3 rounded-1 form-control" type="text" placeholder="Type here...">
-                    </div>
-                    <div class="col-4 col-md-3">
-                        <label class="fw-semibold">Date</label>
-                        <input class="py-1 px-3 rounded-1 form-control" type="text" placeholder="Type here...">
-                    </div>
-                    <div class="col-4 col-md-3">
-                        <label class="fw-semibold">Status</label>
-                        <select class="rounded-1 form-control" name="" id="">
-                            <option selected>Choose</option>
-                            <option value="1">Draft</option>
-                            <option value="2">Issued</option>
-                            <option value="3">Completed</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="d-flex justify-content-end gap-2">
-                    <button class="mt-3 py-1 px-3 text-white rounded-1">
-                        Clear Filter
-                    </button>
-                    <button class="mt-3 py-1 px-3 text-white rounded-1">
-                        Search
-                    </button>
-                </div>
+                </form>
             </div>
         </div>
         <div class="table-container">
-            <table id="myTable" class="table-responsive w-100">
+            <table id="riggerTickets_table" class="table-responsive w-100">
                 <thead>
                     <tr>
+                        <th class="px-3" scope="col">Ticket No#</th>
+                        <th class="px-3" scope="col">Rigger Name</th>
+                        <th class="px-3" scope="col">Job Client Name</th>
                         <th class="px-3" scope="col">Customer Name</th>
+                        <th class="px3" scope="col">Location</th>
+                        <th class="px3" scope="col">PO Number</th>
+                        <th class="px3" scope="col">date</th>
+                        <th class="px3" scope="col">Leave Yard</th>
+                        <th class="px3" scope="col">Start Job</th>
+                        <th class="px3" scope="col">Finish Job</th>
+                        <th class="px3" scope="col">Arrival Yard</th>
+                        <th class="px3" scope="col">Travel Time</th>
+                        <th class="px3" scope="col">Crane Time</th>
+                        <th class="px3" scope="col">Total Hours</th>
                         <th class="px3" scope="col">Operator</th>
                         <th class="px3" scope="col">Email</th>
-                        <th class="px3" scope="col">Location</th>
-                        <th class="px3" scope="col">Date</th>
-                        <th class="px3" scope="col">PO-Number</th>
                         <th class="px3" scope="col">Status</th>
                         <th scope="col">Action</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td>Arsam Javed</td>
-                        <td>Adnan Yar</td>
-                        <td>someone@gmail.com</td>
-                        <td>900 Bay St, T.O</td>
-                        <td>17 Oct 2024</td>
-                        <td>-</td>
-                        <td>Completed</td>
-                        <td class="d-flex gap-2 ">
-                            <div class="edit">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" viewBox="0 0 24 24">
-                                    <g fill="none" stroke="green" stroke-linecap="round" stroke-linejoin="round"
-                                        stroke-width="1.5" color="white">
-                                        <path
-                                            d="M21.544 11.045c.304.426.456.64.456.955c0 .316-.152.529-.456.955C20.178 14.871 16.689 19 12 19c-4.69 0-8.178-4.13-9.544-6.045C2.152 12.529 2 12.315 2 12c0-.316.152-.529.456-.955C3.822 9.129 7.311 5 12 5c4.69 0 8.178 4.13 9.544 6.045" />
-                                        <path d="M15 12a3 3 0 1 0-6 0a3 3 0 0 0 6 0" />
-                                    </g>
-                                </svg>
-                            </div>
-                            <div class="del">
-                                <svg width="15" viewBox="0 0 9 11" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path
-                                        d="M0.488907 6.7101C0.488907 5.86704 0.488335 5.02398 0.489193 4.18092C0.48948 3.91325 0.634045 3.73004 0.872794 3.68825C1.13645 3.64187 1.38407 3.83539 1.40354 4.1042C1.4064 4.14341 1.40497 4.18263 1.40497 4.22214C1.40497 5.86904 1.40497 7.51566 1.40497 9.16257C1.40497 9.7102 1.77798 10.0826 2.32675 10.0829C3.54111 10.0829 4.75546 10.0829 5.96953 10.0829C6.51802 10.0829 6.89131 9.70992 6.89131 9.16257C6.89131 7.50164 6.89131 5.84042 6.8916 4.17948C6.8916 3.92213 7.0293 3.73834 7.2543 3.69225C7.5128 3.63901 7.75327 3.80304 7.79736 4.06469C7.80566 4.11364 7.80738 4.16403 7.80738 4.21384C7.80795 5.86761 7.80823 7.52168 7.80766 9.17545C7.80738 10.0821 7.20134 10.8103 6.31076 10.9724C6.20599 10.9915 6.09778 10.9981 5.991 10.9984C4.76233 11.0001 3.53395 11.0004 2.30528 10.9993C1.28445 10.9984 0.490338 10.2054 0.488907 9.18604C0.488048 8.36044 0.488907 7.53542 0.488907 6.7101Z"
-                                        fill="#DC2F2B" />
-                                    <path
-                                        d="M5.97563 2.30643C6.09529 2.30643 6.19835 2.30643 6.30169 2.30643C6.79436 2.30643 7.28703 2.30414 7.77999 2.30729C8.11406 2.30958 8.33392 2.59327 8.24317 2.89671C8.18935 3.07649 8.03133 3.20531 7.8444 3.22106C7.81949 3.22306 7.79459 3.22277 7.76939 3.22277C5.35586 3.22277 2.94204 3.22306 0.528505 3.22249C0.237656 3.22277 0.0315422 3.02897 0.0338324 2.76102C0.0361225 2.49823 0.240232 2.30786 0.527074 2.307C1.077 2.30528 1.62692 2.30643 2.17656 2.30643C2.21892 2.30643 2.26158 2.30643 2.32141 2.30643C2.32141 2.26091 2.32141 2.22341 2.32141 2.18591C2.32141 1.92884 2.31969 1.67177 2.32198 1.41441C2.32456 1.12728 2.51092 0.936343 2.79833 0.93577C3.69808 0.933194 4.59782 0.933194 5.49756 0.93577C5.78584 0.936629 5.97248 1.12643 5.97477 1.41384C5.97764 1.70583 5.97563 1.99811 5.97563 2.30643ZM3.23776 2.29698C3.85037 2.29698 4.45383 2.29698 5.05585 2.29698C5.05585 2.14354 5.05585 1.99983 5.05585 1.85756C4.44552 1.85756 3.84436 1.85756 3.23776 1.85756C3.23776 2.00527 3.23776 2.1464 3.23776 2.29698Z"
-                                        fill="#DC2F2B" />
-                                    <path
-                                        d="M2.77718 6.65314C2.77718 6.11753 2.77547 5.58221 2.77833 5.0466C2.77947 4.82302 2.93578 4.64411 3.15391 4.60174C3.35173 4.56338 3.56557 4.67016 3.6463 4.86053C3.67607 4.93066 3.69124 5.01225 3.69153 5.08868C3.69439 6.13127 3.69439 7.17358 3.69296 8.21617C3.69267 8.50788 3.49715 8.71313 3.22949 8.71056C2.96669 8.70798 2.77776 8.5033 2.77747 8.21703C2.77661 7.69573 2.7769 7.17444 2.77718 6.65314Z"
-                                        fill="#DC2F2B" />
-                                    <path
-                                        d="M5.52015 6.65514C5.52015 7.18702 5.52158 7.7192 5.51929 8.25109C5.51843 8.46722 5.38475 8.63698 5.18149 8.69308C4.98597 8.74719 4.77184 8.66847 4.67566 8.48898C4.63357 8.41054 4.60724 8.31349 4.60695 8.22475C4.60237 7.175 4.60266 6.12554 4.60495 5.07579C4.60552 4.79324 4.80648 4.59142 5.07071 4.59543C5.32949 4.59915 5.51929 4.80269 5.51986 5.08094C5.52101 5.60567 5.52044 6.1304 5.52015 6.65514Z"
-                                        fill="#DC2F2B" />
-                                </svg>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>Arsam Javed</td>
-                        <td>Adnan Yar</td>
-                        <td>someone@gmail.com</td>
-                        <td>900 Bay St, T.O</td>
-                        <td>17 Oct 2024</td>
-                        <td>-</td>
-                        <td>Completed</td>
-                        <td class="d-flex gap-2 ">
-                            <div class="edit">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" viewBox="0 0 24 24">
-                                    <g fill="none" stroke="green" stroke-linecap="round" stroke-linejoin="round"
-                                        stroke-width="1.5" color="white">
-                                        <path
-                                            d="M21.544 11.045c.304.426.456.64.456.955c0 .316-.152.529-.456.955C20.178 14.871 16.689 19 12 19c-4.69 0-8.178-4.13-9.544-6.045C2.152 12.529 2 12.315 2 12c0-.316.152-.529.456-.955C3.822 9.129 7.311 5 12 5c4.69 0 8.178 4.13 9.544 6.045" />
-                                        <path d="M15 12a3 3 0 1 0-6 0a3 3 0 0 0 6 0" />
-                                    </g>
-                                </svg>
-                            </div>
-                            <div class="del">
-                                <svg width="15" viewBox="0 0 9 11" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path
-                                        d="M0.488907 6.7101C0.488907 5.86704 0.488335 5.02398 0.489193 4.18092C0.48948 3.91325 0.634045 3.73004 0.872794 3.68825C1.13645 3.64187 1.38407 3.83539 1.40354 4.1042C1.4064 4.14341 1.40497 4.18263 1.40497 4.22214C1.40497 5.86904 1.40497 7.51566 1.40497 9.16257C1.40497 9.7102 1.77798 10.0826 2.32675 10.0829C3.54111 10.0829 4.75546 10.0829 5.96953 10.0829C6.51802 10.0829 6.89131 9.70992 6.89131 9.16257C6.89131 7.50164 6.89131 5.84042 6.8916 4.17948C6.8916 3.92213 7.0293 3.73834 7.2543 3.69225C7.5128 3.63901 7.75327 3.80304 7.79736 4.06469C7.80566 4.11364 7.80738 4.16403 7.80738 4.21384C7.80795 5.86761 7.80823 7.52168 7.80766 9.17545C7.80738 10.0821 7.20134 10.8103 6.31076 10.9724C6.20599 10.9915 6.09778 10.9981 5.991 10.9984C4.76233 11.0001 3.53395 11.0004 2.30528 10.9993C1.28445 10.9984 0.490338 10.2054 0.488907 9.18604C0.488048 8.36044 0.488907 7.53542 0.488907 6.7101Z"
-                                        fill="#DC2F2B" />
-                                    <path
-                                        d="M5.97563 2.30643C6.09529 2.30643 6.19835 2.30643 6.30169 2.30643C6.79436 2.30643 7.28703 2.30414 7.77999 2.30729C8.11406 2.30958 8.33392 2.59327 8.24317 2.89671C8.18935 3.07649 8.03133 3.20531 7.8444 3.22106C7.81949 3.22306 7.79459 3.22277 7.76939 3.22277C5.35586 3.22277 2.94204 3.22306 0.528505 3.22249C0.237656 3.22277 0.0315422 3.02897 0.0338324 2.76102C0.0361225 2.49823 0.240232 2.30786 0.527074 2.307C1.077 2.30528 1.62692 2.30643 2.17656 2.30643C2.21892 2.30643 2.26158 2.30643 2.32141 2.30643C2.32141 2.26091 2.32141 2.22341 2.32141 2.18591C2.32141 1.92884 2.31969 1.67177 2.32198 1.41441C2.32456 1.12728 2.51092 0.936343 2.79833 0.93577C3.69808 0.933194 4.59782 0.933194 5.49756 0.93577C5.78584 0.936629 5.97248 1.12643 5.97477 1.41384C5.97764 1.70583 5.97563 1.99811 5.97563 2.30643ZM3.23776 2.29698C3.85037 2.29698 4.45383 2.29698 5.05585 2.29698C5.05585 2.14354 5.05585 1.99983 5.05585 1.85756C4.44552 1.85756 3.84436 1.85756 3.23776 1.85756C3.23776 2.00527 3.23776 2.1464 3.23776 2.29698Z"
-                                        fill="#DC2F2B" />
-                                    <path
-                                        d="M2.77718 6.65314C2.77718 6.11753 2.77547 5.58221 2.77833 5.0466C2.77947 4.82302 2.93578 4.64411 3.15391 4.60174C3.35173 4.56338 3.56557 4.67016 3.6463 4.86053C3.67607 4.93066 3.69124 5.01225 3.69153 5.08868C3.69439 6.13127 3.69439 7.17358 3.69296 8.21617C3.69267 8.50788 3.49715 8.71313 3.22949 8.71056C2.96669 8.70798 2.77776 8.5033 2.77747 8.21703C2.77661 7.69573 2.7769 7.17444 2.77718 6.65314Z"
-                                        fill="#DC2F2B" />
-                                    <path
-                                        d="M5.52015 6.65514C5.52015 7.18702 5.52158 7.7192 5.51929 8.25109C5.51843 8.46722 5.38475 8.63698 5.18149 8.69308C4.98597 8.74719 4.77184 8.66847 4.67566 8.48898C4.63357 8.41054 4.60724 8.31349 4.60695 8.22475C4.60237 7.175 4.60266 6.12554 4.60495 5.07579C4.60552 4.79324 4.80648 4.59142 5.07071 4.59543C5.32949 4.59915 5.51929 4.80269 5.51986 5.08094C5.52101 5.60567 5.52044 6.1304 5.52015 6.65514Z"
-                                        fill="#DC2F2B" />
-                                </svg>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>Arsam Javed</td>
-                        <td>Adnan Yar</td>
-                        <td>someone@gmail.com</td>
-                        <td>900 Bay St, T.O</td>
-                        <td>17 Oct 2024</td>
-                        <td>-</td>
-                        <td>Completed</td>
-                        <td class="d-flex gap-2 ">
-                            <div class="edit">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" viewBox="0 0 24 24">
-                                    <g fill="none" stroke="green" stroke-linecap="round" stroke-linejoin="round"
-                                        stroke-width="1.5" color="white">
-                                        <path
-                                            d="M21.544 11.045c.304.426.456.64.456.955c0 .316-.152.529-.456.955C20.178 14.871 16.689 19 12 19c-4.69 0-8.178-4.13-9.544-6.045C2.152 12.529 2 12.315 2 12c0-.316.152-.529.456-.955C3.822 9.129 7.311 5 12 5c4.69 0 8.178 4.13 9.544 6.045" />
-                                        <path d="M15 12a3 3 0 1 0-6 0a3 3 0 0 0 6 0" />
-                                    </g>
-                                </svg>
-                            </div>
-                            <div class="del">
-                                <svg width="15" viewBox="0 0 9 11" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path
-                                        d="M0.488907 6.7101C0.488907 5.86704 0.488335 5.02398 0.489193 4.18092C0.48948 3.91325 0.634045 3.73004 0.872794 3.68825C1.13645 3.64187 1.38407 3.83539 1.40354 4.1042C1.4064 4.14341 1.40497 4.18263 1.40497 4.22214C1.40497 5.86904 1.40497 7.51566 1.40497 9.16257C1.40497 9.7102 1.77798 10.0826 2.32675 10.0829C3.54111 10.0829 4.75546 10.0829 5.96953 10.0829C6.51802 10.0829 6.89131 9.70992 6.89131 9.16257C6.89131 7.50164 6.89131 5.84042 6.8916 4.17948C6.8916 3.92213 7.0293 3.73834 7.2543 3.69225C7.5128 3.63901 7.75327 3.80304 7.79736 4.06469C7.80566 4.11364 7.80738 4.16403 7.80738 4.21384C7.80795 5.86761 7.80823 7.52168 7.80766 9.17545C7.80738 10.0821 7.20134 10.8103 6.31076 10.9724C6.20599 10.9915 6.09778 10.9981 5.991 10.9984C4.76233 11.0001 3.53395 11.0004 2.30528 10.9993C1.28445 10.9984 0.490338 10.2054 0.488907 9.18604C0.488048 8.36044 0.488907 7.53542 0.488907 6.7101Z"
-                                        fill="#DC2F2B" />
-                                    <path
-                                        d="M5.97563 2.30643C6.09529 2.30643 6.19835 2.30643 6.30169 2.30643C6.79436 2.30643 7.28703 2.30414 7.77999 2.30729C8.11406 2.30958 8.33392 2.59327 8.24317 2.89671C8.18935 3.07649 8.03133 3.20531 7.8444 3.22106C7.81949 3.22306 7.79459 3.22277 7.76939 3.22277C5.35586 3.22277 2.94204 3.22306 0.528505 3.22249C0.237656 3.22277 0.0315422 3.02897 0.0338324 2.76102C0.0361225 2.49823 0.240232 2.30786 0.527074 2.307C1.077 2.30528 1.62692 2.30643 2.17656 2.30643C2.21892 2.30643 2.26158 2.30643 2.32141 2.30643C2.32141 2.26091 2.32141 2.22341 2.32141 2.18591C2.32141 1.92884 2.31969 1.67177 2.32198 1.41441C2.32456 1.12728 2.51092 0.936343 2.79833 0.93577C3.69808 0.933194 4.59782 0.933194 5.49756 0.93577C5.78584 0.936629 5.97248 1.12643 5.97477 1.41384C5.97764 1.70583 5.97563 1.99811 5.97563 2.30643ZM3.23776 2.29698C3.85037 2.29698 4.45383 2.29698 5.05585 2.29698C5.05585 2.14354 5.05585 1.99983 5.05585 1.85756C4.44552 1.85756 3.84436 1.85756 3.23776 1.85756C3.23776 2.00527 3.23776 2.1464 3.23776 2.29698Z"
-                                        fill="#DC2F2B" />
-                                    <path
-                                        d="M2.77718 6.65314C2.77718 6.11753 2.77547 5.58221 2.77833 5.0466C2.77947 4.82302 2.93578 4.64411 3.15391 4.60174C3.35173 4.56338 3.56557 4.67016 3.6463 4.86053C3.67607 4.93066 3.69124 5.01225 3.69153 5.08868C3.69439 6.13127 3.69439 7.17358 3.69296 8.21617C3.69267 8.50788 3.49715 8.71313 3.22949 8.71056C2.96669 8.70798 2.77776 8.5033 2.77747 8.21703C2.77661 7.69573 2.7769 7.17444 2.77718 6.65314Z"
-                                        fill="#DC2F2B" />
-                                    <path
-                                        d="M5.52015 6.65514C5.52015 7.18702 5.52158 7.7192 5.51929 8.25109C5.51843 8.46722 5.38475 8.63698 5.18149 8.69308C4.98597 8.74719 4.77184 8.66847 4.67566 8.48898C4.63357 8.41054 4.60724 8.31349 4.60695 8.22475C4.60237 7.175 4.60266 6.12554 4.60495 5.07579C4.60552 4.79324 4.80648 4.59142 5.07071 4.59543C5.32949 4.59915 5.51929 4.80269 5.51986 5.08094C5.52101 5.60567 5.52044 6.1304 5.52015 6.65514Z"
-                                        fill="#DC2F2B" />
-                                </svg>
-                            </div>
-                        </td>
-                    </tr>
+                <tbody id="riggerTickets_body">
+                    
                 </tbody>
             </table>
         </div>
@@ -386,7 +311,7 @@
 </div>
 
 
-<div class="edit-user py-4 px-3">
+<div class="edit-user py-4 px-3" id="detail_section">
     <div class="">
         <h1 class="fs-6 fw-semibold text-danger" id="exampleModalLabel">
             View Details
@@ -394,150 +319,160 @@
         <div class="edit-form">
             <div class="row gy-2 py-2 add-form rounded-1 align-items-center">
                 <div class="col-12 col-md-6 d-flex flex-column">
-                    <label class="form-label fw-semibold" for="name">
+                    <label class="form-label fw-semibold" for="ticket_specification">
                         Specification & Remarks
                     </label>
-                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="name" type="text"
-                        placeholder="Type here...">
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" type="text" id="ticket_specification" >
                 </div>
 
                 <div class="col-12 col-md-6 d-flex flex-column">
-                    <label class="form-label fw-semibold" for="name">
+                    <label class="form-label fw-semibold" for="ticket_customer">
                         Customer Name
                     </label>
-                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="name" type="text"
-                        placeholder="Type here...">
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" type="text" id="ticket_customer" >
                 </div>
 
                 <div class="col-12 col-md-6 d-flex flex-column">
-                    <label class="fw-semibold form-label" for="email">
+                    <label class="fw-semibold form-label" for="ticket_location">
                         Location
                     </label>
-                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="email" type="text"
-                        placeholder="Type here...">
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" type="text" id="ticket_location" >
                 </div>
 
                 <div class="col-12 col-md-6 d-flex flex-column">
-                    <label class="fw-semibold form-label" for="pass">
+                    <label class="fw-semibold form-label" for="ticket_po_number">
                         PO-Number
                     </label>
-                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="pass" type="number"
-                        placeholder="Type here...">
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" type="text" id="ticket_po_number" >
                 </div>
 
                 <div class="col-12 col-md-6 d-flex flex-column">
-                    <label class="fw-semibold form-label" for="c-pass">
+                    <label class="fw-semibold form-label" for="ticket_date">
                         Date
                     </label>
-                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="c-pass" type="date"
-                        placeholder="Type here...">
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" type="date" id="ticket_date" >
                 </div>
 
                 <div class="col-12 col-md-6 d-flex flex-column">
-                    <label class="fw-semibold form-label" for="c-pass">
+                    <label class="fw-semibold form-label" for="ticket_leave_yard">
                         Leave Yard
                     </label>
-                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="c-pass" type="time"
-                        placeholder="Type here...">
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" type="text" id="ticket_leave_yard" >
                 </div>
 
                 <div class="col-12 col-md-6 d-flex flex-column">
-                    <label class="fw-semibold form-label" for="c-pass">
+                    <label class="fw-semibold form-label" for="ticket_start_time">
                         Start Job
                     </label>
-                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="c-pass" type="time"
-                        placeholder="Type here...">
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" type="text" id="ticket_start_time" >
                 </div>
 
                 <div class="col-12 col-md-6 d-flex flex-column">
-                    <label class="fw-semibold form-label" for="c-pass">
+                    <label class="fw-semibold form-label" for="ticket_finish_time">
                         Finish Job
                     </label>
-                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" type="time">
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" type="text" id="ticket_finish_time">
                 </div>
 
                 <div class="col-12 col-md-6 d-flex flex-column">
-                    <label class="fw-semibold form-label" for="c-pass">
+                    <label class="fw-semibold form-label" for="ticket_arrival_time">
                         Arrival Yard
                     </label>
-                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" type="time">
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" type="text" id="ticket_arrival_time">
                 </div>
 
                 <div class="col-12 col-md-6 d-flex flex-column">
-                    <label class="fw-semibold form-label" for="c-pass">
-                        Lunch
+                    <label class="fw-semibold form-label" for="ticket_lunch_time">
+                        Lunch Time
                     </label>
-                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" type="time">
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" type="text" id="ticket_lunch_time">
                 </div>
 
                 <div class="col-12 col-md-6 d-flex flex-column">
-                    <label class="fw-semibold form-label" for="c-pass">
+                    <label class="fw-semibold form-label" for="ticket_travel_time">
                         Travel Time
                     </label>
-                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" type="time">
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" type="text" id="ticket_travel_time">
                 </div>
 
                 <div class="col-12 col-md-6 d-flex flex-column">
-                    <label class="fw-semibold form-label" for="c-pass">
+                    <label class="fw-semibold form-label" for="ticket_crane_time">
                         Crane Time
                     </label>
-                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" type="time">
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" type="text" id="ticket_crane_time">
                 </div>
 
                 <div class="col-12 col-md-6 d-flex flex-column">
-                    <label class="fw-semibold form-label" for="c-pass">
+                    <label class="fw-semibold form-label" for="ticket_total_hours">
                         Total Hours
                     </label>
-                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" type="number">
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" type="text" id="ticket_total_hours">
                 </div>
 
                 <div class="col-12 col-md-6 d-flex flex-column">
-                    <label class="fw-semibold form-label" for="c-pass">
+                    <label class="fw-semibold form-label" for="ticket_crane_number">
                         Crane Number
                     </label>
-                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" type="number">
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" type="text" id="ticket_crane_number">
                 </div>
 
                 <div class="col-12 col-md-6 d-flex flex-column">
-                    <label class="fw-semibold form-label" for="c-pass">
+                    <label class="fw-semibold form-label" for="ticket_rating">
                         Rating
                     </label>
-                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" type="number">
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" type="text" id="ticket_rating">
                 </div>
 
                 <div class="col-12 col-md-6 d-flex flex-column">
-                    <label class="fw-semibold form-label" for="c-pass">
+                    <label class="fw-semibold form-label" for="ticket_boom">
                         Boom Length
                     </label>
-                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" type="number">
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" type="text" id="ticket_boom">
                 </div>
 
                 <div class="col-12 col-md-6 d-flex flex-column">
-                    <label class="fw-semibold form-label" for="c-pass">
+                    <label class="fw-semibold form-label" for="ticket_operator">
                         Operator
                     </label>
-                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" type="text">
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" type="text" id="ticket_operator">
                 </div>
 
                 <div class="col-12 col-md-6 d-flex flex-column">
-                    <label class="fw-semibold form-label" for="c-pass">
+                    <label class="fw-semibold form-label" for="ticket_equipment">
                         Other Equipment
                     </label>
-                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" type="text">
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" type="text" id="ticket_equipment">
                 </div>
 
                 <div class="col-12 col-md-6 d-flex flex-column">
-                    <label class="fw-semibold form-label" for="c-pass">
+                    <label class="fw-semibold form-label" for="ticket_email">
                         Email Address
                     </label>
-                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" type="email">
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" type="email" id="ticket_email">
                 </div>
 
                 <div class="col-12 col-md-6 d-flex flex-column">
-                    <label class="fw-semibold form-label" for="c-pass">
+                    <label class="fw-semibold form-label" for="ticket_note">
                         Notes / Others
                     </label>
-                    <textarea disabled class="rounded-1 py-2 px-2 w-100 form-control" name="" id="" row="3"></textarea>
+                    <textarea disabled class="rounded-1 py-2 px-2 w-100 form-control" name="" id="ticket_note" row="3"></textarea>
+                </div>
+                <div class="col-12 col-md-6 d-flex flex-column">
+                    <label class="fw-semibold form-label" for="ticket_status">
+                        Status
+                    </label>
+                    <select disabled class="rounded-1 form-control" id="ticket_status">
+                        <option value="">Choose</option>
+                        <option value="1">Draft</option>
+                        <!-- <option value="2">Issued</option> -->
+                        <option value="3">Completed</option>
+                    </select>
+                </div>
+                <div class="col-12 col-md-6 d-flex flex-column">
+                    <label class="fw-semibold form-label" for="ticket_note">
+                        Rigger Name
+                    </label>
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" type="text" id="ticket_rigger_name">
                 </div>
 
                 <div class="col-12 col-md-6 d-flex flex-column">
@@ -549,12 +484,16 @@
                         <button class="px-4 rounded-1 py-1 clear-btn" id="clear-signature">Clear</button>
                     </div>
                 </div>
+                <div class="col-12 col-md-6"></div>
+                <div class="col-12 col-md-6 d-flex flex-column">
+                    <div id="uploads_section">
+                        <!-- all attachments -->
+                    </div>
+                </div>
             </div>
             <div class="d-flex justify-content-center gap-2">
-                <button id="save-btn" class="py-1 px-4 add-btn rounded-1">
-                    Back
-                </button>
-                <button id="save-btn" type="button" class="add-btn px-4 py-1 rounded-1">Save</button>
+                <button class="py-1 px-4 add-btn rounded-1 backToListing">Back</button>
+                <!-- <button id="save-btn" type="button" class="add-btn px-4 py-1 rounded-1">Save</button> -->
             </div>
         </div>
     </div>
@@ -562,52 +501,5 @@
 @endsection
 
 @push('scripts')
-    <script>
-        $(document).ready(function () {
-
-            var canvas = document.getElementById("signature");
-            var signaturePad = new SignaturePad(canvas);
-
-            $('#clear-signature').on('click', function () {
-                signaturePad.clear();
-            });
-
-
-            $('#myTable').DataTable({
-                dom: 'Bfrtip',
-                pageLength: 10,
-                buttons: [{
-                    extend: 'csv',
-                    text: 'Export'
-                },
-                ],
-                lengthMenu: [5, 10, 25, 50, 75, 100]
-
-            });
-
-
-            $('.edit').click(function () {
-                $('.all-jobs').hide();
-                $('.edit-user').show();
-            });
-
-
-            $('#save-btn').click(function () {
-                $('.all-jobs').show();
-                $('.edit-user').hide();
-            });
-        });
-
-
-        var filterArrow = document.getElementById('filterArrow');
-        var filterSection = document.getElementById('filterSection');
-
-        filterSection.addEventListener('shown.bs.collapse', function () {
-            filterArrow.classList.add('rotate');
-        });
-
-        filterSection.addEventListener('hidden.bs.collapse', function () {
-            filterArrow.classList.remove('rotate');
-        });
-    </script>
+    <script src="{{ asset('assets_admin/customjs/script_riggertickets.js') }}"></script>
 @endpush
