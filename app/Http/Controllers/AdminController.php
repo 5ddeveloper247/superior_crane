@@ -904,6 +904,64 @@ class AdminController extends Controller
     }
 
 
+    public function getInventoryPageData(Request $request){
+
+        $data['inventory_list'] = InventoryModel::get();
+        $data['total_inventory'] = InventoryModel::count();
+        $data['total_active'] = InventoryModel::where('status', '1')->count();
+        $data['total_inactive'] = InventoryModel::where('status', '0')->count();
+        
+        return response()->json(['status' => 200, 'message' => "",'data' => $data]);
+    }
+
+    public function searchInventoryListing(Request $request){
+        $inventory_number = str_replace(['I','i', '-'], '', $request->search_inventory_number);
+        $customer = $request->search_customer;
+        $site_address = $request->search_site_address;
+        $inventory_location = $request->search_inventory_location;
+        $date_received = $request->search_date_received;
+        $date_shipped = $request->search_date_shipped;
+        $items = $request->search_items;
+        $status = $request->search_status;
+
+        if($inventory_number == '' && $customer == '' && $site_address == '' && $inventory_location == '' && $date_received == '' &&
+            $date_shipped == '' && $items == '' && $status == ''){
+            return response()->json(['status' => 402, 'message' => 'Choose atleast one filter first!']);
+        }
+
+        $query = InventoryModel::query();
+        
+        if ($inventory_number != '') {
+            $query->where('id', $inventory_number);
+        }
+        
+        if ($customer != '') {
+            $query->where('customer_name', 'like', '%' . $customer . '%');
+        }
+        if ($site_address != '') {
+            $query->where('site_address', 'like', '%' . $site_address . '%');
+        }
+        if ($inventory_location != '') {
+            $query->where('inventory_location', 'like', '%' . $inventory_location . '%');
+        }
+        if ($date_received != '') {
+            $query->whereDate('date_received', $date_received);
+        }
+        if ($date_shipped != '') {
+            $query->whereDate('date_shipped', $date_shipped);
+        }
+        if ($items != '') {
+            $query->where('items', 'like', '%' . $items . '%');
+        }
+               
+        if ($status != '') {
+            $query->where('status', $status);
+        }
+
+        $data['inventory_list'] = $query->get();
+
+        return response()->json(['status' => 200, 'data' => $data]);
+    }
 
     public function saveInventoryData(Request $request){
         
@@ -962,4 +1020,17 @@ class AdminController extends Controller
             return response()->json(['status' => 200, 'message' => 'Inventory Added Successfully']);
         }
     }
+
+    public function getSpecificInventoryDetails(Request $request){
+        $inventory_id = $request->inventory_id;
+        
+        $inventory = InventoryModel::where('id', $inventory_id)->first();
+        if($inventory){
+            $data['inventory_detail'] = $inventory;
+            return response()->json(['status' => 200, 'message' => "", 'data' => $data]);
+        }else{
+            return response()->json(['status' => 402, 'message' => "Job not found..."]);
+        }
+    }
+    
 }

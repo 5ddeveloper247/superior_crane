@@ -69,6 +69,9 @@ Route::group(['prefix' => '/'], function () {
         Route::post('/admin/deleteSpecificPayDutyForm', [AdminController::class, 'deleteSpecificPayDutyForm'])->name('admin.deleteSpecificPayDutyForm');
         
         Route::post('/admin/saveInventoryData', [AdminController::class, 'saveInventoryData'])->name('admin.saveInventoryData');
+        Route::post('/admin/getInventoryPageData', [AdminController::class, 'getInventoryPageData'])->name('admin.getInventoryPageData');
+        Route::post('/admin/getSpecificInventoryDetails', [AdminController::class, 'getSpecificInventoryDetails'])->name('admin.getSpecificInventoryDetails');
+        Route::post('/admin/searchInventoryListing', [AdminController::class, 'searchInventoryListing'])->name('admin.searchInventoryListing');
         
         
         
