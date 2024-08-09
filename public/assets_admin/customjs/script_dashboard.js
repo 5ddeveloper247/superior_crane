@@ -83,9 +83,9 @@ function makeJobsListing(jobs_list){
 
     setTimeout(function(){
         $('#jobsListing_table').DataTable({
-            "scrollY": "400px",
-            "scrollCollapse": true,
-            "fixedHeader": true ,
+            // scrollY: "400px",
+            scrollCollapse: true,
+            fixedHeader: true ,
             dom: 'Bfrtip',
             pageLength: 10,
             buttons: [{
@@ -148,6 +148,7 @@ function resetRiggerForm(){
     let form = $('#addJob_from');
     form.trigger("reset");
 
+    $("#job_id").val('');
     $("input, select, textarea").removeClass('is-invalid');
     $("#uploads_section, #created_by, #updated_by").html('');
     $(".status_input, .updatedInfo_div").hide();
@@ -523,9 +524,9 @@ document.addEventListener('DOMContentLoaded', function () {
             // set event background color wrt status
             if (info.event.extendedProps.status === 1) {
                 eventEl.style.backgroundColor = '#C9FFBB'; // Light green background
-            } else if (info.event.extendedProps.status === 2) {
+            } else if (info.event.extendedProps.status === 0) {
                 eventEl.style.backgroundColor = '#FFBBBB'; // Light red background
-            } else if (info.event.extendedProps.status === 3) {
+            } else if (info.event.extendedProps.status === 2) {
                 eventEl.style.backgroundColor = '#FFFCBB'; // Light yellow background
             }else {
                 eventEl.style.backgroundColor = '#dfdfdf'; // Light gray background

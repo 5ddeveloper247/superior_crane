@@ -322,7 +322,7 @@
                             <select class="form-control" name="search_status" id="search_status">
                                 <option value="">Choose</option>
                                 <option value="1">Active</option>
-                                <option value="2">Inactive</option>
+                                <option value="0">Inactive</option>
                             </select>
                         </div>
                     </div>
