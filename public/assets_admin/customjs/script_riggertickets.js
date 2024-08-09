@@ -84,6 +84,9 @@ function makeRiggerTicketListing(tickets_list){
 
     setTimeout(function(){
         $('#riggerTickets_table').DataTable({
+            "scrollY": "400px",
+            "scrollCollapse": true,
+            "fixedHeader": true ,
             dom: 'Bfrtip',
             pageLength: 10,
             buttons: [{

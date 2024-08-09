@@ -40,6 +40,12 @@
             border-collapse: collapse;
         }
 
+        thead {
+            position: sticky;
+            top: 0%;
+            left: 0;
+        }
+
         tbody {
             border-spacing: 10px 10px !important;
         }
@@ -106,6 +112,7 @@
             box-shadow: none;
             float: right !important;
         }
+
         .atc-btn {
             background-color: transparent;
             border: 1px solid red !important;
@@ -122,29 +129,32 @@
             font-size: 12px !important;
             border-radius: 4px;
         }
+
         .form-label {
             font-size: 14px !important;
             margin-bottom: 0rem !important;
             margin-top: .6rem !important;
             font-weight: 600 !important;
         }
+
         .upload-btn {
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
             display: inline-block;
             max-width: 100%;
-            text-align:center;
+            text-align: center;
         }
     </style>
 @endpush
- 
+
 @section('content')
 <div class="all-jobs py-4 px-3" id="listing_section">
     <div class="breadcrumb mb-0 d-flex align-items-center gap-1">
         <a class="d-flex" href="{{route('dashboard')}}">
             <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" viewBox="0 0 24 24">
-                <path fill="red" d="M3 13h1v7c0 1.103.897 2 2 2h12c1.103 0 2-.897 2-2v-7h1a1 1 0 0 0 .707-1.707l-9-9a.999.999 0 0 0-1.414 0l-9 9A1 1 0 0 0 3 13m7 7v-5h4v5zm2-15.586l6 6V15l.001 5H16v-5c0-1.103-.897-2-2-2h-4c-1.103 0-2 .897-2 2v5H6v-9.586z" />
+                <path fill="red"
+                    d="M3 13h1v7c0 1.103.897 2 2 2h12c1.103 0 2-.897 2-2v-7h1a1 1 0 0 0 .707-1.707l-9-9a.999.999 0 0 0-1.414 0l-9 9A1 1 0 0 0 3 13m7 7v-5h4v5zm2-15.586l6 6V15l.001 5H16v-5c0-1.103-.897-2-2-2h-4c-1.103 0-2 .897-2 2v5H6v-9.586z" />
             </svg>
             <small>
                 Dashboard
@@ -235,23 +245,28 @@
                     <div class="row gy-3">
                         <div class="col-4 col-md-3">
                             <label class="fw-semibold">Ticket Number</label>
-                            <input type="text" class="py-1 px-3 rounded-1 form-control" name="search_ticket_number" placeholder="Type here...">
+                            <input type="text" class="py-1 px-3 rounded-1 form-control" name="search_ticket_number"
+                                placeholder="Type here...">
                         </div>
                         <div class="col-4 col-md-3">
                             <label class="fw-semibold">Customer Name</label>
-                            <input type="text" class="py-1 px-3 rounded-1 form-control" name="search_customer_name" placeholder="Type here...">
+                            <input type="text" class="py-1 px-3 rounded-1 form-control" name="search_customer_name"
+                                placeholder="Type here...">
                         </div>
                         <div class="col-4 col-md-3">
                             <label class="fw-semibold">Rigger Name</label>
-                            <input type="text"class="py-1 px-3 rounded-1 form-control" name="search_rigger_name" placeholder="Type here...">
+                            <input type="text" class="py-1 px-3 rounded-1 form-control" name="search_rigger_name"
+                                placeholder="Type here...">
                         </div>
                         <div class="col-4 col-md-3">
                             <label class="fw-semibold">Email</label>
-                            <input type="text" class="py-1 px-3 rounded-1 form-control" name="search_email" placeholder="Type here...">
+                            <input type="text" class="py-1 px-3 rounded-1 form-control" name="search_email"
+                                placeholder="Type here...">
                         </div>
                         <div class="col-4 col-md-3">
                             <label class="fw-semibold">Location</label>
-                            <input type="text" class="py-1 px-3 rounded-1 form-control" name="search_location" placeholder="Type here...">
+                            <input type="text" class="py-1 px-3 rounded-1 form-control" name="search_location"
+                                placeholder="Type here...">
                         </div>
                         <div class="col-4 col-md-3">
                             <label class="fw-semibold">Date</label>
@@ -303,7 +318,7 @@
                     </tr>
                 </thead>
                 <tbody id="riggerTickets_body">
-                    
+
                 </tbody>
             </table>
         </div>
@@ -322,49 +337,50 @@
                     <label class="form-label fw-semibold" for="ticket_specification">
                         Specification & Remarks
                     </label>
-                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" type="text" id="ticket_specification" >
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" type="text"
+                        id="ticket_specification">
                 </div>
 
                 <div class="col-12 col-md-6 d-flex flex-column">
                     <label class="form-label fw-semibold" for="ticket_customer">
                         Customer Name
                     </label>
-                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" type="text" id="ticket_customer" >
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" type="text" id="ticket_customer">
                 </div>
 
                 <div class="col-12 col-md-6 d-flex flex-column">
                     <label class="fw-semibold form-label" for="ticket_location">
                         Location
                     </label>
-                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" type="text" id="ticket_location" >
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" type="text" id="ticket_location">
                 </div>
 
                 <div class="col-12 col-md-6 d-flex flex-column">
                     <label class="fw-semibold form-label" for="ticket_po_number">
                         PO-Number
                     </label>
-                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" type="text" id="ticket_po_number" >
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" type="text" id="ticket_po_number">
                 </div>
 
                 <div class="col-12 col-md-6 d-flex flex-column">
                     <label class="fw-semibold form-label" for="ticket_date">
                         Date
                     </label>
-                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" type="date" id="ticket_date" >
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" type="date" id="ticket_date">
                 </div>
 
                 <div class="col-12 col-md-6 d-flex flex-column">
                     <label class="fw-semibold form-label" for="ticket_leave_yard">
                         Leave Yard
                     </label>
-                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" type="text" id="ticket_leave_yard" >
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" type="text" id="ticket_leave_yard">
                 </div>
 
                 <div class="col-12 col-md-6 d-flex flex-column">
                     <label class="fw-semibold form-label" for="ticket_start_time">
                         Start Job
                     </label>
-                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" type="text" id="ticket_start_time" >
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" type="text" id="ticket_start_time">
                 </div>
 
                 <div class="col-12 col-md-6 d-flex flex-column">
@@ -455,7 +471,8 @@
                     <label class="fw-semibold form-label" for="ticket_note">
                         Notes / Others
                     </label>
-                    <textarea disabled class="rounded-1 py-2 px-2 w-100 form-control" name="" id="ticket_note" row="3"></textarea>
+                    <textarea disabled class="rounded-1 py-2 px-2 w-100 form-control" name="" id="ticket_note"
+                        row="3"></textarea>
                 </div>
                 <div class="col-12 col-md-6 d-flex flex-column">
                     <label class="fw-semibold form-label" for="ticket_status">

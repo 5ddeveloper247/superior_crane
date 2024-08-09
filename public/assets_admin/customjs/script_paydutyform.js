@@ -79,6 +79,9 @@ function makePayDutyFormsListing(forms_list){
 
     setTimeout(function(){
         $('#payDutyForm_table').DataTable({
+            "scrollY": "400px",
+            "scrollCollapse": true,
+            "fixedHeader": true ,
             dom: 'Bfrtip',
             pageLength: 10,
             buttons: [{

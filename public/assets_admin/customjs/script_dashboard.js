@@ -83,6 +83,9 @@ function makeJobsListing(jobs_list){
 
     setTimeout(function(){
         $('#jobsListing_table').DataTable({
+            "scrollY": "400px",
+            "scrollCollapse": true,
+            "fixedHeader": true ,
             dom: 'Bfrtip',
             pageLength: 10,
             buttons: [{

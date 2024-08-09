@@ -102,6 +102,9 @@ function makeTransporterTicketListing(tickets_list){
 
     setTimeout(function(){
         $('#transporterTickets_table').DataTable({
+            "scrollY": "400px",
+            "scrollCollapse": true,
+            "fixedHeader": true ,
             dom: 'Bfrtip',
             pageLength: 10,
             buttons: [{

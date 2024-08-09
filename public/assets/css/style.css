@@ -15,6 +15,18 @@ html {
     width: 0px;
 }
 
+.table-container ::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+    background-color: rgb(210, 210, 210);
+    border-radius: 50px;
+}
+
+.table-container ::-webkit-scrollbar-thumb {
+    background-color: rgb(225, 68, 68);
+    border-radius: 50px;
+}
+
 .login {
     background-image: url('https://images.pexels.com/photos/439416/pexels-photo-439416.jpeg?auto=compress&cs=tinysrgb&w=1900');
     background-position: center;
@@ -193,12 +205,6 @@ div.dt-container div.dt-layout-row.dt-layout-table {
     div.dt-container .dt-paging {
         text-align: left !important;
     }
-}
-
-thead {
-    position: sticky;
-    top: -0.01%;
-    left: 0;
 }
 
 div.dt-container.dt-empty-footer tbody>tr:last-child>* {
