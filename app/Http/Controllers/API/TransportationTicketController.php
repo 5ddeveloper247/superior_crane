@@ -8,6 +8,8 @@ use App\Models\TransportationTicketModel;
 use App\Models\TransportationTicketImages;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
+
 class TransportationTicketController extends Controller
 {
     public function add_transportation_ticket(Request $request)
@@ -44,8 +46,11 @@ class TransportationTicketController extends Controller
             'customer_signature_date' => 'required|date',
             'customer_time_in' => 'required|date_format:H:i',
             'customer_time_out' => 'required|date_format:H:i',
-            'status' => 'required|integer',   // 0 for unsigned(draft) and 1 for signed
-            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'status' => 'required|integer',   // 1=>draft, 2=>issued, 3=>complete
+            'images' => 'required',
+            'images.*.file' => 'required|string',
+            'images.*.title' => 'required|string|max:255',
+            // 'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'created_by' => 'required|integer',
         ]);
 
@@ -121,28 +126,56 @@ class TransportationTicketController extends Controller
                 $record->save();
             }
 
-            $req_file = 'images';
-            $path = '/uploads/transportation_tickets_images/' . $record->id .'/images';
+            // $req_file = 'images';
+            // $path = '/uploads/transportation_tickets_images/' . $record->id .'/images';
 
-            if ($request->hasFile($req_file)) {
+            // if ($request->hasFile($req_file)) {
 
-                if (!File::isDirectory(public_path($path))) {
-                    File::makeDirectory(public_path($path), 0777, true);
-                }
+            //     if (!File::isDirectory(public_path($path))) {
+            //         File::makeDirectory(public_path($path), 0777, true);
+            //     }
                 
-                $uploadedFiles = $request->file($req_file);
+            //     $uploadedFiles = $request->file($req_file);
 
-                foreach ($uploadedFiles as $file) {
-                    $file_extension = $file->getClientOriginalExtension();
-                    $date_append = Str::random(32);
-                    $file->move(public_path($path), $date_append . '.' . $file_extension);
+            //     foreach ($uploadedFiles as $file) {
+            //         $file_extension = $file->getClientOriginalExtension();
+            //         $date_append = Str::random(32);
+            //         $file->move(public_path($path), $date_append . '.' . $file_extension);
     
-                    $savedFilePaths = '/public' . $path . '/' . $date_append . '.' . $file_extension;
+            //         $savedFilePaths = '/public' . $path . '/' . $date_append . '.' . $file_extension;
 
+            //         $TransportationTicketImages = new TransportationTicketImages();
+            //         $TransportationTicketImages->ticket_id = $record->id;
+            //         $TransportationTicketImages->file_name = $file->getClientOriginalName();
+            //         $TransportationTicketImages->path = $savedFilePaths;
+            //         $TransportationTicketImages->save();
+            //     }
+            // }
+
+            $images = $request->images;
+            if(count($images) > 0){
+                
+                foreach ($images as $index => $imageData) {
+                    $image = $imageData['file'];
+                    $title = $imageData['title'];
+            
+                    // Decode base64 string
+                    $image = str_replace('data:image/png;base64,', '', $image);
+                    $image = str_replace(' ', '+', $image);
+                    $imageName = Str::random(32).'.'.'png';
+                    $filePath = public_path('uploads/transportation_tickets_images/' . $record->id);
+            
+                    if (!file_exists($filePath)) {
+                        mkdir($filePath, 0777, true);
+                    }
+            
+                    \File::put($filePath . '/' . $imageName, base64_decode($image));
+            
+                    // Save image path and title to database
                     $TransportationTicketImages = new TransportationTicketImages();
                     $TransportationTicketImages->ticket_id = $record->id;
-                    $TransportationTicketImages->file_name = $file->getClientOriginalName();
-                    $TransportationTicketImages->path = $savedFilePaths;
+                    $TransportationTicketImages->path = 'uploads/transportation_tickets_images/' . $record->id . '/' . $imageName;
+                    $TransportationTicketImages->file_name = $title;
                     $TransportationTicketImages->save();
                 }
             }
@@ -196,8 +229,10 @@ class TransportationTicketController extends Controller
             'customer_signature_date' => 'required|date',
             'customer_time_in' => 'required|date_format:H:i',
             'customer_time_out' => 'required|date_format:H:i',
-            'status' => 'required|integer',   // 0 for unsigned(draft) and 1 for signed
-            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'status' => 'required|integer',   // 1=>draft, 2=>issued, 3=>complete
+            'images' => 'required',
+            'images.*.file' => 'required|string',
+            'images.*.title' => 'required|string|max:255',
             'created_by' => 'required|integer',
         ]);
 
@@ -286,11 +321,45 @@ class TransportationTicketController extends Controller
                     $record->save();
                 }
 
-                $req_file = 'images';
-                $path = '/uploads/transportation_tickets_images/' . $record->id .'/images';
+            //     $req_file = 'images';
+            //     $path = '/uploads/transportation_tickets_images/' . $record->id .'/images';
 
-                if ($request->hasFile($req_file)) {
+            //     if ($request->hasFile($req_file)) {
 
+            //         $previous_images = TransportationTicketImages::where('ticket_id', $record->id)->get();
+            //         if(count($previous_images) > 0){
+            //             foreach($previous_images as $img){
+            //                 $del_path = str_replace(url('/public/'), '', $img->path);
+            //                 deleteImage($del_path);
+            //                 TransportationTicketImages::where('id', $img->id)->delete();
+            //             }
+            //         }
+
+            //         if (!File::isDirectory(public_path($path))) {
+            //             File::makeDirectory(public_path($path), 0777, true);
+            //         }
+                    
+            //         $uploadedFiles = $request->file($req_file);
+
+            //         foreach ($uploadedFiles as $file) {
+            //             $file_extension = $file->getClientOriginalExtension();
+            //             $date_append = Str::random(32);
+            //             $file->move(public_path($path), $date_append . '.' . $file_extension);
+        
+            //             $savedFilePaths = '/public' . $path . '/' . $date_append . '.' . $file_extension;
+
+            //             $TransportationTicketImages = new TransportationTicketImages();
+            //             $TransportationTicketImages->ticket_id = $record->id;
+            //             $TransportationTicketImages->file_name = $file->getClientOriginalName();
+            //             $TransportationTicketImages->path = $savedFilePaths;
+            //             $TransportationTicketImages->save();
+            //         }
+            //     }
+            // } 
+
+                $images = $request->images;
+                if(count($images) > 0){
+                    
                     $previous_images = TransportationTicketImages::where('ticket_id', $record->id)->get();
                     if(count($previous_images) > 0){
                         foreach($previous_images as $img){
@@ -300,27 +369,31 @@ class TransportationTicketController extends Controller
                         }
                     }
 
-                    if (!File::isDirectory(public_path($path))) {
-                        File::makeDirectory(public_path($path), 0777, true);
-                    }
-                    
-                    $uploadedFiles = $request->file($req_file);
-
-                    foreach ($uploadedFiles as $file) {
-                        $file_extension = $file->getClientOriginalExtension();
-                        $date_append = Str::random(32);
-                        $file->move(public_path($path), $date_append . '.' . $file_extension);
-        
-                        $savedFilePaths = '/public' . $path . '/' . $date_append . '.' . $file_extension;
-
+                    foreach ($images as $index => $imageData) {
+                        $image = $imageData['file'];
+                        $title = $imageData['title'];
+                
+                        // Decode base64 string
+                        $image = str_replace('data:image/png;base64,', '', $image);
+                        $image = str_replace(' ', '+', $image);
+                        $imageName = Str::random(32).'.'.'png';
+                        $filePath = public_path('uploads/transportation_tickets_images/' . $record->id);
+                
+                        if (!file_exists($filePath)) {
+                            mkdir($filePath, 0777, true);
+                        }
+                
+                        \File::put($filePath . '/' . $imageName, base64_decode($image));
+                
+                        // Save image path and title to database
                         $TransportationTicketImages = new TransportationTicketImages();
                         $TransportationTicketImages->ticket_id = $record->id;
-                        $TransportationTicketImages->file_name = $file->getClientOriginalName();
-                        $TransportationTicketImages->path = $savedFilePaths;
+                        $TransportationTicketImages->path = 'uploads/transportation_tickets_images/' . $record->id . '/' . $imageName;
+                        $TransportationTicketImages->file_name = $title;
                         $TransportationTicketImages->save();
                     }
                 }
-            } 
+            }
             
 
             return response()->json([

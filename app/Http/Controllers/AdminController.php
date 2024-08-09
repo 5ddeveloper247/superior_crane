@@ -22,6 +22,12 @@ use App\Models\RiggerTicketImages;
 use App\Models\TransportationTicketModel;
 use App\Models\TransportationTicketImages;
 
+use App\Models\PayDutyModel;
+use App\Models\PayDutytImages;
+use App\Models\InventoryModel;
+
+
+
 
 
 
@@ -118,7 +124,19 @@ class AdminController extends Controller
         $data['pageTitle'] = 'Transportation';
         return view('admin/transportation')->with($data);
     }
+    
+    public function pay_duty(Request $request)
+    {
+        $data['pageTitle'] = 'Pay_duty';
+        return view('admin/pay_duty')->with($data);
+    }
 
+    public function inventory(Request $request)
+    {
+        $data['pageTitle'] = 'Inventory';
+        return view('admin/inventory')->with($data);
+    }
+    
 
     
     public function getProfilePageData(Request $request){
@@ -793,6 +811,155 @@ class AdminController extends Controller
             return response()->json(['status' => 200, 'message' => "Ticket deleted successfully"]);
         }else{
             return response()->json(['status' => 402, 'message' => "Something went wrong..."]);
+        }
+    }
+
+    public function getPayDutyPageData(Request $request){
+
+        $data['forms_list'] = PayDutyModel::with(['userDetail'])->get();
+        $data['total_forms'] = PayDutyModel::count();
+        $data['total_draft'] = PayDutyModel::where('status', '1')->count();
+        $data['total_completed'] = PayDutyModel::where('status', '3')->count();
+        
+        return response()->json(['status' => 200, 'message' => "",'data' => $data]);
+    }
+
+    public function searchPayDutyListing(Request $request){
+        $form_number = str_replace(['P','p', '-'], '', $request->search_form_number);
+        $officer_name = $request->search_officer_name;
+        $officer_num = $request->search_officer_num;
+        $issued_by = $request->search_issued_by;
+        $date = $request->search_date;
+        $location = $request->search_location;
+        $division = $request->search_division;
+        $status = $request->search_status;
+
+        if($form_number == '' && $officer_name == '' && $officer_num == '' && $issued_by == '' && $date == '' &&
+            $location == '' && $division == '' && $status == ''){
+            return response()->json(['status' => 402, 'message' => 'Choose atleast one filter first!']);
+        }
+
+        $query = PayDutyModel::with(['userDetail']);
+        
+        if ($form_number != '') {
+            $query->where('id', $form_number);
+        }
+        if ($issued_by != '') {
+            $query->whereHas('userDetail', function ($subQuery) use ($issued_by) {
+                $subQuery->where('name', 'like', '%' . $issued_by . '%');
+            });
+        }
+        if ($officer_name != '') {
+            $query->where('officer_name', 'like', '%' . $officer_name . '%');
+        }
+        if ($officer_num != '') {
+            $query->where('officer', 'like', '%' . $officer_num . '%');
+        }
+        if ($date != '') {
+            $query->whereDate('date', $date);
+        }
+        if ($location != '') {
+            $query->where('location', 'like', '%' . $location . '%');
+        }
+        if ($division != '') {
+            $query->where('division', 'like', '%' . $division . '%');
+        }
+        if ($status != '') {
+            $query->where('status', $status);
+        }
+
+        $data['forms_list'] = $query->get();
+
+        return response()->json(['status' => 200, 'data' => $data]);
+    }
+
+    public function viewPayDutyFormDetails(Request $request){
+        $form_id = $request->form_id;
+        
+        $form = PayDutyModel::where('id', $form_id)->with(['userDetail','dutyImages'])->first();
+        if($form){
+            $data['payduty_detail'] = $form;
+            return response()->json(['status' => 200, 'message' => "", 'data' => $data]);
+        }else{
+            return response()->json(['status' => 402, 'message' => "Job not found..."]);
+        }
+    }
+
+    public function deleteSpecificPayDutyForm(Request $request){
+        $form_id = $request->form_id;
+        $form = PayDutyModel::where('id', $form_id)->with(['dutyImages'])->first();
+        if($form){
+            $duty_images = $form->duty_images != null ? $form->duty_images : array();
+            if(count($duty_images) > 0){
+                foreach($duty_images as $image){
+                    deleteImage(str_replace(url('/public'),"",$image->path));
+                    PayDutytImages::where('id', $image->id)->delete();
+                } 
+            }
+            PayDutyModel::where('id', $form_id)->delete();
+            return response()->json(['status' => 200, 'message' => "Pay Duty Form deleted successfully"]);
+        }else{
+            return response()->json(['status' => 402, 'message' => "Something went wrong..."]);
+        }
+    }
+
+
+
+    public function saveInventoryData(Request $request){
+        
+        $validatedData = $request->validate([
+            'customer_name' => 'required|max:100',
+            'site_address' => 'required|max:100',
+            'items' => 'required|max:50',
+            'pieces' => 'required|max:500',
+            'location' => 'required|max:200',
+            'date_received' => 'required|date',
+            'date_shipped' => 'required|date',
+            'days_in_yard' => 'required|numeric|digits_between:1,10',
+            'offload_equipment' => 'max:100',
+            'dimension' => 'required|numeric|digits_between:1,10',
+            'square_feet' => 'required|numeric|digits_between:1,10',
+            'status' => 'required|numeric',
+            // 'comment' => 'required|string|max:100',
+            
+        ]); 
+        
+       
+        if($request->inventory_id == ''){
+            $Inventory = new InventoryModel();
+        }else{
+            $Inventory = InventoryModel::where('id', $request->inventory_id)->first();
+        }
+        
+        $Inventory->customer_name = $request->customer_name;
+        $Inventory->site_address = $request->site_address;
+        $Inventory->items = $request->items;
+        $Inventory->pieces = $request->pieces;
+        $Inventory->inventory_location = $request->location;
+        $Inventory->date_received = $request->date_received;
+        $Inventory->date_shipped = $request->date_shipped;
+        $Inventory->days_in_yard = $request->days_in_yard;
+
+        $Inventory->offload_equipment = $request->offload_equipment;
+        $Inventory->dimension = $request->dimension;
+        $Inventory->size_sq_feet = $request->square_feet;
+        $Inventory->comment = $request->comment;
+        $Inventory->status= $request->status;
+
+        if($request->inventory_id == ''){
+            $Inventory->created_by = Auth::user()->id;
+            $Inventory->created_at = date('Y-m-d H:i:s');
+        }else{
+            $Inventory->updated_by= Auth::user()->id;
+            $Inventory->updated_at= date('Y-m-d H:i:s');
+        }
+        
+        $Inventory->save();
+
+        if($request->inventory_id == ''){
+            return response()->json(['status' => 200, 'message' => 'Inventory Updated Successfully']);
+        }else{
+            return response()->json(['status' => 200, 'message' => 'Inventory Added Successfully']);
         }
     }
 }

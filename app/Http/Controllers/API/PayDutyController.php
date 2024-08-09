@@ -8,6 +8,7 @@ use App\Models\PayDutyModel;
 use App\Models\PayDutytImages;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class PayDutyController extends Controller
 {
@@ -15,6 +16,7 @@ class PayDutyController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'user_id' => 'required',
+            'rigger_ticket_id' => 'required',
             'date' => 'required|date',
             'location' => 'required|string',
             'start_time' => 'required|date_format:H:i',
@@ -25,7 +27,10 @@ class PayDutyController extends Controller
             'division' => 'required|string|max:200',
             'email' => 'required|string|email|max:100',
             // 'signature' => 'required|string',
-            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'images' => 'required',
+            'images.*.file' => 'required|string',
+            'images.*.title' => 'required|string|max:255',
+            'status' => 'required|integer',   // 1=>draft, 2=>issued, 3=>complete
             'created_by' => 'required|integer',
         ]);
 
@@ -40,6 +45,7 @@ class PayDutyController extends Controller
         try {
             $form = new PayDutyModel;
             $form->user_id = $request->user_id;
+            $form->rigger_ticket_id = $request->rigger_ticket_id;
             $form->date = $request->date;
             $form->location = $request->location;
             $form->start_time = $request->start_time;
@@ -50,6 +56,7 @@ class PayDutyController extends Controller
             $form->division = $request->division;
             $form->email = $request->email;
             // $form->signature = $request->signature;
+            $form->status = $request->status;
             $form->created_by = $request->created_by;
             $form->save();
 
@@ -63,28 +70,56 @@ class PayDutyController extends Controller
                 $form->save();
             }
 
-            $req_file = 'images';
-            $path = '/uploads/pay_duty_images/' . $form->id .'/images';
+            // $req_file = 'images';
+            // $path = '/uploads/pay_duty_images/' . $form->id .'/images';
 
-            if ($request->hasFile($req_file)) {
+            // if ($request->hasFile($req_file)) {
 
-                if (!File::isDirectory(public_path($path))) {
-                    File::makeDirectory(public_path($path), 0777, true);
-                }
+            //     if (!File::isDirectory(public_path($path))) {
+            //         File::makeDirectory(public_path($path), 0777, true);
+            //     }
                 
-                $uploadedFiles = $request->file($req_file);
+            //     $uploadedFiles = $request->file($req_file);
 
-                foreach ($uploadedFiles as $file) {
-                    $file_extension = $file->getClientOriginalExtension();
-                    $date_append = Str::random(32);
-                    $file->move(public_path($path), $date_append . '.' . $file_extension);
+            //     foreach ($uploadedFiles as $file) {
+            //         $file_extension = $file->getClientOriginalExtension();
+            //         $date_append = Str::random(32);
+            //         $file->move(public_path($path), $date_append . '.' . $file_extension);
     
-                    $savedFilePaths = '/public' . $path . '/' . $date_append . '.' . $file_extension;
+            //         $savedFilePaths = '/public' . $path . '/' . $date_append . '.' . $file_extension;
 
+            //         $PayDutytImages = new PayDutytImages();
+            //         $PayDutytImages->pay_duty_id = $form->id;
+            //         $PayDutytImages->file_name = $file->getClientOriginalName();
+            //         $PayDutytImages->path = $savedFilePaths;
+            //         $PayDutytImages->save();
+            //     }
+            // }
+
+            $images = $request->images;
+            if(count($images) > 0){
+                
+                foreach ($images as $index => $imageData) {
+                    $image = $imageData['file'];
+                    $title = $imageData['title'];
+            
+                    // Decode base64 string
+                    $image = str_replace('data:image/png;base64,', '', $image);
+                    $image = str_replace(' ', '+', $image);
+                    $imageName = Str::random(32).'.'.'png';
+                    $filePath = public_path('uploads/pay_duty_images/' . $form->id);
+            
+                    if (!file_exists($filePath)) {
+                        mkdir($filePath, 0777, true);
+                    }
+            
+                    \File::put($filePath . '/' . $imageName, base64_decode($image));
+            
+                    // Save image path and title to database
                     $PayDutytImages = new PayDutytImages();
-                    $PayDutytImages->ticket_id = $form->id;
-                    $PayDutytImages->file_name = $file->getClientOriginalName();
-                    $PayDutytImages->path = $savedFilePaths;
+                    $PayDutytImages->pay_duty_id = $form->id;
+                    $PayDutytImages->path = 'uploads/pay_duty_images/' . $form->id . '/' . $imageName;
+                    $PayDutytImages->file_name = $title;
                     $PayDutytImages->save();
                 }
             }
@@ -108,6 +143,7 @@ class PayDutyController extends Controller
         $validator = Validator::make($request->all(), [
             'pay_duty_id' => 'required',
             'user_id' => 'required',
+            'rigger_ticket_id' => 'required',
             'date' => 'required|date',
             'location' => 'required|string',
             'start_time' => 'required|date_format:H:i',
@@ -118,7 +154,10 @@ class PayDutyController extends Controller
             'division' => 'required|string|max:200',
             'email' => 'required|string|email|max:100',
             // 'signature' => 'required|string',
-            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'images' => 'required',
+            'images.*.file' => 'required|string',
+            'images.*.title' => 'required|string|max:255',
+            'status' => 'required|integer',   // 1=>draft, 2=>issued, 3=>complete
             'created_by' => 'required|integer',
         ]);
 
@@ -133,6 +172,7 @@ class PayDutyController extends Controller
         try {
             $form = PayDutyModel::where("id", $request->pay_duty_id)->first();
             if($form){
+                // $form->rigger_ticket_id = $request->rigger_ticket_id;
                 $form->date = $request->date;
                 $form->location = $request->location;
                 $form->start_time = $request->start_time;
@@ -143,6 +183,7 @@ class PayDutyController extends Controller
                 $form->division = $request->division;
                 $form->email = $request->email;
                 // $form->signature = $request->signature;
+                $form->status = $request->status;
                 $form->created_by = $request->created_by;
                 $form->save();
 
@@ -159,42 +200,78 @@ class PayDutyController extends Controller
                     $form->save();
                 }
 
-                $req_file = 'images';
-                $path = '/uploads/pay_duty_images/' . $form->id .'/images';
+            //     $req_file = 'images';
+            //     $path = '/uploads/pay_duty_images/' . $form->id .'/images';
 
-                if ($request->hasFile($req_file)) {
+            //     if ($request->hasFile($req_file)) {
 
-                    $previous_images = PayDutytImages::where('pay_duty_id', $form->id)->get();
-                    if(count($previous_images) > 0){
-                        foreach($previous_images as $img){
-                            $del_path = str_replace(url('/public/'), '', $img->path);
-                            deleteImage($del_path);
-                            PayDutytImages::where('id', $img->id)->delete();
-                        }
-                    }
+                    // $previous_images = PayDutytImages::where('pay_duty_id', $form->id)->get();
+                    // if(count($previous_images) > 0){
+                    //     foreach($previous_images as $img){
+                    //         $del_path = str_replace(url('/public/'), '', $img->path);
+                    //         deleteImage($del_path);
+                    //         PayDutytImages::where('id', $img->id)->delete();
+                    //     }
+                    // }
 
-                    if (!File::isDirectory(public_path($path))) {
-                        File::makeDirectory(public_path($path), 0777, true);
-                    }
+                    // if (!File::isDirectory(public_path($path))) {
+                    //     File::makeDirectory(public_path($path), 0777, true);
+                    // }
                     
-                    $uploadedFiles = $request->file($req_file);
+            //         $uploadedFiles = $request->file($req_file);
 
-                    foreach ($uploadedFiles as $file) {
-                        $file_extension = $file->getClientOriginalExtension();
-                        $date_append = Str::random(32);
-                        $file->move(public_path($path), $date_append . '.' . $file_extension);
+            //         foreach ($uploadedFiles as $file) {
+            //             $file_extension = $file->getClientOriginalExtension();
+            //             $date_append = Str::random(32);
+            //             $file->move(public_path($path), $date_append . '.' . $file_extension);
         
-                        $savedFilePaths = '/public' . $path . '/' . $date_append . '.' . $file_extension;
+            //             $savedFilePaths = '/public' . $path . '/' . $date_append . '.' . $file_extension;
 
-                        $PayDutytImages = new PayDutytImages();
-                        $PayDutytImages->ticket_id = $form->id;
-                        $PayDutytImages->file_name = $file->getClientOriginalName();
-                        $PayDutytImages->path = $savedFilePaths;
-                        $PayDutytImages->save();
+            //             $PayDutytImages = new PayDutytImages();
+            //             $PayDutytImages->ticket_id = $form->id;
+            //             $PayDutytImages->file_name = $file->getClientOriginalName();
+            //             $PayDutytImages->path = $savedFilePaths;
+            //             $PayDutytImages->save();
+            //         }
+            //     }
+            
+            $images = $request->images;
+            if(count($images) > 0){
+                
+                $previous_images = PayDutytImages::where('pay_duty_id', $form->id)->get();
+                if(count($previous_images) > 0){
+                    foreach($previous_images as $img){
+                        $del_path = str_replace(url('/public/'), '', $img->path);
+                        deleteImage($del_path);
+                        PayDutytImages::where('id', $img->id)->delete();
                     }
                 }
-            }
+
+                foreach ($images as $index => $imageData) {
+                    $image = $imageData['file'];
+                    $title = $imageData['title'];
             
+                    // Decode base64 string
+                    $image = str_replace('data:image/png;base64,', '', $image);
+                    $image = str_replace(' ', '+', $image);
+                    $imageName = Str::random(32).'.'.'png';
+                    $filePath = public_path('uploads/pay_duty_images/' . $form->id);
+            
+                    if (!file_exists($filePath)) {
+                        mkdir($filePath, 0777, true);
+                    }
+            
+                    \File::put($filePath . '/' . $imageName, base64_decode($image));
+            
+                    // Save image path and title to database
+                    $PayDutytImages = new PayDutytImages();
+                    $PayDutytImages->pay_duty_id = $form->id;
+                    $PayDutytImages->path = 'uploads/pay_duty_images/' . $form->id . '/' . $imageName;
+                    $PayDutytImages->file_name = $title;
+                    $PayDutytImages->save();
+                }
+            }
+        }
             return response()->json([
                 'success' => true,
                 'message' => 'Pay duty form updated successfully'

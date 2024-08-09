@@ -184,7 +184,7 @@
 @endpush
 
 @section('content')
-<div class="all-jobs py-4 px-3">
+<div class="all-jobs py-4 px-3" id="listing_section">
     <div class="breadcrumb mb-0 d-flex align-items-center gap-1">
         <a class="d-flex" href="{{url('dashboard')}}">
             <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" viewBox="0 0 24 24">
@@ -202,10 +202,9 @@
     <div class="row align-items-center my-3 g-0">
         <div class="col-6 col-md-3">
             <div class="counters">
-                <a class="d-flex gap-2 align-items-center" href="{{ url('inventory_form') }}">
+                <a class="d-flex gap-2 align-items-center" id="add_inventory_btn">
                     <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 20 20">
-                        <path fill="#C02825"
-                            d="M11 9V5H9v4H5v2h4v4h2v-4h4V9zm-1 11a10 10 0 1 1 0-20a10 10 0 0 1 0 20" />
+                        <path fill="#C02825" d="M11 9V5H9v4H5v2h4v4h2v-4h4V9zm-1 11a10 10 0 1 1 0-20a10 10 0 0 1 0 20" />
                     </svg>
                     <h6 class="mb-0">
                         ADD NEW
@@ -397,112 +396,110 @@
     </div>
 </div>
 
-<div class="inventory-form px-3 py-4">
+<div class=" px-3 py-4" id="detail_section" style="display:none;">
     <h6 class="text-danger">
         INVENTORY FORM
     </h6>
 
-    <form action="">
+    <form id="addInventory_form">
+        <input type="hidden" id="inventory_id" name="inventory_id" value="">
         <div class="row add-form rounded-1">
-
             <div class="col-12 col-md-6 d-flex flex-column">
-                <label class="pb-2" for="client">
+                <label class="py-2" for="customer_name">
                     Customer Name
                 </label>
-                <input class="rounded-1 py-1 px-2 w-100" id="client" type="text" placeholder="Enter Customer Name Here">
+                <input class="rounded-1 form-control py-1 px-2 w-100" type="text" id="customer_name" name="customer_name" maxlength="50" placeholder="Enter Customer Name Here">
             </div>
 
             <div class="col-12 col-md-6 d-flex flex-column">
-                <label class="pb-2" for="rigger">
+                <label class="py-2" for="site_address">
                     Site Address
                 </label>
-                <input class="rounded-1 py-1 px-2 w-100" id="rigger" type="text" placeholder="Enter Site Address Here">
+                <input class="rounded-1 form-control py-1 px-2 w-100" type="text" id="site_address" name="site_address" maxlength="100" placeholder="Enter Site Address Here">
             </div>
 
             <div class="col-12 col-md-6 d-flex flex-column">
-                <label class="pb-2" for="notes">
+                <label class="py-2" for="inventory_items">
                     Item
                 </label>
-                <input class="rounded-1 py-1 px-2 w-100" id="address" type="text" placeholder="Enter Item Here">
+                <input class="rounded-1 form-control py-1 px-2 w-100" type="text" id="inventory_items" name="items" maxlength="50" placeholder="Enter Item Here">
             </div>
 
             <div class="col-12 col-md-6 d-flex flex-column">
-                <label class="pb-2" for="address">
+                <label class="py-2" for="inventory_pieces">
                     Pieces
                 </label>
-                <input class="rounded-1 py-1 px-2 w-100" id="address" type="text" placeholder="Enter Pieces Here">
+                <input class="rounded-1 form-control py-1 px-2 w-100" type="text" id="inventory_pieces" name="pieces" maxlength="50" placeholder="Enter Pieces Here">
+            </div>
+
+            
+
+            <div class="col-12 col-md-6 d-flex flex-column">
+                <label class="py-2" for="inventory_location">
+                    Inventory Location
+                </label>
+                <input class="rounded-1 form-control py-1 px-2 w-100" id="inventory_location" name="location" type="text" maxlength="200" placeholder="Enter location here">
             </div>
 
             <div class="col-12 col-md-6 d-flex flex-column">
-                <label class="pb-2" for="job_time">
+                <label class="py-2" for="date_received">
+                    Date Received
+                </label>
+                <input class="rounded-1 form-control py-1 px-2 w-100" type="date" id="date_received" name="date_received">
+            </div>
+
+            <div class="col-12 col-md-6 d-flex flex-column">
+                <label class="py-2" for="date_shipped">
+                    Date Shipped
+                </label>
+                <input class="rounded-1 form-control py-1 px-2 w-100" type="date" id="date_shipped" name="date_shipped" >
+            </div>
+
+
+            <div class="col-12 col-md-6 d-flex flex-column">
+                <label for="days_in_yard" class="py-2">Days in Yard</label>
+                <input type="number" class="rounded-1 form-control py-1 px-2 w-100" id="days_in_yard" name="days_in_yard" maxlength="8" placeholder="Enter Days in Yard Here">
+            </div>
+
+            <div class="col-12 col-md-6 d-flex flex-column">
+                <label for="offload_equipment" class="py-2">Offload Equipment (if applicable)</label>
+                <input type="text" class="rounded-1 form-control py-1 px-2 w-100" id="offload_equipment" name="offload_equipment" maxlength="100" placeholder="Enter Offload Equipment Here">
+            </div>
+
+            <div class="col-12 col-md-6 d-flex flex-column">
+                <label class="py-2" for="inventory_dimension">
+                    Dimensions
+                </label>
+                <input class="rounded-1 form-control py-1 px-2 w-100" type="number" id="inventory_dimension" name="dimension" maxlength="8" placeholder="Enter Dimensions Here">
+            </div>
+
+            <div class="col-12 col-md-6 d-flex flex-column">
+                <label class="py-2" for="address">
+                    Sq. Ft
+                </label>
+                <input class="rounded-1 form-control py-1 px-2 w-100" type="number" id="inventory_square_feet" name="square_feet" maxlength="8" placeholder="Enter Sq. Ft Here">
+            </div>
+            <div class="col-12 col-md-6 d-flex flex-column">
+                <label class="py-2" for="inventory_status">
                     Status
                 </label>
-                <select class="form-control" name="" id="">
+                <select class="form-control" name="status" id="inventory_status" name="status">
+                    <option value="">Choose</option>
                     <option value="1">Active</option>
-                    <option value="2">Inactive</option>
+                    <option value="0">Inactive</option>
                 </select>
             </div>
 
             <div class="col-12 col-md-6 d-flex flex-column">
-                <label class="pb-2" for="equip">
-                    Inventory Location
-                </label>
-                <input class="rounded-1 py-1 px-2 w-100" id="equip" type="text" placeholder="Enter location here">
-            </div>
-
-            <div class="col-12 col-md-6 d-flex flex-column">
-                <label class="pb-2" for="date">
-                    Date Recieved
-                </label>
-                <input class="rounded-1 py-1 px-2 w-100" id="date" type="date">
-            </div>
-
-            <div class="col-12 col-md-6 d-flex flex-column">
-                <label class="pb-2" for="address">
-                    Date Shipped
-                </label>
-                <input class="rounded-1 py-1 px-2 w-100" id="address" type="date">
-            </div>
-
-
-            <div class="col-12 col-md-6 d-flex flex-column">
-                <label for="add_eventStart" class="pb-2">Days in Yard</label>
-                <input type="text" class="rounded-1 py-1 px-2 w-100" id="add_eventStart" name="add_eventStart" required>
-            </div>
-
-            <div class="col-12 col-md-6 d-flex flex-column">
-                <label for="add_eventEnd" class="pb-2">Offload Equipment (if applicable)</label>
-                <input type="text" class="rounded-1 py-1 px-2 w-100" id="add_eventEnd" name="add_eventEnd" required>
-            </div>
-
-            <div class="col-12 col-md-6 d-flex flex-column">
-                <label class="pb-2" for="address">
-                    Dimensions
-                </label>
-                <input class="rounded-1 py-1 px-2 w-100" id="address" type="text" placeholder="Enter Dimensions Here">
-            </div>
-
-            <div class="col-12 col-md-6 d-flex flex-column">
-                <label class="pb-2" for="address">
-                    Sq Ft
-                </label>
-                <input class="rounded-1 py-1 px-2 w-100" id="address" type="text" placeholder="Enter Sq Ft Here">
-            </div>
-
-            <div class="col-12 col-md-6 d-flex flex-column">
-                <label class="pb-2" for="address">
+                <label class="py-2" for="inventory_comment">
                     Comment
                 </label>
-                <textarea class="rounded-1" name="" id=""></textarea>
+                <textarea class="rounded-1 form-control" id="inventory_comment" name="comment" placeholder="Enter Comment Here"></textarea>
             </div>
 
             <div class="mt-3 d-flex justify-content-center gap-2">
-                <button id="save-btn" class="py-1 px-4 add-btn rounded-1">
-                    Back
-                </button>
-                <button id="save-btn" class="py-1 px-4 add-btn rounded-1">
-                    Save
-                </button>
+                <button type="button" class="py-1 px-4 add-btn rounded-1 backToListing">Back</button>
+                <button type="button" class="py-1 px-4 add-btn rounded-1 " id="saveInventory_submit">Save</button>
             </div>
         </div>
     </form>
@@ -511,31 +508,9 @@
 @endsection
 
 @push('scripts')
+    <script src="{{ asset('assets_admin/customjs/script_inventory.js') }}"></script>
     <script>
-        $(document).ready(function () {
-            $('#myTable').DataTable({
-                dom: 'Bfrtip',
-                pageLength: 10,
-                buttons: [{
-                    extend: 'csv',
-                    text: 'Export'
-                },
-                ],
-                lengthMenu: [5, 10, 25, 50, 75, 100]
-            });
-
-            $('.edit').click(function () {
-                $('.all-jobs').hide();
-                $('.inventory-form').show();
-            });
-
-
-            $('#save-btn').click(function () {
-                $('.all-jobs').show();
-                $('.inventory-form').hide();
-            });
-        });
-
+        
 
         var filterArrow = document.getElementById('filterArrow');
         var filterSection = document.getElementById('filterSection');

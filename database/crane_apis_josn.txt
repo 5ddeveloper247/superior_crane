@@ -122,11 +122,11 @@ live url: https://beta.scserver.org/api/sc/v1/job/updatejob
     "notes": "Urgent job, please prioritize.",
     "job_image": [
         {
-            "file": "/9j/4AAQSkZJRgABAQEAAAAAAAD/4QBWRXhpZgAATU0AKgAAAAgAAYdpAAQA ...", 
+            "file": "/9j/4AAQSkZJRgABAQEAAAAAAAD/4QBWRXhpZgAATU0AKgAAAAgAAYdpAAQA", 
             "title": "Title for Image 1"
         },
         {
-            "file": "/9j/4AAQSkZJRgABAQEAAAAAAAD/2wBDAAYEBQYEBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcU ...", 
+            "file": "/9j/4AAQSkZJRgABAQEAAAAAAAD/4QBWRXhpZgAATU0AKgAAAAgAAYdpAAQA", 
             "title": "Title for Image 2"
         }
     ],
@@ -322,6 +322,7 @@ url: http://127.0.0.1:8000/api/sc/v1/payduty/add
 // images is optional
 {
     "user_id": "1",
+    "rigger_ticket_id": "1",
     "date": "2024-07-18",
     "location": "Headquarters",
     "start_time": "08:00",
@@ -332,7 +333,17 @@ url: http://127.0.0.1:8000/api/sc/v1/payduty/add
     "division": "Operations",
     "email": "johndoe@example.com",
     "signature": "",
-    "images": "",
+    "images": [
+        {
+            "file": "/9j/4AAQSkZJRgABAQEAAAAAAAD/4QBWRXhpZgAATU0AKgAAAAgAAYdpAAQA", 
+            "title": "Title for Image 1"
+        },
+        {
+            "file": "/9j/4AAQSkZJRgABAQEAAAAAAAD/4QBWRXhpZgAATU0AKgAAAAgAAYdpAAQA", 
+            "title": "Title for Image 2"
+        }
+    ],
+    "status": "3",      // 1=>draft, 2=>issued, 3=>complete
     "created_by": "1"
 }
 
@@ -354,7 +365,17 @@ url: http://127.0.0.1:8000/api/sc/v1/payduty/update
     "division": "Operations",
     "email": "johndoe@example.com",
     "signature": "",
-    "images": "",
+    "images": [
+        {
+            "file": "/9j/4AAQSkZJRgABAQEAAAAAAAD/4QBWRXhpZgAATU0AKgAAAAgAAYdpAAQA", 
+            "title": "Title for Image 1"
+        },
+        {
+            "file": "/9j/4AAQSkZJRgABAQEAAAAAAAD/4QBWRXhpZgAATU0AKgAAAAgAAYdpAAQA", 
+            "title": "Title for Image 2"
+        }
+    ],
+    "status": "3",      // 1=>draft, 2=>issued, 3=>complete
     "created_by": "1"
 }
 
@@ -385,6 +406,7 @@ url: http://127.0.0.1:8000/api/sc/v1/payduty/pay_duty_detail
 Add Transportation Ticket API
 
 url: http://127.0.0.1:8000/api/sc/v1/transportationticket/add
+live url: https://beta.scserver.org/api/sc/v1/transportationticket/add
 
 //images is optional
 {
@@ -427,14 +449,24 @@ url: http://127.0.0.1:8000/api/sc/v1/transportationticket/add
     "customer_time_in": "16:30",
     "customer_time_out": "17:00",
     
-    "images": "",
-    "status": "1",
+    "images": [
+        {
+            "file": "/9j/4AAQSkZJRgABAQEAAAAAAAD/4QBWRXhpZgAATU0AKgAAAAgAAYdpAAQA", 
+            "title": "Title for Image 1"
+        },
+        {
+            "file": "/9j/4AAQSkZJRgABAQEAAAAAAAD/4QBWRXhpZgAATU0AKgAAAAgAAYdpAAQA", 
+            "title": "Title for Image 2"
+        }
+    ],
+    "status": "3",      // 1=>draft, 2=>issued, 3=>complete
     "created_by": "1"
 }
 
 Update Transportation Ticket API
 
 url: http://127.0.0.1:8000/api/sc/v1/transportationticket/update
+live url: https://beta.scserver.org/api/sc/v1/transportationticket/update
 
 //images is optional
 {
@@ -478,8 +510,17 @@ url: http://127.0.0.1:8000/api/sc/v1/transportationticket/update
     "customer_time_in": "16:30",
     "customer_time_out": "17:00",
     
-    "images": "",
-    "status": "1",
+    "images": [
+        {
+            "file": "/9j/4AAQSkZJRgABAQEAAAAAAAD/4QBWRXhpZgAATU0AKgAAAAgAAYdpAAQA", 
+            "title": "Title for Image 1"
+        },
+        {
+            "file": "/9j/4AAQSkZJRgABAQEAAAAAAAD/4QBWRXhpZgAATU0AKgAAAAgAAYdpAAQA", 
+            "title": "Title for Image 2"
+        }
+    ],
+    "status": "3",      // 1=>draft, 2=>issued, 3=>complete
     "created_by": "1"
 }
 
@@ -487,6 +528,7 @@ url: http://127.0.0.1:8000/api/sc/v1/transportationticket/update
 Transportation Ticket Listing API
 
 url: http://127.0.0.1:8000/api/sc/v1/transportationticket/ticket_list
+live url: https://beta.scserver.org/api/sc/v1/transportationticket/ticket_list
 
 {
     "user_id":"1"
@@ -495,6 +537,7 @@ url: http://127.0.0.1:8000/api/sc/v1/transportationticket/ticket_list
 Transportation Ticket Detail API
 
 url: http://127.0.0.1:8000/api/sc/v1/transportationticket/ticket_detail
+live url: https://beta.scserver.org/api/sc/v1/transportationticket/ticket_detail
 
 {
     "ticket_id":"1"

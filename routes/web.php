@@ -30,6 +30,8 @@ Route::group(['prefix' => '/'], function () {
         Route::get('/jobs', [AdminController::class, 'jobs'])->name('jobs');
         Route::get('/rigger_tickets', [AdminController::class, 'rigger_tickets'])->name('rigger_tickets');
         Route::get('/transportation', [AdminController::class, 'transportation'])->name('transportation');
+        Route::get('/pay_duty', [AdminController::class, 'pay_duty'])->name('pay_duty');
+        Route::get('/inventory', [AdminController::class, 'inventory'])->name('inventory');
         
         /************** AJAX ROUTES ******************/
         Route::post('/admin/getProfilePageData', [AdminController::class, 'getProfilePageData'])->name('admin.getProfilePageData');
@@ -60,6 +62,14 @@ Route::group(['prefix' => '/'], function () {
         Route::post('/admin/viewTransporterTicketDetails', [AdminController::class, 'viewTransporterTicketDetails'])->name('admin.viewTransporterTicketDetails');
         Route::post('/admin/searchTransporterTicketListing', [AdminController::class, 'searchTransporterTicketListing'])->name('admin.searchTransporterTicketListing');
         Route::post('/admin/deleteSpecificTransportationTicket', [AdminController::class, 'deleteSpecificTransportationTicket'])->name('admin.deleteSpecificTransportationTicket');
+        
+        Route::post('/admin/getPayDutyPageData', [AdminController::class, 'getPayDutyPageData'])->name('admin.getPayDutyPageData');
+        Route::post('/admin/viewPayDutyFormDetails', [AdminController::class, 'viewPayDutyFormDetails'])->name('admin.viewPayDutyFormDetails');
+        Route::post('/admin/searchPayDutyListing', [AdminController::class, 'searchPayDutyListing'])->name('admin.searchPayDutyListing');
+        Route::post('/admin/deleteSpecificPayDutyForm', [AdminController::class, 'deleteSpecificPayDutyForm'])->name('admin.deleteSpecificPayDutyForm');
+        
+        Route::post('/admin/saveInventoryData', [AdminController::class, 'saveInventoryData'])->name('admin.saveInventoryData');
+        
         
         
     });
@@ -114,25 +124,25 @@ Route::get('/basic_user', function () {
 //     return view('admin/transportation', compact('pageTitle'));
 // });
 
-Route::get('/pay_duty', function () {
-    $pageTitle = 'Pay_duty';
-    return view('admin/pay_duty', compact('pageTitle'));
-});
+// Route::get('/pay_duty', function () {
+//     $pageTitle = 'Pay_duty';
+//     return view('admin/pay_duty', compact('pageTitle'));
+// });
 
-Route::get('/pay_duty_add_form', function () {
-    $pageTitle = 'Pay_duty_add_form';
-    return view('admin/pay_duty_add_form', compact('pageTitle'));
-});
+// Route::get('/pay_duty_add_form', function () {
+//     $pageTitle = 'Pay_duty_add_form';
+//     return view('admin/pay_duty_add_form', compact('pageTitle'));
+// });
 
-Route::get('/inventory', function () {
-    $pageTitle = 'Inventory';
-    return view('admin/inventory', compact('pageTitle'));
-});
+// Route::get('/inventory', function () {
+//     $pageTitle = 'Inventory';
+//     return view('admin/inventory', compact('pageTitle'));
+// });
 
-Route::get('/inventory_form', function () {
-    $pageTitle = 'InventoryForm';
-    return view('admin/inventory_form', compact('pageTitle'));
-});
+// Route::get('/inventory_form', function () {
+//     $pageTitle = 'InventoryForm';
+//     return view('admin/inventory_form', compact('pageTitle'));
+// });
 
 // Route::get('/profile', function () {
 //     $pageTitle = 'Profile';
