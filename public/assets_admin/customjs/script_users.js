@@ -74,6 +74,9 @@ function makeAdminsListing(admin_list){
 
     setTimeout(function(){
         $('#admins_listing_table').DataTable({
+            "scrollY": "400px",
+            "scrollCollapse": true,
+            "fixedHeader": true ,
             dom: 'Bfrtip',
             pageLength: 10,
             buttons: [{

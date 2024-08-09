@@ -286,6 +286,9 @@ $(document).ready(function () {
     // loadUsersPageData();
 
     $('#myTable').DataTable({
+        "scrollY": "400px",
+            "scrollCollapse": true,
+            "fixedHeader": true ,
         dom: 'Bfrtip',
         pageLength: 10,
         buttons: [{

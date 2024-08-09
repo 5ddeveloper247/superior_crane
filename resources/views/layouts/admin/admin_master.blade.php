@@ -48,7 +48,7 @@ use Illuminate\Support\Facades\Auth;
                 @include('layouts.admin.sidebar')
             @endif
 
-            <div class="w-100">
+            <div class="w-100" style="overflow: hidden">
 
                 @if(@$pageTitle != 'Login' && @$pageTitle != 'Forget Password' && @$pageTitle != 'Signup')
                     @include('layouts.admin.header')
