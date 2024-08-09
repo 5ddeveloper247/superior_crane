@@ -242,3 +242,7 @@ div.dt-container .dt-search input {
 div.dt-container select.dt-input {
     margin-right: 7px;
 }
+
+.dt-info {
+    font-size: 12px;
+}

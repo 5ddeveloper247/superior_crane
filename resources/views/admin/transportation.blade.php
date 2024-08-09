@@ -106,7 +106,7 @@
             box-shadow: none;
             float: right !important;
         }
-        
+
 
         .atc-btn {
             background-color: transparent;
@@ -115,6 +115,7 @@
             padding: .3rem .8rem;
             border-radius: 4px;
         }
+
         .upload-btn {
             background-color: red;
             border: none;
@@ -123,19 +124,21 @@
             font-size: 12px !important;
             border-radius: 4px;
         }
+
         .form-label {
             font-size: 14px !important;
             margin-bottom: 0rem !important;
             margin-top: .6rem !important;
             font-weight: 600 !important;
         }
+
         .upload-btn {
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
             display: inline-block;
             max-width: 100%;
-            text-align:center;
+            text-align: center;
         }
     </style>
 @endpush
@@ -236,27 +239,33 @@
                     <div class="row gy-3">
                         <div class="col-4">
                             <label class="fw-semibold">Ticket Number</label>
-                            <input class="py-1 px-3 rounded-1 form-control" name="search_ticket_number" type="text" placeholder="Type here...">
+                            <input class="py-1 px-3 rounded-1 form-control" name="search_ticket_number" type="text"
+                                placeholder="Type here...">
                         </div>
                         <div class="col-4">
                             <label class="fw-semibold">Transporter Name</label>
-                            <input class="py-1 px-3 rounded-1 form-control" name="search_transporter_name" type="text" placeholder="Type here...">
+                            <input class="py-1 px-3 rounded-1 form-control" name="search_transporter_name" type="text"
+                                placeholder="Type here...">
                         </div>
                         <div class="col-4">
                             <label class="fw-semibold">Job Client Name</label>
-                            <input class="py-1 px-3 rounded-1 form-control" name="search_job_client_name" type="text" placeholder="Type here...">
+                            <input class="py-1 px-3 rounded-1 form-control" name="search_job_client_name" type="text"
+                                placeholder="Type here...">
                         </div>
                         <div class="col-4">
                             <label class="fw-semibold">Pickup Address</label>
-                            <input class="py-1 px-3 rounded-1 form-control" name="search_pickup_address" type="text" placeholder="Type here...">
+                            <input class="py-1 px-3 rounded-1 form-control" name="search_pickup_address" type="text"
+                                placeholder="Type here...">
                         </div>
                         <div class="col-4">
                             <label class="fw-semibold">Delivery Address</label>
-                            <input class="py-1 px-3 rounded-1 form-control" name="search_delivery_address" type="text" placeholder="Type here...">
+                            <input class="py-1 px-3 rounded-1 form-control" name="search_delivery_address" type="text"
+                                placeholder="Type here...">
                         </div>
                         <div class="col-4">
                             <label class="fw-semibold">Customer Email</label>
-                            <input class="py-1 px-3 rounded-1 form-control" name="search_customer_email" type="text" placeholder="Type here...">
+                            <input class="py-1 px-3 rounded-1 form-control" name="search_customer_email" type="text"
+                                placeholder="Type here...">
                         </div>
                         <div class="col-4">
                             <label class="fw-semibold">Status</label>
@@ -269,8 +278,10 @@
                         </div>
                     </div>
                     <div class="d-flex justify-content-end gap-2">
-                        <button type="button" class="mt-3 py-1 px-3 text-white rounded-1 clear_filter">Clear Filter</button>
-                        <button type="button" class="mt-3 py-1 px-3 text-white rounded-1 searchTicket_btn">Search</button>
+                        <button type="button" class="mt-3 py-1 px-3 text-white rounded-1 clear_filter">Clear
+                            Filter</button>
+                        <button type="button"
+                            class="mt-3 py-1 px-3 text-white rounded-1 searchTicket_btn">Search</button>
                     </div>
                 </form>
             </div>
@@ -303,7 +314,7 @@
                         <th class="px3" scope="col">Shipper Date</th>
                         <th class="px3" scope="col">Shipper Time In</th>
                         <th class="px3" scope="col">Shipper Time Out</th>
-                        
+
                         <th class="px3" scope="col">Pickup Driver Name</th>
                         <th class="px3" scope="col">Pickup Date</th>
                         <th class="px3" scope="col">Pickup Time In</th>
@@ -321,9 +332,27 @@
                     </tr>
                 </thead>
                 <tbody id="transporterTickets_body">
-                    
+
                 </tbody>
             </table>
+
+            <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-body text-center">
+                            <img src="{{asset('assets/images/remove.png')}}" width="60" alt="">
+                            <h6 class="text-danger mt-3">
+                                Are you sure you want to delete?
+                            </h6>
+                        </div>
+                        <div class="modal-footer d-flex align-items-center justify-content-center" style="border: none">
+                            <button type="button" class="btn btn-secondary px-5" data-bs-dismiss="modal">No</button>
+                            <button type="button" class="btn btn-danger px-5">Yes</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -339,28 +368,32 @@
                     <label class="form-label fw-semibold" for="pickup_address">
                         Pickup Address
                     </label>
-                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="pickup_address" type="text" placeholder="Type here...">
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="pickup_address" type="text"
+                        placeholder="Type here...">
                 </div>
 
                 <div class="col-12 col-md-6 d-flex flex-column">
                     <label class="fw-semibold form-label" for="delivery_address">
                         Delivery Address
                     </label>
-                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="delivery_address" type="text" placeholder="Type here...">
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="delivery_address" type="text"
+                        placeholder="Type here...">
                 </div>
 
                 <div class="col-12 col-md-6 d-flex flex-column">
                     <label class="fw-semibold form-label" for="time_in">
                         Time In
                     </label>
-                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="time_in" type="text" placeholder="Type here...">
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="time_in" type="text"
+                        placeholder="Type here...">
                 </div>
 
                 <div class="col-12 col-md-6 d-flex flex-column">
                     <label class="fw-semibold form-label" for="time_out">
                         Time Out
                     </label>
-                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="time_out" type="text" placeholder="Type here...">
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="time_out" type="text"
+                        placeholder="Type here...">
                 </div>
                 <div class="col-12 col-md-12 d-flex flex-column">
                     <label class="fw-semibold form-label" for="notes">
@@ -375,13 +408,15 @@
                     <label class="fw-semibold form-label" for="job_number">
                         Job Number
                     </label>
-                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="job_number" type="text" placeholder="Type here...">
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="job_number" type="text"
+                        placeholder="Type here...">
                 </div>
                 <div class="col-12 col-md-6 d-flex flex-column">
                     <label class="fw-semibold form-label" for="job_instruction">
                         Job Special Instructions
                     </label>
-                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="job_instruction" type="text" placeholder="Type here...">
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="job_instruction" type="text"
+                        placeholder="Type here...">
                 </div>
 
                 <!-- /////////////////////////////////////////////////////////////////////// -->
@@ -390,13 +425,15 @@
                     <label class="fw-semibold form-label" for="po_number">
                         P.O Number
                     </label>
-                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="po_number" type="text" placeholder="Type here...">
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="po_number" type="text"
+                        placeholder="Type here...">
                 </div>
                 <div class="col-12 col-md-6 d-flex flex-column">
                     <label class="fw-semibold form-label" for="po_instruction">
                         P.O Special Instructions
                     </label>
-                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="po_instruction" type="text" placeholder="Type here...">
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="po_instruction" type="text"
+                        placeholder="Type here...">
                 </div>
 
                 <!-- /////////////////////////////////////////////////////////////////////// -->
@@ -405,13 +442,15 @@
                     <label class="fw-semibold form-label" for="site_contact_name">
                         Site Contact Name
                     </label>
-                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="site_contact_name" type="text" placeholder="Type here...">
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="site_contact_name" type="text"
+                        placeholder="Type here...">
                 </div>
                 <div class="col-12 col-md-6 d-flex flex-column">
                     <label class="fw-semibold form-label" for="site_contact_name_instruction">
                         Site Contact Special Instructions
                     </label>
-                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="site_contact_name_instruction" type="text" placeholder="Type here...">
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="site_contact_name_instruction"
+                        type="text" placeholder="Type here...">
                 </div>
 
                 <!-- /////////////////////////////////////////////////////////////////////// -->
@@ -420,13 +459,15 @@
                     <label class="fw-semibold form-label" for="site_contact_number">
                         Site Contact Number
                     </label>
-                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="site_contact_number" type="text" placeholder="Type here...">
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="site_contact_number" type="text"
+                        placeholder="Type here...">
                 </div>
                 <div class="col-12 col-md-6 d-flex flex-column">
                     <label class="fw-semibold form-label" for="site_contact_number_instruction">
                         Site Contact Number Special Instructions
                     </label>
-                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="site_contact_number_instruction" type="text" placeholder="Type here...">
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="site_contact_number_instruction"
+                        type="text" placeholder="Type here...">
                 </div>
 
                 <!-- /////////////////////////////////////////////////////////////////////// -->
@@ -435,25 +476,29 @@
                     <label class="fw-semibold form-label" for="shipper_name">
                         Shipper Name
                     </label>
-                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="shipper_name" type="text" placeholder="Type here...">
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="shipper_name" type="text"
+                        placeholder="Type here...">
                 </div>
                 <div class="col-12 col-md-6 d-flex flex-column">
                     <label class="fw-semibold form-label" for="shipper_date">
                         Shipper Date
                     </label>
-                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="shipper_date" type="text" placeholder="Type here...">
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="shipper_date" type="text"
+                        placeholder="Type here...">
                 </div>
                 <div class="col-12 col-md-6 d-flex flex-column">
                     <label class="fw-semibold form-label" for="shipper_time_in">
                         Shipper Time In
                     </label>
-                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="shipper_time_in" type="text" placeholder="Type here...">
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="shipper_time_in" type="text"
+                        placeholder="Type here...">
                 </div>
                 <div class="col-12 col-md-6 d-flex flex-column">
                     <label class="fw-semibold form-label" for="shipper_time_out">
                         Shipper Time Out
                     </label>
-                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="shipper_time_out" type="text" placeholder="Type here...">
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="shipper_time_out" type="text"
+                        placeholder="Type here...">
                 </div>
                 <div class="col-12 col-md-6 d-flex flex-column">
                     <label class="pb-2" for="notes">
@@ -472,25 +517,29 @@
                     <label class="fw-semibold form-label" for="pickup_name">
                         Pickup Driver Name
                     </label>
-                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="pickup_name" type="text" placeholder="Type here...">
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="pickup_name" type="text"
+                        placeholder="Type here...">
                 </div>
                 <div class="col-12 col-md-6 d-flex flex-column">
                     <label class="fw-semibold form-label" for="pickup_date">
                         Pickup Date
                     </label>
-                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="pickup_date" type="text" placeholder="Type here...">
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="pickup_date" type="text"
+                        placeholder="Type here...">
                 </div>
                 <div class="col-12 col-md-6 d-flex flex-column">
                     <label class="fw-semibold form-label" for="pickup_time_in">
                         Pickup Time In
                     </label>
-                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="pickup_time_in" type="text" placeholder="Type here...">
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="pickup_time_in" type="text"
+                        placeholder="Type here...">
                 </div>
                 <div class="col-12 col-md-6 d-flex flex-column">
                     <label class="fw-semibold form-label" for="pickup_time_out">
                         Pickup Time Out
                     </label>
-                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="pickup_time_out" type="text" placeholder="Type here...">
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="pickup_time_out" type="text"
+                        placeholder="Type here...">
                 </div>
                 <div class="col-12 col-md-6 d-flex flex-column">
                     <label class="pb-2" for="notes">
@@ -509,31 +558,36 @@
                     <label class="fw-semibold form-label" for="customer_name">
                         Customer Name
                     </label>
-                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="customer_name" type="text" placeholder="Type here...">
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="customer_name" type="text"
+                        placeholder="Type here...">
                 </div>
                 <div class="col-12 col-md-6 d-flex flex-column">
                     <label class="fw-semibold form-label" for="customer_email">
                         Customer Email
                     </label>
-                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="customer_email" type="text" placeholder="Type here...">
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="customer_email" type="text"
+                        placeholder="Type here...">
                 </div>
                 <div class="col-12 col-md-6 d-flex flex-column">
                     <label class="fw-semibold form-label" for="customer_date">
                         Customer Date
                     </label>
-                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="customer_date" type="text" placeholder="Type here...">
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="customer_date" type="text"
+                        placeholder="Type here...">
                 </div>
                 <div class="col-12 col-md-6 d-flex flex-column">
                     <label class="fw-semibold form-label" for="customer_time_in">
                         Customer Time In
                     </label>
-                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="customer_time_in" type="text" placeholder="Type here...">
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="customer_time_in" type="text"
+                        placeholder="Type here...">
                 </div>
                 <div class="col-12 col-md-6 d-flex flex-column">
                     <label class="fw-semibold form-label" for="customer_time_out">
                         Customer Time Out
                     </label>
-                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="customer_time_out" type="text" placeholder="Type here...">
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="customer_time_out" type="text"
+                        placeholder="Type here...">
                 </div>
                 <div class="col-12 col-md-6"></div>
                 <div class="col-12 col-md-6 d-flex flex-column">
@@ -551,7 +605,7 @@
                         <!-- all attachments -->
                     </div>
                 </div>
-                
+
             </div>
             <div class="d-flex justify-content-center gap-2">
                 <button id="save-btn" class="py-1 px-4 add-btn rounded-1 backToListing">Back</button>
