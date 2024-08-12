@@ -118,7 +118,7 @@ class PayDutyController extends Controller
                     // Save image path and title to database
                     $PayDutytImages = new PayDutytImages();
                     $PayDutytImages->pay_duty_id = $form->id;
-                    $PayDutytImages->path = 'uploads/pay_duty_images/' . $form->id . '/' . $imageName;
+                    $PayDutytImages->path = 'public/uploads/pay_duty_images/' . $form->id . '/' . $imageName;
                     $PayDutytImages->file_name = $title;
                     $PayDutytImages->save();
                 }
@@ -266,7 +266,7 @@ class PayDutyController extends Controller
                     // Save image path and title to database
                     $PayDutytImages = new PayDutytImages();
                     $PayDutytImages->pay_duty_id = $form->id;
-                    $PayDutytImages->path = 'uploads/pay_duty_images/' . $form->id . '/' . $imageName;
+                    $PayDutytImages->path = 'public/uploads/pay_duty_images/' . $form->id . '/' . $imageName;
                     $PayDutytImages->file_name = $title;
                     $PayDutytImages->save();
                 }
@@ -352,7 +352,6 @@ class PayDutyController extends Controller
                     'message' => 'No Data Found',
                 ], 401);
             }
-
         } catch (\Exception $e) {
             // Log the error for debugging purposes
             Log::error('Error loading job: ' . $e->getMessage());

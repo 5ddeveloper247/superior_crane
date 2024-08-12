@@ -174,7 +174,7 @@ class TransportationTicketController extends Controller
                     // Save image path and title to database
                     $TransportationTicketImages = new TransportationTicketImages();
                     $TransportationTicketImages->ticket_id = $record->id;
-                    $TransportationTicketImages->path = 'uploads/transportation_tickets_images/' . $record->id . '/' . $imageName;
+                    $TransportationTicketImages->path = 'public/uploads/transportation_tickets_images/' . $record->id . '/' . $imageName;
                     $TransportationTicketImages->file_name = $title;
                     $TransportationTicketImages->save();
                 }
@@ -388,7 +388,7 @@ class TransportationTicketController extends Controller
                         // Save image path and title to database
                         $TransportationTicketImages = new TransportationTicketImages();
                         $TransportationTicketImages->ticket_id = $record->id;
-                        $TransportationTicketImages->path = 'uploads/transportation_tickets_images/' . $record->id . '/' . $imageName;
+                        $TransportationTicketImages->path = 'public/uploads/transportation_tickets_images/' . $record->id . '/' . $imageName;
                         $TransportationTicketImages->file_name = $title;
                         $TransportationTicketImages->save();
                     }

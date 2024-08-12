@@ -241,17 +241,17 @@
                         <form id="admin_filters_form">
                             <div class="row gy-3">
                                 <div class="col-4 col-md-3">
-                                    <label class="fw-semibold">User Number</label>
+                                    <label class="fw-semibold">Admin Number</label>
                                     <input type="text" class="py-1 px-3 rounded-1 form-control" name="user_number"
                                         placeholder="Enter User Number">
                                 </div>
                                 <div class="col-4 col-md-3">
                                     <label class="fw-semibold">Admin Name</label>
-                                    <input type="text" class="py-1 px-3 rounded-1 form-control" name="name" placeholder="Type here...">
+                                    <input type="text" class="py-1 px-3 rounded-1 form-control" name="search_name" placeholder="Type here...">
                                 </div>
                                 <div class="col-4 col-md-3">
                                     <label class="fw-semibold">Email</label>
-                                    <input type="text" class="py-1 px-3 rounded-1 form-control" name="email" placeholder="Type here...">
+                                    <input type="text" class="py-1 px-3 rounded-1 form-control" name="search_email" placeholder="Type here...">
                                 </div>
                                 <div class="col-4 col-md-3">
                                     <label class="fw-semibold">Phone Number</label>
@@ -278,7 +278,7 @@
                     <table id="admins_listing_table" class="table-responsive w-100">
                         <thead>
                             <tr>
-                                <th class="px-3 text-start" scope="col">User No#</th>
+                                <th class="px-3 text-start" scope="col">Admin No#</th>
                                 <th class="px-3" scope="col">Admin Name</th>
                                 <th class="px-3" scope="col">Email Address</th>
                                 <th class="px-3" scope="col">Status</th>
@@ -318,18 +318,18 @@
                         <form id="manager_filters_form">
                             <div class="row gy-3">
                                 <div class="col-4 col-md-3">
-                                    <label class="fw-semibold">User Number</label>
+                                    <label class="fw-semibold">Manager Number</label>
                                     <input type="text" class="py-1 px-3 rounded-1 form-control" name="user_number"
                                         placeholder="Enter User Number">
                                 </div>
                                 <div class="col-4 col-md-3">
-                                    <label class="fw-semibold">User Name</label>
-                                    <input type="text" class="py-1 px-3 rounded-1 form-control" name="name"
+                                    <label class="fw-semibold">Manager Name</label>
+                                    <input type="text" class="py-1 px-3 rounded-1 form-control" name="search_name"
                                         placeholder="Enter Customer Name">
                                 </div>
                                 <div class="col-4 col-md-3">
                                     <label class="fw-semibold">Email</label>
-                                    <input type="text" class="py-1 px-3 rounded-1 form-control" name="email"
+                                    <input type="text" class="py-1 px-3 rounded-1 form-control" name="search_email"
                                         placeholder="Type here...">
                                 </div>
                                 <div class="col-4 col-md-3">
@@ -357,7 +357,7 @@
                     <table id="managers_listing_table" class="table-responsive w-100">
                         <thead>
                             <tr>
-                                <th class="px-3 text-start" scope="col">User No#</th>
+                                <th class="px-3 text-start" scope="col">Manager No#</th>
                                 <th class="px-3" scope="col">Manager Name</th>
                                 <th class="px3" scope="col">Email Address</th>
                                 <th class="px-3" scope="col">Status</th>
@@ -402,13 +402,13 @@
                                         placeholder="Enter User Number">
                                 </div>
                                 <div class="col-4 col-md-3">
-                                    <label class="fw-semibold">Manager Name</label>
-                                    <input type="text" class="py-1 px-3 rounded-1 form-control" name="name"
+                                    <label class="fw-semibold">User Name</label>
+                                    <input type="text" class="py-1 px-3 rounded-1 form-control" name="search_name"
                                         placeholder="Enter Customer Name">
                                 </div>
                                 <div class="col-4 col-md-3">
                                     <label class="fw-semibold">Email</label>
-                                    <input type="text" class="py-1 px-3 rounded-1 form-control" name="email"
+                                    <input type="text" class="py-1 px-3 rounded-1 form-control" name="search_email"
                                         placeholder="Type here...">
                                 </div>
                                 <div class="col-4 col-md-3">
@@ -489,7 +489,8 @@
                                 </label>
                                 <input type="password" class="rounded-1 py-2 px-2 w-100 form-control" id="password" name="password" 
                                     placeholder="Type here...">
-                                <i class="fa fa-eye position-absolute view_pass" style="top: 65%; right: 6%;font-size:12px;"></i>
+                                <i class="fa fa-eye position-absolute view_pass" style="top: 55%; right: 6%;font-size:12px;"></i>
+                                <span style="font-size:9px;">Passowrd must contain one capital, small, numeric and one special character.</span>
                             </div>
 
                             <div class="col-12 col-md-6 d-flex flex-column"  style="position:relative">
@@ -498,7 +499,8 @@
                                 </label>
                                 <input type="password" class="rounded-1 py-2 px-2 w-100 form-control" id="password_confirmation" name="password_confirmation"
                                     placeholder="Type here...">
-                                <i class="fa fa-eye position-absolute view_pass" style="top: 65%; right: 6%;font-size:12px;"></i>
+                                <i class="fa fa-eye position-absolute view_pass" style="top: 55%; right: 6%;font-size:12px;"></i>
+                                <span style="font-size:9px;">Confirm password must be match with password field.</span>
                             </div>
                             @php
                                 $roles = getRoles();

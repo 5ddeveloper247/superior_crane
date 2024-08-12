@@ -148,7 +148,7 @@ function resetRiggerForm(){
     let form = $('#addJob_from');
     form.trigger("reset");
 
-    $("#job_id").val('');
+    $("#add_job_id").val('');
     $("input, select, textarea").removeClass('is-invalid');
     $("#uploads_section, #created_by, #updated_by").html('');
     $(".status_input, .updatedInfo_div").hide();
@@ -197,7 +197,7 @@ $(document).on('click', '#job_type_logistic,#job_type_crane,#job_type_other', fu
 $(document).on('click', '#addAttachment_btn', function (e) {
     
     var att_html = `<div class="d-flex align-items-center gap-2 my-2 file_section">
-                        <button type="button" class="text-dark upload-btn #000 w-50 px-0 job_image_btn">Upload Image</button>
+                        <button type="button" class="text-dark upload-btn #000 w-50 px-0 job_image_btn">Upload</button>
                         <input type="file" name="job_images[]" class="job_image_file" accept="image/*,.pdf" single style="display:none;">
                         <input type="text" name="job_images_title[]" class="form-control" placeholder="Title" maxlength="50">
                         <i class="fa-solid fa-xmark remove_file_section"></i>
@@ -231,7 +231,7 @@ $(document).on('change', '.job_image_file', function (e) {
         var fileName = this.files[0].name;
         $(this).prev('.job_image_btn').text(fileName);
     }else{
-        $(this).prev('.job_image_btn').text('Upload Image');
+        $(this).prev('.job_image_btn').text('Upload');
     }
 
 });
@@ -502,9 +502,9 @@ document.addEventListener('DOMContentLoaded', function () {
             var statusDropdown = document.createElement('ul');
             statusDropdown.className = 'status-dropdown';
             statusDropdown.innerHTML = `<li class="close-dropdown" >Choose<span style="float: right; cursor: pointer;">&times;</span></li>
-                                        <li class="changeStatus_btn" data-id="${event.id}" data-status="3" ${event.extendedProps.status == 2 ? 'style="background-color:#FFFCBB;"' : ''}>On-Hold</li>
+                                        <li class="changeStatus_btn" data-id="${event.id}" data-status="2" ${event.extendedProps.status == 2 ? 'style="background-color:#FFFCBB;"' : ''}>On-Hold</li>
                                         <li class="changeStatus_btn" data-id="${event.id}" data-status="1" ${event.extendedProps.status == 1 ? 'style="background-color:#C9FFBB;"' : ''}>Good To Go</li>
-                                        <li class="changeStatus_btn" data-id="${event.id}" data-status="2" ${event.extendedProps.status == 0 ? 'style="background-color:#FFBBBB;"' : ''}>Problem</li>
+                                        <li class="changeStatus_btn" data-id="${event.id}" data-status="0" ${event.extendedProps.status == 0 ? 'style="background-color:#FFBBBB;"' : ''}>Problem</li>
                                         <li class=""></li>
                                         <li class="viewJob_btn" data-id="${event.id}">View Job</li>`;
             statusDropdown.style.display = 'block';

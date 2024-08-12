@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
+use App\Models\Roles;
 use App\Models\JobModel;
 use App\Models\JobImages;
 use Illuminate\Http\Request;
@@ -113,12 +115,62 @@ class JobController extends Controller
                     // Save image path and title to database
                     $jobImage = new JobImages();
                     $jobImage->job_id = $job->id;
-                    $jobImage->path = 'uploads/job_images/' . $job->id . '/' . $imageName;
+                    $jobImage->path = 'public/uploads/job_images/' . $job->id . '/' . $imageName;
                     $jobImage->file_name = $title;
                     $jobImage->save();
                 }
             }
             
+            $jobDetail = JobModel::where('id', $job->id)->first();
+            $user = User::where('id', $jobDetail->rigger_assigned)->first();// assigned user details
+            $createdBy = User::where('id', $jobDetail->created_by)->first();
+            
+            if($jobDetail->job_type == '1'){
+                $job_type = 'Logistic Job(SCCI)';  
+            }else if($jobDetail->job_type == '2'){
+                $job_type = 'Crane Job';  
+            }else{
+                $job_type = 'Other Job';  
+            }
+
+            if($jobDetail->status == '0'){
+                $status_txt = 'Problem';
+            }else if($jobDetail->status == '1'){
+                $status_txt = 'Good To Go';
+            }else if($jobDetail->status == '2'){
+                $status_txt = 'On-Hold';
+            }
+            
+            $mailData = [];
+            
+            $mailData['user'] = $user->name;
+            $mailData['username'] = $user->name;
+            $mailData['job_number'] = 'J-'.$jobDetail->id;
+            $mailData['job_type'] = $job_type;
+            $mailData['assigned_to'] = $user->name;
+            $mailData['client_name'] = $jobDetail->client_name;
+            $mailData['start_time'] = $jobDetail->start_time;
+            $mailData['end_time'] = $jobDetail->end_time;
+            $mailData['status'] = $status_txt;
+
+            $mailData['text1'] = "New job has been assigned by " . $createdBy->name . ". Job details are as under.";
+            $mailData['text2'] = "For more details please contact the Manager/Admin.";
+
+            $body = view('emails.job_template', $mailData);
+            $userEmailsSend = 'hamza@5dsolutions.ae';//$user->email;
+            sendMail($user->name, $userEmailsSend, 'Superior Crane', 'Job Creation', $body);
+
+            $allAdmins = User::whereIn('role_id', ['0','1'])->where('status', '1')->get();
+
+            if($allAdmins){
+                foreach($allAdmins as $value){
+                    $mailData['user'] = 'Admin';
+                    $body = view('emails.job_template', $mailData);
+                    $userEmailsSend = 'hamza@5dsolutions.ae';//$value->email;
+                    sendMail('Admin', $userEmailsSend, 'Superior Crane', 'Job Creation', $body);
+                }
+            }
+
             return response()->json([
                 'success' => true,
                 'message' => 'Job added successfully'
@@ -254,7 +306,7 @@ class JobController extends Controller
                         // Save image path and title to database
                         $jobImage = new JobImages();
                         $jobImage->job_id = $job->id;
-                        $jobImage->path = 'uploads/job_images/' . $job->id . '/' . $imageName;
+                        $jobImage->path = 'public/uploads/job_images/' . $job->id . '/' . $imageName;
                         $jobImage->file_name = $title;
                         $jobImage->save();
                     }
@@ -502,18 +554,65 @@ class JobController extends Controller
             $job = JobModel::where('id', $request->job_id)->first();
             if($job) {
             
-            $job->status = $request->status;
-            $job->save();
-            return response()->json([
-                'success' => true,
-                'message' => 'Status Updated Successfully',
-            ], 200);
-        } else {
-            return response()->json([
-                'success' => false,
-                'message' => 'Invalid Job Id',
-            ], 401);
-        }
+                $job->status = $request->status;
+                $job->save();
+                
+                $jobDetail = JobModel::where('id', $request->job_id)->first();
+                $user = User::where('id', $jobDetail->rigger_assigned)->first();// assigned user details
+                $createdBy = User::where('id', $jobDetail->created_by)->first();
+                
+                if($jobDetail->job_type == '1'){
+                    $job_type = 'Logistic Job(SCCI)';  
+                }else if($jobDetail->job_type == '2'){
+                    $job_type = 'Crane Job';  
+                }else{
+                    $job_type = 'Other Job';  
+                }
+
+                if($jobDetail->status == '0'){
+                    $status_txt = 'Problem';
+                }else if($jobDetail->status == '1'){
+                    $status_txt = 'Good To Go';
+                }else if($jobDetail->status == '2'){
+                    $status_txt = 'On-Hold';
+                }
+                
+                $mailData = [];
+                
+                $mailData['user'] = $user->name;
+                $mailData['username'] = $user->name;
+                $mailData['job_number'] = 'J-'.$jobDetail->id;
+                $mailData['job_type'] = $job_type;
+                $mailData['assigned_to'] = $user->name;
+                $mailData['client_name'] = $jobDetail->client_name;
+                $mailData['start_time'] = $jobDetail->start_time;
+                $mailData['end_time'] = $jobDetail->end_time;
+                $mailData['status'] = $status_txt;
+
+                $mailData['text1'] = "Job status has been changed by manager/user. Job details are as under.";
+                $mailData['text2'] = "For more details please contact the Manager/Admin.";
+
+                $allUsers = User::whereIn('role_id', ['0','1','3'])->where('status', '1')->get();
+
+                if($allUsers){
+                    foreach($allUsers as $value){
+                        $mailData['user'] = $value->name;
+                        $body = view('emails.job_template', $mailData);
+                        $userEmailsSend = 'hamza@5dsolutions.ae';//$value->email;
+                        sendMail($value->name, $userEmailsSend, 'Superior Crane', 'Job Status Change', $body);
+                    }
+                }
+                
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Status Updated Successfully',
+                ], 200);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Invalid Job Id',
+                ], 401);
+            }
 
         } catch (\Exception $e) {
             // Log the error for debugging purposes

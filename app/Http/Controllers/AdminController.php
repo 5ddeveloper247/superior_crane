@@ -107,10 +107,10 @@ class AdminController extends Controller
         return view('admin/users')->with($data);
     }
 
-    public function Jobs(Request $request)
+    public function jobs(Request $request)
     {
         $data['pageTitle'] = 'Jobs';
-        return view('admin/Jobs')->with($data);
+        return view('admin/jobs')->with($data);
     }
 
     public function rigger_tickets(Request $request)
@@ -280,6 +280,38 @@ class AdminController extends Controller
         
         $user->save();
 
+        $roleName = Roles::where('id', $user->role_id)->value('role_name');
+
+        // email send
+        $mailData = [];
+        $mailData['user'] = $user->name;
+        $mailData['username'] = $user->name;
+        $mailData['email'] = $user->email;
+        $mailData['role'] = $roleName;
+
+        if($request->user_id == ''){
+            
+            $mailData['text1'] = "Welcome to Superior Crane! We're thrilled to have you on board.";
+            $mailData['text2'] = "If you have any questions, feel free to reach out to us at support@superiorcrane.com.";
+
+            $body = view('emails.signup_welcome', $mailData);
+            $userEmailsSend[] = 'hamza@5dsolutions.ae';//$user->email;
+
+            sendMail($user->name, $userEmailsSend, 'Superior Crane', 'Register User', $body);
+        }else{
+            if($request->password != ''){
+                
+                $mailData['password'] = $request->password;
+                $mailData['text1'] = "Your password is updated by admin, your login details are mention below";
+                $mailData['text2'] = "If you have any questions, feel free to reach out to us at support@superiorcrane.com.";
+
+                $body = view('emails.signup_welcome', $mailData);
+                $userEmailsSend[] = 'hamza@5dsolutions.ae';//$user->email;
+
+                sendMail($user->name, $userEmailsSend, 'Superior Crane', 'Change Password', $body);
+            }
+        }
+
         if($request->user_id == ''){
             return response()->json(['status' => 200, 'message' => 'User Updated Successfully']);
         }else{
@@ -312,6 +344,30 @@ class AdminController extends Controller
                 $user->status = '1';
             }
             $user->save();
+
+            $roleName = Roles::where('id', $user->role_id)->value('role_name');
+
+            $mailData = [];
+            $mailData['user'] = $user->name;
+            $mailData['username'] = $user->name;
+            $mailData['email'] = $user->email;
+            $mailData['role'] = $roleName;
+            $mailData['status'] = $user->status == '0' ? 'Deactive' : 'Active';
+
+            if($user->status == '0'){
+                $mailData['text1'] = "Your account is deactivated by admin, your account details are mention below";
+                $subject = 'Account Deactivated';
+            }else{
+                $mailData['text1'] = "Your account is activated by admin, your account details are mention below";
+                $subject = 'Account Activated';
+            }
+            
+            $mailData['text2'] = "If you have any questions, feel free to reach out to us at support@superiorcrane.com.";
+
+            $body = view('emails.signup_welcome', $mailData);
+            $userEmailsSend[] = 'hamza@5dsolutions.ae';//$user->email;
+            sendMail($user->name, $userEmailsSend, 'Superior Crane', $subject, $body);
+
             return response()->json(['status' => 200, 'message' => "User status updated successfully."]);
         }else{
             return response()->json(['status' => 402, 'message' => "Something went wrong..."]);
@@ -331,8 +387,8 @@ class AdminController extends Controller
 
     public function searchAdminListing(Request $request){
         $search_user_num = str_replace(['U','u', '-'], '', $request->user_number);
-        $search_name = $request->name;
-        $search_email = $request->email;
+        $search_name = $request->search_name;
+        $search_email = $request->search_email;
         $search_phone = $request->phone_number;
         $search_status = $request->status;
         $search_flag = $request->flag;
@@ -436,7 +492,7 @@ class AdminController extends Controller
                 'date' => 'required|date',
                 'address' => 'required|string|max:200',
                 'start_time' => 'required|date_format:Y-m-d\TH:i',
-                'end_time' => 'required|date_format:Y-m-d\TH:i',
+                'end_time' => 'required|date_format:Y-m-d\TH:i|after:start_time',
                 'supplier_name' => 'required|string|max:50',
                 'notes' => 'nullable|string',
                 // 'scci' => 'boolean',
@@ -457,11 +513,13 @@ class AdminController extends Controller
                 'date' => 'required|date',
                 'address' => 'required|string|max:200',
                 'start_time' => 'required|date_format:Y-m-d\TH:i',
-                'end_time' => 'required|date_format:Y-m-d\TH:i',
+                'end_time' => 'required|date_format:Y-m-d\TH:i|after:start_time',
                 'supplier_name' => 'required|string|max:50',
                 'notes' => 'nullable|string',
                 // 'job_images' => 'required',
+                'job_images' => 'required|array|min:1',
                 'job_images.*' => 'required|mimes:jpeg,png,jpg,gif,svg,pdf|max:2048',
+                // 'job_images.*' => 'required|mimes:jpeg,png,jpg,gif,svg,pdf|max:2048',
                 // 'job_images_title' => 'required',
                 'job_images_title.*' => 'required|string|max:255',
                 'status' => 'required',
@@ -474,6 +532,9 @@ class AdminController extends Controller
         }else{
             $job = JobModel::where('id', $request->job_id)->first();
             $job->updated_by = Auth::user()->id;
+
+            $previousStatus = $job->status;
+            $currentStatus = $request->status;
         }
         
         $job->job_type = $request->job_type;
@@ -528,6 +589,107 @@ class AdminController extends Controller
                 $JobImages->file_name = $file_title;//$file->getClientOriginalName();
                 $JobImages->path = $savedFilePaths;
                 $JobImages->save();
+            }
+        }
+
+        if($request->job_id == ''){
+            $jobDetail = JobModel::where('id', $job->id)->first();
+            $user = User::where('id', $jobDetail->rigger_assigned)->first();// assigned user details
+            $createdBy = User::where('id', $jobDetail->created_by)->first();
+            
+            
+            if($jobDetail->job_type == '1'){
+                $job_type = 'Logistic Job(SCCI)';  
+            }else if($jobDetail->job_type == '2'){
+                $job_type = 'Crane Job';  
+            }else{
+                $job_type = 'Other Job';  
+            }
+
+            if($jobDetail->status == '0'){
+                $status_txt = 'Problem';
+            }else if($jobDetail->status == '1'){
+                $status_txt = 'Good To Go';
+            }else if($jobDetail->status == '2'){
+                $status_txt = 'On-Hold';
+            }else{
+                $status_txt = 'Assigned';
+            }
+            
+            $mailData = [];
+            
+            $mailData['user'] = $user->name;
+            $mailData['username'] = $user->name;
+            $mailData['job_number'] = 'J-'.$jobDetail->id;
+            $mailData['job_type'] = $job_type;
+            $mailData['assigned_to'] = $user->name;
+            $mailData['client_name'] = $jobDetail->client_name;
+            $mailData['start_time'] = $jobDetail->start_time;
+            $mailData['end_time'] = $jobDetail->end_time;
+            $mailData['status'] = $status_txt;
+
+            $mailData['text1'] = "New job has been assigned by " . $createdBy->name . ". Job details are as under.";
+            $mailData['text2'] = "For more details please contact the Manager/Admin.";
+
+            $allUsers = User::whereIn('role_id', ['0','1','2'])->where('status', '1')->where('id','!=',Auth::user()->id)->get();
+
+            if($allUsers){
+                foreach($allUsers as $value){
+                    $mailData['user'] = $value->name;
+                    $body = view('emails.job_template', $mailData);
+                    $userEmailsSend = 'hamza@5dsolutions.ae';//$value->email;
+                    sendMail($value->name, $userEmailsSend, 'Superior Crane', 'Job Creation', $body);
+                }
+            }
+        }else{
+            if($previousStatus != $currentStatus){
+                $jobDetail = JobModel::where('id', $job->id)->first();
+                $user = User::where('id', $jobDetail->rigger_assigned)->first();// assigned user details
+                $createdBy = User::where('id', $jobDetail->created_by)->first();
+                
+                if($jobDetail->job_type == '1'){
+                    $job_type = 'Logistic Job(SCCI)';  
+                }else if($jobDetail->job_type == '2'){
+                    $job_type = 'Crane Job';  
+                }else{
+                    $job_type = 'Other Job';  
+                }
+
+                if($jobDetail->status == '0'){
+                    $status_txt = 'Problem';
+                }else if($jobDetail->status == '1'){
+                    $status_txt = 'Good To Go';
+                }else if($jobDetail->status == '2'){
+                    $status_txt = 'On-Hold';
+                }else{
+                    $status_txt = 'Assigned';
+                }
+                
+                $mailData = [];
+                
+                $mailData['user'] = $user->name;
+                $mailData['username'] = $user->name;
+                $mailData['job_number'] = 'J-'.$jobDetail->id;
+                $mailData['job_type'] = $job_type;
+                $mailData['assigned_to'] = $user->name;
+                $mailData['client_name'] = $jobDetail->client_name;
+                $mailData['start_time'] = $jobDetail->start_time;
+                $mailData['end_time'] = $jobDetail->end_time;
+                $mailData['status'] = $status_txt;
+
+                $mailData['text1'] = "Job status has been changed by admin. Job details are as under.";
+                $mailData['text2'] = "For more details please contact the Manager/Admin.";
+
+                $allUsers = User::whereIn('role_id', ['0','1','3'])->where('status', '1')->where('id','!=',Auth::user()->id)->get();
+
+                if($allUsers){
+                    foreach($allUsers as $value){
+                        $mailData['user'] = $value->name;
+                        $body = view('emails.job_template', $mailData);
+                        $userEmailsSend = 'hamza@5dsolutions.ae';//$value->email;
+                        sendMail($value->name, $userEmailsSend, 'Superior Crane', 'Job Status Change', $body);
+                    }
+                }
             }
         }
 
@@ -596,7 +758,7 @@ class AdminController extends Controller
             return response()->json(['status' => 402, 'message' => 'Choose atleast one filter first!']);
         }
 
-        $query = JobModel::query();
+        $query = JobModel::with(['userAssigned']);
         
         if ($search_job_no != '') {
             $query->where('id', $search_job_no);
@@ -1031,6 +1193,93 @@ class AdminController extends Controller
         }else{
             return response()->json(['status' => 402, 'message' => "Job not found..."]);
         }
+    }
+
+    public function deleteSpecificInventory(Request $request){
+        $inventory_id = $request->inventory_id;
+        $inventory = InventoryModel::where('id', $inventory_id)->first();
+        if($inventory){
+            InventoryModel::where('id', $inventory_id)->delete();
+            return response()->json(['status' => 200, 'message' => "Inventory deleted successfully"]);
+        }else{
+            return response()->json(['status' => 402, 'message' => "Something went wrong..."]);
+        }
+    }
+
+
+
+
+
+
+
+
+
+    public function sendtomailRigger(Request $request)
+    {
+
+
+        $id = '14';
+        $filepath = public_path('assets/pdf/pdf_samples/rigger_ticket.pdf');
+        $output_file_path = public_path('assets/pdf/rigger_ticket_pdfs/ticket_' .$id. '.pdf'); 
+        $ticket = RiggerTicket::find($id);
+        if($ticket){
+            $fields = [
+                ['text' => $ticket->id, 'x' => 228, 'y' => 26.8],
+                ['text' => $ticket->specifications_remarks, 'x' => 16, 'y' => 75.8],
+                ['text' => $ticket->specifications_remarks, 'x' => 144, 'y' => 75.8],
+                ['text' => $ticket->customer_name, 'x' => 38, 'y' => 85.1],
+                ['text' => $ticket->location, 'x' => 36.5, 'y' => 91.5],
+                ['text' => $ticket->date, 'x' => 28, 'y' => 98.2],
+                ['text' => $ticket->start_job, 'x' => 40, 'y' => 104.5],
+                ['text' => $ticket->finish_job, 'x' => 42, 'y' => 111],
+                ['text' => $ticket->crane_number, 'x' => 174, 'y' => 85.1],
+                ['text' => $ticket->boom_length, 'x' => 174, 'y' => 91.5],
+                ['text' => $ticket->other_equipment, 'x' => 181.5, 'y' => 98.2],
+                ['text' => $ticket->crane_number, 'x' => 170, 'y' => 104.5],
+                ['text' => $ticket->crane_time, 'x' => 174, 'y' => 111],
+                ['text' => $ticket->notes, 'x' => 16, 'y' => 132],
+            ];
+    
+            $this->editPdf($filepath, $output_file_path, $fields);
+            return response()->json([
+                'success' => true,
+                'message' => 'Sent to Admin successfully'
+            ], 200);
+            
+        }
+        else{
+            return response()->json([
+                'success' => false,
+                'message' => 'Rigger Ticket NOt Found',
+            ], 401);
+        }
+        
+    }
+
+    public function editPdf($file, $output_file, $fields)
+    {
+        $fpdi = new Fpdi();
+        $count = $fpdi->setSourceFile($file);
+
+        for ($i = 1; $i <= $count; $i++) {
+            $template = $fpdi->importPage($i);
+            $size = $fpdi->getTemplateSize($template);
+            $fpdi->AddPage($size['orientation'], [$size['width'], $size['height']]);
+            $fpdi->useTemplate($template);
+
+            $fpdi->SetFont('Helvetica', '', 12);
+            foreach ($fields as $field) {
+                $fpdi->SetXY($field['x'], $field['y']);
+                $fpdi->Write(8, $field['text']);
+            }
+        }
+
+        
+        $fpdi->Output($output_file, 'F');
+        sendMailAttachment('Admin Team', 'hamza@5dsolutions.ae', 'Superior Crane', 'Rigger Ticket Generated', 'Rigger Ticket Generated',$output_file); // send_to_name, send_to_email, email_from_name, subject, body, attachment
+
+        
+
     }
     
 }

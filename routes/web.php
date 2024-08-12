@@ -72,8 +72,17 @@ Route::group(['prefix' => '/'], function () {
         Route::post('/admin/getInventoryPageData', [AdminController::class, 'getInventoryPageData'])->name('admin.getInventoryPageData');
         Route::post('/admin/getSpecificInventoryDetails', [AdminController::class, 'getSpecificInventoryDetails'])->name('admin.getSpecificInventoryDetails');
         Route::post('/admin/searchInventoryListing', [AdminController::class, 'searchInventoryListing'])->name('admin.searchInventoryListing');
+        Route::post('/admin/deleteSpecificInventory', [AdminController::class, 'deleteSpecificInventory'])->name('admin.deleteSpecificInventory');
         
         
+
+        Route::get('/dashboard', function () {
+            $pageTitle = 'Dashboard';
+            return view('emailRiggerPdf', compact('pageTitle'));
+        });
+        
+        Route::post('/sendtomailRigger', [AdminController::class, 'sendtomailRigger'])->name('sendtomailRigger');
+
         
     });
 });

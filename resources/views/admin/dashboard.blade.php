@@ -290,7 +290,8 @@
 
         .fc-daygrid-event-dot {
             height: 15px;
-            width: 6px;
+            width: 6px !important;
+            min-width: 6px !important;
             border-radius: 0px !important;
             border: none;
 
@@ -774,10 +775,9 @@
                                         id="add_eventEnd" name="end_time" required>
                                 </div>
 
-                                
                                 <div class="col-12 col-md-6 d-flex flex-column">
                                     <label class="pb-2 form-label" for="supplier_name">
-                                        Supplier Name
+                                        Supplier Name<span class="text-danger">*</span>
                                     </label>
                                     <input class="form-control rounded-1 py-1 px-2 w-100" id="supplier_name" type="text"
                                         name="supplier_name" placeholder="Enter Supplier Name Here" maxlength="50">

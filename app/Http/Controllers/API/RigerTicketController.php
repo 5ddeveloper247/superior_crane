@@ -96,32 +96,6 @@ class RigerTicketController extends Controller
                 $ticket->save();
             }
             
-            // $req_file = 'site_images';
-            // $path = '/uploads/rigger_tickets_images/' . $ticket->id .'/site';
-
-            // if ($request->hasFile($req_file)) {
-
-            //     if (!File::isDirectory(public_path($path))) {
-            //         File::makeDirectory(public_path($path), 0777, true);
-            //     }
-                
-            //     $uploadedFiles = $request->file($req_file);
-
-            //     foreach ($uploadedFiles as $file) {
-            //         $file_extension = $file->getClientOriginalExtension();
-            //         $date_append = Str::random(32);
-            //         $file->move(public_path($path), $date_append . '.' . $file_extension);
-    
-            //         $savedFilePaths = '/public' . $path . '/' . $date_append . '.' . $file_extension;
-
-            //         $RiggerTicketImages = new RiggerTicketImages();
-            //         $RiggerTicketImages->ticket_id = $ticket->id;
-            //         $RiggerTicketImages->file_name = $file->getClientOriginalName();
-            //         $RiggerTicketImages->path = $savedFilePaths;
-            //         $RiggerTicketImages->save();
-            //     }
-            // }
-                
             $site_images = $request->site_images;
             if(count($site_images) > 0){
                 
@@ -144,11 +118,61 @@ class RigerTicketController extends Controller
                     // Save image path and title to database
                     $RiggerTicketImages = new RiggerTicketImages();
                     $RiggerTicketImages->ticket_id = $ticket->id;
-                    $RiggerTicketImages->path = 'uploads/rigger_tickets_images/' . $ticket->id . '/' . $imageName;
+                    $RiggerTicketImages->path = 'public/uploads/rigger_tickets_images/' . $ticket->id . '/' . $imageName;
                     $RiggerTicketImages->file_name = $title;
                     $RiggerTicketImages->save();
                 }
             }
+
+            // $jobDetail = JobModel::where('id', $job->id)->first();
+            // $user = User::where('id', $jobDetail->rigger_assigned)->first();// assigned user details
+            // $createdBy = User::where('id', $jobDetail->created_by)->first();
+            
+            // if($jobDetail->job_type == '1'){
+            //     $job_type = 'Logistic Job(SCCI)';  
+            // }else if($jobDetail->job_type == '2'){
+            //     $job_type = 'Crane Job';  
+            // }else{
+            //     $job_type = 'Other Job';  
+            // }
+
+            // if($jobDetail->status == '0'){
+            //     $status_txt = 'Problem';
+            // }else if($jobDetail->status == '1'){
+            //     $status_txt = 'Good To Go';
+            // }else if($jobDetail->status == '2'){
+            //     $status_txt = 'On-Hold';
+            // }
+            
+            // $mailData = [];
+            
+            // $mailData['user'] = $user->name;
+            // $mailData['username'] = $user->name;
+            // $mailData['job_number'] = 'J-'.$jobDetail->id;
+            // $mailData['job_type'] = $job_type;
+            // $mailData['assigned_to'] = $user->name;
+            // $mailData['client_name'] = $jobDetail->client_name;
+            // $mailData['start_time'] = $jobDetail->start_time;
+            // $mailData['end_time'] = $jobDetail->end_time;
+            // $mailData['status'] = $status_txt;
+
+            // $mailData['text1'] = "New job has been assigned by " . $createdBy->name . ". Job details are as under.";
+            // $mailData['text2'] = "For more details please contact the Manager/Admin.";
+
+            // $body = view('emails.job_template', $mailData);
+            // $userEmailsSend = 'hamza@5dsolutions.ae';//$user->email;
+            // sendMail($user->name, $userEmailsSend, 'Superior Crane', 'Job Creation', $body);
+
+            // $allAdmins = User::whereIn('role_id', ['0','1'])->where('status', '1')->get();
+
+            // if($allAdmins){
+            //     foreach($allAdmins as $value){
+            //         $mailData['user'] = 'Admin';
+            //         $body = view('emails.job_template', $mailData);
+            //         $userEmailsSend = 'hamza@5dsolutions.ae';//$value->email;
+            //         sendMail('Admin', $userEmailsSend, 'Superior Crane', 'Job Creation', $body);
+            //     }
+            // }
     
             return response()->json([
                 'success' => true,
@@ -243,41 +267,7 @@ class RigerTicketController extends Controller
                     $ticket->save();
                 }
                 
-                // $req_file = 'site_images';
-                // $path = '/uploads/rigger_tickets_images/' . $ticket->id .'/site';
-    
-                // if ($request->hasFile($req_file)) {
-                    
-                //     $previous_images = RiggerTicketImages::where('ticket_id', $ticket->id)->get();
-                //     if(count($previous_images) > 0){
-                //         foreach($previous_images as $img){
-                //             $del_path = str_replace(url('/public/'), '', $img->path);
-                //             deleteImage($del_path);
-                //             RiggerTicketImages::where('id', $img->id)->delete();
-                //         }
-                //     }
-    
-                //     if (!File::isDirectory(public_path($path))) {
-                //         File::makeDirectory(public_path($path), 0777, true);
-                //     }
-                    
-                //     $uploadedFiles = $request->file($req_file);
-    
-                //     foreach ($uploadedFiles as $file) {
-                //         $file_extension = $file->getClientOriginalExtension();
-                //         $date_append = Str::random(32);
-                //         $file->move(public_path($path), $date_append . '.' . $file_extension);
-        
-                //         $savedFilePaths = '/public' . $path . '/' . $date_append . '.' . $file_extension;
-    
-                //         $RiggerTicketImages = new RiggerTicketImages();
-                //         $RiggerTicketImages->ticket_id = $ticket->id;
-                //         $RiggerTicketImages->file_name = $file->getClientOriginalName();
-                //         $RiggerTicketImages->path = $savedFilePaths;
-                //         $RiggerTicketImages->save();
-                //     }
-                // }
-
+                
                 $site_images = $request->site_images;
                 if(count($site_images) > 0){
                     
@@ -309,7 +299,7 @@ class RigerTicketController extends Controller
                         // Save image path and title to database
                         $RiggerTicketImages = new RiggerTicketImages();
                         $RiggerTicketImages->ticket_id = $ticket->id;
-                        $RiggerTicketImages->path = 'uploads/rigger_tickets_images/' . $ticket->id . '/' . $imageName;
+                        $RiggerTicketImages->path = 'public/uploads/rigger_tickets_images/' . $ticket->id . '/' . $imageName;
                         $RiggerTicketImages->file_name = $title;
                         $RiggerTicketImages->save();
                     }
@@ -423,7 +413,7 @@ class RigerTicketController extends Controller
         $id = $request->ticket_id;
         $filepath = public_path('assets/pdf/pdf_samples/rigger_ticket.pdf');
         $output_file_path = public_path('assets/pdf/rigger_ticket_pdfs/ticket_' .$id. '.pdf'); 
-        $ticket = RigerTicket::find($id);
+        $ticket = RiggerTicket::find($id);
         if($ticket){
             $fields = [
                 ['text' => $ticket->id, 'x' => 228, 'y' => 26.8],
@@ -477,7 +467,7 @@ class RigerTicketController extends Controller
         }
 
         $fpdi->Output($output_file, 'F');
-        sendMail('Admin Team', 'zaidkhurshid525@gmail.com', 'Superior Crane', 'Rigger Ticket Generated', 'Rigger Ticket Generated',$output_file); // send_to_name, send_to_email, email_from_name, subject, body, attachment
+        sendMailAttachment('Admin Team', 'hamza@5dsolutions.ae', 'Superior Crane', 'Rigger Ticket Generated', 'Rigger Ticket Generated',$output_file); // send_to_name, send_to_email, email_from_name, subject, body, attachment
 
         
 

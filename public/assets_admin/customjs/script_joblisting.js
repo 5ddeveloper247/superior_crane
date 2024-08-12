@@ -52,8 +52,8 @@ function makeJobsListing(jobs_list){
                         </td>
                         <td>
                             ${value.status == '1' ? 'Good to go' : ''}
-                            ${value.status == '2' ? 'Problem' : ''}
-                            ${value.status == '3' ? 'On-Hold' : ''}
+                            ${value.status == '0' ? 'Problem' : ''}
+                            ${value.status == '2' ? 'On-Hold' : ''}
                         </td>
                         <td>${value.date != null ? formatDate(value.date) : ''}</td>
                         <td>${value.user_assigned != null ? value.user_assigned.name : ''}</td>
@@ -149,6 +149,7 @@ function resetRiggerForm(){
     let form = $('#addJob_from');
     form.trigger("reset");
 
+    $("#add_job_id").val('');
     $("input, select, textarea").removeClass('is-invalid');
     $("#uploads_section, #created_by, #updated_by").html('');
     $(".status_input,.updatedInfo_div").hide();
@@ -198,7 +199,7 @@ $(document).on('click', '#job_type_logistic,#job_type_crane,#job_type_other', fu
 $(document).on('click', '#addAttachment_btn', function (e) {
     
     var att_html = `<div class="d-flex align-items-center gap-2 my-2 file_section">
-                        <button type="button" class="text-dark upload-btn #000 w-50 px-0 job_image_btn">Upload Image</button>
+                        <button type="button" class="text-dark upload-btn #000 w-50 px-0 job_image_btn">Upload</button>
                         <input type="file" name="job_images[]" class="job_image_file" accept="image/*,.pdf" single style="display:none;">
                         <input type="text" name="job_images_title[]" class="form-control" placeholder="Title" maxlength="50">
                         <i class="fa-solid fa-xmark remove_file_section"></i>
@@ -233,7 +234,7 @@ $(document).on('change', '.job_image_file', function (e) {
         var fileName = this.files[0].name;
         $(this).prev('.job_image_btn').text(fileName);
     }else{
-        $(this).prev('.job_image_btn').text('Upload Image');
+        $(this).prev('.job_image_btn').text('Upload');
     }
 
 });

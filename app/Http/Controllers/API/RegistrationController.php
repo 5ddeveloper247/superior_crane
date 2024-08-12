@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 use App\Models\User;
+use App\Models\Roles;
 
 class RegistrationController extends Controller
 {
@@ -43,6 +44,27 @@ class RegistrationController extends Controller
             $user->password= bcrypt($request->password);
             $user->role_id = $request->role;
             $user->save();
+            
+            $roleName = Roles::where('id', $request->role)->value('role_name');
+
+            $mailData = [];
+            $mailData['user'] = $user->name;
+            $mailData['username'] = $user->name;
+            $mailData['email'] = $user->email;
+            $mailData['role'] = $roleName;
+            $mailData['text1'] = "Welcome to Superior Crane! We're thrilled to have you on board.";
+            $mailData['text2'] = "If you have any questions, feel free to reach out to us at support@superiorcrane.com.";
+
+            $body = view('emails.signup_welcome', $mailData);
+            $userEmailsSend = 'hamza@5dsolutions.ae';//$user->email;
+            sendMail($user->name, $userEmailsSend, 'Superior Crane', 'Register User', $body);
+
+            $mailData['user'] = 'Admin';
+            $mailData['text1'] = "A new user has just signed up on Superior Crane.";
+            $mailData['text2'] = "Please review their details in the admin panel.";
+            $userEmailsSend = env('MAIL_ADMIN');
+            $body = view('emails.signup_welcome', $mailData);
+            sendMail($user->name, $userEmailsSend, 'Superior Crane', 'Register User', $body);
             
             return response()->json([
                 'success' => true,
