@@ -90,7 +90,7 @@ html {
     .login-content {
         width: 90% !important;
     }
-    
+
 }
 
 .clear-btn {
@@ -245,4 +245,17 @@ div.dt-container select.dt-input {
 
 .dt-info {
     font-size: 12px;
+}
+
+table.dataTable thead>tr>th.dt-orderable-asc,
+table.dataTable thead>tr>th.dt-orderable-desc {
+    white-space: nowrap;
+}
+
+input:focus {
+    outline: none !important;
+}
+
+table.dataTable>tbody>tr:first-child>* {
+    white-space: nowrap;
 }
