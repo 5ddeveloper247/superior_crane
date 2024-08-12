@@ -43,7 +43,7 @@
             background-color: #fff;
             /* box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px; */
             /* height: calc(100vh - 155.67px);
-                                            overflow-y: auto; */
+                                                overflow-y: auto; */
         }
 
         .add-form button {
@@ -195,6 +195,7 @@
             box-shadow: none;
             float: right !important;
         }
+
         .atc-btn {
             background-color: transparent;
             border: 1px solid red !important;
@@ -211,12 +212,14 @@
             font-size: 12px !important;
             border-radius: 4px;
         }
+
         .form-label {
             font-size: 14px !important;
             margin-bottom: 0rem !important;
             margin-top: .6rem !important;
             font-weight: 600 !important;
         }
+
         .upload-btn {
             white-space: nowrap;
             overflow: hidden;
@@ -248,7 +251,8 @@
             <div class="counters">
                 <a class="d-flex gap-2 align-items-center" id="addNewJob_btn">
                     <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 20 20">
-                        <path fill="#C02825" d="M11 9V5H9v4H5v2h4v4h2v-4h4V9zm-1 11a10 10 0 1 1 0-20a10 10 0 0 1 0 20" />
+                        <path fill="#C02825"
+                            d="M11 9V5H9v4H5v2h4v4h2v-4h4V9zm-1 11a10 10 0 1 1 0-20a10 10 0 0 1 0 20" />
                     </svg>
                     <h6 class="mb-0">
                         ADD NEW
@@ -319,17 +323,20 @@
                     <div class="row gy-3">
                         <div class="col-4 col-md-3">
                             <label class="fw-semibold">Job Number</label>
-                            <input type="text" class="py-1 px-3 rounded-1 form-control" id="search_job_no" name="search_job_no" placeholder="Type here">
+                            <input type="text" class="py-1 px-3 rounded-1 form-control" id="search_job_no"
+                                name="search_job_no" placeholder="Type here">
                         </div>
                         <div class="col-4 col-md-3">
                             <label class="fw-semibold">Client Name</label>
-                            <input type="text" class="py-1 px-3 rounded-1 form-control" id="search_client" name="search_client" placeholder="Type here">
+                            <input type="text" class="py-1 px-3 rounded-1 form-control" id="search_client"
+                                name="search_client" placeholder="Type here">
                         </div>
                         <div class="col-4 col-md-3">
                             <label class="fw-semibold">Address</label>
-                            <input type="text" class="py-1 px-3 rounded-1 form-control" id="search_address" name="search_address" placeholder="Type here">
+                            <input type="text" class="py-1 px-3 rounded-1 form-control" id="search_address"
+                                name="search_address" placeholder="Type here">
                         </div>
-                        
+
                         <div class="col-4 col-md-3">
                             <label class="fw-semibold">Job Type</label>
                             <select class="form-control" id="search_job_type" name="search_job_type">
@@ -350,18 +357,19 @@
                         </div>
                         <div class="col-4 col-md-3">
                             <label class="fw-semibold">Date</label>
-                            <input type="date" class="py-1 px-3 rounded-1 form-control" id="search_date" name="search_date" 
-                                placeholder="Enter Customer Name">
+                            <input type="date" class="py-1 px-3 rounded-1 form-control" id="search_date"
+                                name="search_date" placeholder="Enter Customer Name">
                         </div>
                         <div class="col-4 col-md-3">
                             <label class="fw-semibold">Assigned (Rigger/Driver)</label>
-                            <select class="form-control" id="search_assigned_user" name="search_assigned_user" >
+                            <select class="form-control" id="search_assigned_user" name="search_assigned_user">
                                 <option value="">Choose</option>
                             </select>
                         </div>
                         <div class="col-4 col-md-3">
                             <label class="fw-semibold">Supplier Name</label>
-                            <input type="text" class="py-1 px-3 rounded-1 form-control" id="search_supplier" name="search_supplier" placeholder="Type here">
+                            <input type="text" class="py-1 px-3 rounded-1 form-control" id="search_supplier"
+                                name="search_supplier" placeholder="Type here">
                         </div>
                     </div>
                     <div class="d-flex justify-content-end gap-2">
@@ -391,9 +399,31 @@
                     </tr>
                 </thead>
                 <tbody id="jobsListing_body">
-                    
+
                 </tbody>
             </table>
+
+            <!-- Button trigger modal -->
+            
+
+            <!-- Modal -->
+            <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-body text-center">
+                            <img src="{{asset('assets/images/remove.png')}}" width="60" alt="">
+                            <h6 class="text-danger mt-3">
+                                Are you sure you want to delete a job
+                            </h6>
+                        </div>
+                        <div class="modal-footer d-flex align-items-center justify-content-center" style="border: none" >
+                            <button type="button" class="btn btn-secondary px-5" data-bs-dismiss="modal">No</button>
+                            <button type="button" class="btn btn-danger px-5">Yes</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -516,7 +546,8 @@
     </form>
 
 </div> -->
-<div id="addJob_modal" class="modal fade modal-lg" tabindex="-1" aria-labelledby="addEventModalLabel" aria-hidden="true">
+<div id="addJob_modal" class="modal fade modal-lg" tabindex="-1" aria-labelledby="addEventModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -555,17 +586,17 @@
                             <label class="pb-2 form-label" for="job_time">
                                 Job Time
                             </label>
-                            <input class="rounded-1 py-1 px-2 w-100 form-control" id="job_time" name="job_time" type="time"
-                                placeholder="Enter a Job Time. Here">
+                            <input class="rounded-1 py-1 px-2 w-100 form-control" id="job_time" name="job_time"
+                                type="time" placeholder="Enter a Job Time. Here">
                         </div>
 
                         <div class="col-12 col-md-6 d-flex flex-column">
                             <label class="pb-2 form-label" for="equip">
                                 Equipment To Be Used<span class="text-danger">*</span>
                             </label>
-                            <input class="form-control rounded-1 py-1 px-2 w-100" id="equipment_to_be_used" 
-                                name="equipment_to_be_used" type="text"
-                                placeholder="Enter Equipment To Be Used Here" maxlength="50">
+                            <input class="form-control rounded-1 py-1 px-2 w-100" id="equipment_to_be_used"
+                                name="equipment_to_be_used" type="text" placeholder="Enter Equipment To Be Used Here"
+                                maxlength="50">
                         </div>
 
                         <div class="col-12 col-md-6 d-flex flex-column">
@@ -591,8 +622,8 @@
                             <label class="form-label pb-2" for="date">
                                 Date<span class="text-danger">*</span>
                             </label>
-                            <input class="form-control rounded-1 py-1 px-2 w-100" id="date" type="date"
-                                name="date" placeholder="Enter Client Name Here">
+                            <input class="form-control rounded-1 py-1 px-2 w-100" id="date" type="date" name="date"
+                                placeholder="Enter Client Name Here">
                         </div>
 
                         <div class="col-12 col-md-6 d-flex flex-column">
@@ -605,18 +636,20 @@
 
 
                         <div class="col-12 col-md-6 d-flex flex-column">
-                            <label for="add_eventStart" class="pb-2 form-label">Start Time<span class="text-danger">*</span></label>
+                            <label for="add_eventStart" class="pb-2 form-label">Start Time<span
+                                    class="text-danger">*</span></label>
                             <input type="datetime-local" class="form-control rounded-1 py-1 px-2 w-100"
                                 id="add_eventStart" name="start_time" required>
                         </div>
 
                         <div class="col-12 col-md-6 d-flex flex-column">
-                            <label for="add_eventEnd" class="pb-2 form-label">End Time<span class="text-danger">*</span></label>
+                            <label for="add_eventEnd" class="pb-2 form-label">End Time<span
+                                    class="text-danger">*</span></label>
                             <input type="datetime-local" class="form-control rounded-1 py-1 px-2 w-100"
                                 id="add_eventEnd" name="end_time" required>
                         </div>
 
-                        
+
                         <div class="col-12 col-md-6 d-flex flex-column">
                             <label class="pb-2 form-label" for="supplier_name">
                                 Supplier Name<span class="text-danger">*</span>
@@ -638,8 +671,8 @@
                             <label class="pb-2 form-label" for="notes">
                                 Notes
                             </label>
-                            <textarea class="form-control" name="notes" id="add_notes" rows="5"
-                                name="notes" placeholder="Type Notes Here....."></textarea>
+                            <textarea class="form-control" name="notes" id="add_notes" rows="5" name="notes"
+                                placeholder="Type Notes Here....."></textarea>
                         </div>
                         <div class="mb-3 col-md-6 updatedInfo_div" style="display:none;">
                             <label class="form-label">Created By</label>
@@ -665,7 +698,7 @@
                         </div>
 
                         <div>
-                            
+
                             <div class="d-flex justify-content-center gap-2">
                                 <button type="button" id="closeJob_modal" class="py-1 px-5 add-btn rounded-1">
                                     Close

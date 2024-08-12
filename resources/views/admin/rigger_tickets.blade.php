@@ -322,6 +322,24 @@
                 </tbody>
             </table>
         </div>
+
+        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+            aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body text-center">
+                        <img src="{{asset('assets/images/remove.png')}}" width="60" alt="">
+                        <h6 class="text-danger mt-3">
+                            Are you sure you want to delete?
+                        </h6>
+                    </div>
+                    <div class="modal-footer d-flex align-items-center justify-content-center" style="border: none">
+                        <button type="button" class="btn btn-secondary px-5" data-bs-dismiss="modal">No</button>
+                        <button type="button" class="btn btn-danger px-5">Yes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 

@@ -142,7 +142,7 @@
     <div class="row align-items-center my-3 g-0 pe-2">
         <div class="col-6 col-md-3">
             <div class="counters">
-                <a class="d-flex gap-2 align-items-center"id="add_user_btn">
+                <a class="d-flex gap-2 align-items-center" id="add_user_btn">
                     <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 20 20">
                         <path fill="#C02825"
                             d="M11 9V5H9v4H5v2h4v4h2v-4h4V9zm-1 11a10 10 0 1 1 0-20a10 10 0 0 1 0 20" />
@@ -256,7 +256,7 @@
                                 <div class="col-4 col-md-3">
                                     <label class="fw-semibold">Phone Number</label>
                                     <input type="number" class="py-1 px-3 rounded-1 form-control" name="phone_number"
-                                            placeholder="Type here...">
+                                        placeholder="Type here...">
                                 </div>
                                 <div class="col-4 col-md-3">
                                     <label class="fw-semibold">Status</label>
@@ -268,8 +268,10 @@
                                 </div>
                             </div>
                             <div class="d-flex justify-content-end gap-2">
-                                <button type="button" class="mt-3 py-1 px-3 text-white rounded-1 clear_filter1">Clear Filter</button>
-                                <button type="button" class="mt-3 py-1 px-3 text-white rounded-1" id="search_admin_btn">Search</button>
+                                <button type="button" class="mt-3 py-1 px-3 text-white rounded-1 clear_filter1">Clear
+                                    Filter</button>
+                                <button type="button" class="mt-3 py-1 px-3 text-white rounded-1"
+                                    id="search_admin_btn">Search</button>
                             </div>
                         </form>
                     </div>
@@ -286,7 +288,7 @@
                             </tr>
                         </thead>
                         <tbody id="admins_listing_body">
-                            
+
                         </tbody>
                     </table>
                 </div>
@@ -347,8 +349,10 @@
                                 </div>
                             </div>
                             <div class="d-flex justify-content-end gap-2">
-                                <button type="button" class="mt-3 py-1 px-3 text-white rounded-1 clear_filter1">Clear Filter</button>
-                                <button type="button" class="mt-3 py-1 px-3 text-white rounded-1" id="search_manager_btn">Search</button>
+                                <button type="button" class="mt-3 py-1 px-3 text-white rounded-1 clear_filter1">Clear
+                                    Filter</button>
+                                <button type="button" class="mt-3 py-1 px-3 text-white rounded-1"
+                                    id="search_manager_btn">Search</button>
                             </div>
                         </form>
                     </div>
@@ -365,7 +369,7 @@
                             </tr>
                         </thead>
                         <tbody id="managers_listing_body">
-                            
+
                         </tbody>
                     </table>
                 </div>
@@ -394,7 +398,7 @@
 
                 <div class="collapse mb-4" id="filterSection3">
                     <div class="filter">
-                    <form id="user_filters_form">
+                        <form id="user_filters_form">
                             <div class="row gy-3">
                                 <div class="col-4 col-md-3">
                                     <label class="fw-semibold">User Number</label>
@@ -426,8 +430,10 @@
                                 </div>
                             </div>
                             <div class="d-flex justify-content-end gap-2">
-                                <button type="button" class="mt-3 py-1 px-3 text-white rounded-1 clear_filter1">Clear Filter</button>
-                                <button type="button" class="mt-3 py-1 px-3 text-white rounded-1" id="search_user_btn">Search</button>
+                                <button type="button" class="mt-3 py-1 px-3 text-white rounded-1 clear_filter1">Clear
+                                    Filter</button>
+                                <button type="button" class="mt-3 py-1 px-3 text-white rounded-1"
+                                    id="search_user_btn">Search</button>
                             </div>
                         </form>
                     </div>
@@ -444,7 +450,7 @@
                             </tr>
                         </thead>
                         <tbody id="users_listing_body">
-                            
+
                         </tbody>
                     </table>
                 </div>
@@ -454,6 +460,27 @@
 
 
     <!-- Modal -->
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body text-center">
+                    <img src="{{asset('assets/images/remove.png')}}" width="60" alt="">
+                    <h6 class="text-danger mt-3">
+                        Are you sure you want to delete?
+                    </h6>
+                </div>
+                <div class="modal-footer d-flex align-items-center justify-content-center" style="border: none">
+                    <button type="button" class="btn btn-secondary px-5" data-bs-dismiss="modal">No</button>
+                    <button type="button" class="btn btn-danger px-5">Yes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
     <div class="modal fade" id="addUser_model" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -471,7 +498,7 @@
                                 <label class="form-label fw-semibold" for="name">
                                     Name<span class="text-danger">*</span>
                                 </label>
-                                <input class="rounded-1 py-2 px-2 w-100 form-control" id="name" name="name" type="text" 
+                                <input class="rounded-1 py-2 px-2 w-100 form-control" id="name" name="name" type="text"
                                     placeholder="Type here..." maxlength="50">
                             </div>
 
@@ -479,11 +506,11 @@
                                 <label class="fw-semibold form-label" for="email">
                                     Email<span class="text-danger">*</span>
                                 </label>
-                                <input class="rounded-1 py-2 px-2 w-100 form-control" id="email" name="email" type="text"
-                                    placeholder="Type here..." maxlength="50">
+                                <input class="rounded-1 py-2 px-2 w-100 form-control" id="email" name="email"
+                                    type="text" placeholder="Type here..." maxlength="50">
                             </div>
 
-                            <div class="col-12 col-md-6 d-flex flex-column"  style="position:relative">
+                            <div class="col-12 col-md-6 d-flex flex-column" style="position:relative">
                                 <label class="fw-semibold form-label" for="password">
                                     Password<span class="text-danger">*</span>
                                 </label>
@@ -493,7 +520,7 @@
                                 <span style="font-size:9px;">Passowrd must contain one capital, small, numeric and one special character.</span>
                             </div>
 
-                            <div class="col-12 col-md-6 d-flex flex-column"  style="position:relative">
+                            <div class="col-12 col-md-6 d-flex flex-column" style="position:relative">
                                 <label class="fw-semibold form-label" for="password_confirmation">
                                     Confirm Password<span class="text-danger">*</span>
                                 </label>
@@ -533,7 +560,8 @@
                     </form>
                 </div>
                 <div class="modal-footer d-flex justify-content-center">
-                    <button data-bs-dismiss="modal" type="button" class="add-btn px-4 py-1 rounded-1" id="add_saveEvent">Close</button>
+                    <button data-bs-dismiss="modal" type="button" class="add-btn px-4 py-1 rounded-1"
+                        id="add_saveEvent">Close</button>
                     <button type="button" class="add-btn px-4 py-1 rounded-1" id="addUser_submit">Save</button>
                 </div>
             </div>
@@ -546,5 +574,5 @@
 
 @push('scripts')
 
-<script src="{{ asset('assets_admin/customjs/script_users.js') }}"></script>
+    <script src="{{ asset('assets_admin/customjs/script_users.js') }}"></script>
 @endpush
