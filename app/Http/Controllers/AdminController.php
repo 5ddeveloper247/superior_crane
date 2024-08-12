@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
+use setasign\Fpdi\Fpdi;
+
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Roles;
@@ -1224,25 +1226,38 @@ class AdminController extends Controller
         $ticket = RiggerTicket::find($id);
         if($ticket){
             $fields = [
-                ['text' => $ticket->id, 'x' => 228, 'y' => 26.8],
-                ['text' => $ticket->specifications_remarks, 'x' => 16, 'y' => 75.8],
-                ['text' => $ticket->specifications_remarks, 'x' => 144, 'y' => 75.8],
-                ['text' => $ticket->customer_name, 'x' => 38, 'y' => 85.1],
-                ['text' => $ticket->location, 'x' => 36.5, 'y' => 91.5],
-                ['text' => $ticket->date, 'x' => 28, 'y' => 98.2],
-                ['text' => $ticket->start_job, 'x' => 40, 'y' => 104.5],
-                ['text' => $ticket->finish_job, 'x' => 42, 'y' => 111],
-                ['text' => $ticket->crane_number, 'x' => 174, 'y' => 85.1],
-                ['text' => $ticket->boom_length, 'x' => 174, 'y' => 91.5],
-                ['text' => $ticket->other_equipment, 'x' => 181.5, 'y' => 98.2],
-                ['text' => $ticket->crane_number, 'x' => 170, 'y' => 104.5],
-                ['text' => $ticket->crane_time, 'x' => 174, 'y' => 111],
-                ['text' => $ticket->notes, 'x' => 16, 'y' => 132],
+                ['text' => $ticket->id, 'x' => 245, 'y' => 6.5],
+                ['text' => $ticket->specifications_remarks, 'x' => 128, 'y' => 58, 'width' => 138, 'height' => 6],
+                
+                ['text' => $ticket->customer_name, 'x' => 14, 'y' => 94],
+                ['text' => $ticket->location, 'x' => 99, 'y' => 94],
+                ['text' => $ticket->po_number, 'x' => 226, 'y' => 94],
+                ['text' => date('d-M-Y', strtotime($ticket->date)), 'x' => 14, 'y' => 106],
+                ['text' => $ticket->leave_yard, 'x' => 42, 'y' => 106],
+                ['text' => $ticket->start_job, 'x' => 70, 'y' => 106],
+                ['text' => $ticket->finish_job, 'x' => 99, 'y' => 106],
+                ['text' => $ticket->arrival_yard, 'x' => 127, 'y' => 106],
+                ['text' => $ticket->lunch, 'x' => 153.5, 'y' => 106, 'font' => 8],
+                ['text' => $ticket->travel_time, 'x' => 183, 'y' => 106],
+                ['text' => $ticket->crane_time, 'x' => 211, 'y' => 106],
+                ['text' => $ticket->total_hours, 'x' => 239, 'y' => 106],
+
+                ['text' => $ticket->crane_number, 'x' => 14, 'y' => 117.5],
+                ['text' => $ticket->rating, 'x' => 42, 'y' => 117.5],
+                ['text' => $ticket->boom_length, 'x' => 70, 'y' => 117.5],
+                ['text' => $ticket->operator, 'x' => 98, 'y' => 117.5],
+                ['text' => $ticket->other_equipment, 'x' => 183, 'y' => 117.5],
+                ['text' => $ticket->notes, 'x' => 15, 'y' => 134, 'width' => 250, 'height' => 6],
+
+                ['text' => $ticket->signature, 'x' => 40, 'y' => 187],
             ];
     
-            $this->editPdf($filepath, $output_file_path, $fields);
+            $outputFile = $this->editPdf($filepath, $output_file_path, $fields);
+            $publicPath = str_replace(public_path(), '', $outputFile); // Remove the public path part
+            $publicUrl = url($publicPath); // Generate a full URL to the PDF file
             return response()->json([
                 'success' => true,
+                'outputFile' => $publicPath,
                 'message' => 'Sent to Admin successfully'
             ], 200);
             
@@ -1267,19 +1282,29 @@ class AdminController extends Controller
             $fpdi->AddPage($size['orientation'], [$size['width'], $size['height']]);
             $fpdi->useTemplate($template);
 
-            $fpdi->SetFont('Helvetica', '', 12);
+            $fpdi->SetFont('Helvetica', '', 10);
             foreach ($fields as $field) {
                 $fpdi->SetXY($field['x'], $field['y']);
-                $fpdi->Write(8, $field['text']);
+                // set font custom
+                if(isset($field['font'])){
+                    $fpdi->SetFont('Helvetica', '', $field['font']);
+                }
+                // set cell dimensions
+                if (isset($field['width']) && isset($field['height'])) {
+                    // Use MultiCell to prevent text from overflowing
+                    $fpdi->MultiCell($field['width'], $field['height'], $field['text']);
+                } else {
+                    // Use Write for single-line text fields
+                    $fpdi->Write(8, $field['text']);
+                }
             }
         }
 
-        
         $fpdi->Output($output_file, 'F');
-        sendMailAttachment('Admin Team', 'hamza@5dsolutions.ae', 'Superior Crane', 'Rigger Ticket Generated', 'Rigger Ticket Generated',$output_file); // send_to_name, send_to_email, email_from_name, subject, body, attachment
+        // sendMailAttachment('Admin Team', 'hamza@5dsolutions.ae', 'Superior Crane', 'Rigger Ticket Generated', 'Rigger Ticket Generated', $output_file); // send_to_name, send_to_email, email_from_name, subject, body, attachment
 
-        
-
+        return $output_file;
     }
+
     
 }

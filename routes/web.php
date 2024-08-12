@@ -76,9 +76,9 @@ Route::group(['prefix' => '/'], function () {
         
         
 
-        Route::get('/dashboard', function () {
+        Route::get('/emailRiggerPdf', function () {
             $pageTitle = 'Dashboard';
-            return view('emailRiggerPdf', compact('pageTitle'));
+            return view('admin/emailRiggerPdf', compact('pageTitle'));
         });
         
         Route::post('/sendtomailRigger', [AdminController::class, 'sendtomailRigger'])->name('sendtomailRigger');

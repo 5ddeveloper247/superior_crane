@@ -124,55 +124,7 @@ class RigerTicketController extends Controller
                 }
             }
 
-            // $jobDetail = JobModel::where('id', $job->id)->first();
-            // $user = User::where('id', $jobDetail->rigger_assigned)->first();// assigned user details
-            // $createdBy = User::where('id', $jobDetail->created_by)->first();
-            
-            // if($jobDetail->job_type == '1'){
-            //     $job_type = 'Logistic Job(SCCI)';  
-            // }else if($jobDetail->job_type == '2'){
-            //     $job_type = 'Crane Job';  
-            // }else{
-            //     $job_type = 'Other Job';  
-            // }
-
-            // if($jobDetail->status == '0'){
-            //     $status_txt = 'Problem';
-            // }else if($jobDetail->status == '1'){
-            //     $status_txt = 'Good To Go';
-            // }else if($jobDetail->status == '2'){
-            //     $status_txt = 'On-Hold';
-            // }
-            
-            // $mailData = [];
-            
-            // $mailData['user'] = $user->name;
-            // $mailData['username'] = $user->name;
-            // $mailData['job_number'] = 'J-'.$jobDetail->id;
-            // $mailData['job_type'] = $job_type;
-            // $mailData['assigned_to'] = $user->name;
-            // $mailData['client_name'] = $jobDetail->client_name;
-            // $mailData['start_time'] = $jobDetail->start_time;
-            // $mailData['end_time'] = $jobDetail->end_time;
-            // $mailData['status'] = $status_txt;
-
-            // $mailData['text1'] = "New job has been assigned by " . $createdBy->name . ". Job details are as under.";
-            // $mailData['text2'] = "For more details please contact the Manager/Admin.";
-
-            // $body = view('emails.job_template', $mailData);
-            // $userEmailsSend = 'hamza@5dsolutions.ae';//$user->email;
-            // sendMail($user->name, $userEmailsSend, 'Superior Crane', 'Job Creation', $body);
-
-            // $allAdmins = User::whereIn('role_id', ['0','1'])->where('status', '1')->get();
-
-            // if($allAdmins){
-            //     foreach($allAdmins as $value){
-            //         $mailData['user'] = 'Admin';
-            //         $body = view('emails.job_template', $mailData);
-            //         $userEmailsSend = 'hamza@5dsolutions.ae';//$value->email;
-            //         sendMail('Admin', $userEmailsSend, 'Superior Crane', 'Job Creation', $body);
-            //     }
-            // }
+            $attachment_pdf = $this->makeRiggerPDF($ticket->id);
     
             return response()->json([
                 'success' => true,
@@ -396,54 +348,46 @@ class RigerTicketController extends Controller
         }
     }
 
-    public function sendtomail(Request $request)
+    public function makeRiggerPDF($ticket_id='')
     {
 
-        $validator = Validator::make($request->all(), [
-            'ticket_id' => 'required|numeric',
-        ]);
-        // Check if validation fails
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'errors' => $validator->errors(),
-            ], 422);
-        }
-
-        $id = $request->ticket_id;
+        $id = $ticket_id;
         $filepath = public_path('assets/pdf/pdf_samples/rigger_ticket.pdf');
         $output_file_path = public_path('assets/pdf/rigger_ticket_pdfs/ticket_' .$id. '.pdf'); 
         $ticket = RiggerTicket::find($id);
         if($ticket){
             $fields = [
-                ['text' => $ticket->id, 'x' => 228, 'y' => 26.8],
-                ['text' => $ticket->specifications_remarks, 'x' => 16, 'y' => 75.8],
-                ['text' => $ticket->specifications_remarks, 'x' => 144, 'y' => 75.8],
-                ['text' => $ticket->customer_name, 'x' => 38, 'y' => 85.1],
-                ['text' => $ticket->location, 'x' => 36.5, 'y' => 91.5],
-                ['text' => $ticket->date, 'x' => 28, 'y' => 98.2],
-                ['text' => $ticket->start_job, 'x' => 40, 'y' => 104.5],
-                ['text' => $ticket->finish_job, 'x' => 42, 'y' => 111],
-                ['text' => $ticket->crane_number, 'x' => 174, 'y' => 85.1],
-                ['text' => $ticket->boom_length, 'x' => 174, 'y' => 91.5],
-                ['text' => $ticket->other_equipment, 'x' => 181.5, 'y' => 98.2],
-                ['text' => $ticket->crane_number, 'x' => 170, 'y' => 104.5],
-                ['text' => $ticket->crane_time, 'x' => 174, 'y' => 111],
-                ['text' => $ticket->notes, 'x' => 16, 'y' => 132],
+                ['text' => $ticket->id, 'x' => 245, 'y' => 6.5],
+                ['text' => $ticket->specifications_remarks, 'x' => 128, 'y' => 58, 'width' => 138, 'height' => 6],
+                
+                ['text' => $ticket->customer_name, 'x' => 14, 'y' => 94],
+                ['text' => $ticket->location, 'x' => 99, 'y' => 94],
+                ['text' => $ticket->po_number, 'x' => 226, 'y' => 94],
+                ['text' => date('d-M-Y', strtotime($ticket->date)), 'x' => 14, 'y' => 106],
+                ['text' => $ticket->leave_yard, 'x' => 42, 'y' => 106],
+                ['text' => $ticket->start_job, 'x' => 70, 'y' => 106],
+                ['text' => $ticket->finish_job, 'x' => 99, 'y' => 106],
+                ['text' => $ticket->arrival_yard, 'x' => 127, 'y' => 106],
+                ['text' => $ticket->lunch, 'x' => 153.5, 'y' => 106, 'font' => 8],
+                ['text' => $ticket->travel_time, 'x' => 183, 'y' => 106],
+                ['text' => $ticket->crane_time, 'x' => 211, 'y' => 106],
+                ['text' => $ticket->total_hours, 'x' => 239, 'y' => 106],
+
+                ['text' => $ticket->crane_number, 'x' => 14, 'y' => 117.5],
+                ['text' => $ticket->rating, 'x' => 42, 'y' => 117.5],
+                ['text' => $ticket->boom_length, 'x' => 70, 'y' => 117.5],
+                ['text' => $ticket->operator, 'x' => 98, 'y' => 117.5],
+                ['text' => $ticket->other_equipment, 'x' => 183, 'y' => 117.5],
+                ['text' => $ticket->notes, 'x' => 15, 'y' => 134, 'width' => 250, 'height' => 6],
+
+                ['text' => $ticket->signature, 'x' => 40, 'y' => 187],
             ];
     
-            $this->editPdf($filepath, $output_file_path, $fields);
-            return response()->json([
-                'success' => true,
-                'message' => 'Sent to Admin successfully'
-            ], 200);
+            $outputFile = $this->editPdf($filepath, $output_file_path, $fields);
+            return $outputFile;
             
-        }
-        else{
-            return response()->json([
-                'success' => false,
-                'message' => 'Rigger Ticket NOt Found',
-            ], 401);
+        }else{
+            return false;
         }
         
     }
@@ -459,17 +403,52 @@ class RigerTicketController extends Controller
             $fpdi->AddPage($size['orientation'], [$size['width'], $size['height']]);
             $fpdi->useTemplate($template);
 
-            $fpdi->SetFont('Helvetica', '', 12);
+            $fpdi->SetFont('Helvetica', '', 10);
             foreach ($fields as $field) {
                 $fpdi->SetXY($field['x'], $field['y']);
-                $fpdi->Write(8, $field['text']);
+                // set font custom
+                if(isset($field['font'])){
+                    $fpdi->SetFont('Helvetica', '', $field['font']);
+                }
+                // set cell dimensions
+                if (isset($field['width']) && isset($field['height'])) {
+                    // Use MultiCell to prevent text from overflowing
+                    $fpdi->MultiCell($field['width'], $field['height'], $field['text']);
+                } else {
+                    // Use Write for single-line text fields
+                    $fpdi->Write(8, $field['text']);
+                }
             }
         }
 
         $fpdi->Output($output_file, 'F');
-        sendMailAttachment('Admin Team', 'hamza@5dsolutions.ae', 'Superior Crane', 'Rigger Ticket Generated', 'Rigger Ticket Generated',$output_file); // send_to_name, send_to_email, email_from_name, subject, body, attachment
+        // sendMailAttachment('Admin Team', 'hamza@5dsolutions.ae', 'Superior Crane', 'Rigger Ticket Generated', 'Rigger Ticket Generated', $output_file); // send_to_name, send_to_email, email_from_name, subject, body, attachment
+
+        return $output_file;
+    }
+    // public function editPdf($file, $output_file, $fields)
+    // {
+    //     $fpdi = new Fpdi();
+    //     $count = $fpdi->setSourceFile($file);
+
+    //     for ($i = 1; $i <= $count; $i++) {
+    //         $template = $fpdi->importPage($i);
+    //         $size = $fpdi->getTemplateSize($template);
+    //         $fpdi->AddPage($size['orientation'], [$size['width'], $size['height']]);
+    //         $fpdi->useTemplate($template);
+
+    //         $fpdi->SetFont('Helvetica', '', 12);
+    //         foreach ($fields as $field) {
+    //             $fpdi->SetXY($field['x'], $field['y']);
+    //             $fpdi->Write(8, $field['text']);
+    //         }
+    //     }
+
+        
+    //     $fpdi->Output($output_file, 'F');
+    //     sendMailAttachment('Admin Team', 'hamza@5dsolutions.ae', 'Superior Crane', 'Rigger Ticket Generated', 'Rigger Ticket Generated',$output_file); // send_to_name, send_to_email, email_from_name, subject, body, attachment
 
         
 
-    }
+    // }
 }

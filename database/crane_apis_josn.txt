@@ -318,6 +318,7 @@ url: http://127.0.0.1:8000/api/sc/v1/riggerticket/sendtomail
 Add Pay Duty Form API
 
 url: http://127.0.0.1:8000/api/sc/v1/payduty/add
+live url: https://beta.scserver.org/api/sc/v1/payduty/add
 
 // images is optional
 {
@@ -350,6 +351,7 @@ url: http://127.0.0.1:8000/api/sc/v1/payduty/add
 Update Pay Duty Form API
 
 url: http://127.0.0.1:8000/api/sc/v1/payduty/update
+live url: https://beta.scserver.org/api/sc/v1/payduty/update
 
 // images is optional
 {
@@ -382,6 +384,7 @@ url: http://127.0.0.1:8000/api/sc/v1/payduty/update
 Pay Duty Listing API
 
 url: http://127.0.0.1:8000/api/sc/v1/payduty/pay_duty_list
+live url: https://beta.scserver.org/api/sc/v1/payduty/pay_duty_list
 
 {
     "user_id":"1"
@@ -390,6 +393,7 @@ url: http://127.0.0.1:8000/api/sc/v1/payduty/pay_duty_list
 Pay Duty Detail API
 
 url: http://127.0.0.1:8000/api/sc/v1/payduty/pay_duty_detail
+live url: https://beta.scserver.org/api/sc/v1/payduty/pay_duty_detail
 
 {
     "pay_duty_id":"1"
