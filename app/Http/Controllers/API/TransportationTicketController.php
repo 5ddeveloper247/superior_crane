@@ -4,11 +4,14 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\User;
+use App\Models\JobModel;
 use App\Models\TransportationTicketModel;
 use App\Models\TransportationTicketImages;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use setasign\Fpdi\Fpdi;
 
 class TransportationTicketController extends Controller
 {
@@ -126,32 +129,6 @@ class TransportationTicketController extends Controller
                 $record->save();
             }
 
-            // $req_file = 'images';
-            // $path = '/uploads/transportation_tickets_images/' . $record->id .'/images';
-
-            // if ($request->hasFile($req_file)) {
-
-            //     if (!File::isDirectory(public_path($path))) {
-            //         File::makeDirectory(public_path($path), 0777, true);
-            //     }
-                
-            //     $uploadedFiles = $request->file($req_file);
-
-            //     foreach ($uploadedFiles as $file) {
-            //         $file_extension = $file->getClientOriginalExtension();
-            //         $date_append = Str::random(32);
-            //         $file->move(public_path($path), $date_append . '.' . $file_extension);
-    
-            //         $savedFilePaths = '/public' . $path . '/' . $date_append . '.' . $file_extension;
-
-            //         $TransportationTicketImages = new TransportationTicketImages();
-            //         $TransportationTicketImages->ticket_id = $record->id;
-            //         $TransportationTicketImages->file_name = $file->getClientOriginalName();
-            //         $TransportationTicketImages->path = $savedFilePaths;
-            //         $TransportationTicketImages->save();
-            //     }
-            // }
-
             $images = $request->images;
             if(count($images) > 0){
                 
@@ -179,6 +156,8 @@ class TransportationTicketController extends Controller
                     $TransportationTicketImages->save();
                 }
             }
+
+            $this->sendEmailTransporterTicket($record->id);
 
             return response()->json([
                 'success' => true,
@@ -321,42 +300,6 @@ class TransportationTicketController extends Controller
                     $record->save();
                 }
 
-            //     $req_file = 'images';
-            //     $path = '/uploads/transportation_tickets_images/' . $record->id .'/images';
-
-            //     if ($request->hasFile($req_file)) {
-
-            //         $previous_images = TransportationTicketImages::where('ticket_id', $record->id)->get();
-            //         if(count($previous_images) > 0){
-            //             foreach($previous_images as $img){
-            //                 $del_path = str_replace(url('/public/'), '', $img->path);
-            //                 deleteImage($del_path);
-            //                 TransportationTicketImages::where('id', $img->id)->delete();
-            //             }
-            //         }
-
-            //         if (!File::isDirectory(public_path($path))) {
-            //             File::makeDirectory(public_path($path), 0777, true);
-            //         }
-                    
-            //         $uploadedFiles = $request->file($req_file);
-
-            //         foreach ($uploadedFiles as $file) {
-            //             $file_extension = $file->getClientOriginalExtension();
-            //             $date_append = Str::random(32);
-            //             $file->move(public_path($path), $date_append . '.' . $file_extension);
-        
-            //             $savedFilePaths = '/public' . $path . '/' . $date_append . '.' . $file_extension;
-
-            //             $TransportationTicketImages = new TransportationTicketImages();
-            //             $TransportationTicketImages->ticket_id = $record->id;
-            //             $TransportationTicketImages->file_name = $file->getClientOriginalName();
-            //             $TransportationTicketImages->path = $savedFilePaths;
-            //             $TransportationTicketImages->save();
-            //         }
-            //     }
-            // } 
-
                 $images = $request->images;
                 if(count($images) > 0){
                     
@@ -393,9 +336,10 @@ class TransportationTicketController extends Controller
                         $TransportationTicketImages->save();
                     }
                 }
+
+                $this->sendEmailTransporterTicket($record->id);
             }
             
-
             return response()->json([
                 'success' => true,
                 'message' => 'Transportation Ticket updated successfully'
@@ -485,5 +429,171 @@ class TransportationTicketController extends Controller
                 'message' => "Oops! Network Error",
             ], 500);
         }
+    }
+
+    public function sendEmailTransporterTicket($ticket_id){
+
+        $attachment_pdf = $this->makeTicketPDF($ticket_id);
+
+        if($attachment_pdf){
+            
+            $ticketDetail = TransportationTicketModel::where('id', $ticket_id)->first();
+
+            if($ticketDetail->status == '3'){       // if status is (3) completed  then send email
+            
+                $transporterDetail = User::where('id', $ticketDetail->created_by)->first(); // created or rigger details
+
+                $jobDetail = JobModel::where('id', $ticketDetail->job_id)->first(); // lnked job details
+            
+                if($jobDetail){
+                    
+                    $managerDetail = User::where('id', $jobDetail->created_by)->first(); // manager/createby details
+
+                    if($ticketDetail->status == '1'){
+                        $status_txt = 'Draft';
+                    }else if($ticketDetail->status == '2'){
+                        $status_txt = 'Issued';
+                    }else if($ticketDetail->status == '3'){
+                        $status_txt = 'Completed';
+                    }
+                    
+                    $mailData = [];
+                    
+                    $mailData['user'] = $managerDetail->name;
+                    $mailData['transporter_name'] = $transporterDetail->name;
+                    $mailData['job_number'] = 'J-'.$ticketDetail->job_id;
+                    $mailData['ticket_number'] = 'T-'.$ticketDetail->id;
+                    $mailData['pickup_address'] = $ticketDetail->pickup_address;
+                    $mailData['delivery_address'] = $ticketDetail->delivery_address;
+
+                    $mailData['po_number'] = $ticketDetail->po_number;
+                    $mailData['ticket_date'] = date('d-M-Y', strtotime($ticketDetail->created_at));
+                    $mailData['time_in'] = date('H:i A', strtotime($ticketDetail->time_in));
+                    $mailData['time_out'] = date('H:i A', strtotime($ticketDetail->time_out));
+                    $mailData['status'] = $status_txt;
+    
+                    $mailData['text1'] = "New Transporter Ticket has been created. Ticket details are as under.";
+                    $mailData['text2'] = "For more details please contact the Manager/Admin.";
+    
+                    $body = view('emails.transporter_ticket_template', $mailData);
+                    $userEmailsSend = 'hamza@5dsolutions.ae';//$managerDetail->email;
+                    sendMailAttachment($managerDetail->name, $userEmailsSend, 'Superior Crane', 'Transporter Ticket Creation', $body, $attachment_pdf);
+
+                    // push notification entry
+                    $Notifications = new Notifications();
+                    $Notifications->module_code = 'TRANSPORTER TICKET SUBMITTED';
+                    $Notifications->from_user_id = $transporterDetail->id;
+                    $Notifications->to_user_id = '1';   // for super admin
+                    $Notifications->subject = 'Transporter Ticket Submitted';
+                    $Notifications->message = 'Transporter Ticket T-'.$ticketDetail->id.' on '.date('d-M-Y', strtotime($ticketDetail->created_at)).' has been submitted by '.$transporterDetail->name.'.';
+                    $Notifications->message_html = $body;
+                    $Notifications->read_flag = '0';
+                    $Notifications->created_by = $transporterDetail->id;
+                    $Notifications->created_at = date('Y-m-d H:i:s');
+                    $Notifications->save();
+                    
+                    $allAdmins = User::whereIn('role_id', ['0','1'])->where('status', '1')->get();
+
+                    if($allAdmins){
+                        foreach($allAdmins as $value){
+                            $mailData['user'] = $value->name;
+                            $body = view('emails.transporter_ticket_template', $mailData);
+                            $userEmailsSend = 'hamza@5dsolutions.ae';//$value->email;
+                            sendMailAttachment($value->name, $userEmailsSend, 'Superior Crane', 'Transporter Ticket Creation', $body, $attachment_pdf);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    public function makeTicketPDF($ticket_id='')
+    {
+
+        $id = $ticket_id;
+        $filepath = public_path('assets/pdf/pdf_samples/transporter_ticket.pdf');
+        $output_file_path = public_path('assets/pdf/transporter_ticket_pdfs/ticket_' .$id. '.pdf'); 
+        $ticket = TransportationTicketModel::find($id);
+        if($ticket){
+            $fields = [
+                ['text' => 'T-'.$ticket->id, 'x' => 245, 'y' => 13],
+                ['text' => $ticket->pickup_address, 'x' => 58, 'y' => 33, 'width' => 210, 'height' => 6],
+                ['text' => $ticket->delivery_address, 'x' => 58, 'y' => 41, 'width' => 210, 'height' => 6],
+                // ['text' => $ticket->delivery_address, 'x' => 58, 'y' => 49, 'width' => 210, 'height' => 6],
+                
+                ['text' => $ticket->job_number, 'x' => 58, 'y' => 65],
+                ['text' => $ticket->job_special_instructions, 'x' => 105, 'y' => 66, 'width' => 170, 'height' => 6],
+
+                ['text' => $ticket->po_number, 'x' => 58, 'y' => 71],
+                ['text' => $ticket->po_special_instructions, 'x' => 105, 'y' => 72, 'width' => 170, 'height' => 6],
+
+                ['text' => $ticket->site_contact_name, 'x' => 58, 'y' => 76],
+                ['text' => $ticket->site_contact_name_special_instructions, 'x' => 105, 'y' => 77, 'width' => 170, 'height' => 6],
+
+                ['text' => $ticket->site_contact_number, 'x' => 58, 'y' => 81],
+                ['text' => $ticket->site_contact_number_special_instructions, 'x' => 105, 'y' => 82, 'width' => 170, 'height' => 6],
+
+
+                ['text' => $ticket->shipper_name, 'x' => 58, 'y' => 96.5],
+                ['text' => $ticket->shipper_signature, 'x' => 103, 'y' => 96.5],
+                ['text' => date('d-M-Y', strtotime($ticket->shipper_signature_date)), 'x' => 164, 'y' => 96.5],
+                ['text' => date('H:i', strtotime($ticket->shipper_time_in)), 'x' => 210, 'y' => 96.5],
+                ['text' => $ticket->shipper_time_out, 'x' => 241, 'y' => 96.5],
+
+                ['text' => $ticket->pickup_driver_name, 'x' => 58, 'y' => 103],
+                ['text' => $ticket->pickup_driver_signature, 'x' => 103, 'y' => 103],
+                ['text' => date('d-M-Y', strtotime($ticket->pickup_driver_signature_date)), 'x' => 164, 'y' => 103],
+                ['text' => date('H:i', strtotime($ticket->pickup_driver_time_in)), 'x' => 210, 'y' => 103],
+                ['text' => $ticket->pickup_driver_time_out, 'x' => 241, 'y' => 103],
+
+                ['text' => $ticket->customer_name, 'x' => 58, 'y' => 110],
+                ['text' => $ticket->customer_signature, 'x' => 103, 'y' => 110],
+                ['text' => date('d-M-Y', strtotime($ticket->customer_signature_date)), 'x' => 164, 'y' => 110],
+                ['text' => date('H:i', strtotime($ticket->customer_time_in)), 'x' => 210, 'y' => 110],
+                ['text' => $ticket->customer_time_out, 'x' => 241, 'y' => 110],
+                
+            ];
+    
+            $outputFile = $this->editPdf($filepath, $output_file_path, $fields);
+            
+            return $outputFile;
+        }else{
+            return false;
+        }
+        
+    }
+
+    public function editPdf($file, $output_file, $fields)
+    {
+        $fpdi = new Fpdi();
+        $count = $fpdi->setSourceFile($file);
+
+        for ($i = 1; $i <= $count; $i++) {
+            $template = $fpdi->importPage($i);
+            $size = $fpdi->getTemplateSize($template);
+            $fpdi->AddPage($size['orientation'], [$size['width'], $size['height']]);
+            $fpdi->useTemplate($template);
+
+            $fpdi->SetFont('Helvetica', '', 10);
+            foreach ($fields as $field) {
+                $fpdi->SetXY($field['x'], $field['y']);
+                // set font custom
+                if(isset($field['font'])){
+                    $fpdi->SetFont('Helvetica', '', $field['font']);
+                }
+                // set cell dimensions
+                if (isset($field['width']) && isset($field['height'])) {
+                    // Use MultiCell to prevent text from overflowing
+                    $fpdi->MultiCell($field['width'], $field['height'], $field['text']);
+                } else {
+                    // Use Write for single-line text fields
+                    $fpdi->Write(8, $field['text']);
+                }
+            }
+        }
+
+        $fpdi->Output($output_file, 'F');
+        // sendMailAttachment('Admin Team', 'hamza@5dsolutions.ae', 'Superior Crane', 'Rigger Ticket Generated', 'Rigger Ticket Generated', $output_file); // send_to_name, send_to_email, email_from_name, subject, body, attachment
+
+        return $output_file;
     }
 }

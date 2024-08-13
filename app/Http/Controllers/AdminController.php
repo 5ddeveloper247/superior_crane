@@ -27,11 +27,7 @@ use App\Models\TransportationTicketImages;
 use App\Models\PayDutyModel;
 use App\Models\PayDutytImages;
 use App\Models\InventoryModel;
-
-
-
-
-
+use App\Models\Notifications;
 
 class AdminController extends Controller
 {
@@ -643,6 +639,20 @@ class AdminController extends Controller
                     sendMail($value->name, $userEmailsSend, 'Superior Crane', 'Job Creation', $body);
                 }
             }
+
+            // push notification entry
+            $Notifications = new Notifications();
+            $Notifications->module_code = 'JOB CREATION';
+            $Notifications->from_user_id = $createdBy->id;
+            $Notifications->to_user_id = '1';
+            $Notifications->subject = 'Assigned a new '. $job_type;
+            $Notifications->message = 'Job J-'.$jobDetail->id.' on '.date('d-M-Y', strtotime($jobDetail->date)).' at '.date('H:i A', strtotime($jobDetail->job_time)).' has been assigned to '.  $user->name .'.';
+            $Notifications->message_html = $body;
+            $Notifications->read_flag = '0';
+            $Notifications->created_by = $createdBy->id;
+            $Notifications->created_at = date('Y-m-d H:i:s');
+            $Notifications->save();
+
         }else{
             if($previousStatus != $currentStatus){
                 $jobDetail = JobModel::where('id', $job->id)->first();
@@ -1216,40 +1226,137 @@ class AdminController extends Controller
 
 
 
-    public function sendtomailRigger(Request $request)
+    // public function sendtomailRigger(Request $request)
+    // {
+
+
+    //     $id = '14';
+    //     $filepath = public_path('assets/pdf/pdf_samples/rigger_ticket.pdf');
+    //     $output_file_path = public_path('assets/pdf/rigger_ticket_pdfs/ticket_' .$id. '.pdf'); 
+    //     $ticket = RiggerTicket::find($id);
+    //     if($ticket){
+    //         $fields = [
+    //             ['text' => $ticket->id, 'x' => 245, 'y' => 6.5],
+    //             ['text' => $ticket->specifications_remarks, 'x' => 128, 'y' => 58, 'width' => 138, 'height' => 6],
+                
+    //             ['text' => $ticket->customer_name, 'x' => 14, 'y' => 94],
+    //             ['text' => $ticket->location, 'x' => 99, 'y' => 94],
+    //             ['text' => $ticket->po_number, 'x' => 226, 'y' => 94],
+    //             ['text' => date('d-M-Y', strtotime($ticket->date)), 'x' => 14, 'y' => 106],
+    //             ['text' => $ticket->leave_yard, 'x' => 42, 'y' => 106],
+    //             ['text' => $ticket->start_job, 'x' => 70, 'y' => 106],
+    //             ['text' => $ticket->finish_job, 'x' => 99, 'y' => 106],
+    //             ['text' => $ticket->arrival_yard, 'x' => 127, 'y' => 106],
+    //             ['text' => $ticket->lunch, 'x' => 153.5, 'y' => 106, 'font' => 8],
+    //             ['text' => $ticket->travel_time, 'x' => 183, 'y' => 106],
+    //             ['text' => $ticket->crane_time, 'x' => 211, 'y' => 106],
+    //             ['text' => $ticket->total_hours, 'x' => 239, 'y' => 106],
+
+    //             ['text' => $ticket->crane_number, 'x' => 14, 'y' => 117.5],
+    //             ['text' => $ticket->rating, 'x' => 42, 'y' => 117.5],
+    //             ['text' => $ticket->boom_length, 'x' => 70, 'y' => 117.5],
+    //             ['text' => $ticket->operator, 'x' => 98, 'y' => 117.5],
+    //             ['text' => $ticket->other_equipment, 'x' => 183, 'y' => 117.5],
+    //             ['text' => $ticket->notes, 'x' => 15, 'y' => 134, 'width' => 250, 'height' => 6],
+
+    //             ['text' => $ticket->signature, 'x' => 40, 'y' => 187],
+    //         ];
+    
+    //         $outputFile = $this->editPdf($filepath, $output_file_path, $fields);
+    //         $publicPath = str_replace(public_path(), '', $outputFile); // Remove the public path part
+    //         $publicUrl = url($publicPath); // Generate a full URL to the PDF file
+    //         return response()->json([
+    //             'success' => true,
+    //             'outputFile' => $publicPath,
+    //             'message' => 'Sent to Admin successfully'
+    //         ], 200);
+    //     }else{
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => 'Rigger Ticket NOt Found',
+    //         ], 401);
+    //     }
+    // }
+
+    // public function editPdf($file, $output_file, $fields)
+    // {
+    //     $fpdi = new Fpdi();
+    //     $count = $fpdi->setSourceFile($file);
+
+    //     for ($i = 1; $i <= $count; $i++) {
+    //         $template = $fpdi->importPage($i);
+    //         $size = $fpdi->getTemplateSize($template);
+    //         $fpdi->AddPage($size['orientation'], [$size['width'], $size['height']]);
+    //         $fpdi->useTemplate($template);
+
+    //         $fpdi->SetFont('Helvetica', '', 10);
+    //         foreach ($fields as $field) {
+    //             $fpdi->SetXY($field['x'], $field['y']);
+    //             // set font custom
+    //             if(isset($field['font'])){
+    //                 $fpdi->SetFont('Helvetica', '', $field['font']);
+    //             }
+    //             // set cell dimensions
+    //             if (isset($field['width']) && isset($field['height'])) {
+    //                 // Use MultiCell to prevent text from overflowing
+    //                 $fpdi->MultiCell($field['width'], $field['height'], $field['text']);
+    //             } else {
+    //                 // Use Write for single-line text fields
+    //                 $fpdi->Write(8, $field['text']);
+    //             }
+    //         }
+    //     }
+    //     $fpdi->Output($output_file, 'F');
+    //     // sendMailAttachment('Admin Team', 'hamza@5dsolutions.ae', 'Superior Crane', 'Rigger Ticket Generated', 'Rigger Ticket Generated', $output_file); // send_to_name, send_to_email, email_from_name, subject, body, attachment
+    //     return $output_file;
+    // }
+    
+    public function sendtomailTransporter(Request $request)
     {
 
 
-        $id = '14';
-        $filepath = public_path('assets/pdf/pdf_samples/rigger_ticket.pdf');
-        $output_file_path = public_path('assets/pdf/rigger_ticket_pdfs/ticket_' .$id. '.pdf'); 
-        $ticket = RiggerTicket::find($id);
+        $id = '7';
+        $filepath = public_path('assets/pdf/pdf_samples/transporter_ticket.pdf');
+        $output_file_path = public_path('assets/pdf/transporter_ticket_pdfs/ticket_' .$id. '.pdf'); 
+        $ticket = TransportationTicketModel::find($id);
         if($ticket){
             $fields = [
-                ['text' => $ticket->id, 'x' => 245, 'y' => 6.5],
-                ['text' => $ticket->specifications_remarks, 'x' => 128, 'y' => 58, 'width' => 138, 'height' => 6],
+                ['text' => 'T-'.$ticket->id, 'x' => 245, 'y' => 13],
+                ['text' => $ticket->pickup_address, 'x' => 58, 'y' => 33, 'width' => 210, 'height' => 6],
+                ['text' => $ticket->delivery_address, 'x' => 58, 'y' => 41, 'width' => 210, 'height' => 6],
+                // ['text' => $ticket->delivery_address, 'x' => 58, 'y' => 49, 'width' => 210, 'height' => 6],
                 
-                ['text' => $ticket->customer_name, 'x' => 14, 'y' => 94],
-                ['text' => $ticket->location, 'x' => 99, 'y' => 94],
-                ['text' => $ticket->po_number, 'x' => 226, 'y' => 94],
-                ['text' => date('d-M-Y', strtotime($ticket->date)), 'x' => 14, 'y' => 106],
-                ['text' => $ticket->leave_yard, 'x' => 42, 'y' => 106],
-                ['text' => $ticket->start_job, 'x' => 70, 'y' => 106],
-                ['text' => $ticket->finish_job, 'x' => 99, 'y' => 106],
-                ['text' => $ticket->arrival_yard, 'x' => 127, 'y' => 106],
-                ['text' => $ticket->lunch, 'x' => 153.5, 'y' => 106, 'font' => 8],
-                ['text' => $ticket->travel_time, 'x' => 183, 'y' => 106],
-                ['text' => $ticket->crane_time, 'x' => 211, 'y' => 106],
-                ['text' => $ticket->total_hours, 'x' => 239, 'y' => 106],
+                ['text' => $ticket->job_number, 'x' => 58, 'y' => 65],
+                ['text' => $ticket->job_special_instructions, 'x' => 105, 'y' => 66, 'width' => 170, 'height' => 6],
 
-                ['text' => $ticket->crane_number, 'x' => 14, 'y' => 117.5],
-                ['text' => $ticket->rating, 'x' => 42, 'y' => 117.5],
-                ['text' => $ticket->boom_length, 'x' => 70, 'y' => 117.5],
-                ['text' => $ticket->operator, 'x' => 98, 'y' => 117.5],
-                ['text' => $ticket->other_equipment, 'x' => 183, 'y' => 117.5],
-                ['text' => $ticket->notes, 'x' => 15, 'y' => 134, 'width' => 250, 'height' => 6],
+                ['text' => $ticket->po_number, 'x' => 58, 'y' => 71],
+                ['text' => $ticket->po_special_instructions, 'x' => 105, 'y' => 72, 'width' => 170, 'height' => 6],
 
-                ['text' => $ticket->signature, 'x' => 40, 'y' => 187],
+                ['text' => $ticket->site_contact_name, 'x' => 58, 'y' => 76],
+                ['text' => $ticket->site_contact_name_special_instructions, 'x' => 105, 'y' => 77, 'width' => 170, 'height' => 6],
+
+                ['text' => $ticket->site_contact_number, 'x' => 58, 'y' => 81],
+                ['text' => $ticket->site_contact_number_special_instructions, 'x' => 105, 'y' => 82, 'width' => 170, 'height' => 6],
+
+
+                ['text' => $ticket->shipper_name, 'x' => 58, 'y' => 96.5],
+                ['text' => $ticket->shipper_signature, 'x' => 103, 'y' => 96.5],
+                ['text' => date('d-M-Y', strtotime($ticket->shipper_signature_date)), 'x' => 164, 'y' => 96.5],
+                ['text' => date('H:i', strtotime($ticket->shipper_time_in)), 'x' => 210, 'y' => 96.5],
+                ['text' => $ticket->shipper_time_out, 'x' => 241, 'y' => 96.5],
+
+                ['text' => $ticket->pickup_driver_name, 'x' => 58, 'y' => 103],
+                ['text' => $ticket->pickup_driver_signature, 'x' => 103, 'y' => 103],
+                ['text' => date('d-M-Y', strtotime($ticket->pickup_driver_signature_date)), 'x' => 164, 'y' => 103],
+                ['text' => date('H:i', strtotime($ticket->pickup_driver_time_in)), 'x' => 210, 'y' => 103],
+                ['text' => $ticket->pickup_driver_time_out, 'x' => 241, 'y' => 103],
+
+                ['text' => $ticket->customer_name, 'x' => 58, 'y' => 110],
+                ['text' => $ticket->customer_signature, 'x' => 103, 'y' => 110],
+                ['text' => date('d-M-Y', strtotime($ticket->customer_signature_date)), 'x' => 164, 'y' => 110],
+                ['text' => date('H:i', strtotime($ticket->customer_time_in)), 'x' => 210, 'y' => 110],
+                ['text' => $ticket->customer_time_out, 'x' => 241, 'y' => 110],
+                
             ];
     
             $outputFile = $this->editPdf($filepath, $output_file_path, $fields);
@@ -1260,15 +1367,12 @@ class AdminController extends Controller
                 'outputFile' => $publicPath,
                 'message' => 'Sent to Admin successfully'
             ], 200);
-            
-        }
-        else{
+        }else{
             return response()->json([
                 'success' => false,
                 'message' => 'Rigger Ticket NOt Found',
             ], 401);
         }
-        
     }
 
     public function editPdf($file, $output_file, $fields)
@@ -1299,12 +1403,81 @@ class AdminController extends Controller
                 }
             }
         }
-
         $fpdi->Output($output_file, 'F');
         // sendMailAttachment('Admin Team', 'hamza@5dsolutions.ae', 'Superior Crane', 'Rigger Ticket Generated', 'Rigger Ticket Generated', $output_file); // send_to_name, send_to_email, email_from_name, subject, body, attachment
-
         return $output_file;
     }
 
+    // public function sendtomailPayduty(Request $request)
+    // {
+
+
+    //     $id = '12';
+    //     $filepath = public_path('assets/pdf/pdf_samples/pay_duty.pdf');
+    //     $output_file_path = public_path('assets/pdf/pay_duty_pdfs/form_' .$id. '.pdf'); 
+    //     $form = PayDutyModel::find($id);
+    //     if($form){
+    //         $fields = [
+    //             ['text' => 'P-'.$form->rigger_ticket_id, 'x' => 68, 'y' => 31],
+    //             ['text' => 'P-'.$form->id, 'x' => 167, 'y' => 31],
+    //             ['text' => date('d-M-Y', strtotime($form->date)), 'x' => 86, 'y' => 87.5],
+    //             ['text' => $form->location, 'x' => 86, 'y' => 105],
+    //             ['text' => date('h:i', strtotime($form->start_time)), 'x' => 86, 'y' => 123],
+    //             ['text' => date('h:i', strtotime($form->finish_time)), 'x' => 86, 'y' => 141],
+
+    //             ['text' => date('h:i', strtotime($form->total_hours)), 'x' => 86, 'y' => 159],
+    //             ['text' => $form->officer, 'x' => 86, 'y' => 177],
+    //             ['text' => $form->officer_name, 'x' => 110, 'y' => 194],
+    //             ['text' => $form->division, 'x' => 86, 'y' => 212],
+    //             ['text' => $form->signature, 'x' => 88, 'y' => 230],
+    //         ];
     
+    //         $outputFile = $this->editPdf($filepath, $output_file_path, $fields);
+    //         $publicPath = str_replace(public_path(), '', $outputFile); // Remove the public path part
+    //         $publicUrl = url($publicPath); // Generate a full URL to the PDF file
+    //         return response()->json([
+    //             'success' => true,
+    //             'outputFile' => $publicPath,
+    //             'message' => 'Sent to Admin successfully'
+    //         ], 200);
+    //     }else{
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => 'Rigger Ticket NOt Found',
+    //         ], 401);
+    //     }
+    // }
+
+    // public function editPdf($file, $output_file, $fields)
+    // {
+    //     $fpdi = new Fpdi();
+    //     $count = $fpdi->setSourceFile($file);
+
+    //     for ($i = 1; $i <= $count; $i++) {
+    //         $template = $fpdi->importPage($i);
+    //         $size = $fpdi->getTemplateSize($template);
+    //         $fpdi->AddPage($size['orientation'], [$size['width'], $size['height']]);
+    //         $fpdi->useTemplate($template);
+
+    //         $fpdi->SetFont('Helvetica', '', 10);
+    //         foreach ($fields as $field) {
+    //             $fpdi->SetXY($field['x'], $field['y']);
+    //             // set font custom
+    //             if(isset($field['font'])){
+    //                 $fpdi->SetFont('Helvetica', '', $field['font']);
+    //             }
+    //             // set cell dimensions
+    //             if (isset($field['width']) && isset($field['height'])) {
+    //                 // Use MultiCell to prevent text from overflowing
+    //                 $fpdi->MultiCell($field['width'], $field['height'], $field['text']);
+    //             } else {
+    //                 // Use Write for single-line text fields
+    //                 $fpdi->Write(8, $field['text']);
+    //             }
+    //         }
+    //     }
+    //     $fpdi->Output($output_file, 'F');
+    //     // sendMailAttachment('Admin Team', 'hamza@5dsolutions.ae', 'Superior Crane', 'Rigger Ticket Generated', 'Rigger Ticket Generated', $output_file); // send_to_name, send_to_email, email_from_name, subject, body, attachment
+    //     return $output_file;
+    // }
 }

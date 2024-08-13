@@ -6,6 +6,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\RiggerTicket;
 use App\Models\RiggerTicketImages;
+use App\Models\JobModel;
+use App\Models\User;
+use App\Models\Notifications;
+
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -123,8 +127,8 @@ class RigerTicketController extends Controller
                     $RiggerTicketImages->save();
                 }
             }
-
-            $attachment_pdf = $this->makeRiggerPDF($ticket->id);
+            
+            $this->sendEmailRiggerTicket($ticket->id);      // email send when ticket status is 3 completed
     
             return response()->json([
                 'success' => true,
@@ -256,6 +260,8 @@ class RigerTicketController extends Controller
                         $RiggerTicketImages->save();
                     }
                 }
+
+                $this->sendEmailRiggerTicket($ticket->id);      // email send when ticket status is 3 completed
             }
     
             return response()->json([
@@ -348,6 +354,80 @@ class RigerTicketController extends Controller
         }
     }
 
+    public function sendEmailRiggerTicket($ticket_id){
+
+        $attachment_pdf = $this->makeRiggerPDF($ticket_id);
+
+        if($attachment_pdf){
+            
+            $ticketDetail = RiggerTicket::where('id', $ticket_id)->first();
+
+            if($ticketDetail->status == '3'){       // if status is (3) completed  then send email
+            
+                $riggerDetail = User::where('id', $ticketDetail->created_by)->first(); // created or rigger details
+
+                $jobDetail = JobModel::where('id', $ticketDetail->job_id)->first(); // lnked job details
+            
+                if($jobDetail){
+                    
+                    $managerDetail = User::where('id', $jobDetail->created_by)->first(); // manager/ JOB createby details
+
+                    if($ticketDetail->status == '1'){
+                        $status_txt = 'Draft';
+                    }else if($ticketDetail->status == '2'){
+                        $status_txt = 'Issued';
+                    }else if($ticketDetail->status == '3'){
+                        $status_txt = 'Completed';
+                    }
+                    
+                    $mailData = [];
+                    
+                    $mailData['user'] = $managerDetail->name;
+                    $mailData['rigger_name'] = $riggerDetail->name;
+                    $mailData['job_number'] = 'J-'.$ticketDetail->job_id;
+                    $mailData['rigger_number'] = 'R-'.$ticketDetail->id;
+                    $mailData['customer_name'] = $ticketDetail->customer_name;
+                    $mailData['location'] = $ticketDetail->location;
+                    $mailData['po_number'] = $ticketDetail->po_number;
+                    $mailData['ticket_date'] = date('d-M-Y', strtotime($ticketDetail->date));
+                    $mailData['start_time'] = date('H:i A', strtotime($ticketDetail->start_job));
+                    $mailData['finish_time'] = date('H:i A', strtotime($ticketDetail->finish_job));
+                    $mailData['status'] = $status_txt;
+    
+                    $mailData['text1'] = "New Rigger Ticket has been created. Ticket details are as under.";
+                    $mailData['text2'] = "For more details please contact the Manager/Admin.";
+    
+                    $body = view('emails.rigger_ticket_template', $mailData);
+                    $userEmailsSend = 'hamza@5dsolutions.ae';//$managerDetail->email;
+                    sendMailAttachment($managerDetail->name, $userEmailsSend, 'Superior Crane', 'Rigger Ticket Creation', $body, $attachment_pdf);
+
+                    // push notification entry
+                    $Notifications = new Notifications();
+                    $Notifications->module_code = 'RIGGER TICKET SUBMITTED';
+                    $Notifications->from_user_id = $riggerDetail->id;
+                    $Notifications->to_user_id = '1';   // for super admin
+                    $Notifications->subject = 'Rigger Ticket Submitted';
+                    $Notifications->message = 'Rigger Ticket R-'.$ticketDetail->id.' on '.date('d-M-Y', strtotime($ticketDetail->date)).' has been submitted by '.$riggerDetail->name.'.';
+                    $Notifications->message_html = $body;
+                    $Notifications->read_flag = '0';
+                    $Notifications->created_by = $riggerDetail->id;
+                    $Notifications->created_at = date('Y-m-d H:i:s');
+                    $Notifications->save();
+
+                    $allAdmins = User::whereIn('role_id', ['0','1'])->where('status', '1')->get();
+
+                    if($allAdmins){
+                        foreach($allAdmins as $value){
+                            $mailData['user'] = $value->name;
+                            $body = view('emails.rigger_ticket_template', $mailData);
+                            $userEmailsSend = 'hamza@5dsolutions.ae';//$value->email;
+                            sendMailAttachment($value->name, $userEmailsSend, 'Superior Crane', 'Rigger Ticket Creation', $body, $attachment_pdf);
+                        }
+                    }
+                }
+            }
+        }
+    }
     public function makeRiggerPDF($ticket_id='')
     {
 
@@ -357,7 +437,7 @@ class RigerTicketController extends Controller
         $ticket = RiggerTicket::find($id);
         if($ticket){
             $fields = [
-                ['text' => $ticket->id, 'x' => 245, 'y' => 6.5],
+                ['text' => 'R-'.$ticket->id, 'x' => 245, 'y' => 6.5],
                 ['text' => $ticket->specifications_remarks, 'x' => 128, 'y' => 58, 'width' => 138, 'height' => 6],
                 
                 ['text' => $ticket->customer_name, 'x' => 14, 'y' => 94],
@@ -426,29 +506,4 @@ class RigerTicketController extends Controller
 
         return $output_file;
     }
-    // public function editPdf($file, $output_file, $fields)
-    // {
-    //     $fpdi = new Fpdi();
-    //     $count = $fpdi->setSourceFile($file);
-
-    //     for ($i = 1; $i <= $count; $i++) {
-    //         $template = $fpdi->importPage($i);
-    //         $size = $fpdi->getTemplateSize($template);
-    //         $fpdi->AddPage($size['orientation'], [$size['width'], $size['height']]);
-    //         $fpdi->useTemplate($template);
-
-    //         $fpdi->SetFont('Helvetica', '', 12);
-    //         foreach ($fields as $field) {
-    //             $fpdi->SetXY($field['x'], $field['y']);
-    //             $fpdi->Write(8, $field['text']);
-    //         }
-    //     }
-
-        
-    //     $fpdi->Output($output_file, 'F');
-    //     sendMailAttachment('Admin Team', 'hamza@5dsolutions.ae', 'Superior Crane', 'Rigger Ticket Generated', 'Rigger Ticket Generated',$output_file); // send_to_name, send_to_email, email_from_name, subject, body, attachment
-
-        
-
-    // }
 }

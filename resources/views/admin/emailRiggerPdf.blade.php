@@ -2,7 +2,7 @@
 
 
 @section('content')
-    <button type="button" onclick="loadPdf();">Generate Pdf</button>
+    <button type="button" onclick="loadPdf();" style="float:right;">Generate Pdf</button>
 @endsection
 
 @push('scripts')
@@ -13,7 +13,9 @@ function loadPdf() {
         let form = '';
         let data = '';
         let type = 'POST';
-        let url = '/sendtomailRigger';
+        // let url = '/sendtomailRigger';
+        let url = '/sendtomailTransporter';
+        // let url = '/sendtomailPayduty';
         SendAjaxRequestToServer(type, url, data, '', responseFunction, '', '');
     }
 

@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Roles;
 use App\Models\JobModel;
 use App\Models\JobImages;
+use App\Models\Notifications;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
@@ -61,39 +62,8 @@ class JobController extends Controller
             // $job->scci = $request->scci ?? false;
             $job->status = $request->status;
             $job->created_by = $request->created_by;
-            
             $job->save();
     
-           
-            // $req_file = 'job_images';
-            // $path = '/uploads/job_images/' . $job->id;
-
-            // if ($request->hasFile($req_file)) {
-
-            //     if (!File::isDirectory(public_path($path))) {
-            //         File::makeDirectory(public_path($path), 0777, true);
-            //     }
-                
-            //     // $uploadedFiles = $request->file($req_file);
-            //     $uploadedFiles = $request->job_images;
-
-            //     foreach ($uploadedFiles as $value) {
-            //         $file = $value->file;
-            //         $file_title = $value->title;
-            //         $file_extension = $file->getClientOriginalExtension();
-            //         $date_append = Str::random(32);
-            //         $file->move(public_path($path), $date_append . '.' . $file_extension);
-    
-            //         $savedFilePaths = '/public' . $path . '/' . $date_append . '.' . $file_extension;
-
-            //         $JobImages = new JobImages();
-            //         $JobImages->job_id = $job->id;
-            //         $JobImages->file_name = $file_title;//$file->getClientOriginalName();
-            //         $JobImages->path = $savedFilePaths;
-            //         $JobImages->save();
-            //     }
-            // }
-            
             $job_images = $request->job_images;
             if(count($job_images) > 0){
                 foreach ($job_images as $index => $imageData) {
@@ -111,7 +81,7 @@ class JobController extends Controller
                     }
             
                     \File::put($filePath . '/' . $imageName, base64_decode($image));
-            
+                    
                     // Save image path and title to database
                     $jobImage = new JobImages();
                     $jobImage->job_id = $job->id;
@@ -159,7 +129,20 @@ class JobController extends Controller
             $body = view('emails.job_template', $mailData);
             $userEmailsSend = 'hamza@5dsolutions.ae';//$user->email;
             sendMail($user->name, $userEmailsSend, 'Superior Crane', 'Job Creation', $body);
-
+            
+            // push notification entry
+            $Notifications = new Notifications();
+            $Notifications->module_code = 'JOB CREATION';
+            $Notifications->from_user_id = $createdBy->id;
+            $Notifications->to_user_id = '1';
+            $Notifications->subject = 'Assigned a new '. $job_type;
+            $Notifications->message = 'Job J-'.$jobDetail->id.' on '.date('d-M-Y', strtotime($jobDetail->date)).' at '.date('H:i A', strtotime($jobDetail->job_time)).' has been assigned to '.  $user->name .'.';
+            $Notifications->message_html = $body;
+            $Notifications->read_flag = '0';
+            $Notifications->created_by = $createdBy->id;
+            $Notifications->created_at = date('Y-m-d H:i:s');
+            $Notifications->save();
+            
             $allAdmins = User::whereIn('role_id', ['0','1'])->where('status', '1')->get();
 
             if($allAdmins){
@@ -235,46 +218,6 @@ class JobController extends Controller
                 $job->updated_by = $request->created_by;
                 $job->save();
     
-
-                // $req_file = 'job_images';
-                // $path = '/uploads/job_images/' . $job->id;
-
-                // if ($request->hasFile($req_file)) {
-                    
-                //     $previous_images = JobImages::where('job_id', $job->id)->get();
-                //     if(count($previous_images) > 0){
-                //         foreach($previous_images as $img){
-                //             $del_path = str_replace(url('/public/'), '', $img->path);
-                //             deleteImage($del_path);
-                //             JobImages::where('id', $img->id)->delete();
-                //         }
-                //     }
-
-                //     if (!File::isDirectory(public_path($path))) {
-                //         File::makeDirectory(public_path($path), 0777, true);
-                //     }
-                    
-                //     // $uploadedFiles = $request->file($req_file);
-                // $uploadedFiles = $request->job_images;
-
-                //     foreach ($uploadedFiles as $value) {
-                //         $file = $value->file;
-                //         $file_title = $value->title;
-                //         $file_extension = $file->getClientOriginalExtension();
-                //         $date_append = Str::random(32);
-                //         $file->move(public_path($path), $date_append . '.' . $file_extension);
-        
-                //         $savedFilePaths = '/public' . $path . '/' . $date_append . '.' . $file_extension;
-
-                //         $JobImages = new JobImages();
-                //         $JobImages->landlord_id = $job->id;
-                //         $JobImages->file_name = $file_title;//$file->getClientOriginalName();
-                //         $JobImages->path = $savedFilePaths;
-                //         $JobImages->save();
-                //     }
-                // }
-
-                
                 $job_images = $request->job_images;
                 if(count($job_images) > 0){
                     

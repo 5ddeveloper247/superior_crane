@@ -76,13 +76,15 @@ Route::group(['prefix' => '/'], function () {
         
         
 
-        Route::get('/emailRiggerPdf', function () {
-            $pageTitle = 'Dashboard';
-            return view('admin/emailRiggerPdf', compact('pageTitle'));
-        });
+        // Route::get('/emailRiggerPdf', function () {
+        //     $pageTitle = 'Dashboard';
+        //     return view('admin/emailRiggerPdf', compact('pageTitle'));
+        // });
         
-        Route::post('/sendtomailRigger', [AdminController::class, 'sendtomailRigger'])->name('sendtomailRigger');
-
+        // Route::post('/sendtomailRigger', [AdminController::class, 'sendtomailRigger'])->name('sendtomailRigger');
+        // Route::post('/sendtomailTransporter', [AdminController::class, 'sendtomailTransporter'])->name('sendtomailTransporter');
+        // Route::post('/sendtomailPayduty', [AdminController::class, 'sendtomailPayduty'])->name('sendtomailPayduty');
+        
         
     });
 });
