@@ -90,6 +90,7 @@ class LoginController extends Controller
             
                 $user->otp = $otp;
                 $user->save();
+
                 $mailData = [];
                 $mailData['otp'] = $otp;
                 $mailData['username'] = $user->name;
@@ -139,18 +140,17 @@ class LoginController extends Controller
             $user = User::where('email', $request->email)->first();
             if($user){
 
-            if($request->otp == $user->otp){
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Otp Validated'
-                ], 200);
-            } 
-            else{
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Otp verification failed'
-                ], 401);
-            } 
+                if($request->otp == $user->otp){
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Otp Validated'
+                    ], 200);
+                }else{
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Otp verification failed'
+                    ], 401);
+                } 
             }
             else{
              return response()->json([
@@ -205,12 +205,11 @@ class LoginController extends Controller
                     'success' => true,
                     'message' => 'Password Updated Successfully'
                 ], 200);
-            }
-            else{
-             return response()->json([
-                 'success' => false,
-                 'message' => 'User with this email does not exist'
-             ], 401);
+            }else{
+                return response()->json([
+                    'success' => false,
+                    'message' => 'User with this email does not exist'
+                ], 401);
             }
             
          } catch (\Exception $e) {

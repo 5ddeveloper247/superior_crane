@@ -40,9 +40,10 @@ function makeAdminsListing(admin_list){
 		$.each(admin_list, function (index, value) {
             
             html += `<tr>
-                        <td class="text-start px-3">U-${value.id}</td>
+                        <td class="text-start px-3">A-${value.id}</td>
                         <td class="px-3">${value.name}</td>
                         <td class="px-3">${value.email}</td>
+                        <td class="px-3">${value.phone_number != null ? value.phone_number : ''}</td>2
                         <td class="px-3">
                             <div class="form-check form-switch">
                                 <input class="form-check-input change_status" data-id="${value.id}" id=""
@@ -58,7 +59,7 @@ function makeAdminsListing(admin_list){
                             </div>
                             ${user_role == '0' ? 
                             `<div class="del delete_user" data-id="${value.id}">
-                                <div type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                                <div type="button">
                                     <svg width="15" viewBox="0 0 9 11" fill="none"xmlns="http://www.w3.org/2000/svg">
                                         <path d="M0.488907 6.7101C0.488907 5.86704 0.488335 5.02398 0.489193 4.18092C0.48948 3.91325 0.634045 3.73004 0.872794 3.68825C1.13645 3.64187 1.38407 3.83539 1.40354 4.1042C1.4064 4.14341 1.40497 4.18263 1.40497 4.22214C1.40497 5.86904 1.40497 7.51566 1.40497 9.16257C1.40497 9.7102 1.77798 10.0826 2.32675 10.0829C3.54111 10.0829 4.75546 10.0829 5.96953 10.0829C6.51802 10.0829 6.89131 9.70992 6.89131 9.16257C6.89131 7.50164 6.89131 5.84042 6.8916 4.17948C6.8916 3.92213 7.0293 3.73834 7.2543 3.69225C7.5128 3.63901 7.75327 3.80304 7.79736 4.06469C7.80566 4.11364 7.80738 4.16403 7.80738 4.21384C7.80795 5.86761 7.80823 7.52168 7.80766 9.17545C7.80738 10.0821 7.20134 10.8103 6.31076 10.9724C6.20599 10.9915 6.09778 10.9981 5.991 10.9984C4.76233 11.0001 3.53395 11.0004 2.30528 10.9993C1.28445 10.9984 0.490338 10.2054 0.488907 9.18604C0.488048 8.36044 0.488907 7.53542 0.488907 6.7101Z" fill="#DC2F2B" />
                                         <path d="M5.97563 2.30643C6.09529 2.30643 6.19835 2.30643 6.30169 2.30643C6.79436 2.30643 7.28703 2.30414 7.77999 2.30729C8.11406 2.30958 8.33392 2.59327 8.24317 2.89671C8.18935 3.07649 8.03133 3.20531 7.8444 3.22106C7.81949 3.22306 7.79459 3.22277 7.76939 3.22277C5.35586 3.22277 2.94204 3.22306 0.528505 3.22249C0.237656 3.22277 0.0315422 3.02897 0.0338324 2.76102C0.0361225 2.49823 0.240232 2.30786 0.527074 2.307C1.077 2.30528 1.62692 2.30643 2.17656 2.30643C2.21892 2.30643 2.26158 2.30643 2.32141 2.30643C2.32141 2.26091 2.32141 2.22341 2.32141 2.18591C2.32141 1.92884 2.31969 1.67177 2.32198 1.41441C2.32456 1.12728 2.51092 0.936343 2.79833 0.93577C3.69808 0.933194 4.59782 0.933194 5.49756 0.93577C5.78584 0.936629 5.97248 1.12643 5.97477 1.41384C5.97764 1.70583 5.97563 1.99811 5.97563 2.30643ZM3.23776 2.29698C3.85037 2.29698 4.45383 2.29698 5.05585 2.29698C5.05585 2.14354 5.05585 1.99983 5.05585 1.85756C4.44552 1.85756 3.84436 1.85756 3.23776 1.85756C3.23776 2.00527 3.23776 2.1464 3.23776 2.29698Z" fill="#DC2F2B" />
@@ -100,9 +101,10 @@ function makeManagersListing(manager_list){
 	if(manager_list.length > 0){
 		$.each(manager_list, function (index, value) {//
 			html += `<tr>
-                        <td class="text-start px-3">U-${value.id}</td>
+                        <td class="text-start px-3">M-${value.id}</td>
                         <td class="px-3">${value.name}</td>
                         <td class="px-3">${value.email}</td>
+                        <td class="px-3">${value.phone_number != null ? value.phone_number : ''}</td>
                         <td class="px-3">
                             <div class="form-check form-switch">
                                 <input class="form-check-input change_status" data-id="${value.id}" 
@@ -154,10 +156,22 @@ function makeUsersListing(users_list){
     var html = '';
 	if(users_list.length > 0){
 		$.each(users_list, function (index, value) {//
+            var prefix_user = '';
+            if(value.role_id == 3){
+                prefix_user = 'R';
+            }else if(value.role_id == 4){
+                prefix_user = 'T';
+            }else if(value.role_id == 5){
+                prefix_user = 'RT';
+            }else{
+                prefix_user = 'U';
+            }
+            
 			html += `<tr>
-                        <td class="text-start px-3">U-${value.id}</td>
+                        <td class="text-start px-3">${prefix_user}-${value.id}</td>
                         <td class="px-3">${value.name}</td>
                         <td class="px-3">${value.email}</td>
+                        <td class="px-3">${value.phone_number != null ? value.phone_number : ''}</td>
                         <td class="px-3">
                             <div class="form-check form-switch">
                                 <input class="form-check-input change_status" data-id="${value.id}"
@@ -287,6 +301,7 @@ function getSpecificUserDetailsResponse(response) {
         $("input, select").removeClass('is-invalid').prop('disabled', false);
         $("#user_id").val(user_detail.id);
         $("#name").val(user_detail.name);
+        $("#phone_number").val(user_detail.phone_number != null ? user_detail.phone_number : '');
         $("#email").val(user_detail.email).prop('disabled', true);
         $("#user_role").val(user_detail.role_id).prop('disabled', true); 
         $("#password").val('');
@@ -365,16 +380,26 @@ function searchAdminListingResponse(response) {
     }
 }
 
+var temp_record_id = '';
 $(document).on('click', '.delete_user', function (e) {
-    if (confirm("Are you sure you want to delete this record?")) {
-        var user_id = $(this).attr('data-id');
+    temp_record_id = $(this).attr('data-id');
+    $("#delete_confirm").modal('show');
+});
+$(document).on('click', '#close_confirm', function (e) {
+    temp_record_id = '';
+    $("#delete_confirm").modal('hide');
+});
+
+$(document).on('click', '#delete_confirmed', function (e) {
+    // if (confirm("Are you sure you want to delete this record?")) {
+        var user_id = temp_record_id;//$(this).attr('data-id');
         let form = '';
         let data = new FormData();
         data.append('user_id', user_id);
         let type = 'POST';
         let url = '/admin/deleteSpecificUser';
         SendAjaxRequestToServer(type, url, data, '', deleteSpecificUserResponse, '', '.change_status');
-    }
+    // }
 });
 
 function deleteSpecificUserResponse(response) {
@@ -383,6 +408,7 @@ function deleteSpecificUserResponse(response) {
         toastr.success(response.message, '', {
             timeOut: 3000
         });
+        $("#delete_confirm").modal('hide');
         loadUsersPageData();
     }else{
         if (response.status == 402) {

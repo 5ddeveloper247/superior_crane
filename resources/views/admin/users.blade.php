@@ -253,7 +253,7 @@
                                     <label class="fw-semibold">Email</label>
                                     <input type="text" class="py-1 px-3 rounded-1 form-control" name="search_email" placeholder="Type here...">
                                 </div>
-                                <div class="col-4 col-md-3">
+                                <div class="col-4 col-md-3" style="display:none;">
                                     <label class="fw-semibold">Phone Number</label>
                                     <input type="number" class="py-1 px-3 rounded-1 form-control" name="phone_number"
                                         placeholder="Type here...">
@@ -283,6 +283,7 @@
                                 <th class="px-3 text-start" scope="col">Admin No#</th>
                                 <th class="px-3" scope="col">Admin Name</th>
                                 <th class="px-3" scope="col">Email Address</th>
+                                <th class="px-3" scope="col">Phone Number</th>
                                 <th class="px-3" scope="col">Status</th>
                                 <th class="px-3" scope="col">Action</th>
                             </tr>
@@ -334,7 +335,7 @@
                                     <input type="text" class="py-1 px-3 rounded-1 form-control" name="search_email"
                                         placeholder="Type here...">
                                 </div>
-                                <div class="col-4 col-md-3">
+                                <div class="col-4 col-md-3" style="display:none;">
                                     <label class="fw-semibold">Phone Number</label>
                                     <input type="number" class="py-1 px-3 rounded-1 form-control" name="phone_number"
                                         placeholder="Type here...">
@@ -344,7 +345,7 @@
                                     <select class="form-control" name="status" id="">
                                         <option value="">Choose</option>
                                         <option value="1">Active</option>
-                                        <option value="2">Deactive</option>
+                                        <option value="0">InActive</option>
                                     </select>
                                 </div>
                             </div>
@@ -364,6 +365,7 @@
                                 <th class="px-3 text-start" scope="col">Manager No#</th>
                                 <th class="px-3" scope="col">Manager Name</th>
                                 <th class="px3" scope="col">Email Address</th>
+                                <th class="px-3" scope="col">Phone Number</th>
                                 <th class="px-3" scope="col">Status</th>
                                 <th scope="col">Action</th>
                             </tr>
@@ -415,7 +417,7 @@
                                     <input type="text" class="py-1 px-3 rounded-1 form-control" name="search_email"
                                         placeholder="Type here...">
                                 </div>
-                                <div class="col-4 col-md-3">
+                                <div class="col-4 col-md-3" style="display:none;">
                                     <label class="fw-semibold">Phone Number</label>
                                     <input type="number" class="py-1 px-3 rounded-1 form-control" name="phone_number"
                                         placeholder="Type here...">
@@ -425,7 +427,7 @@
                                     <select class="form-control" name="status" id="">
                                         <option value="">Choose</option>
                                         <option value="1">Active</option>
-                                        <option value="2">Deactive</option>
+                                        <option value="0">InActive</option>
                                     </select>
                                 </div>
                             </div>
@@ -445,6 +447,7 @@
                                 <th class="px-3 text-start" scope="col">User No#</th>
                                 <th class="px-3" scope="col">Basic User Name</th>
                                 <th class="px-3" scope="col">Email Address</th>
+                                <th class="px-3" scope="col">Phone Number</th>
                                 <th class="px-3" scope="col">Status</th>
                                 <th scope="col">Action</th>
                             </tr>
@@ -459,20 +462,20 @@
     </div>
 
 
-    <!-- Modal -->
-    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="delete_confirm" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-body text-center">
                     <img src="{{asset('assets/images/remove.png')}}" width="60" alt="">
                     <h6 class="text-danger mt-3">
-                        Are you sure you want to delete?
+                        Are you sure you want to delete this record?
                     </h6>
                 </div>
-                <div class="modal-footer d-flex align-items-center justify-content-center" style="border: none">
-                    <button type="button" class="btn btn-secondary px-5" data-bs-dismiss="modal">No</button>
-                    <button type="button" class="btn btn-danger px-5">Yes</button>
+                <div class="modal-footer d-flex align-items-center justify-content-center" style="border: none" >
+                    <button type="button" class="btn btn-secondary px-5" id="close_confirm">No</button>
+                    <button type="button" class="btn btn-danger px-5" id="delete_confirmed">Yes</button>
                 </div>
             </div>
         </div>
@@ -494,6 +497,20 @@
                     <form id="addUser_form">
                         <input type="hidden" id="user_id" name="user_id" value="">
                         <div class="row gy-2 add-form rounded-1 align-items-center">
+                            @php
+                                $roles = getRoles();
+                            @endphp
+                            <div class="col-12 col-md-6 d-flex flex-column">
+                                <label class="fw-semibold form-label" for="user_role">
+                                    Role<span class="text-danger">*</span>
+                                </label>
+                                <select class="py-1 rounded-1 px-2 pb-2 form-control" id="user_role" name="user_role">
+                                    <option value="">Choose</option>
+                                    @foreach($roles as $value)
+                                        <option value="{{$value->id}}">{{$value->role_name}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                             <div class="col-12 col-md-6 d-flex flex-column">
                                 <label class="form-label fw-semibold" for="name">
                                     Name<span class="text-danger">*</span>
@@ -508,6 +525,13 @@
                                 </label>
                                 <input class="rounded-1 py-2 px-2 w-100 form-control" id="email" name="email"
                                     type="text" placeholder="Type here..." maxlength="50">
+                            </div>
+                            <div class="col-12 col-md-6 d-flex flex-column">
+                                <label class="fw-semibold form-label" for="phone_number">
+                                    Phone Number<span class="text-danger">*</span>
+                                </label>
+                                <input class="rounded-1 py-2 px-2 w-100 form-control" id="phone_number" name="phone_number"
+                                    type="number" placeholder="Type here..." maxlength="18">
                             </div>
 
                             <div class="col-12 col-md-6 d-flex flex-column" style="position:relative">
@@ -529,21 +553,7 @@
                                 <i class="fa fa-eye position-absolute view_pass" style="top: 55%; right: 6%;font-size:12px;"></i>
                                 <span style="font-size:9px;">Confirm password must be match with password field.</span>
                             </div>
-                            @php
-                                $roles = getRoles();
-                            @endphp
-                            <div class="col-12 col-md-6 d-flex flex-column">
-                                <label class="fw-semibold form-label" for="user_role">
-                                    Role<span class="text-danger">*</span>
-                                </label>
-                                <select class="py-1 rounded-1 px-2 pb-2 form-control" id="user_role" name="user_role">
-                                    <option value="">Choose</option>
-                                    @foreach($roles as $value)
-                                        <option value="{{$value->id}}">{{$value->role_name}}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="col-12 col-md-6 "></div>
+                            
                             <div class="col-12 col-md-6 updatedInfo_div">
                                 <label class="fw-semibold form-label">
                                     Created By

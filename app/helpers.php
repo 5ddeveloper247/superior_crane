@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
 use App\Models\Roles;
+use App\Models\Notifications;
 
 if (!function_exists('saveMultipleImages')) {
 
@@ -172,6 +173,22 @@ if (!function_exists('sendMailAttachment')) {
                 
                 $roles = Roles::get();
                 return $roles;
+            } catch (\Exception $e) {
+                Log::error($e->getMessage());
+                echo "An error occurred while sending the email: " . $e->getMessage();
+                return false;
+            }
+        }
+    }
+
+    if (!function_exists('getNotificationsLimited')) {
+        function getNotificationsLimited()
+        {
+            try {
+                
+                $notifications = Notifications::where('read_flag', '0')->with(['fromUser'])->orderBy('created_at', 'desc')->limit('5')->get();
+                return $notifications;
+                
             } catch (\Exception $e) {
                 Log::error($e->getMessage());
                 echo "An error occurred while sending the email: " . $e->getMessage();

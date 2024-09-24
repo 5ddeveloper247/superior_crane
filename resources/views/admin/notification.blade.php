@@ -21,6 +21,13 @@
         h5 {
             font-weight: 600;
         }
+        .notif-icon{
+            height:10px;
+            width:10px; 
+            background-color:red;
+            display: inline-block;
+            border-radius: 10px;
+        }
     </style>
 @endpush
 
@@ -49,171 +56,44 @@
 
     <div class="collapse mb-4 mt-3" id="filterSection">
         <div class="filter">
-            <div class="row gy-3">
-                <div class="col-4 col-md-3">
-                    <label class="fw-semibold form-label">From Date</label>
-                    <input class="py-1 px-3 rounded-1 form-control" type="date" placeholder="Type here">
+            <form id="filterNotifications_form">
+
+                <div class="row gy-3">
+                    <div class="col-4 col-md-3">
+                        <label class="fw-semibold form-label">From Date</label>
+                        <input type="date" class="py-1 px-3 rounded-1 form-control" name="date_from" placeholder="Type here">
+                    </div>
+                    <div class="col-4 col-md-3">
+                        <label class="fw-semibold form-label">To Date</label>
+                        <input type="date" class="py-1 px-3 rounded-1 form-control" name="date_to"  placeholder="Type here">
+                    </div>
+                    <div class="col-4 col-md-3">
+                        <label class="fw-semibold form-label">Status</label>
+                        <select class="form-control" name="read_flag" id="">
+                            <option value="">Choose</option>
+                            <option value="1">Read</option>
+                            <option value="0">Unread</option>
+                        </select>
+                    </div>
+                    <div class="col-4 col-md-3">
+                        <label class="fw-semibold form-label">From User</label>
+                        <input type="text" class="py-1 px-3 rounded-1 form-control" name="from_username" placeholder="Type here">
+                    </div>
                 </div>
-                <div class="col-4 col-md-3">
-                    <label class="fw-semibold form-label">To Date</label>
-                    <input class="py-1 px-3 rounded-1 form-control" type="date" placeholder="Type here">
+                <div class="d-flex justify-content-end gap-2">
+                    <button type="button" class="mt-3 py-1 px-3 text-white rounded-1 clear_filter">Clear Filter</button>
+                    <button type="button" class="mt-3 py-1 px-3 text-white rounded-1" id="searchNotification_btn">Search</button>
                 </div>
-                <div class="col-4 col-md-3">
-                    <label class="fw-semibold form-label">Status</label>
-                    <select class="form-control" name="" id="">
-                        <option selected>Choose</option>
-                        <option value="1">Read</option>
-                        <option value="2">Unread</option>
-                    </select>
-                </div>
-                <div class="col-4 col-md-3">
-                    <label class="fw-semibold form-label">From User</label>
-                    <input class="py-1 px-3 rounded-1 form-control" type="text" placeholder="Type here">
-                </div>
-            </div>
-            <div class="d-flex justify-content-end gap-2">
-                <button class="mt-3 py-1 px-3 text-white rounded-1">
-                    Clear Filter
-                </button>
-                <button class="mt-3 py-1 px-3 text-white rounded-1">
-                    Search
-                </button>
-            </div>
+
+            </form>
         </div>
     </div>
-    <div class="row py-4">
-        <div class="col-12">
-            <a class="d-flex align-items-center gap-2 text-dark" href="#">
-                <img class="rounded-5"
-                    src="https://img.freepik.com/free-vector/people-white_24877-49457.jpg?size=626&ext=jpg" width="70"
-                    height="70" alt="img">
-                <div class="text-start">
-                    <div class="d-flex justify-content-between">
-                        <span class="fw-bold">John Doe</span>
-                        <div class="d-flex align-items-center gap-3">
-                            <small>01, August, 2024</small>
-                            <small>11:00 am</small>
-                        </div>
-                    </div>
-                    <small>Mentioned you in a comment</small>
-                    <p class="pt-2">
-                        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Mollitia sapiente officia sunt culpa
-                        nulla natus expedita non maiores, maxime quo.
-                    </p>
-                </div>
-            </a>
-        </div>
-
-        <hr class="my-3" style="border: 1px solid red">
-
-        <div class="col-12">
-            <a class="d-flex align-items-center gap-2 text-dark" href="#">
-                <img class="rounded-5"
-                    src="https://img.freepik.com/free-vector/people-white_24877-49457.jpg?size=626&ext=jpg" width="70"
-                    height="70" alt="img">
-                <div class="text-start">
-                    <div class="d-flex justify-content-between">
-                        <span class="fw-bold">John Doe</span>
-                        <div class="d-flex align-items-center gap-3">
-                            <small>01, August, 2024</small>
-                            <small>11:00 am</small>
-                        </div>
-                    </div>
-                    <small>Mentioned you in a comment</small>
-                    <p class="pt-2">
-                        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Mollitia sapiente officia sunt culpa
-                        nulla natus expedita non maiores, maxime quo.
-                    </p>
-                </div>
-            </a>
-        </div>
-
-        <hr class="my-3" style="border: 1px solid red">
-
-        <div class="col-12">
-            <a class="d-flex align-items-center gap-2 text-dark" href="#">
-                <img class="rounded-5"
-                    src="https://img.freepik.com/free-vector/people-white_24877-49457.jpg?size=626&ext=jpg" width="70"
-                    height="70" alt="img">
-                <div class="text-start">
-                    <div class="d-flex justify-content-between">
-                        <span class="fw-bold">John Doe</span>
-                        <div class="d-flex align-items-center gap-3">
-                            <small>01, August, 2024</small>
-                            <small>11:00 am</small>
-                        </div>
-                    </div>
-                    <small>Mentioned you in a comment</small>
-                    <p class="pt-2">
-                        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Mollitia sapiente officia sunt culpa
-                        nulla natus expedita non maiores, maxime quo.
-                    </p>
-                </div>
-            </a>
-        </div>
-
-        <hr class="my-3" style="border: 1px solid red">
-
-        <div class="col-12">
-            <a class="d-flex align-items-center gap-2 text-dark" href="#">
-                <img class="rounded-5"
-                    src="https://img.freepik.com/free-vector/people-white_24877-49457.jpg?size=626&ext=jpg" width="70"
-                    height="70" alt="img">
-                <div class="text-start">
-                    <div class="d-flex justify-content-between">
-                        <span class="fw-bold">John Doe</span>
-                        <div class="d-flex align-items-center gap-3">
-                            <small>01, August, 2024</small>
-                            <small>11:00 am</small>
-                        </div>
-                    </div>
-                    <small>Mentioned you in a comment</small>
-                    <p class="pt-2">
-                        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Mollitia sapiente officia sunt culpa
-                        nulla natus expedita non maiores, maxime quo.
-                    </p>
-                </div>
-            </a>
-        </div>
-
-        <hr class="my-3" style="border: 1px solid red">
-
-        <div class="col-12">
-            <a class="d-flex align-items-center gap-2 text-dark" href="#">
-                <img class="rounded-5"
-                    src="https://img.freepik.com/free-vector/people-white_24877-49457.jpg?size=626&ext=jpg" width="70"
-                    height="70" alt="img">
-                <div class="text-start">
-                    <div class="d-flex justify-content-between">
-                        <span class="fw-bold">John Doe</span>
-                        <div class="d-flex align-items-center gap-3">
-                            <small>01, August, 2024</small>
-                            <small>11:00 am</small>
-                        </div>
-                    </div>
-                    <small>Mentioned you in a comment</small>
-                    <p class="pt-2">
-                        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Mollitia sapiente officia sunt culpa
-                        nulla natus expedita non maiores, maxime quo.
-                    </p>
-                </div>
-            </a>
-        </div>
+    <div class="row py-4" id="notifications_body">
+        
     </div>
 </div>
 @endsection
 
 @push('scripts')
-    <script>
-        var filterArrow = document.getElementById('filterArrow');
-        var filterSection = document.getElementById('filterSection');
-
-        filterSection.addEventListener('shown.bs.collapse', function () {
-            filterArrow.classList.add('rotate');
-        });
-
-        filterSection.addEventListener('hidden.bs.collapse', function () {
-            filterArrow.classList.remove('rotate');
-        });
-    </script>
+    <script src="{{ asset('assets_admin/customjs/script_notifications.js') }}"></script>
 @endpush

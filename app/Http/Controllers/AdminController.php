@@ -85,8 +85,6 @@ class AdminController extends Controller
         return redirect('login');
     }
 
-    
-
     public function dashboard(Request $request)
     {
         $data['pageTitle'] = 'Dashboard';
@@ -135,6 +133,11 @@ class AdminController extends Controller
         return view('admin/inventory')->with($data);
     }
     
+    public function notification(Request $request)
+    {
+        $data['pageTitle'] = 'Notification';
+        return view('admin/notification')->with($data);
+    }
 
     
     public function getProfilePageData(Request $request){
@@ -221,9 +224,16 @@ class AdminController extends Controller
         
         if($request->user_id == ''){
             $validatedData = $request->validate([
-                'name' => 'required|string|max:50',
-                'email' => 'required|email|max:100|unique:users',
                 'user_role' => 'required|numeric',
+                'name' => 'required|string|max:50',
+                'email' => [
+                    'required',
+                    'email',
+                    'max:100',
+                    'unique:users',
+                    'regex:/^[\w.%+-]+@[A-Za-z0-9.-]+\.[A-Z]{2,}$/i'
+                ],
+                'phone_number' => 'required|numeric|digits_between:7,18',
                 'password' => [
                     'required',
                     'string',
@@ -233,17 +243,21 @@ class AdminController extends Controller
                     'confirmed'
                 ],
             ], [
+                'email.regex' => 'The email must be a valid email address with a proper domain.',
                 'password_confirmation.regex' => 'The password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.',
             ]); 
         }else{
-            if($request->password == ''){
+            if($request->password == '' && $request->password_confirmation == ''){
                 $validatedData = $request->validate([
                     'name' => 'required|string|max:50',
+                    'phone_number' => 'required|numeric|digits_between:7,18',
                 ]);
             }else{
                 $validatedData = $request->validate([
                     'name' => 'required|string|max:50',
+                    'phone_number' => 'required|numeric|digits_between:7,18',
                     'password' => [
+                        'required',
                         'string',
                         'min:8',
                         'max:20',
@@ -256,14 +270,15 @@ class AdminController extends Controller
             }
         }
         
-       
         if($request->user_id == ''){
             $user = new User();
         }else{
             $user = User::where('id', $request->user_id)->first();
         }
        
-        $user->name = $request->name;
+        $user->name = ucwords(strtolower($request->name));
+        $user->phone_number = $request->phone_number;
+        
         if($request->user_id == ''){
             $user->email = $request->email;
             $user->role_id = $request->user_role;
@@ -285,6 +300,7 @@ class AdminController extends Controller
         $mailData['user'] = $user->name;
         $mailData['username'] = $user->name;
         $mailData['email'] = $user->email;
+        $mailData['phone_num'] = $user->phone_number;
         $mailData['role'] = $roleName;
 
         if($request->user_id == ''){
@@ -293,7 +309,7 @@ class AdminController extends Controller
             $mailData['text2'] = "If you have any questions, feel free to reach out to us at support@superiorcrane.com.";
 
             $body = view('emails.signup_welcome', $mailData);
-            $userEmailsSend[] = 'hamza@5dsolutions.ae';//$user->email;
+            $userEmailsSend[] = $user->email;//'hamza@5dsolutions.ae';//
 
             sendMail($user->name, $userEmailsSend, 'Superior Crane', 'Register User', $body);
         }else{
@@ -304,7 +320,7 @@ class AdminController extends Controller
                 $mailData['text2'] = "If you have any questions, feel free to reach out to us at support@superiorcrane.com.";
 
                 $body = view('emails.signup_welcome', $mailData);
-                $userEmailsSend[] = 'hamza@5dsolutions.ae';//$user->email;
+                $userEmailsSend[] = $user->email;//'hamza@5dsolutions.ae';//
 
                 sendMail($user->name, $userEmailsSend, 'Superior Crane', 'Change Password', $body);
             }
@@ -349,6 +365,7 @@ class AdminController extends Controller
             $mailData['user'] = $user->name;
             $mailData['username'] = $user->name;
             $mailData['email'] = $user->email;
+            $mailData['phone_num'] = $user->phone_number;
             $mailData['role'] = $roleName;
             $mailData['status'] = $user->status == '0' ? 'Deactive' : 'Active';
 
@@ -363,7 +380,7 @@ class AdminController extends Controller
             $mailData['text2'] = "If you have any questions, feel free to reach out to us at support@superiorcrane.com.";
 
             $body = view('emails.signup_welcome', $mailData);
-            $userEmailsSend[] = 'hamza@5dsolutions.ae';//$user->email;
+            $userEmailsSend[] = $user->email;//'hamza@5dsolutions.ae';//
             sendMail($user->name, $userEmailsSend, 'Superior Crane', $subject, $body);
 
             return response()->json(['status' => 200, 'message' => "User status updated successfully."]);
@@ -407,23 +424,23 @@ class AdminController extends Controller
         }
         
 
-        if (!is_null($search_user_num)) {
+        if ($search_user_num != '') {
             $query->where('id', $search_user_num);
         }
-        if (!is_null($search_name)) {
+        if ($search_name != '') {
             $query->where('name', 'like', '%' . $search_name . '%');
         }
 
-        if (!is_null($search_email)) {
+        if ($search_email != '') {
             $query->where('email', 'like', '%' . $search_email . '%');
         }
 
-        if (!is_null($search_phone)) {
+        if ($search_phone != '') {
             // $query->where('phone_number', $search_phone);
             $query->where('phone_number', 'like', '%' . $search_phone . '%');
         }
 
-        if (!is_null($search_status)) {
+        if ($search_status != '') {
             $query->where('status', $search_status);
         }
 
@@ -436,6 +453,17 @@ class AdminController extends Controller
     public function deleteSpecificUser(Request $request){
         $user_id = $request->user_id;
         $user = User::where('id', $user_id)->where('role_id','!=','0')->first();
+        
+        $jobsCount = JobModel::where('rigger_assigned', $user->id)->count();
+        if($jobsCount > 0){
+            return response()->json(['status' => 402, 'message' => "Unable to delete. There is a job assigned to this user."]);
+        }
+
+        $jobsCount1 = JobModel::where('created_by', $user->id)->count();
+        if($jobsCount1 > 0){
+            return response()->json(['status' => 402, 'message' => "Unable to delete. There is a job linked with this user."]);
+        }
+        
         if($user){
             User::where('id', $user_id)->delete();
             return response()->json(['status' => 200, 'message' => "User deleted successfully"]);
@@ -446,9 +474,25 @@ class AdminController extends Controller
     
     public function getDashboardPageData(Request $request){
 
-        $users_list = User::whereIn('role_id', ['3','4','5'])->get();
+        $jobs_list_new = [];
+        $jobs_list = JobModel::orderBy('id','desc')->get();
+        if($jobs_list){
+            foreach ($jobs_list as $index => $value) {
+                $riggerAssignedIds = json_decode($value->rigger_assigned, true);
+            
+                if (is_array($riggerAssignedIds)) {
+                    $assignedUsers = User::whereIn('id', $riggerAssignedIds)->pluck('name')->toArray();
+                } else {
+                    $assignedUsers = array();
+                }
+                $value->user_assigned = implode(', ', $assignedUsers);
+                $jobs_list_new[] = $value;
+            }
+        }
+        // dd($jobs_list_new);
+        $users_list = User::whereIn('role_id', ['2','3','4','5'])->get();
         $data['users_list'] = $users_list;
-        $data['jobs_list'] = JobModel::with(['userAssigned'])->orderBy('id','desc')->get();
+        $data['jobs_list'] = $jobs_list_new;
         $data['total_scci'] = JobModel::where('job_type', '1')->count();
         $data['total_crane'] = JobModel::where('job_type', '2')->count();
         $data['total_other'] = JobModel::where('job_type', '3')->count();
@@ -460,15 +504,30 @@ class AdminController extends Controller
     public function getAllJobs(Request $request){
 
         
-        $jobs = JobModel::all(); // Retrieve job data from the database
+        $jobs = JobModel::with(['userAssigned'])->get(); // Retrieve job data from the database
+        // dd($jobs);
         $events = $jobs->map(function ($job) {
+            if(isset($job->userAssigned->role_id) && $job->userAssigned->role_id == 2){
+                $role = 'M-';
+            }else if(isset($job->userAssigned->role_id) && $job->userAssigned->role_id == 3){
+                $role = 'R-';
+            }else if(isset($job->userAssigned->role_id) && $job->userAssigned->role_id == 4){
+                $role = 'T-';
+            }else if(isset($job->userAssigned->role_id) && $job->userAssigned->role_id == 5){
+                $role = 'RT-';
+            }else{
+                $role = '';
+            }
+            
             return [
                 'id' => $job->id,
-                'title' => $job->client_name,
-                'start' => $job->start_time,
-                'end' => $job->end_time,
-                'end' => $job->end_time,
+                'title' => substr($job->client_name, 0, 7) . '/' . $job->address,
+                'start' => $job->date.' '.$job->start_time,
+                'end' => $job->date.' '.$job->end_time,
                 'extendedProps' => [
+                    'title_full' => date('H:i', strtotime($job->start_time)) . ' ' . 
+                                        $job->client_name . '/' . $job->address . '/' . 
+                                        $job->equipment_to_be_used . '/' . $role.''.$job->rigger_assigned,
                     'type' => $job->job_type,
                     'status' => $job->status,
                 ],
@@ -480,55 +539,89 @@ class AdminController extends Controller
 
     public function saveJobData(Request $request){
         
+        // dd($request->all());
+        $request->merge([
+            'start_time' => $request->input('start_time') != '' ? date('H:i', strtotime($request->input('start_time'))) : '',
+            'end_time' => $request->input('end_time') != '' ? date('H:i', strtotime($request->input('end_time'))) : '',
+        ]);
         if($request->job_id == ''){
             $validatedData = $request->validate([
                 'job_type' => 'required',
-                'job_time' => 'required|date_format:H:i',
+                // 'job_time' => 'required|date_format:H:i',
                 'client_name' => 'required|string|max:50',
-                'equipment_to_be_used' => 'required|string|max:255',
-                'rigger_assigned' => 'required|numeric',
-                'date' => 'required|date',
+                // 'date' => 'required|date',
+                'date' => ['required', 'date_format:Y-m-d', 'regex:/^(19|20)\d\d-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/'],
+                'start_time' => 'required|date_format:H:i',
+                // 'end_time' => 'required|date_format:H:i',
                 'address' => 'required|string|max:200',
-                'start_time' => 'required|date_format:Y-m-d\TH:i',
-                'end_time' => 'required|date_format:Y-m-d\TH:i|after:start_time',
-                'supplier_name' => 'required|string|max:50',
+                'equipment_to_be_used' => 'required_unless:job_type,3|max:255',
+                'rigger_assigned' => 'required_unless:job_type,3|array',
+                'user_assigned' => 'max:50',
+                'supplier_name' => 'max:50',
                 'notes' => 'nullable|string',
                 // 'scci' => 'boolean',
-                'job_images' => 'required',
-                'job_images.*' => 'required|mimes:jpeg,png,jpg,gif,svg,pdf|max:2048',
-                'job_images_title' => 'required',
-                'job_images_title.*' => 'required|string|max:255',
+                // 'job_images' => 'required',
+                'job_images.*' => 'mimes:jpeg,png,jpg,gif,svg,pdf|max:2048',
+                // 'job_images_title' => 'required',
+                'job_images_title.*' => 'string|max:255',
                 // 'status' => 'required',
+            ], [
+                'rigger_assigned.required' => 'Assigned User field is required.',
+                'job_images.required' => 'Job attachment is required.',
+                'job_images.*.required' => 'Job attachment is required.',
+                'job_images.*.mimes' => 'Job attachment must be a file of type: jpeg, png, jpg, gif, svg, pdf.',
+                'job_images.*.max' => 'Job attachment may not be greater than 2048 kilobytes.',
+                'job_images_title.required' => 'Job attachment title is required.',
+                'job_images_title.*.required' => 'Job attachment title is required.',
+                'job_images_title.*.string' => 'Job attachment title must be a string.',
+                'job_images_title.*.max' => 'Job attachment title may not be greater than 255 characters.',
             ]); 
         }else{
             $validatedData = $request->validate([
                 'job_id' => 'required',
                 'job_type' => 'required',
-                'job_time' => 'required|date_format:H:i',
+                // 'job_time' => 'required|date_format:H:i',
                 'client_name' => 'required|string|max:50',
-                'equipment_to_be_used' => 'required|string|max:255',
-                'rigger_assigned' => 'required|numeric',
-                'date' => 'required|date',
+                'date' => ['required', 'date_format:Y-m-d', 'regex:/^(19|20)\d\d-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/'],
+                'start_time' => 'required|date_format:H:i',
+                // 'end_time' => 'required|date_format:H:i|after:start_time',
                 'address' => 'required|string|max:200',
-                'start_time' => 'required|date_format:Y-m-d\TH:i',
-                'end_time' => 'required|date_format:Y-m-d\TH:i|after:start_time',
-                'supplier_name' => 'required|string|max:50',
+                'equipment_to_be_used' => 'required_unless:job_type,3|max:255',
+                'rigger_assigned' => 'required_unless:job_type,3|array',
+                'user_assigned' => 'max:50',
+                'supplier_name' => 'max:50',
                 'notes' => 'nullable|string',
-                // 'job_images' => 'required',
-                'job_images' => 'required|array|min:1',
-                'job_images.*' => 'required|mimes:jpeg,png,jpg,gif,svg,pdf|max:2048',
-                // 'job_images.*' => 'required|mimes:jpeg,png,jpg,gif,svg,pdf|max:2048',
+                // 'job_images.*' => 'required',
+                'job_images.*' => 'mimes:jpeg,png,jpg,gif,svg,pdf|max:2048',
                 // 'job_images_title' => 'required',
-                'job_images_title.*' => 'required|string|max:255',
+                'job_images_title.*' => 'string|max:255',
                 'status' => 'required',
+            ], [
+                'rigger_assigned.required' => 'Assigned User field is required.',
+                'job_images.*.required' => 'Job attachment is required.',
+                'job_images.*.mimes' => 'Job attachment must be a file of type: jpeg, png, jpg, gif, svg, pdf.',
+                'job_images.*.max' => 'Job attachment may not be greater than 2048 kilobytes.',
+                'job_images_title.*.required' => 'Job attachment title is required.',
+                'job_images_title.*.string' => 'Job attachment title must be a string.',
+                'job_images_title.*.max' => 'Job attachment title may not be greater than 255 characters.',
             ]); 
+            
+            $imageTitlesArray = $request->input('job_images_title');
+            
+            if(isset($imageTitlesArray[0]) && $imageTitlesArray[0] != ''){
+                if(!$request->hasFile('job_images')){
+                    return response()->json(['status' => 402, 'message' => 'The job attachment field is required.']);
+                }
+            }
         }
         
         if($request->job_id == ''){
             $job = new JobModel;
+            $job->status = '1';     // 2=>on hold , 1=>goodtogo , 3=>complete
             $job->created_by = Auth::user()->id;
         }else{
             $job = JobModel::where('id', $request->job_id)->first();
+            $job->status = $request->status;
             $job->updated_by = Auth::user()->id;
 
             $previousStatus = $job->status;
@@ -536,25 +629,24 @@ class AdminController extends Controller
         }
         
         $job->job_type = $request->job_type;
-        $job->job_time = $request->job_time;
+        // $job->job_time = $request->job_time;
         $job->equipment_to_be_used = $request->equipment_to_be_used;
         $job->client_name = $request->client_name;
-        $job->rigger_assigned = $request->rigger_assigned;
+        $job->rigger_assigned = json_encode($request->rigger_assigned);
+        $job->user_assigned = $request->user_assigned;
         $job->date = $request->date;
         $job->address = $request->address;
         $job->start_time = $request->start_time;
-        $job->end_time = $request->end_time;
+        // $job->end_time = $request->end_time;
         $job->supplier_name = $request->supplier_name;
         $job->notes = $request->notes;
-        $job->status = $request->status;
-        
         $job->save();
 
         if(isset($request->deletedFileIds) && $request->deletedFileIds != ''){
             $deletedIdsArr = explode(',', $request->deletedFileIds);
             foreach($deletedIdsArr as $index => $value){
                 $JobImage = JobImages::where('id', $value)->first();
-                deleteImage(str_replace(url('/public'),"",$JobImage->path));
+                deleteImage(str_replace(url('/'),"",$JobImage->path));
                 JobImages::where('id', $value)->delete();
             }   
         }
@@ -581,10 +673,12 @@ class AdminController extends Controller
                 $file->move(public_path($path), $date_append . '.' . $file_extension);
 
                 $savedFilePaths = '/public' . $path . '/' . $date_append . '.' . $file_extension;//
+                // $savedFilePaths = $path . '/' . $date_append . '.' . $file_extension;
 
                 $JobImages = new JobImages();
                 $JobImages->job_id = $job->id;
-                $JobImages->file_name = $file_title;//$file->getClientOriginalName();
+                $JobImages->file_name = $file_title;
+                $JobImages->type = strtolower($file_extension);//$file->getClientOriginalName();
                 $JobImages->path = $savedFilePaths;
                 $JobImages->save();
             }
@@ -592,9 +686,12 @@ class AdminController extends Controller
 
         if($request->job_id == ''){
             $jobDetail = JobModel::where('id', $job->id)->first();
-            $user = User::where('id', $jobDetail->rigger_assigned)->first();// assigned user details
+            $riggerAssignedIds = json_decode($jobDetail->rigger_assigned);
+            $users = User::whereIn('id', $riggerAssignedIds != null ? $riggerAssignedIds : [])->get();
+            $assignedUsers = User::whereIn('id', $riggerAssignedIds != null ? $riggerAssignedIds : [])->pluck('name')->toArray();
+            $userNames = implode(', ', $assignedUsers);
             $createdBy = User::where('id', $jobDetail->created_by)->first();
-            
+            // dd($assignedUsers);
             
             if($jobDetail->job_type == '1'){
                 $job_type = 'Logistic Job(SCCI)';  
@@ -616,18 +713,29 @@ class AdminController extends Controller
             
             $mailData = [];
             
-            $mailData['user'] = $user->name;
-            $mailData['username'] = $user->name;
+            $mailData['user'] = isset($user->name) ? $user->name : $jobDetail->user_assigned;
+            $mailData['username'] = isset($user->name) ? $user->name : $jobDetail->user_assigned;
             $mailData['job_number'] = 'J-'.$jobDetail->id;
             $mailData['job_type'] = $job_type;
-            $mailData['assigned_to'] = $user->name;
+            $mailData['assigned_to'] = isset($user->name) ? $user->name : $jobDetail->user_assigned;
             $mailData['client_name'] = $jobDetail->client_name;
             $mailData['start_time'] = $jobDetail->start_time;
-            $mailData['end_time'] = $jobDetail->end_time;
+            // $mailData['end_time'] = $jobDetail->end_time;
             $mailData['status'] = $status_txt;
 
             $mailData['text1'] = "New job has been assigned by " . $createdBy->name . ". Job details are as under.";
             $mailData['text2'] = "For more details please contact the Manager/Admin.";
+
+            if($jobDetail->job_type != 3){
+                foreach($users as $user){
+                    $mailData['user'] = isset($user->name) ? $user->name : $jobDetail->user_assigned;
+                    $mailData['username'] = isset($user->name) ? $user->name : $jobDetail->user_assigned;
+                    $mailData['assigned_to'] = isset($user->name) ? $user->name : $jobDetail->user_assigned;
+                    $body = view('emails.job_template', $mailData);
+                    $userEmailsSend = $user->email;//'hamza@5dsolutions.ae';//
+                    sendMail(isset($user->name) ? $user->name : $jobDetail->user_assigned, $userEmailsSend, 'Superior Crane', 'Job Creation', $body);
+                }
+            }
 
             $allUsers = User::whereIn('role_id', ['0','1','2'])->where('status', '1')->where('id','!=',Auth::user()->id)->get();
 
@@ -635,7 +743,7 @@ class AdminController extends Controller
                 foreach($allUsers as $value){
                     $mailData['user'] = $value->name;
                     $body = view('emails.job_template', $mailData);
-                    $userEmailsSend = 'hamza@5dsolutions.ae';//$value->email;
+                    $userEmailsSend = $value->email;//'hamza@5dsolutions.ae';//
                     sendMail($value->name, $userEmailsSend, 'Superior Crane', 'Job Creation', $body);
                 }
             }
@@ -646,7 +754,11 @@ class AdminController extends Controller
             $Notifications->from_user_id = $createdBy->id;
             $Notifications->to_user_id = '1';
             $Notifications->subject = 'Assigned a new '. $job_type;
-            $Notifications->message = 'Job J-'.$jobDetail->id.' on '.date('d-M-Y', strtotime($jobDetail->date)).' at '.date('H:i A', strtotime($jobDetail->job_time)).' has been assigned to '.  $user->name .'.';
+            if($jobDetail->job_type != 3){
+                $Notifications->message = 'Job J-'.$jobDetail->id.' on '.date('d-M-Y', strtotime($jobDetail->date)).' at '.date('H:i A', strtotime($jobDetail->job_time)).' has been assigned to '. isset($userNames) ? $userNames : $jobDetail->user_assigned .'.';
+            }else{
+                $Notifications->message = 'Job J-'.$jobDetail->id.' on '.date('d-M-Y', strtotime($jobDetail->date)).' at '.date('H:i A', strtotime($jobDetail->job_time)).' has been assigned to '. $jobDetail->user_assigned .'.';
+            }
             $Notifications->message_html = $body;
             $Notifications->read_flag = '0';
             $Notifications->created_by = $createdBy->id;
@@ -656,7 +768,10 @@ class AdminController extends Controller
         }else{
             if($previousStatus != $currentStatus){
                 $jobDetail = JobModel::where('id', $job->id)->first();
-                $user = User::where('id', $jobDetail->rigger_assigned)->first();// assigned user details
+                $riggerAssignedIds = json_decode($jobDetail->rigger_assigned);
+                $users = User::whereIn('id', $riggerAssignedIds)->get();
+                $assignedUsers = User::whereIn('id', $riggerAssignedIds)->pluck('name')->toArray();
+                $userNames = implode(', ', $assignedUsers);
                 $createdBy = User::where('id', $jobDetail->created_by)->first();
                 
                 if($jobDetail->job_type == '1'){
@@ -679,18 +794,29 @@ class AdminController extends Controller
                 
                 $mailData = [];
                 
-                $mailData['user'] = $user->name;
-                $mailData['username'] = $user->name;
+                $mailData['user'] = isset($user->name) ? $user->name : $jobDetail->user_assigned;
+                $mailData['username'] = isset($user->name) ? $user->name : $jobDetail->user_assigned;
                 $mailData['job_number'] = 'J-'.$jobDetail->id;
                 $mailData['job_type'] = $job_type;
-                $mailData['assigned_to'] = $user->name;
+                $mailData['assigned_to'] = isset($user->name) ? $user->name : $jobDetail->user_assigned;
                 $mailData['client_name'] = $jobDetail->client_name;
                 $mailData['start_time'] = $jobDetail->start_time;
-                $mailData['end_time'] = $jobDetail->end_time;
+                // $mailData['end_time'] = $jobDetail->end_time;
                 $mailData['status'] = $status_txt;
 
                 $mailData['text1'] = "Job status has been changed by admin. Job details are as under.";
                 $mailData['text2'] = "For more details please contact the Manager/Admin.";
+
+                if($jobDetail->job_type != 3){
+                    foreach($users as $user){
+                        $mailData['user'] = isset($user->name) ? $user->name : $jobDetail->user_assigned;
+                        $mailData['username'] = isset($user->name) ? $user->name : $jobDetail->user_assigned;
+                        $mailData['assigned_to'] = isset($user->name) ? $user->name : $jobDetail->user_assigned;
+                        $body = view('emails.job_template', $mailData);
+                        $userEmailsSend = $user->email;//'hamza@5dsolutions.ae';//
+                        sendMail(isset($user->name) ? $user->name : $jobDetail->user_assigned, $userEmailsSend, 'Superior Crane', 'Job Creation', $body);
+                    }
+                }
 
                 $allUsers = User::whereIn('role_id', ['0','1','3'])->where('status', '1')->where('id','!=',Auth::user()->id)->get();
 
@@ -698,7 +824,7 @@ class AdminController extends Controller
                     foreach($allUsers as $value){
                         $mailData['user'] = $value->name;
                         $body = view('emails.job_template', $mailData);
-                        $userEmailsSend = 'hamza@5dsolutions.ae';//$value->email;
+                        $userEmailsSend = $value->email;//'hamza@5dsolutions.ae';//
                         sendMail($value->name, $userEmailsSend, 'Superior Crane', 'Job Status Change', $body);
                     }
                 }
@@ -728,7 +854,10 @@ class AdminController extends Controller
     public function viewJobDetails(Request $request){
         $job_id = $request->job_id;
         
-        $job = JobModel::where('id', $job_id)->with(['jobImages','createdBy','updatedBy'])->first();
+        $job = JobModel::where('id', $job_id)
+                        ->with(['jobImages','createdBy','updatedBy','riggerTicket','riggerTicket.ticketImages',
+                                'riggerTicket.payDuty','riggerTicket.payDuty.dutyImages',
+                                'transporterTicket','transporterTicket.ticketImages'])->first();
         if($job){
             $data['job_detail'] = $job;
             return response()->json(['status' => 200, 'message' => "", 'data' => $data]);
@@ -740,6 +869,17 @@ class AdminController extends Controller
     public function deleteSpecificJob(Request $request){
         $job_id = $request->job_id;
         $job = JobModel::where('id', $job_id)->with(['jobImages'])->first();
+
+        $existCount = RiggerTicket::where('job_id', $job->id)->count();
+        if($existCount > 0){
+            return response()->json(['status' => 402, 'message' => "Unable to delete. There is a rigger ticket linked with this job."]);
+        }
+
+        $existCount1 = TransportationTicketModel::where('job_id', $job->id)->count();
+        if($existCount1 > 0){
+            return response()->json(['status' => 402, 'message' => "Unable to delete. There is a transporter ticket linked with this job."]);
+        }
+        
         if($job){
             $job_images = $job->job_images != null ? $job->job_images : array();
             if(count($job_images) > 0){
@@ -761,16 +901,23 @@ class AdminController extends Controller
         $search_address = $request->search_address;
         $search_job_type = $request->search_job_type;
         $search_status = $request->search_status;
-        $search_date = $request->search_date;
+        $search_from_date = $request->search_from_date;
+        $search_to_date = $request->search_to_date;
         $search_assigned_user = $request->search_assigned_user;
         $search_supplier = $request->search_supplier;
 
         if($search_job_no == '' && $search_client == '' && $search_address == '' && $search_job_type == '' && $search_status == '' &&
-            $search_date == '' && $search_assigned_user == '' && $search_supplier == ''){
+            $search_from_date == '' && $search_to_date == '' && $search_assigned_user == '' && $search_supplier == ''){
             return response()->json(['status' => 402, 'message' => 'Choose atleast one filter first!']);
         }
 
-        $query = JobModel::with(['userAssigned']);
+        if ($search_from_date != '' && $search_to_date != '') {
+            if (strtotime($search_from_date) > strtotime($search_to_date)) {
+                return response()->json(['status' => 402, 'message' => 'From date must be earlier than To date!']);
+            }
+        }
+
+        $query = JobModel::query();
         
         if ($search_job_no != '') {
             $query->where('id', $search_job_no);
@@ -788,26 +935,77 @@ class AdminController extends Controller
             $query->where('status', $search_status);
         }
 
-        if ($search_date != '') {
-            $query->whereDate('date', '=', $search_date);
+        if ($search_from_date != '' && $search_to_date == '') {
+
+            $query->whereDate('date', '>=', $search_from_date);
+
+        }else if ($search_from_date == '' && $search_to_date != '') {
+
+            $query->whereDate('date', '<=', $search_to_date);
+
+        }else if($search_from_date != '' && $search_to_date != ''){
+
+            $query->whereDate('date', '>=', $search_from_date);
+            $query->whereDate('date', '<=', $search_to_date);
         }
+
         if ($search_assigned_user != '') {
-            $query->where('rigger_assigned', $search_assigned_user);
+            // $query->whereJsonContains('rigger_assigned', $search_assigned_user);
+            $query->whereJsonContains('rigger_assigned', (string) $search_assigned_user);
         }
         if ($search_supplier != '') {
             $query->where('supplier_name', 'like', '%' . $search_supplier . '%');
         }
 
-        $data['jobs_list'] = $query->get();
+        $jobs_list_new = [];
+        $jobs_list = $query->get();
+        if($jobs_list){
+            foreach ($jobs_list as $index => $value) {
+                if($value->job_type == '3'){
+                    $jobs_list_new[] = $value;
+                }else{
+                    $riggerAssignedIds = json_decode($value->rigger_assigned, true);
+            
+                    if (is_array($riggerAssignedIds)) {
+                        $assignedUsers = User::whereIn('id', $riggerAssignedIds)->pluck('name')->toArray();
+                    } else {
+                        $assignedUsers = array();
+                    }
+                    $value->user_assigned = implode(', ', $assignedUsers);
+                    $jobs_list_new[] = $value;
+                }
+            }
+        }
+
+        $data['jobs_list'] = $jobs_list;
 
         return response()->json(['status' => 200, 'data' => $data]);
     }
 
     public function getJobsPageData(Request $request){
 
-        $users_list = User::whereIn('role_id', ['3','4','5'])->get();
+        $jobs_list_new = [];
+        $jobs_list = JobModel::orderBy('id','desc')->get();
+        if($jobs_list){
+            foreach ($jobs_list as $index => $value) {
+                if($value->job_type == '3'){
+                    $jobs_list_new[] = $value;
+                }else{
+                    $riggerAssignedIds = json_decode($value->rigger_assigned, true);
+                
+                    if (is_array($riggerAssignedIds)) {
+                        $assignedUsers = User::whereIn('id', $riggerAssignedIds)->pluck('name')->toArray();
+                    } else {
+                        $assignedUsers = array();
+                    }
+                    $value->user_assigned = implode(', ', $assignedUsers);;
+                    $jobs_list_new[] = $value;
+                }
+            }
+        }
+        $users_list = User::whereIn('role_id', ['2','3','4','5'])->get();
         $data['users_list'] = $users_list;
-        $data['jobs_list'] = JobModel::with(['userAssigned'])->orderBy('id','desc')->get();
+        $data['jobs_list'] = $jobs_list_new;
         $data['total_scci'] = JobModel::where('job_type', '1')->count();
         $data['total_crane'] = JobModel::where('job_type', '2')->count();
         $data['total_other'] = JobModel::where('job_type', '3')->count();
@@ -832,12 +1030,19 @@ class AdminController extends Controller
         $rigger_name = $request->search_rigger_name;
         $email = $request->search_email;
         $location = $request->search_location;
-        $date = $request->search_date;
+        $from_date = $request->search_from_date;
+        $to_date = $request->search_to_date;
         $status = $request->search_status;
 
         if($ticket_number == '' && $customer_name == '' && $rigger_name == '' && $email == '' && $location == '' &&
-            $date == '' && $status == ''){
+            $from_date == '' && $to_date == '' && $status == ''){
             return response()->json(['status' => 402, 'message' => 'Choose atleast one filter first!']);
+        }
+
+        if ($from_date != '' && $to_date != '') {
+            if (strtotime($from_date) > strtotime($to_date)) {
+                return response()->json(['status' => 402, 'message' => 'From date must be earlier than To date!']);
+            }
         }
 
         $query = RiggerTicket::with(['jobDetail','userDetail']);
@@ -859,9 +1064,21 @@ class AdminController extends Controller
         if ($location != '') {
             $query->where('location', 'like', '%' . $location . '%');
         }
-        if ($date != '') {
-            $query->whereDate('date', '=', $date);
+        
+        if ($from_date != '' && $to_date == '') {
+
+            $query->whereDate('date', '>=', $from_date);
+
+        }else if ($from_date == '' && $to_date != '') {
+
+            $query->whereDate('date', '<=', $to_date);
+
+        }else if ($from_date != '' && $to_date != '') {
+
+            $query->whereDate('date', '>=', $from_date);
+            $query->whereDate('date', '<=', $to_date);
         }
+
         if ($status != '') {
             $query->where('status', $status);
         }
@@ -886,6 +1103,12 @@ class AdminController extends Controller
     public function deleteSpecificRiggerTicket(Request $request){
         $ticket_id = $request->ticket_id;
         $ticket = RiggerTicket::where('id', $ticket_id)->with(['ticketImages'])->first();
+
+        $existCount = PayDutyModel::where('rigger_ticket_id', $ticket->id)->count();
+        if($existCount > 0){
+            return response()->json(['status' => 402, 'message' => "Unable to delete. There is a pay duty form linked with this ticket."]);
+        }
+
         if($ticket){
             $ticket_images = $ticket->ticket_images != null ? $ticket->ticket_images : array();
             if(count($ticket_images) > 0){
@@ -919,10 +1142,19 @@ class AdminController extends Controller
         $delivery_address = $request->search_delivery_address;
         $customer_email = $request->search_customer_email;
         $status = $request->search_status;
+        $job_from_date = $request->search_job_from_date;
+        $job_to_date = $request->search_job_to_date;
+
 
         if($ticket_number == '' && $transporter_name == '' && $job_client_name == '' && $pickup_address == '' && $delivery_address == '' &&
-            $customer_email == '' && $status == ''){
+            $customer_email == '' && $status == '' && $job_from_date == '' && $job_to_date == ''){
             return response()->json(['status' => 402, 'message' => 'Choose atleast one filter first!']);
+        }
+
+        if ($job_from_date != '' && $job_to_date != '') {
+            if (strtotime($job_from_date) > strtotime($job_to_date)) {
+                return response()->json(['status' => 402, 'message' => 'Job From Date must be earlier than Job To Date!']);
+            }
         }
 
         $query = TransportationTicketModel::with(['jobDetail','userDetail']);
@@ -940,6 +1172,26 @@ class AdminController extends Controller
                 $subQuery->where('client_name', 'like', '%' . $job_client_name . '%');
             });
         }
+
+        if ($job_from_date != '' && $job_to_date == '') {
+            $query->whereHas('jobDetail', function ($subQuery) use ($job_from_date) {
+                $subQuery->where('date', '>=', $job_from_date);
+            });
+        }
+        if ($job_from_date == '' && $job_to_date != '') {
+            $query->whereHas('jobDetail', function ($subQuery) use ($job_to_date) {
+                $subQuery->where('date', '<=', $job_to_date);
+            });
+        }
+        if ($job_from_date != '' && $job_to_date != '') {
+            $query->whereHas('jobDetail', function ($subQuery) use ($job_from_date) {
+                $subQuery->where('date', '>=', $job_from_date);
+            });
+            $query->whereHas('jobDetail', function ($subQuery) use ($job_to_date) {
+                $subQuery->where('date', '<=', $job_to_date);
+            });
+        }
+
         if ($pickup_address != '') {
             $query->where('pickup_address', 'like', '%' . $pickup_address . '%');
         }
@@ -1003,14 +1255,21 @@ class AdminController extends Controller
         $officer_name = $request->search_officer_name;
         $officer_num = $request->search_officer_num;
         $issued_by = $request->search_issued_by;
-        $date = $request->search_date;
+        $from_date = $request->search_from_date;
+        $to_date = $request->search_to_date;
         $location = $request->search_location;
         $division = $request->search_division;
         $status = $request->search_status;
 
-        if($form_number == '' && $officer_name == '' && $officer_num == '' && $issued_by == '' && $date == '' &&
-            $location == '' && $division == '' && $status == ''){
+        if($form_number == '' && $officer_name == '' && $officer_num == '' && $issued_by == '' && 
+            $from_date == '' && $to_date == '' && $location == '' && $division == '' && $status == ''){
             return response()->json(['status' => 402, 'message' => 'Choose atleast one filter first!']);
+        }
+
+        if ($from_date != '' && $to_date != '') {
+            if (strtotime($from_date) > strtotime($to_date)) {
+                return response()->json(['status' => 402, 'message' => 'From date must be earlier than To date!']);
+            }
         }
 
         $query = PayDutyModel::with(['userDetail']);
@@ -1029,9 +1288,21 @@ class AdminController extends Controller
         if ($officer_num != '') {
             $query->where('officer', 'like', '%' . $officer_num . '%');
         }
-        if ($date != '') {
-            $query->whereDate('date', $date);
+        
+        if ($from_date != '' && $to_date == '') {
+
+            $query->whereDate('date', '>=', $from_date);
+
+        }else if ($from_date == '' && $to_date != '') {
+
+            $query->whereDate('date', '<=', $to_date);
+
+        }else if($from_date != '' && $to_date != ''){
+
+            $query->whereDate('date', '>=', $from_date);
+            $query->whereDate('date', '<=', $to_date);
         }
+
         if ($location != '') {
             $query->where('location', 'like', '%' . $location . '%');
         }
@@ -1145,7 +1416,7 @@ class AdminController extends Controller
             'items' => 'required|max:50',
             'pieces' => 'required|max:500',
             'location' => 'required|max:200',
-            'date_received' => 'required|date',
+            'date_received' => 'required|date|after:date_shipped',
             'date_shipped' => 'required|date',
             'days_in_yard' => 'required|numeric|digits_between:1,10',
             'offload_equipment' => 'max:100',
@@ -1218,104 +1489,196 @@ class AdminController extends Controller
         }
     }
 
+    public function getNotificationsPageData(Request $request){
+
+        $data['notifications_list'] = Notifications::with(['fromUser'])->orderBy('created_at', 'desc')->get();
+        
+        return response()->json(['status' => 200, 'message' => "",'data' => $data]);
+    }
+
+    public function searchNotificationsListing(Request $request){
+        $date_from = $request->date_from;
+        $date_to = $request->date_to;
+        $read_flag = $request->read_flag;
+        $from_username = $request->from_username;
+
+        if($date_from == '' && $date_to == '' && $read_flag == '' && $from_username == ''){
+            return response()->json(['status' => 402, 'message' => 'Choose atleast one filter first!']);
+        }
+
+        $query = Notifications::with(['fromUser'])->orderBy('created_at', 'desc');
+        
+        if ($date_from != '') {
+            $query->whereDate('created_at','>=', $date_from);
+        }
+
+        if ($date_to != '') {
+            $query->whereDate('created_at','<=', $date_to);
+        }
+
+        if ($read_flag != '') {
+            $query->where('read_flag', $read_flag);
+        }
+
+        if ($from_username != '') {
+            $query->whereHas('fromUser', function ($subQuery) use ($from_username) {
+                $subQuery->where('name', 'like', '%' . $from_username . '%');
+            });
+        }
+        
+        $data['notifications_list'] = $query->get();
+
+        return response()->json(['status' => 200, 'data' => $data]);
+    }
+
+    public function markNotificationRead(Request $request){
+        $notification_id = $request->notification_id;
+        $Notification = Notifications::where('id', $notification_id)->first();
+        $Notification->read_flag = '1';
+        $Notification->save();
+        return response()->json(['status' => 200, 'message' => ""]);
+        
+    }
+
+    public function changeRiggerTicketStatus(Request $request){
+        $ticket_id = $request->ticket_id;
+        $status = $request->status;
+        $reason = isset($request->reason) ? $request->reason : '';
+
+        $ticket = RiggerTicket::where('id', $ticket_id)->first();
+        $payDutyCount = PayDutyModel::where('rigger_ticket_id', $ticket->id)->where('status', 3)->count();
+        
+        if($payDutyCount){
+            return response()->json(['status' => 402, 'message' => "First change status of Pay Duty Form linked with this ticket."]);
+        }
+        if($ticket){
+            $ticket->change_status_reason = $reason;
+            $ticket->status = $status;
+            $ticket->save();
+            // change status of job related to ticket
+            $job = JobModel::where('id', $ticket->job_id)->first();
+            if($job){
+                $job->status = '1';
+                $job->save();
+            }
+            return response()->json(['status' => 200, 'message' => "Ticket status updated successfully."]);
+        }else{
+            return response()->json(['status' => 402, 'message' => "Something went wrong..."]);
+        }
+    }
+
+    public function changePayDutyStatus(Request $request){
+        $payduty_id = $request->payduty_id;
+        $status = $request->status;
+        $reason = isset($request->reason) ? $request->reason : '';
+        
+        $payDuty = PayDutyModel::where('id', $payduty_id)->first();
+        
+        if($payDuty){
+            $payDuty->change_status_reason = $reason;
+            $payDuty->status = $status;
+            $payDuty->save();
+            
+            return response()->json(['status' => 200, 'message' => "Pay Duty status updated successfully."]);
+        }else{
+            return response()->json(['status' => 402, 'message' => "Something went wrong..."]);
+        }
+    }
+
+    public function changeTransportTicketStatus(Request $request){
+        $ticket_id = $request->ticket_id;
+        $status = $request->status;
+        $reason = isset($request->reason) ? $request->reason : '';
+
+        $ticket = TransportationTicketModel::where('id', $ticket_id)->first();
+       
+        if($ticket){
+            $ticket->change_status_reason = $reason;
+            $ticket->status = $status;
+            $ticket->save();
+            // change status of job related to ticket
+            $job = JobModel::where('id', $ticket->job_id)->first();
+            if($job){
+                $job->status = '1';
+                $job->save();
+            }
+            return response()->json(['status' => 200, 'message' => "Ticket status updated successfully."]);
+        }else{
+            return response()->json(['status' => 402, 'message' => "Something went wrong..."]);
+        }
+    }
+
+    public function viewTicketPdf(Request $request){
+        $id = $request->id;
+        $flag = $request->flag;
+        
+        if($flag == '1'){
+            $pdfUrl = $this->makeRiggerTicketPdf($id);
+        }else if($flag == '2'){
+            $pdfUrl = $this->makeTransporterTicketPdf($id);
+        }else if($flag == '3'){
+            $pdfUrl = $this->makePayDutyPdf($id);
+        }else{
+            $pdfUrl = '';
+        }
+        
+        $data['pdf_url'] = '/public'.$pdfUrl;
+        return response()->json(['status' => 200, 'message' => "", 'data' => $data]);
+        
+    }
 
 
-
-
-
-
-
-
-    // public function sendtomailRigger(Request $request)
-    // {
-
-
-    //     $id = '14';
-    //     $filepath = public_path('assets/pdf/pdf_samples/rigger_ticket.pdf');
-    //     $output_file_path = public_path('assets/pdf/rigger_ticket_pdfs/ticket_' .$id. '.pdf'); 
-    //     $ticket = RiggerTicket::find($id);
-    //     if($ticket){
-    //         $fields = [
-    //             ['text' => $ticket->id, 'x' => 245, 'y' => 6.5],
-    //             ['text' => $ticket->specifications_remarks, 'x' => 128, 'y' => 58, 'width' => 138, 'height' => 6],
-                
-    //             ['text' => $ticket->customer_name, 'x' => 14, 'y' => 94],
-    //             ['text' => $ticket->location, 'x' => 99, 'y' => 94],
-    //             ['text' => $ticket->po_number, 'x' => 226, 'y' => 94],
-    //             ['text' => date('d-M-Y', strtotime($ticket->date)), 'x' => 14, 'y' => 106],
-    //             ['text' => $ticket->leave_yard, 'x' => 42, 'y' => 106],
-    //             ['text' => $ticket->start_job, 'x' => 70, 'y' => 106],
-    //             ['text' => $ticket->finish_job, 'x' => 99, 'y' => 106],
-    //             ['text' => $ticket->arrival_yard, 'x' => 127, 'y' => 106],
-    //             ['text' => $ticket->lunch, 'x' => 153.5, 'y' => 106, 'font' => 8],
-    //             ['text' => $ticket->travel_time, 'x' => 183, 'y' => 106],
-    //             ['text' => $ticket->crane_time, 'x' => 211, 'y' => 106],
-    //             ['text' => $ticket->total_hours, 'x' => 239, 'y' => 106],
-
-    //             ['text' => $ticket->crane_number, 'x' => 14, 'y' => 117.5],
-    //             ['text' => $ticket->rating, 'x' => 42, 'y' => 117.5],
-    //             ['text' => $ticket->boom_length, 'x' => 70, 'y' => 117.5],
-    //             ['text' => $ticket->operator, 'x' => 98, 'y' => 117.5],
-    //             ['text' => $ticket->other_equipment, 'x' => 183, 'y' => 117.5],
-    //             ['text' => $ticket->notes, 'x' => 15, 'y' => 134, 'width' => 250, 'height' => 6],
-
-    //             ['text' => $ticket->signature, 'x' => 40, 'y' => 187],
-    //         ];
     
-    //         $outputFile = $this->editPdf($filepath, $output_file_path, $fields);
-    //         $publicPath = str_replace(public_path(), '', $outputFile); // Remove the public path part
-    //         $publicUrl = url($publicPath); // Generate a full URL to the PDF file
-    //         return response()->json([
-    //             'success' => true,
-    //             'outputFile' => $publicPath,
-    //             'message' => 'Sent to Admin successfully'
-    //         ], 200);
-    //     }else{
-    //         return response()->json([
-    //             'success' => false,
-    //             'message' => 'Rigger Ticket NOt Found',
-    //         ], 401);
-    //     }
-    // }
 
-    // public function editPdf($file, $output_file, $fields)
-    // {
-    //     $fpdi = new Fpdi();
-    //     $count = $fpdi->setSourceFile($file);
 
-    //     for ($i = 1; $i <= $count; $i++) {
-    //         $template = $fpdi->importPage($i);
-    //         $size = $fpdi->getTemplateSize($template);
-    //         $fpdi->AddPage($size['orientation'], [$size['width'], $size['height']]);
-    //         $fpdi->useTemplate($template);
 
-    //         $fpdi->SetFont('Helvetica', '', 10);
-    //         foreach ($fields as $field) {
-    //             $fpdi->SetXY($field['x'], $field['y']);
-    //             // set font custom
-    //             if(isset($field['font'])){
-    //                 $fpdi->SetFont('Helvetica', '', $field['font']);
-    //             }
-    //             // set cell dimensions
-    //             if (isset($field['width']) && isset($field['height'])) {
-    //                 // Use MultiCell to prevent text from overflowing
-    //                 $fpdi->MultiCell($field['width'], $field['height'], $field['text']);
-    //             } else {
-    //                 // Use Write for single-line text fields
-    //                 $fpdi->Write(8, $field['text']);
-    //             }
-    //         }
-    //     }
-    //     $fpdi->Output($output_file, 'F');
-    //     // sendMailAttachment('Admin Team', 'hamza@5dsolutions.ae', 'Superior Crane', 'Rigger Ticket Generated', 'Rigger Ticket Generated', $output_file); // send_to_name, send_to_email, email_from_name, subject, body, attachment
-    //     return $output_file;
-    // }
-    
-    public function sendtomailTransporter(Request $request)
+    public function makeRiggerTicketPdf($id)
     {
 
+        $filepath = public_path('assets/pdf/pdf_samples/rigger_ticket.pdf');
+        $output_file_path = public_path('assets/pdf/rigger_ticket_pdfs/ticket_' .$id. '.pdf'); 
+        $ticket = RiggerTicket::find($id);
+        if($ticket){
+            $fields = [
+                ['text' => 'R-'.$ticket->id, 'x' => 245, 'y' => 6.5],
+                ['text' => $ticket->specifications_remarks, 'x' => 128, 'y' => 58, 'width' => 138, 'height' => 6],
+                
+                ['text' => $ticket->customer_name, 'x' => 14, 'y' => 94],
+                ['text' => $ticket->location, 'x' => 99, 'y' => 94],
+                ['text' => $ticket->po_number, 'x' => 226, 'y' => 94],
+                ['text' => date('d-M-Y', strtotime($ticket->date)), 'x' => 14, 'y' => 106],
+                ['text' => $ticket->leave_yard, 'x' => 42, 'y' => 106],
+                ['text' => $ticket->start_job, 'x' => 70, 'y' => 106],
+                ['text' => $ticket->finish_job, 'x' => 99, 'y' => 106],
+                ['text' => $ticket->arrival_yard, 'x' => 127, 'y' => 106],
+                ['text' => $ticket->lunch, 'x' => 153.5, 'y' => 106, 'font' => 8],
+                ['text' => $ticket->travel_time, 'x' => 183, 'y' => 106],
+                ['text' => $ticket->crane_time, 'x' => 211, 'y' => 106],
+                ['text' => $ticket->total_hours, 'x' => 239, 'y' => 106],
 
-        $id = '7';
+                ['text' => $ticket->crane_number, 'x' => 14, 'y' => 117.5],
+                ['text' => $ticket->rating, 'x' => 42, 'y' => 117.5],
+                ['text' => $ticket->boom_length, 'x' => 70, 'y' => 117.5],
+                ['text' => $ticket->operator, 'x' => 98, 'y' => 117.5],
+                ['text' => $ticket->other_equipment, 'x' => 183, 'y' => 117.5],
+                ['text' => $ticket->notes, 'x' => 15, 'y' => 134, 'width' => 250, 'height' => 6],
+
+                ['base64_image' => $ticket->signature, 'x' => 55, 'y' => 182, 'width' => 30, 'height' => 14.5],
+            ];
+    
+            $outputFile = $this->editPdf($filepath, $output_file_path, $fields);
+            $publicPath = str_replace(public_path(), '', $outputFile); // Remove the public path part
+            $publicUrl = url($publicPath); // Generate a full URL to the PDF file
+
+            return $publicPath;
+        }else{
+            return false;
+        }
+    }
+
+    public function makeTransporterTicketPdf($id)
+    {
+
         $filepath = public_path('assets/pdf/pdf_samples/transporter_ticket.pdf');
         $output_file_path = public_path('assets/pdf/transporter_ticket_pdfs/ticket_' .$id. '.pdf'); 
         $ticket = TransportationTicketModel::find($id);
@@ -1340,19 +1703,19 @@ class AdminController extends Controller
 
 
                 ['text' => $ticket->shipper_name, 'x' => 58, 'y' => 96.5],
-                ['text' => $ticket->shipper_signature, 'x' => 103, 'y' => 96.5],
+                ['base64_image' => $ticket->shipper_signature, 'x' => 122, 'y' => 98, 'width' => 20, 'height' => 5],
                 ['text' => date('d-M-Y', strtotime($ticket->shipper_signature_date)), 'x' => 164, 'y' => 96.5],
                 ['text' => date('H:i', strtotime($ticket->shipper_time_in)), 'x' => 210, 'y' => 96.5],
                 ['text' => $ticket->shipper_time_out, 'x' => 241, 'y' => 96.5],
 
                 ['text' => $ticket->pickup_driver_name, 'x' => 58, 'y' => 103],
-                ['text' => $ticket->pickup_driver_signature, 'x' => 103, 'y' => 103],
+                ['base64_image' => $ticket->pickup_driver_signature, 'x' => 122, 'y' => 104.5, 'width' => 20, 'height' => 5],
                 ['text' => date('d-M-Y', strtotime($ticket->pickup_driver_signature_date)), 'x' => 164, 'y' => 103],
                 ['text' => date('H:i', strtotime($ticket->pickup_driver_time_in)), 'x' => 210, 'y' => 103],
                 ['text' => $ticket->pickup_driver_time_out, 'x' => 241, 'y' => 103],
 
                 ['text' => $ticket->customer_name, 'x' => 58, 'y' => 110],
-                ['text' => $ticket->customer_signature, 'x' => 103, 'y' => 110],
+                ['base64_image' => $ticket->customer_signature, 'x' => 122, 'y' => 111, 'width' => 20, 'height' => 5],
                 ['text' => date('d-M-Y', strtotime($ticket->customer_signature_date)), 'x' => 164, 'y' => 110],
                 ['text' => date('H:i', strtotime($ticket->customer_time_in)), 'x' => 210, 'y' => 110],
                 ['text' => $ticket->customer_time_out, 'x' => 241, 'y' => 110],
@@ -1362,16 +1725,41 @@ class AdminController extends Controller
             $outputFile = $this->editPdf($filepath, $output_file_path, $fields);
             $publicPath = str_replace(public_path(), '', $outputFile); // Remove the public path part
             $publicUrl = url($publicPath); // Generate a full URL to the PDF file
-            return response()->json([
-                'success' => true,
-                'outputFile' => $publicPath,
-                'message' => 'Sent to Admin successfully'
-            ], 200);
+            
+            return $publicPath;
         }else{
-            return response()->json([
-                'success' => false,
-                'message' => 'Rigger Ticket NOt Found',
-            ], 401);
+            return false;
+        }
+    }
+    
+    public function makePayDutyPdf($id)
+    {
+
+        $filepath = public_path('assets/pdf/pdf_samples/pay_duty.pdf');
+        $output_file_path = public_path('assets/pdf/pay_duty_pdfs/form_' .$id. '.pdf'); 
+        $form = PayDutyModel::find($id);
+        if($form){
+            $fields = [
+                ['text' => 'P-'.$form->rigger_ticket_id, 'x' => 68, 'y' => 31],
+                ['text' => 'P-'.$form->id, 'x' => 167, 'y' => 31],
+                ['text' => date('d-M-Y', strtotime($form->date)), 'x' => 86, 'y' => 87.5],
+                ['text' => $form->location, 'x' => 86, 'y' => 105],
+                ['text' => date('h:i', strtotime($form->start_time)), 'x' => 86, 'y' => 123],
+                ['text' => date('h:i', strtotime($form->finish_time)), 'x' => 86, 'y' => 141],
+
+                ['text' => date('h:i', strtotime($form->total_hours)), 'x' => 86, 'y' => 159],
+                ['text' => $form->officer, 'x' => 86, 'y' => 177],
+                ['text' => $form->officer_name, 'x' => 110, 'y' => 194],
+                ['text' => $form->division, 'x' => 86, 'y' => 212],
+                ['base64_image' => $form->signature, 'x' => 100, 'y' => 225, 'width' => 30, 'height' => 10],
+            ];
+    
+            $outputFile = $this->editPdf($filepath, $output_file_path, $fields);
+            $publicPath = str_replace(public_path(), '', $outputFile); // Remove the public path part
+            $publicUrl = url($publicPath); // Generate a full URL to the PDF file
+            return $publicPath;
+        }else{
+            return false;
         }
     }
 
@@ -1389,95 +1777,40 @@ class AdminController extends Controller
             $fpdi->SetFont('Helvetica', '', 10);
             foreach ($fields as $field) {
                 $fpdi->SetXY($field['x'], $field['y']);
-                // set font custom
-                if(isset($field['font'])){
-                    $fpdi->SetFont('Helvetica', '', $field['font']);
-                }
-                // set cell dimensions
-                if (isset($field['width']) && isset($field['height'])) {
-                    // Use MultiCell to prevent text from overflowing
-                    $fpdi->MultiCell($field['width'], $field['height'], $field['text']);
-                } else {
-                    // Use Write for single-line text fields
-                    $fpdi->Write(8, $field['text']);
+
+                if(isset($field['base64_image'])){
+                    if($field['base64_image'] != '' && $field['base64_image'] != null){
+                       // Decode the base64 image and save it to a temporary file
+                        $imageData = base64_decode($field['base64_image']);
+                        $tempFilePath = tempnam(sys_get_temp_dir(), 'sig_') . '.png';
+                        file_put_contents($tempFilePath, $imageData);
+
+                        // Add the image to the PDF
+                        $fpdi->Image($tempFilePath, $field['x'], $field['y'], $field['width'], $field['height']);
+
+                        // Remove the temporary file
+                        unlink($tempFilePath);     
+                    }else{
+                        $fpdi->Write(8, '');
+                    }
+
+                }else{
+
+                    if(isset($field['font'])){
+                        $fpdi->SetFont('Helvetica', '', $field['font']);
+                    }else{
+                        $fpdi->SetFont('Helvetica', '', 10);
+                    }
+                    
+                    if (isset($field['width']) && isset($field['height'])) {
+                        $fpdi->MultiCell($field['width'], $field['height'], isset($field['text']) ? $field['text'] : '');
+                    } else {
+                        $fpdi->Write(8, isset($field['text']) ? $field['text'] : '');
+                    }
                 }
             }
         }
         $fpdi->Output($output_file, 'F');
-        // sendMailAttachment('Admin Team', 'hamza@5dsolutions.ae', 'Superior Crane', 'Rigger Ticket Generated', 'Rigger Ticket Generated', $output_file); // send_to_name, send_to_email, email_from_name, subject, body, attachment
         return $output_file;
     }
-
-    // public function sendtomailPayduty(Request $request)
-    // {
-
-
-    //     $id = '12';
-    //     $filepath = public_path('assets/pdf/pdf_samples/pay_duty.pdf');
-    //     $output_file_path = public_path('assets/pdf/pay_duty_pdfs/form_' .$id. '.pdf'); 
-    //     $form = PayDutyModel::find($id);
-    //     if($form){
-    //         $fields = [
-    //             ['text' => 'P-'.$form->rigger_ticket_id, 'x' => 68, 'y' => 31],
-    //             ['text' => 'P-'.$form->id, 'x' => 167, 'y' => 31],
-    //             ['text' => date('d-M-Y', strtotime($form->date)), 'x' => 86, 'y' => 87.5],
-    //             ['text' => $form->location, 'x' => 86, 'y' => 105],
-    //             ['text' => date('h:i', strtotime($form->start_time)), 'x' => 86, 'y' => 123],
-    //             ['text' => date('h:i', strtotime($form->finish_time)), 'x' => 86, 'y' => 141],
-
-    //             ['text' => date('h:i', strtotime($form->total_hours)), 'x' => 86, 'y' => 159],
-    //             ['text' => $form->officer, 'x' => 86, 'y' => 177],
-    //             ['text' => $form->officer_name, 'x' => 110, 'y' => 194],
-    //             ['text' => $form->division, 'x' => 86, 'y' => 212],
-    //             ['text' => $form->signature, 'x' => 88, 'y' => 230],
-    //         ];
-    
-    //         $outputFile = $this->editPdf($filepath, $output_file_path, $fields);
-    //         $publicPath = str_replace(public_path(), '', $outputFile); // Remove the public path part
-    //         $publicUrl = url($publicPath); // Generate a full URL to the PDF file
-    //         return response()->json([
-    //             'success' => true,
-    //             'outputFile' => $publicPath,
-    //             'message' => 'Sent to Admin successfully'
-    //         ], 200);
-    //     }else{
-    //         return response()->json([
-    //             'success' => false,
-    //             'message' => 'Rigger Ticket NOt Found',
-    //         ], 401);
-    //     }
-    // }
-
-    // public function editPdf($file, $output_file, $fields)
-    // {
-    //     $fpdi = new Fpdi();
-    //     $count = $fpdi->setSourceFile($file);
-
-    //     for ($i = 1; $i <= $count; $i++) {
-    //         $template = $fpdi->importPage($i);
-    //         $size = $fpdi->getTemplateSize($template);
-    //         $fpdi->AddPage($size['orientation'], [$size['width'], $size['height']]);
-    //         $fpdi->useTemplate($template);
-
-    //         $fpdi->SetFont('Helvetica', '', 10);
-    //         foreach ($fields as $field) {
-    //             $fpdi->SetXY($field['x'], $field['y']);
-    //             // set font custom
-    //             if(isset($field['font'])){
-    //                 $fpdi->SetFont('Helvetica', '', $field['font']);
-    //             }
-    //             // set cell dimensions
-    //             if (isset($field['width']) && isset($field['height'])) {
-    //                 // Use MultiCell to prevent text from overflowing
-    //                 $fpdi->MultiCell($field['width'], $field['height'], $field['text']);
-    //             } else {
-    //                 // Use Write for single-line text fields
-    //                 $fpdi->Write(8, $field['text']);
-    //             }
-    //         }
-    //     }
-    //     $fpdi->Output($output_file, 'F');
-    //     // sendMailAttachment('Admin Team', 'hamza@5dsolutions.ae', 'Superior Crane', 'Rigger Ticket Generated', 'Rigger Ticket Generated', $output_file); // send_to_name, send_to_email, email_from_name, subject, body, attachment
-    //     return $output_file;
-    // }
 }

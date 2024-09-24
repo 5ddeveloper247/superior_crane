@@ -1,3 +1,8 @@
+var canvas = document.getElementById("signature");
+var signaturePad = new SignaturePad(canvas);
+signaturePad.off();
+$('#signature').css('pointer-events', 'none');
+
 function loadRiggerTicketPageData() {
     
     let form = '';
@@ -39,19 +44,19 @@ function makeRiggerTicketListing(tickets_list){
                         <td>R-${value.id}</td>
                         <td>${value.user_detail != null ? value.user_detail.name : ''}</td>
                         <td>${value.job_detail != null ? value.job_detail.client_name : ''}</td>
-                        <td>${value.customer_name}</td>
-                        <td>${value.location}</td>
-                        <td>${value.po_number}</td>
+                        <td>${value.customer_name != null ? value.customer_name : ''}</td>
+                        <td>${value.location != null ? value.location : ''}</td>
+                        <td>${value.po_number != null ? value.po_number : ''}</td>
                         <td>${value.date != null ? formatDate(value.date) : ''}</td>
-                        <td>${value.leave_yard}</td>
-                        <td>${value.start_job}</td>
-                        <td>${value.finish_job}</td>
-                        <td>${value.arrival_yard}</td>
-                        <td>${value.travel_time}</td>
-                        <td>${value.crane_time}</td>
-                        <td>${value.total_hours}</td>
-                        <td>${value.operator}</td>
-                        <td>${value.email}</td>
+                        <td>${value.leave_yard != null ? value.leave_yard : ''}</td>
+                        <td>${value.start_job != null ? value.start_job : ''}</td>
+                        <td>${value.finish_job != null ? value.finish_job : ''}</td>
+                        <td>${value.arrival_yard != null ? value.arrival_yard : ''}</td>
+                        <td>${value.travel_time != null ? value.travel_time : ''}</td>
+                        <td>${value.crane_time != null ? value.crane_time : ''}</td>
+                        <td>${value.total_hours != null ? value.total_hours : ''}</td>
+                        <td>${value.operator != null ? value.operator : ''}</td>
+                        <td>${value.email != null ? value.email : ''}</td>
                         <td>
                             ${value.status == '1' ? 'Draft' : ''}
                             ${value.status == '2' ? 'Issued' : ''}
@@ -59,6 +64,11 @@ function makeRiggerTicketListing(tickets_list){
                         </td>
                         
                         <td class="d-flex gap-2 ">
+                            ${(user_role == '0' && value.status == 3) ? 
+                            `<div class="edit changeStatus_btn" data-id="${value.id}" title="Change Status">
+                                <img src="${base_url}/assets/images/change-status.png" style="width:32px;height:32px;">
+                            </div>` : ''}
+                            
                             <div class="edit viewTicket_btn" data-id="${value.id}">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="18" viewBox="0 0 24 24">
                                     <g fill="none" stroke="green" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" color="white">
@@ -170,21 +180,26 @@ function getSpecificTicketResponse(response) {
             $("#ticket_status").val(ticket_detail.status);
             $("#ticket_rigger_name").val(ticket_detail.user_detail != null ? ticket_detail.user_detail.name : '');
             
+            var signature = ticket_detail.signature;
+            if (signature != null) {
+                signaturePad.fromDataURL('data:image/png;base64,'+signature); // Set signature from base64 string
+            }else{
+                signaturePad.clear();
+            }
         }
 
         var att_html = '';
         if(ticket_images != null){
             $.each(ticket_images, function (index, value) {
-                var url = value.path;
-                var fileName = url.substring(url.lastIndexOf('/') + 1);
-                att_html += `<div class="d-flex align-items-center gap-2 my-2 file_section">
-                                <a class="text-dark upload-btn #000 w-50 px-0 job_image_btn" href="${value.path}" target="_default">View Attachment</a>
-                                <input type="text" name="" class="form-control" placeholder="Title" value="${value.file_name}" disabled>
+                att_html += `<div class="image-item-land mt-3">
+                                <a href="${value.path}" target="_default"><img src="${value.type == 'pdf' ? base_url+'/assets/images/pdf_icon_book.png' : value.path}"></a>
+                                <p>${value.file_name}</p>
                             </div>`;
             });
         }
         
-        $("#uploads_section").html(att_html);
+        $("#uploaded_attachment").show();
+        $("#uploads_section1").html(att_html);
 
         $("#listing_section").hide();
         $("#detail_section").show();
@@ -198,16 +213,26 @@ function getSpecificTicketResponse(response) {
     }
 }
 
+var temp_record_id = '';
 $(document).on('click', '.deleteTicket_btn', function (e) {
-    if (confirm("Are you sure you want to delete this record?")) {
-        var ticket_id = $(this).attr('data-id');
+    temp_record_id = $(this).attr('data-id');
+    $("#delete_confirm").modal('show');
+});
+$(document).on('click', '#close_confirm', function (e) {
+    temp_record_id = '';
+    $("#delete_confirm").modal('hide');
+});
+
+$(document).on('click', '#delete_confirmed', function (e) {
+    // if (confirm("Are you sure you want to delete this record?")) {
+        var ticket_id = temp_record_id;//$(this).attr('data-id');
         let form = '';//document.getElementById('filterTicket_form');
         let data = new FormData();
         data.append('ticket_id', ticket_id);
         let type = 'POST';
         let url = '/admin/deleteSpecificRiggerTicket';
         SendAjaxRequestToServer(type, url, data, '', deleteTicketResponse, '', '.deleteTicket_btn');
-    }
+    // }
 });
 
 function deleteTicketResponse(response) {
@@ -218,6 +243,7 @@ function deleteTicketResponse(response) {
         toastr.success(response.message, '', {
             timeOut: 3000
         });
+        $("#delete_confirm").modal('hide');
         loadRiggerTicketPageData();
     }else{
         if (response.status == 402) {
@@ -230,16 +256,77 @@ function deleteTicketResponse(response) {
 }
 
 
+$(document).on('click', '.changeStatus_btn', function (e) {
+    var ticket_id = $(this).attr('data-id');
+    temp_record_id = ticket_id;
+    $("#change_reason").val('');
+    $("#changeStatus_confirm").modal('show');
+});
+$(document).on('click', '#close_confirm1', function (e) {
+    temp_record_id = '';
+    $("#change_reason").val('');
+    $("#changeStatus_confirm").modal('hide');
+});
+
+$(document).on('click', '#changeStatus_confirmed', function (e) {
+    var changeReason = $("#change_reason").val();
+    if(changeReason != ''){
+        var job_id = temp_record_id;
+        let data = new FormData();
+        data.append('ticket_id', job_id);
+        data.append('reason', changeReason);
+        data.append('status', 1);
+        let type = 'POST';
+        let url = '/admin/changeRiggerTicketStatus';
+        SendAjaxRequestToServer(type, url, data, '', changeTicketStatusResponse, '', '#changeStatus_confirmed');
+    }else{
+        toastr.error('Reason is required.', '', {
+            timeOut: 3000
+        });
+    }
+});
+
+function changeTicketStatusResponse(response) {
+    
+    var data = response.data;
+    if (response.status == 200) {
+        toastr.success(response.message, '', {
+            timeOut: 3000
+        });
+        temp_record_id = '';
+        $("#change_reason").val('');
+        $("#changeStatus_confirm").modal('hide');
+        loadRiggerTicketPageData();
+    }else{
+        if (response.status == 402) {
+            error = response.message;
+        } 
+        toastr.error(error, '', {
+            timeOut: 3000
+        });
+    }
+}
+
+
+
 $(document).ready(function () {
 
     loadRiggerTicketPageData();
 
-    var canvas = document.getElementById("signature");
-    var signaturePad = new SignaturePad(canvas);
-
     $('#clear-signature').on('click', function () {
         signaturePad.clear();
     });
+
+    $('#saveSignature').on('click', function() {
+        if (signaturePad.isEmpty()) {
+            alert("Please provide a signature first.");
+        } else {
+            var dataURL = signaturePad.toDataURL(); // Get signature as base64 string
+            console.log(dataURL);
+            localStorage.setItem("signature", dataURL); // Optionally save it to localStorage
+        }
+    });
+    
 
     $(document).on('click', '.clear_filter', function (e) {
         let form = $('#filterTicket_form');

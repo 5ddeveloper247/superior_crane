@@ -137,6 +137,45 @@
             max-width: 100%;
             text-align:center;
         }
+        .cancel-icon {
+            position: absolute !important;
+            top: -10px !important;
+            right: -8px !important;
+            background: #dc2f2b !important;
+            color: #fff;
+            border-radius: 50%;
+            cursor: pointer;
+            padding: 2px 8px;
+            font-size: 14px;
+        }
+        .image-item-land p {
+            font-size:12px;
+            color: #dc2f2b;
+            background: transparent;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .image-item-land img {
+            width: 70px;
+            height: 70px;
+            object-fit: cover;
+            /* border: 1px solid #dc2f2b; */
+            border-radius: 10px;
+        }
+        .image-item-land {
+            position: relative !important;
+            display: inline-block !important;
+            margin-right: 20px !important;
+            width: 80px !important;
+            text-align: center !important;
+            vertical-align: top !important;
+        }
+        .image-container {
+            overflow-x: auto;
+            width: 100%;
+            margin-left: 0;
+        }
     </style>
 @endpush
 
@@ -217,7 +256,7 @@
             <div class="filter">
                 <form id="filterPayDuty_form">
                     <div class="row gy-3">
-                        <div class="col-4 col-md-3">
+                        <div class="col-4 col-md-3 d-none">
                             <label class="fw-semibold">Form Number</label>
                             <input class="py-1 px-3 rounded-1 form-control" type="text" name="search_form_number" placeholder="type here...">
                         </div>
@@ -234,13 +273,18 @@
                             <input class="py-1 px-3 rounded-1 form-control" type="text" name="search_issued_by" placeholder="type here...">
                         </div>
                         <div class="col-4 col-md-3">
-                            <label class="fw-semibold">Date</label>
-                            <input class="py-1 px-3 rounded-1 form-control" type="date" name="search_date" placeholder="type here...">
-                        </div>
-                        <div class="col-4 col-md-3">
                             <label class="fw-semibold">Location</label>
                             <input class="py-1 px-3 rounded-1 form-control" type="text" name="search_location" placeholder="type here...">
                         </div>
+                        <div class="col-4 col-md-3">
+                            <label class="fw-semibold">From Date</label>
+                            <input class="py-1 px-3 rounded-1 form-control" type="date" name="search_from_date" placeholder="type here...">
+                        </div>
+                        <div class="col-4 col-md-3">
+                            <label class="fw-semibold">To Date</label>
+                            <input class="py-1 px-3 rounded-1 form-control" type="date" name="search_to_date" placeholder="type here...">
+                        </div>
+                        
                         <div class="col-4 col-md-3">
                             <label class="fw-semibold">Division</label>
                             <input class="py-1 px-3 rounded-1 form-control" type="text" name="search_division" placeholder="type here...">
@@ -334,7 +378,7 @@
                     <label class="fw-semibold form-label" for="">
                         Total Hours
                     </label>
-                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="pay_total_hours" type="number"
+                    <input disabled class="rounded-1 py-2 px-2 w-100 form-control" id="pay_total_hours" type="text"
                         placeholder="Type here...">
                 </div>
 
@@ -373,13 +417,29 @@
                     </label>
                     <canvas id="signature" width="450" height="150" style="border: 1px solid #ddd;"></canvas>
                     <div class="d-flex justify-content-end ">
-                        <button class="px-4 rounded-1 py-1 clear-btn" id="clear_signature">Clear</button>
+                        <!-- <button class="px-4 rounded-1 py-1 clear-btn" id="clear_signature">Clear</button> -->
                     </div>
                 </div>
-                <div class="col-12 col-md-6"></div>
+                <!-- <div class="col-12 col-md-6"></div>
                 <div class="col-12 col-md-6 d-flex flex-column">
                     <div id="uploads_section">
-                        <!-- all attachments -->
+                      
+                    </div>
+                </div> -->
+                <div class="col-12 col-md-6 d-flex flex-column my-3">
+                    <div class="accordion" id="accordionExample">
+                        <div class="accordion-item" id="uploaded_attachment" style="display:none;">
+                            <h2 class="accordion-header" id="headingZero">
+                                <button class="accordion-button  p-2" type="button" data-bs-toggle="collapse" data-bs-target="#uploadedAtt" aria-expanded="true" aria-controls="uploadedAtt">
+                                    Uploaded Attachments
+                                </button>
+                            </h2>
+                            <div id="uploadedAtt" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                                <div class="white image-container mx-4" id="uploads_section1">
+                                    
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -387,6 +447,49 @@
             <div class="d-flex justify-content-center gap-2">
                 <button type="button" class="py-1 px-4 add-btn rounded-1 backToListing">Back</button>
                 <!-- <button id="save-btn" type="button" class="add-btn px-4 py-1 rounded-1">Save</button> -->
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="delete_confirm" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <img src="{{asset('assets/images/remove.png')}}" width="60" alt="">
+                <h6 class="text-danger mt-3">
+                    Are you sure you want to delete this record?
+                </h6>
+            </div>
+            <div class="modal-footer d-flex align-items-center justify-content-center" style="border: none" >
+                <button type="button" class="btn btn-secondary px-5" id="close_confirm">No</button>
+                <button type="button" class="btn btn-danger px-5" id="delete_confirmed">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="changeStatus_confirm" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <img src="{{asset('assets/images/remove.png')}}" width="60" alt="">
+                <h6 class="text-danger mt-3">
+                    Are you sure you want to change pay duty status to "Draft"?
+                </h6>
+                <div class="row">
+                    <div class="col-12 col-md-12 d-flex flex-column px-4">
+                        <label class="pb-2 form-label" for="supplier_name">
+                            Change Reason<span class="text-danger">*</span>
+                        </label>
+                        <input class="form-control rounded-1 py-1 px-2 w-100" id="change_reason" type="text" name="" placeholder="Enter Reason Here" maxlength="100">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer d-flex align-items-center justify-content-center" style="border: none" >
+                <button type="button" class="btn btn-secondary px-5" id="close_confirm1">No</button>
+                <button type="button" class="btn btn-danger px-5" id="changeStatus_confirmed">Yes</button>
             </div>
         </div>
     </div>

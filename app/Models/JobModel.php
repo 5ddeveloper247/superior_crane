@@ -11,11 +11,25 @@ class JobModel extends Model
 
     protected $table = "jobs";
     
+    // protected $casts = [
+    //     'rigger_assigned' => 'array',
+    // ];
     
     public function userAssigned()
     {
         return $this->belongsTo(User::class, 'rigger_assigned');
     }
+    // public function userAssigned()
+    // {
+    //     $userIds = json_decode($this->rigger_assigned, true);
+
+    //     if (is_array($userIds)) {
+    //         return User::whereIn('id', $userIds)->get();
+    //     }
+
+    //     return collect(); // Return an empty collection if no IDs are found
+    // }
+    
 
     public function jobImages()
     {
@@ -29,5 +43,15 @@ class JobModel extends Model
     public function updatedBy()
     {
         return $this->belongsTo(User::class, 'updated_by');
+    }
+
+    public function riggerTicket()
+    {
+        return $this->hasOne(RiggerTicket::class, 'job_id');
+    }
+
+    public function transporterTicket()
+    {
+        return $this->hasOne(TransportationTicketModel::class, 'job_id');
     }
 }

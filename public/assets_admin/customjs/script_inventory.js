@@ -203,16 +203,26 @@ function searchInventoryListingResponse(response) {
     }
 }
 
+var temp_record_id = '';
 $(document).on('click', '.deleteInventory_btn', function (e) {
-    if (confirm("Are you sure you want to delete this record?")) {
-        var inventory_id = $(this).attr('data-id');
+    temp_record_id = $(this).attr('data-id');
+    $("#delete_confirm").modal('show');
+});
+$(document).on('click', '#close_confirm', function (e) {
+    temp_record_id = '';
+    $("#delete_confirm").modal('hide');
+});
+
+$(document).on('click', '#delete_confirmed', function (e) {
+    // if (confirm("Are you sure you want to delete this record?")) {
+        var inventory_id = temp_record_id;//$(this).attr('data-id');
         let form = '';
         let data = new FormData();
         data.append('inventory_id', inventory_id);
         let type = 'POST';
         let url = '/admin/deleteSpecificInventory';
         SendAjaxRequestToServer(type, url, data, '', deleteSpecificInventoryResponse, '', '.deleteInventory_btn');
-    }
+    // }
 });
 
 function deleteSpecificInventoryResponse(response) {
@@ -221,6 +231,7 @@ function deleteSpecificInventoryResponse(response) {
         toastr.success(response.message, '', {
             timeOut: 3000
         });
+        $("#delete_confirm").modal('hide');
         loadInventoryPageData();
     }else{
         if (response.status == 402) {

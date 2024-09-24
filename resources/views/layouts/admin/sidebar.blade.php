@@ -143,6 +143,16 @@
       </li>
 
       <li class="nav-item w-100 pt-3 text-center d-flex align-items-center justify-content-center ">
+        <a href="{{url('pay_duty')}}"
+          class="nav-link d-flex align-items-center gap-2 {{$pageTitle == 'Pay_duty' ? 'activenav-h' : ''}}">
+          <svg xmlns="http://www.w3.org/2000/svg" width="1.8em" height="1.8em" viewBox="0 0 24 24">
+            <path fill="white"
+              d="M11 15h6v2h-6zM9 7H7v2h2zm2 6h6v-2h-6zm0-4h6V7h-6zm-2 2H7v2h2zm12-6v14c0 1.1-.9 2-2 2H5c-1.1 0-2-.9-2-2V5c0-1.1.9-2 2-2h14c1.1 0 2 .9 2 2m-2 0H5v14h14zM9 15H7v2h2z" />
+          </svg>
+        </a>
+      </li>
+      
+      <li class="nav-item w-100 pt-3 text-center d-flex align-items-center justify-content-center ">
         <a href="{{url('transportation')}}"
           class="nav-link d-flex align-items-center gap-2 {{$pageTitle == 'Transportation' ? 'activenav-h' : ''}}">
           <svg xmlns="http://www.w3.org/2000/svg" width="1.8em" height="1.8em" viewBox="0 0 48 48">
@@ -161,15 +171,7 @@
         </a>
       </li>
 
-      <li class="nav-item w-100 pt-3 text-center d-flex align-items-center justify-content-center ">
-        <a href="{{url('pay_duty')}}"
-          class="nav-link d-flex align-items-center gap-2 {{$pageTitle == 'Pay_duty' ? 'activenav-h' : ''}}">
-          <svg xmlns="http://www.w3.org/2000/svg" width="1.8em" height="1.8em" viewBox="0 0 24 24">
-            <path fill="white"
-              d="M11 15h6v2h-6zM9 7H7v2h2zm2 6h6v-2h-6zm0-4h6V7h-6zm-2 2H7v2h2zm12-6v14c0 1.1-.9 2-2 2H5c-1.1 0-2-.9-2-2V5c0-1.1.9-2 2-2h14c1.1 0 2 .9 2 2m-2 0H5v14h14zM9 15H7v2h2z" />
-          </svg>
-        </a>
-      </li>
+      
 
       <li class="nav-item w-100 pt-3 text-center d-flex align-items-center justify-content-center ">
         <a href="{{url('inventory')}}"
@@ -233,6 +235,16 @@
           </a>
         </li>
 
+        <li class="nav-item pt-3">
+          <a href="{{url('pay_duty')}}"
+            class="nav-link d-flex align-items-center gap-2 {{$pageTitle == 'Pay_duty' ? 'activenav' : ''}}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24">
+              <path fill="white"
+                d="M11 15h6v2h-6zM9 7H7v2h2zm2 6h6v-2h-6zm0-4h6V7h-6zm-2 2H7v2h2zm12-6v14c0 1.1-.9 2-2 2H5c-1.1 0-2-.9-2-2V5c0-1.1.9-2 2-2h14c1.1 0 2 .9 2 2m-2 0H5v14h14zM9 15H7v2h2z" />
+            </svg>
+            <span>Pay Duty Form</span>
+          </a>
+        </li>
 
         <li class="nav-item pt-2">
           <a href="{{url('transportation')}}"
@@ -255,16 +267,7 @@
         </li>
 
 
-        <li class="nav-item pt-3">
-          <a href="{{url('pay_duty')}}"
-            class="nav-link d-flex align-items-center gap-2 {{$pageTitle == 'Pay_duty' ? 'activenav' : ''}}">
-            <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24">
-              <path fill="white"
-                d="M11 15h6v2h-6zM9 7H7v2h2zm2 6h6v-2h-6zm0-4h6V7h-6zm-2 2H7v2h2zm12-6v14c0 1.1-.9 2-2 2H5c-1.1 0-2-.9-2-2V5c0-1.1.9-2 2-2h14c1.1 0 2 .9 2 2m-2 0H5v14h14zM9 15H7v2h2z" />
-            </svg>
-            <span>Pay Duty Form</span>
-          </a>
-        </li>
+        
 
 
         <li class="nav-item pt-2">

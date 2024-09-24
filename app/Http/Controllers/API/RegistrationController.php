@@ -16,7 +16,14 @@ class RegistrationController extends Controller
         // Define validation rules
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:100',
-            'email' => 'required|email|max:100|unique:users',
+            'email' => [
+                'required',
+                'email',
+                'max:100',
+                'unique:users',
+                'regex:/^[\w.%+-]+@[A-Za-z0-9.-]+\.[A-Z]{2,}$/i'
+            ],
+            'phone_number' => 'required|numeric|digits_between:7,18',
             'role' => 'required|in:3,4,5', // 3=>Rigger, 4=>Transporter, 5=> Both Rigger & Transporter
             'password' => [
                         'required',
@@ -41,6 +48,7 @@ class RegistrationController extends Controller
             $user = new User;
             $user->name = $request->name;
             $user->email= $request->email;
+            $user->phone_number= $request->phone_number;
             $user->password= bcrypt($request->password);
             $user->role_id = $request->role;
             $user->save();
@@ -51,20 +59,21 @@ class RegistrationController extends Controller
             $mailData['user'] = $user->name;
             $mailData['username'] = $user->name;
             $mailData['email'] = $user->email;
+            $mailData['phone_num'] = $user->phone_number;
             $mailData['role'] = $roleName;
             $mailData['text1'] = "Welcome to Superior Crane! We're thrilled to have you on board.";
             $mailData['text2'] = "If you have any questions, feel free to reach out to us at support@superiorcrane.com.";
 
             $body = view('emails.signup_welcome', $mailData);
-            $userEmailsSend = 'hamza@5dsolutions.ae';//$user->email;
+            $userEmailsSend = $user->email;//'hamza@5dsolutions.ae';//
             sendMail($user->name, $userEmailsSend, 'Superior Crane', 'Register User', $body);
 
             $mailData['user'] = 'Admin';
             $mailData['text1'] = "A new user has just signed up on Superior Crane.";
             $mailData['text2'] = "Please review their details in the admin panel.";
-            $userEmailsSend = env('MAIL_ADMIN');
+            $userEmailsSend1 = env('MAIL_ADMIN');
             $body = view('emails.signup_welcome', $mailData);
-            sendMail($user->name, $userEmailsSend, 'Superior Crane', 'Register User', $body);
+            sendMail($user->name, $userEmailsSend1, 'Superior Crane', 'Register User', $body);
             
             return response()->json([
                 'success' => true,
@@ -84,7 +93,7 @@ class RegistrationController extends Controller
     {
         try {
 
-            $users = User::whereIn('role_id', ['3','4','5'])->get();
+            $users = User::whereIn('role_id', ['2','3','4','5'])->get();
             
             if($users) {
                 return response()->json([

@@ -1,3 +1,8 @@
+var canvas = document.getElementById("signature");
+var signaturePad = new SignaturePad(canvas);
+signaturePad.off();
+$('#signature').css('pointer-events', 'none');
+
 function loadPayDutyPageData() {
     
     let form = '';
@@ -6,7 +11,6 @@ function loadPayDutyPageData() {
     let url = '/admin/getPayDutyPageData';
     SendAjaxRequestToServer(type, url, data, '', loadPayDutyPageDataResponse, '', '');
 }
-
 
 function loadPayDutyPageDataResponse(response) {
 
@@ -40,20 +44,26 @@ function makePayDutyFormsListing(forms_list){
                         <td>${value.rigger_ticket_id != null ? "R-"+value.rigger_ticket_id : ''}</td>
                         <td>${value.user_detail != null ? value.user_detail.name : ''}</td>
                         <td>${value.date != null ? formatDate(value.date) : ''}</td>
-                        <td>${value.location}</td>
+                        <td>${value.location != null ? value.location : ''}</td>
                         <td>${value.start_time != null ? formatTime(value.start_time) : ''}</td>
                         <td>${value.finish_time != null ? formatTime(value.finish_time) : ''}</td>
-                        <td>${value.total_hours}</td>
-                        <td>${value.officer}</td>
-                        <td>${value.officer_name}</td>
-                        <td>${value.email}</td>
-                        <td>${value.division}</td>
+                        <td>${value.total_hours != null ? value.total_hours : ''}</td>
+                        <td>${value.officer != null ? value.officer : ''}</td>
+                        <td>${value.officer_name != null ? value.officer_name : ''}</td>
+                        <td>${value.email != null ? value.email : ''}</td>
+                        <td>${value.division != null ? value.division : ''}</td>
                         <td>
                             ${value.status == '1' ? 'Draft' : ''}
                             ${value.status == '2' ? 'Issued' : ''}
                             ${value.status == '3' ? 'Completed' : ''}
                         </td>
                         <td class="d-flex gap-2 ">
+                            
+                            ${(user_role == '0' && value.status == 3) ? 
+                            `<div class="edit changeStatus_btn" data-id="${value.id}" title="Change Status">
+                                <img src="${base_url}/assets/images/change-status.png" style="width:32px;height:32px;">
+                            </div>` : ''}
+
                             <div class="edit viewPayDuty_btn" data-id="${value.id}">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="18" viewBox="0 0 24 24">
                                     <g fill="none" stroke="green" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" color="white">
@@ -150,21 +160,27 @@ function getSpecificTicketResponse(response) {
             $("#pay_officer_name").val(payduty_detail.officer_name);
             $("#pay_officer_email").val(payduty_detail.email);
             $("#pay_officer_division").val(payduty_detail.division);
+
+            var signature = payduty_detail.signature;
+            if (signature != null) {
+                signaturePad.fromDataURL('data:image/png;base64,'+signature); // Set signature from base64 string
+            }else{
+                signaturePad.clear();
+            }
         }
 
         var att_html = '';
         if(duty_images != null){
             $.each(duty_images, function (index, value) {
-                var url = value.path;
-                var fileName = url.substring(url.lastIndexOf('/') + 1);
-                att_html += `<div class="d-flex align-items-center gap-2 my-2 file_section">
-                                <a class="text-dark upload-btn #000 w-50 px-0 job_image_btn" href="${value.path}" target="_default">View Attachment</a>
-                                <input type="text" name="" class="form-control" placeholder="Title" value="${value.file_name}" disabled>
+                att_html += `<div class="image-item-land mt-3">
+                                <a href="${value.path}" target="_default"><img src="${value.type == 'pdf' ? base_url+'/assets/images/pdf_icon_book.png' : value.path}"></a>
+                                <p>${value.file_name}</p>
                             </div>`;
             });
         }
         
-        $("#uploads_section").html(att_html);
+        $("#uploaded_attachment").show();
+        $("#uploads_section1").html(att_html);
 
         $("#listing_section").hide();
         $("#detail_section").show();
@@ -178,16 +194,26 @@ function getSpecificTicketResponse(response) {
     }
 }
 
+var temp_record_id = '';
 $(document).on('click', '.deletePayDuty_btn', function (e) {
-    if (confirm("Are you sure you want to delete this record?")) {
-        var form_id = $(this).attr('data-id');
+    temp_record_id = $(this).attr('data-id');
+    $("#delete_confirm").modal('show');
+});
+$(document).on('click', '#close_confirm', function (e) {
+    temp_record_id = '';
+    $("#delete_confirm").modal('hide');
+});
+
+$(document).on('click', '#delete_confirmed', function (e) {
+    // if (confirm("Are you sure you want to delete this record?")) {
+        var form_id = temp_record_id;//$(this).attr('data-id');
         let form = '';//document.getElementById('filterTicket_form');
         let data = new FormData();
         data.append('form_id', form_id);
         let type = 'POST';
         let url = '/admin/deleteSpecificPayDutyForm';
         SendAjaxRequestToServer(type, url, data, '', deletePayDutyResponse, '', '.deletePayDuty_btn');
-    }
+    // }
 });
 
 function deletePayDutyResponse(response) {
@@ -198,6 +224,7 @@ function deletePayDutyResponse(response) {
         toastr.success(response.message, '', {
             timeOut: 3000
         });
+        $("#delete_confirm").modal('hide');
         loadPayDutyPageData();
     }else{
         if (response.status == 402) {
@@ -209,14 +236,62 @@ function deletePayDutyResponse(response) {
     }
 }
 
+$(document).on('click', '.changeStatus_btn', function (e) {
+    var payduty_id = $(this).attr('data-id');
+    temp_record_id = payduty_id;
+    $("#change_reason").val('');
+    $("#changeStatus_confirm").modal('show');
+});
+$(document).on('click', '#close_confirm1', function (e) {
+    temp_record_id = '';
+    $("#change_reason").val('');
+    $("#changeStatus_confirm").modal('hide');
+});
 
+$(document).on('click', '#changeStatus_confirmed', function (e) {
+    var changeReason = $("#change_reason").val();
+    if(changeReason != ''){
+        var payduty_id = temp_record_id;
+        let data = new FormData();
+        data.append('payduty_id', payduty_id);
+        data.append('reason', changeReason);
+        data.append('status', 1);
+        let type = 'POST';
+        let url = '/admin/changePayDutyStatus';
+        SendAjaxRequestToServer(type, url, data, '', changePayDutyStatusResponse, '', '#changeStatus_confirmed');
+    }else{
+        toastr.error('Reason is required.', '', {
+            timeOut: 3000
+        });
+    }
+});
+
+function changePayDutyStatusResponse(response) {
+    
+    var data = response.data;
+    if (response.status == 200) {
+        toastr.success(response.message, '', {
+            timeOut: 3000
+        });
+        temp_record_id = '';
+        $("#change_reason").val('');
+        $("#changeStatus_confirm").modal('hide');
+        loadPayDutyPageData();
+    }else{
+        if (response.status == 402) {
+            error = response.message;
+        } 
+        toastr.error(error, '', {
+            timeOut: 3000
+        });
+    }
+}
 $(document).ready(function () {
 
     loadPayDutyPageData();
 
-    var canvas = document.getElementById("signature");
-    var signaturePad = new SignaturePad(canvas);
-
+    
+    
     $('#clear_signature').on('click', function () {
         signaturePad.clear();
     });

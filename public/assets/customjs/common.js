@@ -21,6 +21,9 @@ $('input[type="number"],input[type="email"]').on('keydown', function(e) {
         }
     }
 });
+$('input[type="date"],input[type="datetime-local"],input[type="time"]').on('keydown', function(e) {
+    // e.preventDefault();
+});
 
 $(document).on('click', '.view_pass', function (e) {
     var passwordField = $(this).siblings('.form-control');
@@ -133,6 +136,28 @@ function formatTime(timeString) {
     // Return the formatted time
     return hours + ':' + minutes;
 }
+
+function formatTime1(timeString) {
+    var timeStr = timeString.split("T")[1];
+    
+    // Create a Date object
+    var time = new Date("1970-01-01 " + timeStr); // 1970-01-01 as a dummy date
+    
+    // Extract hours and minutes
+    var hours = time.getHours();
+    var minutes = time.getMinutes();
+
+    // Format hours in 12-hour format
+    var period = hours >= 12 ? "PM" : "AM";
+    hours = hours % 12 || 12; // Convert 0 hour to 12 for AM
+
+    // Pad minutes with leading zero if needed
+    minutes = minutes < 10 ? "0" + minutes : minutes;
+
+    // Combine the formatted time
+    return hours + ":" + minutes + " " + period;
+}
+
 
 
 function formatCurrency(amount) {

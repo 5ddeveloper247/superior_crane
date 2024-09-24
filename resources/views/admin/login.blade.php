@@ -52,7 +52,8 @@
                 <form class="mx-5 px-5 mx-lg-0 px-lg-0" action="{{route('loginSubmit')}}" method="POST">
                     @csrf
                     <div class="text-center">
-                        <img src="{{asset('assets/images/logo.png')}}" width="120" alt="">
+                        <!-- <img src="{{asset('assets/images/logo.png')}}" width="120" alt=""> -->
+                        <img src="{{asset('assets/images/splash_logo.png')}}" width="120" alt="">
                         <!-- <h2 class="text-white fw-bolder mt-3">
                             LOGIN
                         </h2> -->

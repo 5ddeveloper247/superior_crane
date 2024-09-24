@@ -17,6 +17,7 @@
                 Details:<br>
                 -Username: {{@$username}}<br>
                 -Email: {{@$email}}<br>
+                -Phone Number: {{@$phone_num}}<br>
                 @if(@$password)
                 -Password: {{@$password}}<br>
                 @endif

@@ -46,6 +46,9 @@ Route::post('job/job_details', [JobController::class,'getJobDetails'])->name('jo
 Route::post('job/changestatus', [JobController::class,'changestatus'])->name('job/changestatus');
 Route::post('job/updatejob', [JobController::class,'updatejob'])->name('job/updatejob');
 Route::post('job/getAssignedJobs', [JobController::class,'getAssignedJobs'])->name('job/getAssignedJobs');
+Route::post('job/addJobImages', [JobController::class,'addJobImages'])->name('job/addJobImages');
+Route::post('job/deleteJobImage', [JobController::class,'deleteJobImage'])->name('job/deleteJobImage');
+Route::post('job/viewTicketPdf', [JobController::class,'viewTicketPdf'])->name('job/viewTicketPdf');
 
 // Rigger Tickets routes 
 Route::post('riggerticket/add', [RigerTicketController::class,'add_rigger_ticket'])->name('riggerticket/add');
@@ -53,18 +56,25 @@ Route::post('riggerticket/update', [RigerTicketController::class,'update_rigger_
 Route::post('riggerticket/ticket_list', [RigerTicketController::class,'getTicketList'])->name('riggerticket/ticket_list');
 Route::post('riggerticket/ticket_detail', [RigerTicketController::class,'getTicketDetail'])->name('riggerticket/ticket_detail');
 Route::post('riggerticket/sendtomail', [RigerTicketController::class,'sendtomail'])->name('riggerticket/sendtomail');
+Route::post('riggerticket/addTicketImages', [RigerTicketController::class,'addTicketImages'])->name('riggerticket/addTicketImages');
+Route::post('riggerticket/deleteTicketImage', [RigerTicketController::class,'deleteTicketImage'])->name('riggerticket/deleteTicketImage');
+Route::post('riggerticket/getTicketsForPayduty', [RigerTicketController::class,'getTicketsForPayduty'])->name('riggerticket/getTicketsForPayduty');
 
 // Pay Duty 
 Route::post('payduty/add', [PayDutyController::class,'add_pay_duty'])->name('payduty/add');
 Route::post('payduty/update', [PayDutyController::class,'update_pay_duty'])->name('payduty/update');
 Route::post('payduty/pay_duty_list', [PayDutyController::class,'getPayDutyList'])->name('payduty/pay_duty_list');
 Route::post('payduty/pay_duty_detail', [PayDutyController::class,'getPayDutyDetail'])->name('payduty/pay_duty_detail');
+Route::post('payduty/addPayDutyImages', [PayDutyController::class,'addPayDutyImages'])->name('payduty/addPayDutyImages');
+Route::post('payduty/deletePayDutyImage', [PayDutyController::class,'deletePayDutyImage'])->name('payduty/deletePayDutyImage');
 
 // Transportation Tickets 
 Route::post('transportationticket/add', [TransportationTicketController::class,'add_transportation_ticket'])->name('transportationticket/add');
 Route::post('transportationticket/update', [TransportationTicketController::class,'update_transportation_ticket'])->name('transportationticket/update');
 Route::post('transportationticket/ticket_list', [TransportationTicketController::class,'getTicketList'])->name('transportationticket/ticket_list');
 Route::post('transportationticket/ticket_detail', [TransportationTicketController::class,'getTicketDetail'])->name('transportationticket/ticket_detail');
+Route::post('transportationticket/addTicketImages', [TransportationTicketController::class,'addTicketImages'])->name('transportationticket/addTicketImages');
+Route::post('transportationticket/deleteTicketImage', [TransportationTicketController::class,'deleteTicketImage'])->name('transportationticket/deleteTicketImage');
 
 
 

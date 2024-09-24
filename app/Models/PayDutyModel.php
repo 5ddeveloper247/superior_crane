@@ -14,6 +14,11 @@ class PayDutyModel extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    public function riggerTicket()
+    {
+        return $this->belongsTo(RiggerTicket::class, 'rigger_ticket_id');
+    }
     
     public function dutyImages()
     {

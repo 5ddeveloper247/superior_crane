@@ -214,61 +214,36 @@
               </svg>
             </span>
           </button>
+          <?php
+          $notifications = getNotificationsLimited();
+          ?>
           <ul class="dropdown-menu text-center">
-            <li>
-              <a class="dropdown-item d-flex gap-2" href="{{url('notification')}}">
-                <img class="rounded-5"
-                  src="https://img.freepik.com/free-vector/people-white_24877-49457.jpg?size=626&ext=jpg" width="40"
-                  height="40" alt="img">
-                <div class="text-start">
-                  <span class="fw-bold">John Doe</span>
-                  <br>
-                  <small>Mentioned you in a comment</small>
-                  <br>
-                  <div class="d-flex align-items-center gap-3">
-                    <small>01, August, 2024</small>
-                    <small>11:00 am</small>
-                  </div>
-                </div>
-              </a>
-            </li>
-            <hr class="my-1 mx-4" style="border: 1px solid red">
-            <li>
-              <a class="dropdown-item d-flex gap-2" href="{{url('notification')}}">
-                <img class="rounded-5"
-                  src="https://img.freepik.com/free-vector/people-white_24877-49457.jpg?size=626&ext=jpg" width="40"
-                  height="40" alt="img">
-                <div class="text-start">
-                  <span class="fw-bold">John Doe</span>
-                  <br>
-                  <small>Mentioned you in a comment</small>
-                  <br>
-                  <div class="d-flex align-items-center gap-3">
-                    <small>01, August, 2024</small>
-                    <small>11:00 am</small>
-                  </div>
-                </div>
-              </a>
-            </li>
-            <hr class="my-1 mx-4" style="border: 1px solid red">
-            <li>
-              <a class="dropdown-item d-flex gap-2" href="{{url('notification')}}">
-                <img class="rounded-5"
-                  src="https://img.freepik.com/free-vector/people-white_24877-49457.jpg?size=626&ext=jpg" width="40"
-                  height="40" alt="img">
-                <div class="text-start">
-                  <span class="fw-bold">John Doe</span>
-                  <br>
-                  <small>Mentioned you in a comment</small>
-                  <br>
-                  <div class="d-flex align-items-center gap-3">
-                    <small>01, August, 2024</small>
-                    <small>11:00 am</small>
-                  </div>
-                </div>
-              </a>
-            </li>
-            <a class="text-dark d-flex justify-content-end px-3 py-2" href="{{url('notification')}}">View All</a>
+            @if(count($notifications))
+              @foreach($notifications as $key=>$value)
+                <li>
+                  <a class="dropdown-item d-flex gap-2" href="{{url('notification')}}">
+                    <img class="rounded-5" src="https://img.freepik.com/free-vector/people-white_24877-49457.jpg?size=626&ext=jpg" width="40" height="40" alt="img">
+                    <div class="text-start" style="max-width: 200px;">
+                      <span class="fw-bold" style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;max-width: 100%;display: inline-block;">{{@$value->fromUser->name}}</span>
+                      <br>
+                      <small>{{$value->subject}}</small>
+                      <br>
+                      <div class="d-flex align-items-center gap-3">
+                        <small>{{date('d, M, Y', strtotime($value->created_at))}}</small>
+                        <small>{{date('h:i A', strtotime($value->created_at))}}</small>
+                      </div>
+                    </div>
+                  </a>
+                </li>
+                @if($key < count($notifications)-1  )
+                  <hr class="my-1 mx-4" style="border: 1px solid red">
+                @endif
+              @endforeach
+              <a class="text-dark d-flex justify-content-end px-3 py-2" href="{{url('notification')}}">View All</a>
+            @else
+              <p style="font-size:12px;">No New Notification...</p>
+            @endif
+            
           </ul>
         </div>
 

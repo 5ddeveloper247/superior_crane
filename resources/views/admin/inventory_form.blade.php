@@ -176,7 +176,7 @@
                 <label class="pb-2" for="address">
                     Comment
                 </label>
-                <textarea class="rounded-1" name="" id=""></textarea>
+                <textarea class="rounded-1" name="" id="" rows="5" style="resize:none;"></textarea>
             </div>
 
             <div class="mt-3 d-flex gap-2 justify-content-center">

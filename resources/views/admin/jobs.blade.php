@@ -48,7 +48,7 @@
 
         .add-form button {
             font-size: 14px;
-            border: 1px solid #000000
+            /* border: 1px solid #000000 */
         }
 
         input[type="checkbox"] {
@@ -211,6 +211,7 @@
             color: #fff !important;
             font-size: 12px !important;
             border-radius: 4px;
+            text-align: center;
         }
 
         .form-label {
@@ -226,6 +227,49 @@
             text-overflow: ellipsis;
             display: inline-block;
             max-width: 100%;
+        }
+
+        .cancel-icon {
+            position: absolute !important;
+            top: -10px !important;
+            right: -8px !important;
+            background: #dc2f2b !important;
+            color: #fff;
+            border-radius: 50%;
+            cursor: pointer;
+            padding: 1px 5px 0px 5px;
+            font-size: 12px;
+        }
+        .image-item-land p {
+            font-size:12px;
+            color: #dc2f2b;
+            background: transparent;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .image-item-land img {
+            width: 70px;
+            height: 70px;
+            object-fit: cover;
+            /* border: 1px solid #dc2f2b; */
+            border-radius: 10px;
+        }
+        .image-item-land {
+            position: relative !important;
+            display: inline-block !important;
+            margin-right: 20px !important;
+            width: 80px !important;
+            text-align: center !important;
+            vertical-align: top !important;
+        }
+        .image-container {
+            overflow-x: auto;
+            width: 100%;
+            margin-left: 0;
+        }
+        .select2-container {
+            z-index: 9999 !important;
         }
     </style>
 @endpush
@@ -321,7 +365,7 @@
             <div class="filter">
                 <form id="filterJobs_form">
                     <div class="row gy-3">
-                        <div class="col-4 col-md-3">
+                        <div class="col-4 col-md-3 d-none">
                             <label class="fw-semibold">Job Number</label>
                             <input type="text" class="py-1 px-3 rounded-1 form-control" id="search_job_no"
                                 name="search_job_no" placeholder="Type here">
@@ -353,15 +397,19 @@
                                 <option value="1">Good to go</option>
                                 <option value="0">Problem</option>
                                 <option value="2">On-Hold</option>
+                                <option value="3">Completed</option>
                             </select>
                         </div>
                         <div class="col-4 col-md-3">
-                            <label class="fw-semibold">Date</label>
-                            <input type="date" class="py-1 px-3 rounded-1 form-control" id="search_date"
-                                name="search_date" placeholder="Enter Customer Name">
+                            <label class="fw-semibold">From Date</label>
+                            <input type="date" class="py-1 px-3 rounded-1 form-control" id="search_from_date" name="search_from_date">
                         </div>
                         <div class="col-4 col-md-3">
-                            <label class="fw-semibold">Assigned (Rigger/Driver)</label>
+                            <label class="fw-semibold">To Date</label>
+                            <input type="date" class="py-1 px-3 rounded-1 form-control" id="search_to_date" name="search_to_date">
+                        </div>
+                        <div class="col-4 col-md-3">
+                            <label class="fw-semibold">Rigger/Driver</label>
                             <select class="form-control" id="search_assigned_user" name="search_assigned_user">
                                 <option value="">Choose</option>
                             </select>
@@ -406,148 +454,31 @@
             <!-- Button trigger modal -->
             
 
-            <!-- Modal -->
-            <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-                aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-body text-center">
-                            <img src="{{asset('assets/images/remove.png')}}" width="60" alt="">
-                            <h6 class="text-danger mt-3">
-                                Are you sure you want to delete a job
-                            </h6>
-                        </div>
-                        <div class="modal-footer d-flex align-items-center justify-content-center" style="border: none" >
-                            <button type="button" class="btn btn-secondary px-5" data-bs-dismiss="modal">No</button>
-                            <button type="button" class="btn btn-danger px-5">Yes</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            
         </div>
     </div>
 </div>
 
-<!-- <div class="add-job px-3 py-4">
-    <h6 class="text-danger">
-        ADD JOB
-    </h6>
-
-    <form action="">
-        <div class="row add-form rounded-1">
-            <div class="mb-3 d-flex align-items-center gap-1 col-md-2">
-                <input type="radio" name="job_type[]" id="job_type_logistic" value="Logistic Job" checked>
-                <label style="margin-top: 0rem !important" class="form-label mt-0" for="job_type_logistic">Logistic
-                    Job</label>
-
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="delete_confirm" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <img src="{{asset('assets/images/remove.png')}}" width="60" alt="">
+                <h6 class="text-danger mt-3">
+                    Are you sure you want to delete this record?
+                </h6>
             </div>
-            <div class="mb-3 d-flex align-items-center gap-1 col-md-6">
-                <input type="radio" name="job_type[]" id="job_type_crane" value="Crane Job">
-                <label style="margin-top: 0rem !important" class="form-label mt-0" for="job_type_crane">Crane
-                    Job</label>
-            </div>
-
-            <div class="col-12 col-md-6 d-flex flex-column">
-                <label class="pb-2" for="job_time">
-                    Job Time
-                </label>
-                <input class="rounded-1 py-1 px-2 w-100" id="job_time" type="text" placeholder="Enter a Job Time. Here">
-            </div>
-
-            <div class="col-12 col-md-6 d-flex flex-column">
-                <label class="pb-2" for="equip">
-                    Equipment To Be Used
-                </label>
-                <input class="rounded-1 py-1 px-2 w-100" id="equip" type="text"
-                    placeholder="Enter Equipment To Be Used Here">
-            </div>
-
-            <div class="col-12 col-md-6 d-flex flex-column">
-                <label class="pb-2" for="client">
-                    Client Name
-                </label>
-                <input class="rounded-1 py-1 px-2 w-100" id="client" type="text" placeholder="Enter Client Name Here">
-            </div>
-
-            <div class="col-12 col-md-6 d-flex flex-column">
-                <label class="pb-2" for="rigger">
-                    Rigger Assigned
-                </label>
-                <input class="rounded-1 py-1 px-2 w-100" id="rigger" type="text"
-                    placeholder="Enter Rigger Assigned Here">
-            </div>
-
-            <div class="col-12 col-md-6 d-flex flex-column">
-                <label class="pb-2" for="date">
-                    Date
-                </label>
-                <input class="rounded-1 py-1 px-2 w-100" id="date" type="date" placeholder="Enter Client Name Here">
-            </div>
-
-            <div class="col-12 col-md-6 d-flex flex-column">
-                <label class="pb-2" for="address">
-                    Address
-                </label>
-                <input class="rounded-1 py-1 px-2 w-100" id="address" type="text" placeholder="Enter Address Here">
-            </div>
-
-
-            <div class="col-12 col-md-6 d-flex flex-column">
-                <label for="add_eventStart" class="pb-2">Start Time</label>
-                <input type="datetime-local" class="rounded-1 py-1 px-2 w-100" id="add_eventStart" name="add_eventStart"
-                    required>
-            </div>
-
-            <div class="col-12 col-md-6 d-flex flex-column">
-                <label for="add_eventEnd" class="pb-2">End Time</label>
-                <input type="datetime-local" class="rounded-1 py-1 px-2 w-100" id="add_eventEnd" name="add_eventEnd"
-                    required>
-            </div>
-
-            <div class="col-12 col-md-6 d-flex flex-column">
-                <label class="pb-2" for="notes">
-                    Notes
-                </label>
-                <textarea name="" id="notes" rows="5" placeholder="Type Notes Here....."></textarea>
-            </div>
-
-            <div class="col-12 col-md-6 d-flex flex-column">
-                <label class="pb-2" for="address">
-                    Supplier Name
-                </label>
-                <input class="rounded-1 py-1 px-2 w-100" id="address" type="text"
-                    placeholder="Enter Supplier Name Here">
-                <span class="pt-3">
-                    Upload Images
-                </span>
-                <div class="d-flex align-items-center gap-2 mt-2">
-                    <button class="px-3 py-1">
-                        Choose File
-                    </button>
-                    <span>No Choosen File</span>
-                </div>
-            </div>
-
-
-            <div>
-                <input type="checkbox" name="" id="scc">
-                <label class="scci" for="scc">SCCI</label>
-                <br><br>
-                <div class="d-flex justify-content-center gap-2">
-                    <button id="save-btn" class="py-1 px-5 add-btn rounded-1">
-                        Back
-                    </button>
-                    <button id="save-btn" class="py-1 px-5 add-btn rounded-1">
-                        Save
-                    </button>
-                </div>
+            <div class="modal-footer d-flex align-items-center justify-content-center" style="border: none" >
+                <button type="button" class="btn btn-secondary px-5" id="close_confirm">No</button>
+                <button type="button" class="btn btn-danger px-5" id="delete_confirmed">Yes</button>
             </div>
         </div>
-    </form>
-
-</div> -->
-<div id="addJob_modal" class="modal fade modal-lg" tabindex="-1" aria-labelledby="addEventModalLabel"
-    aria-hidden="true">
+    </div>
+</div>
+<!-- Modal to add/update Job -->
+<div id="addJob_modal" class="modal fade modal-lg" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -559,44 +490,37 @@
                     <input type="hidden" id="add_job_id" name="job_id" value="">
                     <div class="row add-form rounded-1">
                         <div class="row">
-                            <div class="mb-3 d-flex align-items-center gap-1 col-md-12">
+                            <div class="d-flex align-items-center gap-1 col-md-12">
                                 <label style="margin-top: 0rem !important" class="form-label m-0">
                                     Job Type<span class="text-danger">**</span>
                                 </label>
-
                             </div>
-                            <div class="mb-3 d-flex align-items-center gap-1 col-md-3">
+                            <div class="col-md-3">
                                 <input type="radio" name="job_type" id="job_type_logistic" value="1">
                                 <label style="margin-top: 0rem !important" class="form-label m-0"
                                     for="job_type_logistic">SCCI(Logistic Job)</label>
                             </div>
-                            <div class="mb-3 d-flex align-items-center gap-1 col-md-3">
+                            <div class="col-md-2">
                                 <input type="radio" name="job_type" id="job_type_crane" value="2">
                                 <label style="margin-top: 0rem !important" class="form-label m-0"
                                     for="job_type_crane">Crane Job</label>
                             </div>
-                            <div class="mb-3 d-flex align-items-center gap-1 col-md-3">
+                            <div class="col-md-2">
                                 <input type="radio" name="job_type" id="job_type_other" value="3">
                                 <label style="margin-top: 0rem !important" class="form-label m-0"
                                     for="job_type_other">Other</label>
                             </div>
+                            <div class="col-md-5" id="viewPdf_btns">
+                            
+                            </div>
                         </div>
 
-                        <div class="col-12 col-md-6 d-flex flex-column">
+                        <div class="col-12 col-md-6 d-flex flex-column d-none">
                             <label class="pb-2 form-label" for="job_time">
                                 Job Time
                             </label>
-                            <input class="rounded-1 py-1 px-2 w-100 form-control" id="job_time" name="job_time"
-                                type="time" placeholder="Enter a Job Time. Here">
-                        </div>
-
-                        <div class="col-12 col-md-6 d-flex flex-column">
-                            <label class="pb-2 form-label" for="equip">
-                                Equipment To Be Used<span class="text-danger">*</span>
-                            </label>
-                            <input class="form-control rounded-1 py-1 px-2 w-100" id="equipment_to_be_used"
-                                name="equipment_to_be_used" type="text" placeholder="Enter Equipment To Be Used Here"
-                                maxlength="50">
+                            <input type="time" class="rounded-1 py-1 px-2 w-100 form-control" id="job_time" name="job_time" 
+                                placeholder="Enter a Job Time. Here">
                         </div>
 
                         <div class="col-12 col-md-6 d-flex flex-column">
@@ -606,26 +530,24 @@
                             <input class="form-control rounded-1 py-1 px-2 w-100" id="client_name" type="text"
                                 name="client_name" placeholder="Enter Client Name Here" maxlength="50">
                         </div>
-
-                        <div class="col-12 col-md-6 d-flex flex-column">
-                            <label class="form-label pb-2" for="rigger_assigned">
-                                <span id="riggerAssign_label">Rigger Assigned</span><span class="text-danger">*</span>
-                            </label>
-                            <!-- <input class="form-control rounded-1 py-1 px-2 w-100" id="rigger_assigned" type="text"
-                                name="rigger_assigned" placeholder="Enter Rigger Assigned Here"> -->
-                            <select class="form-control" name="rigger_assigned" id="rigger_assigned" required>
-                                <option value="">Choose</option>
-                            </select>
-                        </div>
-
                         <div class="col-12 col-md-6 d-flex flex-column">
                             <label class="form-label pb-2" for="date">
                                 Date<span class="text-danger">*</span>
                             </label>
-                            <input class="form-control rounded-1 py-1 px-2 w-100" id="date" type="date" name="date"
-                                placeholder="Enter Client Name Here">
+                            <input class="form-control rounded-1 py-1 px-2 w-100" id="date" type="date"
+                                name="date" placeholder="Enter Client Name Here">
+                        </div>
+                        <div class="col-12 col-md-6 d-flex flex-column">
+                            <label for="add_eventStart" class="pb-2 form-label">Start Time<span class="text-danger">*</span></label>
+                            <input type="time" class="form-control rounded-1 py-1 px-2 w-100"
+                                id="add_eventStart" name="start_time" required>
                         </div>
 
+                        <div class="col-12 col-md-6 d-flex flex-column d-none">
+                            <label for="add_eventEnd" class="pb-2 form-label">End Time<span class="text-danger">*</span></label>
+                            <input type="time" class="form-control rounded-1 py-1 px-2 w-100"
+                                id="add_eventEnd" name="end_time" required>
+                        </div>
                         <div class="col-12 col-md-6 d-flex flex-column">
                             <label class="pb-2 form-label" for="address">
                                 Address<span class="text-danger">*</span>
@@ -633,79 +555,142 @@
                             <input class="form-control rounded-1 py-1 px-2 w-100" id="address" type="text"
                                 name="address" placeholder="Enter Address Here" maxlength="200">
                         </div>
-
-
                         <div class="col-12 col-md-6 d-flex flex-column">
-                            <label for="add_eventStart" class="pb-2 form-label">Start Time<span
-                                    class="text-danger">*</span></label>
-                            <input type="datetime-local" class="form-control rounded-1 py-1 px-2 w-100"
-                                id="add_eventStart" name="start_time" required>
+                            <label class="pb-2 form-label" for="equip">
+                                Equipment To Be Used<span class="text-danger equip_staric">*</span>
+                            </label>
+                            <input class="form-control rounded-1 py-1 px-2 w-100" id="equipment_to_be_used" 
+                                name="equipment_to_be_used" type="text"
+                                placeholder="Enter Equipment To Be Used Here" maxlength="50">
                         </div>
 
-                        <div class="col-12 col-md-6 d-flex flex-column">
-                            <label for="add_eventEnd" class="pb-2 form-label">End Time<span
-                                    class="text-danger">*</span></label>
-                            <input type="datetime-local" class="form-control rounded-1 py-1 px-2 w-100"
-                                id="add_eventEnd" name="end_time" required>
+                        <div class="col-12 col-md-6 flex-column" id="riggerAssigned_div">
+                            <label class="form-label pb-2" for="rigger_assigned">
+                                <span id="riggerAssign_label">Assign Rigger</span><span class="text-danger">*</span>
+                            </label>
+                            <select class="form-control select2-choose" name="rigger_assigned[]" id="rigger_assigned" multiple="multiple">
+                                
+                            </select>
                         </div>
-
+                        <div class="col-12 col-md-6 flex-column" id="userAssigned_div" style="display:none;">
+                            <label class="form-label pb-2" for="user_assigned">
+                                <span id="">User Assigned</span>
+                            </label>
+                            <input class="form-control rounded-1 py-1 px-2 w-100" id="user_assigned" type="text"
+                                name="user_assigned" placeholder="Enter User Assigned Here" maxlength="50" >
+                        </div>
 
                         <div class="col-12 col-md-6 d-flex flex-column">
                             <label class="pb-2 form-label" for="supplier_name">
-                                Supplier Name<span class="text-danger">*</span>
+                                Supplier Name
                             </label>
                             <input class="form-control rounded-1 py-1 px-2 w-100" id="supplier_name" type="text"
                                 name="supplier_name" placeholder="Enter Supplier Name Here" maxlength="50">
                         </div>
                         <div class="mb-3 col-md-6 status_input" style="display:none;">
-                            <label for="add_status" class="form-label">Status<span class="text-danger">*</span></label>
+                            <label for="add_status" class="pb-2 form-label">Status<span class="text-danger">*</span></label>
                             <select class="form-control" name="status" id="add_status" required>
                                 <option value="">Select Status</option>
+                                <option value="2">On-Hold</option>
                                 <option value="1">Good To Go</option>
                                 <option value="0">Problem</option>
-                                <option value="2">On-Hold</option>
                             </select>
-                            <span class="text-danger" id="status_error"></span>
                         </div>
                         <div class="col-12 col-md-12 d-flex flex-column">
                             <label class="pb-2 form-label" for="notes">
                                 Notes
                             </label>
-                            <textarea class="form-control" name="notes" id="add_notes" rows="5" name="notes"
-                                placeholder="Type Notes Here....."></textarea>
+                            <textarea class="form-control" name="notes" id="add_notes" rows="5"
+                                name="notes" placeholder="Type Notes Here....." maxlength="500" style="resize:none;"></textarea>
                         </div>
-                        <div class="mb-3 col-md-6 updatedInfo_div" style="display:none;">
-                            <label class="form-label">Created By</label>
-                            <p id="created_by"></p>
-                        </div>
-                        <div class="mb-3 col-md-6 updatedInfo_div" style="display:none;">
-                            <label class="form-label">Updated By</label>
-                            <p id="updated_by"></p>
-                        </div>
-
-                        <div class="col-12 col-md-6 d-flex flex-column">
+                        
+                        <div class="col-12 col-md-8 d-flex flex-column">
                             <button type="button" class="atc-btn w-50 mt-2" id="addAttachment_btn">
                                 Add Attachment<span class="text-danger">*</span>
                             </button>
                             <input type="hidden" id="deletedFileIds" name="deletedFileIds" value="">
                             <div id="uploads_section">
-                                <!-- <div class="d-flex align-items-center gap-2 my-2">
-                                    <button class="text-dark upload-btn #000 w-50 px-0">Upload Image</button>
-                                    <input type="text" class="form-control" placeholder="Title">
-                                    <i class="fa-solid fa-xmark"></i>
-                                </div> -->
+                               
                             </div>
                         </div>
 
-                        <div>
+                        <div class="col-12 d-flex flex-column my-3">
+                            <div class="accordion" id="accordionExample">
+                                <div class="accordion-item" id="uploaded_attachment" style="display:none;">
+                                    <h2 class="accordion-header" id="headingZero">
+                                        <button class="accordion-button  p-2" type="button" data-bs-toggle="collapse" data-bs-target="#uploadedAtt" aria-expanded="true" aria-controls="uploadedAtt">
+                                            Uploaded Attachments
+                                        </button>
+                                    </h2>
+                                    <div id="uploadedAtt" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                                        <div class="white image-container mx-4" id="uploads_section1">
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item ticket_attachments" id="rigger_att_section">
+                                    <h2 class="accordion-header" id="headingOne">
+                                        <button class="accordion-button p-2" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                                            Rigger Ticket Attachments
+                                        </button>
+                                    </h2>
+                                    <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                                        <div class="white image-container mx-4" id="rigger_attachments">
+                                            
+                                        </div>
+                                        <div class="accordion" id="accordionExample1">
+                                            <div class="accordion-item ticket_attachments" id="payduty_att_section">
+                                                <h2 class="accordion-header" id="headingTwo">
+                                                    <button class="accordion-button p-2" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                                        Pay Duty Attachments
+                                                    </button>
+                                                </h2>
+                                                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample1">
+                                                    <div class="white image-container mx-4" id="payduty_attachments">
+                                                        
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item ticket_attachments" id="transporter_att_section">
+                                    <h2 class="accordion-header" id="headingThree">
+                                        <button class="accordion-button p-2" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                            Transporter Ticket Attachments
+                                        </button>
+                                    </h2>
+                                    <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                                        <div class="white image-container mx-4" id="transporter_attachments">
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-                            <div class="d-flex justify-content-center gap-2">
-                                <button type="button" id="closeJob_modal" class="py-1 px-5 add-btn rounded-1">
-                                    Close
-                                </button>
-                                <button type="button" id="saveJob_btn" class="py-1 px-5 add-btn rounded-1">
-                                    Save
-                                </button>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="updatedInfo_div pt-2" style="font-size:12px; display:none;">
+                                    Created By:
+                                    <span id="created_by"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex justify-content-center gap-2">
+                                    <button type="button" id="closeJob_modal" class="py-1 px-5 add-btn rounded-1">
+                                        Close
+                                    </button>
+                                    <button type="button" id="saveJob_btn" class="py-1 px-5 add-btn rounded-1">
+                                        Save
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="updatedInfo_div pt-2" style="font-size:12px; text-align:right; display:none;">
+                                    Updated By:
+                                    <span id="updated_by"></span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -714,6 +699,7 @@
         </div>
     </div>
 </div>
+
 @endsection
 
 @push('scripts')

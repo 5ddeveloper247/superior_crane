@@ -20,7 +20,7 @@
                 -Assigned To: {{@$assigned_to}}<br>
                 -Job Client Name: {{@$client_name}}<br>
                 -Job Start Time: {{@$start_time}}<br>
-                -Job End Time: {{@$end_time}}<br>
+                <!-- -Job End Time: {{@$end_time}}<br> -->
                 @if(@$status != '')
                 -Status: {{@$status}}<br>
                 @endif

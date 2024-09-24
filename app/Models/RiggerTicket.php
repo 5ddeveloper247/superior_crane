@@ -25,4 +25,9 @@ class RiggerTicket extends Model
     {
     	return $this->hasMany(RiggerTicketImages::class, 'ticket_id');
     }
+
+    public function payDuty()
+    {
+        return $this->hasOne(PayDutyModel::class, 'rigger_ticket_id');
+    }
 }

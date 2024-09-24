@@ -368,28 +368,28 @@
         <div class="row add-form rounded-1">
             <div class="col-12 col-md-6 d-flex flex-column">
                 <label class="py-2" for="customer_name">
-                    Customer Name
+                    Customer Name<span class="text-danger">*</span>
                 </label>
                 <input class="rounded-1 form-control py-1 px-2 w-100" type="text" id="customer_name" name="customer_name" maxlength="50" placeholder="Enter Customer Name Here">
             </div>
 
             <div class="col-12 col-md-6 d-flex flex-column">
                 <label class="py-2" for="site_address">
-                    Site Address
+                    Site Address<span class="text-danger">*</span>
                 </label>
                 <input class="rounded-1 form-control py-1 px-2 w-100" type="text" id="site_address" name="site_address" maxlength="100" placeholder="Enter Site Address Here">
             </div>
 
             <div class="col-12 col-md-6 d-flex flex-column">
                 <label class="py-2" for="inventory_items">
-                    Item
+                    Item<span class="text-danger">*</span>
                 </label>
                 <input class="rounded-1 form-control py-1 px-2 w-100" type="text" id="inventory_items" name="items" maxlength="50" placeholder="Enter Item Here">
             </div>
 
             <div class="col-12 col-md-6 d-flex flex-column">
                 <label class="py-2" for="inventory_pieces">
-                    Pieces
+                    Pieces<span class="text-danger">*</span>
                 </label>
                 <input class="rounded-1 form-control py-1 px-2 w-100" type="text" id="inventory_pieces" name="pieces" maxlength="50" placeholder="Enter Pieces Here">
             </div>
@@ -398,28 +398,28 @@
 
             <div class="col-12 col-md-6 d-flex flex-column">
                 <label class="py-2" for="inventory_location">
-                    Inventory Location
+                    Inventory Location<span class="text-danger">*</span>
                 </label>
                 <input class="rounded-1 form-control py-1 px-2 w-100" id="inventory_location" name="location" type="text" maxlength="200" placeholder="Enter location here">
             </div>
 
             <div class="col-12 col-md-6 d-flex flex-column">
                 <label class="py-2" for="date_received">
-                    Date Received
+                    Date Received<span class="text-danger">*</span>
                 </label>
                 <input class="rounded-1 form-control py-1 px-2 w-100" type="date" id="date_received" name="date_received">
             </div>
 
             <div class="col-12 col-md-6 d-flex flex-column">
                 <label class="py-2" for="date_shipped">
-                    Date Shipped
+                    Date Shipped<span class="text-danger">*</span>
                 </label>
                 <input class="rounded-1 form-control py-1 px-2 w-100" type="date" id="date_shipped" name="date_shipped" >
             </div>
 
 
             <div class="col-12 col-md-6 d-flex flex-column">
-                <label for="days_in_yard" class="py-2">Days in Yard</label>
+                <label for="days_in_yard" class="py-2">Days in Yard<span class="text-danger">*</span></label>
                 <input type="number" class="rounded-1 form-control py-1 px-2 w-100" id="days_in_yard" name="days_in_yard" maxlength="8" placeholder="Enter Days in Yard Here">
             </div>
 
@@ -430,20 +430,21 @@
 
             <div class="col-12 col-md-6 d-flex flex-column">
                 <label class="py-2" for="inventory_dimension">
-                    Dimensions
+                    Dimensions<span class="text-danger">*</span>
                 </label>
-                <input class="rounded-1 form-control py-1 px-2 w-100" type="number" id="inventory_dimension" name="dimension" maxlength="8" placeholder="Enter Dimensions Here">
+                <input class="rounded-1 form-control py-1 px-2 w-100" type="number" id="inventory_dimension" name="dimension" maxlength="8"
+                        pattern="\d*" oninput="this.value = this.value.replace(/\D/g, '').replace(/^0+/, '');" placeholder="Enter Dimensions Here">
             </div>
 
             <div class="col-12 col-md-6 d-flex flex-column">
                 <label class="py-2" for="address">
-                    Sq. Ft
+                    Sq. Ft<span class="text-danger">*</span>
                 </label>
                 <input class="rounded-1 form-control py-1 px-2 w-100" type="number" id="inventory_square_feet" name="square_feet" maxlength="8" placeholder="Enter Sq. Ft Here">
             </div>
             <div class="col-12 col-md-6 d-flex flex-column">
                 <label class="py-2" for="inventory_status">
-                    Status
+                    Status<span class="text-danger">*</span>
                 </label>
                 <select class="form-control" name="status" id="inventory_status" name="status">
                     <option value="">Choose</option>
@@ -456,7 +457,7 @@
                 <label class="py-2" for="inventory_comment">
                     Comment
                 </label>
-                <textarea class="rounded-1 form-control" id="inventory_comment" name="comment" placeholder="Enter Comment Here"></textarea>
+                <textarea class="rounded-1 form-control" id="inventory_comment" name="comment" placeholder="Enter Comment Here" rows="5" style="resize:none;"></textarea>
             </div>
 
             <div class="mt-3 d-flex justify-content-center gap-2">
@@ -466,6 +467,25 @@
         </div>
     </form>
 
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="delete_confirm" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <img src="{{asset('assets/images/remove.png')}}" width="60" alt="">
+                <h6 class="text-danger mt-3">
+                    Are you sure you want to delete this record?
+                </h6>
+            </div>
+            <div class="modal-footer d-flex align-items-center justify-content-center" style="border: none" >
+                <button type="button" class="btn btn-secondary px-5" id="close_confirm">No</button>
+                <button type="button" class="btn btn-danger px-5" id="delete_confirmed">Yes</button>
+            </div>
+        </div>
+    </div>
 </div>
 @endsection
 

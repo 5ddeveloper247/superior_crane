@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\JobModel;
 use App\Models\TransportationTicketModel;
 use App\Models\TransportationTicketImages;
+use App\Models\Notifications;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -17,45 +18,66 @@ class TransportationTicketController extends Controller
 {
     public function add_transportation_ticket(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'user_id' => 'required',
-            'job_id' => 'required',
-            'pickup_address' => 'required|string',
-            'delivery_address' => 'required|string',
-            'time_in' => 'required|date_format:H:i',
-            'time_out' => 'required|date_format:H:i',
-            'notes' => 'required|string',
-            'job_number' => 'required|string|max:50',
-            'job_special_instructions' => 'required|string',
-            'po_number' => 'required|string|max:50',
-            'po_special_instructions' => 'required|string',
-            'site_contact_name' => 'required|string|max:100',
-            'site_name_special_instructions' => 'required|string',
-            'site_contact_number' => 'required|string|max:17',
-            'site_number_special_instructions' => 'required|string',
-            'shipper_name' => 'required|string|max:100',
-            // 'shipper_signature' => 'required|string',
-            'shipper_signature_date' => 'required|date',
-            'shipper_time_in' => 'required|date_format:H:i',
-            'shipper_time_out' => 'required|date_format:H:i',
-            'pickup_driver_name' => 'required|string|max:100',
-            // 'pickup_driver_signature' => 'required|string',
-            'pickup_driver_signature_date' => 'required|date',
-            'pickup_driver_time_in' => 'required|date_format:H:i',
-            'pickup_driver_time_out' => 'required|date_format:H:i',
-            'customer_name' => 'required|string|max:100',
-            'customer_email' => 'required|string|email|max:100',
-            // 'customer_signature' => 'required|string',
-            'customer_signature_date' => 'required|date',
-            'customer_time_in' => 'required|date_format:H:i',
-            'customer_time_out' => 'required|date_format:H:i',
-            'status' => 'required|integer',   // 1=>draft, 2=>issued, 3=>complete
-            'images' => 'required',
-            'images.*.file' => 'required|string',
-            'images.*.title' => 'required|string|max:255',
-            // 'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'created_by' => 'required|integer',
+        $request->merge([
+            'time_in' => $request->input('time_in') != null ? date('H:i', strtotime($request->input('time_in'))) : null,
+            'time_out' => $request->input('time_out') != null ? date('H:i', strtotime($request->input('time_out'))) : null,
+            'shipper_time_in' => $request->input('shipper_time_in') != null ? date('H:i', strtotime($request->input('shipper_time_in'))) : null,
+            'shipper_time_out' => $request->input('shipper_time_out') != null ? date('H:i', strtotime($request->input('shipper_time_out'))) : null,
+            'pickup_driver_time_in' => $request->input('pickup_driver_time_in') != null ? date('H:i', strtotime($request->input('pickup_driver_time_in'))) : null,
+            'pickup_driver_time_out' => $request->input('pickup_driver_time_out') != null ? date('H:i', strtotime($request->input('pickup_driver_time_out'))) : null,
+            'customer_time_in' => $request->input('customer_time_in') != null ? date('H:i', strtotime($request->input('customer_time_in'))) : null,
+            'customer_time_out' => $request->input('customer_time_out') != null ? date('H:i', strtotime($request->input('customer_time_out'))) : null,
         ]);
+        if(isset($request->status) && $request->status == '3'){
+            $validator = Validator::make($request->all(), [
+                'user_id' => 'required',
+                'job_id' => 'required',
+                'pickup_address' => 'required|string',
+                'delivery_address' => 'required|string',
+                'time_in' => 'required|date_format:H:i',
+                'time_out' => 'required|date_format:H:i',
+                'notes' => 'nullable|string',
+                'job_number' => 'nullable|string|max:50',
+                'job_special_instructions' => 'nullable|string',
+                'po_number' => 'nullable|string|max:50',
+                'po_special_instructions' => 'nullable|string',
+                'site_contact_name' => 'nullable|string|max:100',
+                'site_name_special_instructions' => 'nullable|string',
+                'site_contact_number' => 'nullable|string|max:17',
+                'site_number_special_instructions' => 'nullable|string',
+                'shipper_name' => 'nullable|string|max:100',
+                'shipper_signature' => 'nullable|string',
+                'shipper_signature_date' => 'nullable|date',
+                'shipper_time_in' => 'nullable|date_format:H:i',
+                'shipper_time_out' => 'nullable|date_format:H:i',
+                'pickup_driver_name' => 'nullable|string|max:100',
+                'pickup_driver_signature' => 'nullable|string',
+                'pickup_driver_signature_date' => 'nullable|date',
+                'pickup_driver_time_in' => 'nullable|date_format:H:i',
+                'pickup_driver_time_out' => 'nullable|date_format:H:i',
+                'customer_name' => 'nullable|string|max:100',
+                'customer_email' => 'nullable|string|email|max:100',
+                'customer_signature' => 'nullable|string',
+                'customer_signature_date' => 'nullable|date',
+                'customer_time_in' => 'nullable|date_format:H:i',
+                'customer_time_out' => 'nullable|date_format:H:i',
+                'status' => 'required|integer',   // 1=>draft, 2=>issued, 3=>complete
+                // 'images' => 'required',
+                'images.*.file' => 'string',
+                'images.*.title' => 'string|max:255',
+                'images.*.type' => 'string|max:255',
+                // 'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'created_by' => 'required|integer',
+            ]);
+        }else{
+            $validator = Validator::make($request->all(), [
+                'user_id' => 'required',
+                'job_id' => 'required',
+                'status' => 'required|integer',   // 1=>draft, 2=>issued, 3=>complete
+                'created_by' => 'required|integer',
+            ]);
+        }
+        
 
         // Check if validation fails
         if ($validator->fails()) {
@@ -83,18 +105,18 @@ class TransportationTicketController extends Controller
             $record->site_contact_number = $request->site_contact_number;
             $record->site_contact_number_special_instructions = $request->site_number_special_instructions;
             $record->shipper_name = $request->shipper_name;
-            // $record->shipper_signature = $request->shipper_signature;
+            $record->shipper_signature = $request->shipper_signature;
             $record->shipper_signature_date = $request->shipper_signature_date;
             $record->shipper_time_in = $request->shipper_time_in;
             $record->shipper_time_out = $request->shipper_time_out;
             $record->pickup_driver_name = $request->pickup_driver_name;
-            // $record->pickup_driver_signature = $request->pickup_driver_signature;
+            $record->pickup_driver_signature = $request->pickup_driver_signature;
             $record->pickup_driver_signature_date = $request->pickup_driver_signature_date;
             $record->pickup_driver_time_in = $request->pickup_driver_time_in;
             $record->pickup_driver_time_out = $request->pickup_driver_time_out;
             $record->customer_name = $request->customer_name;
             $record->customer_email = $request->customer_email;
-            // $record->customer_signature = $request->customer_signature;
+            $record->customer_signature = $request->customer_signature;
             $record->customer_signature_date = $request->customer_signature_date;
             $record->customer_time_in = $request->customer_time_in;
             $record->customer_time_out = $request->customer_time_out;
@@ -102,44 +124,31 @@ class TransportationTicketController extends Controller
             $record->created_by = $request->created_by;
             $record->save();
 
-            if ($request->hasFile('shipper_signature')) {
-                $path = '/uploads/transportation_tickets_images/' . $record->id . "/shipper_signature";
-                $uploadedFile = $request->file('site_pic');
-                $savedFile = $this->saveSingleImage($uploadedFile, $path); 
-                $full_path = url('/public/') . $savedFile;
-                $record->shipper_signature = $full_path;
-                $record->save();
-            }
-
-            if ($request->hasFile('pickup_driver_signature')) {
-                $path = '/uploads/transportation_tickets_images/' . $record->id . "/pickup_driver_signature";
-                $uploadedFile = $request->file('site_pic');
-                $savedFile = $this->saveSingleImage($uploadedFile, $path); 
-                $full_path = url('/public/') . $savedFile;
-                $record->pickup_driver_signature = $full_path;
-                $record->save();
-            }
-
-            if ($request->hasFile('customer_signature')) {
-                $path = '/uploads/transportation_tickets_images/' . $record->id . "/customer_signature";
-                $uploadedFile = $request->file('site_pic');
-                $savedFile = $this->saveSingleImage($uploadedFile, $path); 
-                $full_path = url('/public/') . $savedFile;
-                $record->customer_signature = $full_path;
-                $record->save();
+            if($request->status == '3'){
+                JobModel::where('id', $record->job_id)->update(['status' => '3']);
             }
 
             $images = $request->images;
-            if(count($images) > 0){
+            if(is_countable($images) && count($images) > 0){
                 
                 foreach ($images as $index => $imageData) {
                     $image = $imageData['file'];
                     $title = $imageData['title'];
+                    $type = $imageData['type'];
             
                     // Decode base64 string
+                    $image = str_replace('data:image/jpg;base64,', '', $image);
+                    $image = str_replace('data:image/jpeg;base64,', '', $image);
                     $image = str_replace('data:image/png;base64,', '', $image);
+                    $image = str_replace('data:image/pdf;base64,', '', $image);
                     $image = str_replace(' ', '+', $image);
-                    $imageName = Str::random(32).'.'.'png';
+                    
+                    if($type == 'image'){
+                        $imageName = Str::random(32).'.'.'png';
+                    }else{
+                        $imageName = Str::random(32).'.'.'pdf';
+                    }
+
                     $filePath = public_path('uploads/transportation_tickets_images/' . $record->id);
             
                     if (!file_exists($filePath)) {
@@ -151,8 +160,9 @@ class TransportationTicketController extends Controller
                     // Save image path and title to database
                     $TransportationTicketImages = new TransportationTicketImages();
                     $TransportationTicketImages->ticket_id = $record->id;
-                    $TransportationTicketImages->path = 'public/uploads/transportation_tickets_images/' . $record->id . '/' . $imageName;
+                    $TransportationTicketImages->path = '/public/uploads/transportation_tickets_images/' . $record->id . '/' . $imageName;
                     $TransportationTicketImages->file_name = $title;
+                    $TransportationTicketImages->type = $type == 'image' ? 'png' : 'pdf';
                     $TransportationTicketImages->save();
                 }
             }
@@ -175,45 +185,65 @@ class TransportationTicketController extends Controller
 
     public function update_transportation_ticket(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'ticket_id' => 'required',
-            'user_id' => 'required',
-            'job_id' => 'required',
-            'pickup_address' => 'required|string',
-            'delivery_address' => 'required|string',
-            'time_in' => 'required|date_format:H:i',
-            'time_out' => 'required|date_format:H:i',
-            'notes' => 'required|string',
-            'job_number' => 'required|string|max:50',
-            'job_special_instructions' => 'required|string',
-            'po_number' => 'required|string|max:50',
-            'po_special_instructions' => 'required|string',
-            'site_contact_name' => 'required|string|max:100',
-            'site_name_special_instructions' => 'required|string',
-            'site_contact_number' => 'required|string|max:17',
-            'site_number_special_instructions' => 'required|string',
-            'shipper_name' => 'required|string|max:100',
-            // 'shipper_signature' => 'required|string',
-            'shipper_signature_date' => 'required|date',
-            'shipper_time_in' => 'required|date_format:H:i',
-            'shipper_time_out' => 'required|date_format:H:i',
-            'pickup_driver_name' => 'required|string|max:100',
-            // 'pickup_driver_signature' => 'required|string',
-            'pickup_driver_signature_date' => 'required|date',
-            'pickup_driver_time_in' => 'required|date_format:H:i',
-            'pickup_driver_time_out' => 'required|date_format:H:i',
-            'customer_name' => 'required|string|max:100',
-            'customer_email' => 'required|string|email|max:100',
-            // 'customer_signature' => 'required|string',
-            'customer_signature_date' => 'required|date',
-            'customer_time_in' => 'required|date_format:H:i',
-            'customer_time_out' => 'required|date_format:H:i',
-            'status' => 'required|integer',   // 1=>draft, 2=>issued, 3=>complete
-            'images' => 'required',
-            'images.*.file' => 'required|string',
-            'images.*.title' => 'required|string|max:255',
-            'created_by' => 'required|integer',
+        $request->merge([
+            'time_in' => $request->input('time_in') != null ? date('H:i', strtotime($request->input('time_in'))) : null,
+            'time_out' => $request->input('time_out') != null ? date('H:i', strtotime($request->input('time_out'))) : null,
+            'shipper_time_in' => $request->input('shipper_time_in') != null ? date('H:i', strtotime($request->input('shipper_time_in'))) : null,
+            'shipper_time_out' => $request->input('shipper_time_out') != null ? date('H:i', strtotime($request->input('shipper_time_out'))) : null,
+            'pickup_driver_time_in' => $request->input('pickup_driver_time_in') != null ? date('H:i', strtotime($request->input('pickup_driver_time_in'))) : null,
+            'pickup_driver_time_out' => $request->input('pickup_driver_time_out') != null ? date('H:i', strtotime($request->input('pickup_driver_time_out'))) : null,
+            'customer_time_in' => $request->input('customer_time_in') != null ? date('H:i', strtotime($request->input('customer_time_in'))) : null,
+            'customer_time_out' => $request->input('customer_time_out') != null ? date('H:i', strtotime($request->input('customer_time_out'))) : null,
         ]);
+        if(isset($request->status) && $request->status == '3'){
+            $validator = Validator::make($request->all(), [
+                'ticket_id' => 'required',
+                'user_id' => 'required',
+                'job_id' => 'required',
+                'pickup_address' => 'required|string',
+                'delivery_address' => 'required|string',
+                'time_in' => 'required|date_format:H:i',
+                'time_out' => 'required|date_format:H:i',
+                'notes' => 'nullable|string',
+                'job_number' => 'nullable|string|max:50',
+                'job_special_instructions' => 'nullable|string',
+                'po_number' => 'nullable|string|max:50',
+                'po_special_instructions' => 'nullable|string',
+                'site_contact_name' => 'nullable|string|max:100',
+                'site_name_special_instructions' => 'nullable|string',
+                'site_contact_number' => 'nullable|string|max:17',
+                'site_number_special_instructions' => 'nullable|string',
+                'shipper_name' => 'nullable|string|max:100',
+                'shipper_signature' => 'nullable|string',
+                'shipper_signature_date' => 'nullable|date',
+                'shipper_time_in' => 'nullable|date_format:H:i',
+                'shipper_time_out' => 'nullable|date_format:H:i',
+                'pickup_driver_name' => 'nullable|string|max:100',
+                'pickup_driver_signature' => 'nullable|string',
+                'pickup_driver_signature_date' => 'nullable|date',
+                'pickup_driver_time_in' => 'nullable|date_format:H:i',
+                'pickup_driver_time_out' => 'nullable|date_format:H:i',
+                'customer_name' => 'nullable|string|max:100',
+                'customer_email' => 'nullable|string|email|max:100',
+                'customer_signature' => 'nullable|string',
+                'customer_signature_date' => 'nullable|date',
+                'customer_time_in' => 'nullable|date_format:H:i',
+                'customer_time_out' => 'nullable|date_format:H:i',
+                'status' => 'required|integer',   // 1=>draft, 2=>issued, 3=>complete
+                // 'images' => 'required',
+                // 'images.*.file' => 'required|string',
+                // 'images.*.title' => 'required|string|max:255',
+                'created_by' => 'required|integer',
+            ]);
+        }else{
+            $validator = Validator::make($request->all(), [
+                'ticket_id' => 'required',
+                'user_id' => 'required',
+                'job_id' => 'required',
+                'status' => 'required|integer',   // 1=>draft, 2=>issued, 3=>complete
+                'created_by' => 'required|integer',
+            ]);
+        }
 
         // Check if validation fails
         if ($validator->fails()) {
@@ -242,18 +272,18 @@ class TransportationTicketController extends Controller
                 $record->site_contact_number = $request->site_contact_number;
                 $record->site_contact_number_special_instructions = $request->site_number_special_instructions;
                 $record->shipper_name = $request->shipper_name;
-                // $record->shipper_signature = $request->shipper_signature;
+                $record->shipper_signature = $request->shipper_signature;
                 $record->shipper_signature_date = $request->shipper_signature_date;
                 $record->shipper_time_in = $request->shipper_time_in;
                 $record->shipper_time_out = $request->shipper_time_out;
                 $record->pickup_driver_name = $request->pickup_driver_name;
-                // $record->pickup_driver_signature = $request->pickup_driver_signature;
+                $record->pickup_driver_signature = $request->pickup_driver_signature;
                 $record->pickup_driver_signature_date = $request->pickup_driver_signature_date;
                 $record->pickup_driver_time_in = $request->pickup_driver_time_in;
                 $record->pickup_driver_time_out = $request->pickup_driver_time_out;
                 $record->customer_name = $request->customer_name;
                 $record->customer_email = $request->customer_email;
-                // $record->customer_signature = $request->customer_signature;
+                $record->customer_signature = $request->customer_signature;
                 $record->customer_signature_date = $request->customer_signature_date;
                 $record->customer_time_in = $request->customer_time_in;
                 $record->customer_time_out = $request->customer_time_out;
@@ -261,80 +291,8 @@ class TransportationTicketController extends Controller
                 $record->created_by = $request->created_by;
                 $record->save();
 
-                if ($request->hasFile('shipper_signature')) {
-
-                    $del_path = str_replace(url('/public/'), '', $record->shipper_signature);
-                    deleteImage($del_path);
-
-                    $path = '/uploads/transportation_tickets_images/' . $record->id . "/shipper_signature";
-                    $uploadedFile = $request->file('site_pic');
-                    $savedFile = $this->saveSingleImage($uploadedFile, $path); 
-                    $full_path = url('/public/') . $savedFile;
-                    $record->shipper_signature = $full_path;
-                    $record->save();
-                }
-
-                if ($request->hasFile('pickup_driver_signature')) {
-                    
-                    $del_path = str_replace(url('/public/'), '', $record->pickup_driver_signature);
-                    deleteImage($del_path);
-                    
-                    $path = '/uploads/transportation_tickets_images/' . $record->id . "/pickup_driver_signature";
-                    $uploadedFile = $request->file('site_pic');
-                    $savedFile = $this->saveSingleImage($uploadedFile, $path); 
-                    $full_path = url('/public/') . $savedFile;
-                    $record->pickup_driver_signature = $full_path;
-                    $record->save();
-                }
-
-                if ($request->hasFile('customer_signature')) {
-
-                    $del_path = str_replace(url('/public/'), '', $record->customer_signature);
-                    deleteImage($del_path);
-
-                    $path = '/uploads/transportation_tickets_images/' . $record->id . "/customer_signature";
-                    $uploadedFile = $request->file('site_pic');
-                    $savedFile = $this->saveSingleImage($uploadedFile, $path); 
-                    $full_path = url('/public/') . $savedFile;
-                    $record->customer_signature = $full_path;
-                    $record->save();
-                }
-
-                $images = $request->images;
-                if(count($images) > 0){
-                    
-                    $previous_images = TransportationTicketImages::where('ticket_id', $record->id)->get();
-                    if(count($previous_images) > 0){
-                        foreach($previous_images as $img){
-                            $del_path = str_replace(url('/public/'), '', $img->path);
-                            deleteImage($del_path);
-                            TransportationTicketImages::where('id', $img->id)->delete();
-                        }
-                    }
-
-                    foreach ($images as $index => $imageData) {
-                        $image = $imageData['file'];
-                        $title = $imageData['title'];
-                
-                        // Decode base64 string
-                        $image = str_replace('data:image/png;base64,', '', $image);
-                        $image = str_replace(' ', '+', $image);
-                        $imageName = Str::random(32).'.'.'png';
-                        $filePath = public_path('uploads/transportation_tickets_images/' . $record->id);
-                
-                        if (!file_exists($filePath)) {
-                            mkdir($filePath, 0777, true);
-                        }
-                
-                        \File::put($filePath . '/' . $imageName, base64_decode($image));
-                
-                        // Save image path and title to database
-                        $TransportationTicketImages = new TransportationTicketImages();
-                        $TransportationTicketImages->ticket_id = $record->id;
-                        $TransportationTicketImages->path = 'public/uploads/transportation_tickets_images/' . $record->id . '/' . $imageName;
-                        $TransportationTicketImages->file_name = $title;
-                        $TransportationTicketImages->save();
-                    }
+                if($request->status == '3'){
+                    JobModel::where('id', $record->job_id)->update(['status' => '3']);
                 }
 
                 $this->sendEmailTransporterTicket($record->id);
@@ -347,6 +305,114 @@ class TransportationTicketController extends Controller
         } catch (\Exception $e) {
             // Log the error for debugging purposes
             Log::error('Error adding record: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => "Oops! Network Error",
+            ], 500);
+        }
+    }
+
+    public function addTicketImages(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'ticket_id' => 'required|numeric',
+            'images' => 'required',
+            'images.*.file' => 'required|string',
+            'images.*.title' => 'required|string|max:255',
+            'images.*.type' => 'required|string|max:255',
+        ]);
+        // Check if validation fails
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        try {
+
+            $images = $request->images;
+            if(is_countable($images) && count($images) > 0){
+                
+                foreach ($images as $index => $imageData) {
+                    $image = $imageData['file'];
+                    $title = $imageData['title'];
+                    $type = $imageData['type'];
+            
+                    // Decode base64 string
+                    $image = str_replace('data:image/jpg;base64,', '', $image);
+                    $image = str_replace('data:image/jpeg;base64,', '', $image);
+                    $image = str_replace('data:image/png;base64,', '', $image);
+                    $image = str_replace('data:image/pdf;base64,', '', $image);
+                    $image = str_replace(' ', '+', $image);
+
+                    if($type == 'image'){
+                        $imageName = Str::random(32).'.'.'png';
+                    }else{
+                        $imageName = Str::random(32).'.'.'pdf';
+                    }
+                    
+                    $filePath = public_path('uploads/transportation_tickets_images/' . $request->ticket_id);
+            
+                    if (!file_exists($filePath)) {
+                        mkdir($filePath, 0777, true);
+                    }
+            
+                    \File::put($filePath . '/' . $imageName, base64_decode($image));
+            
+                    // Save image path and title to database
+                    $TransportationTicketImages = new TransportationTicketImages();
+                    $TransportationTicketImages->ticket_id = $request->ticket_id;
+                    $TransportationTicketImages->path = '/public/uploads/transportation_tickets_images/' . $request->ticket_id . '/' . $imageName;
+                    $TransportationTicketImages->file_name = $title;
+                    $TransportationTicketImages->type = $type == 'image' ? 'png' : 'pdf';
+                    $TransportationTicketImages->save();
+                }
+            }
+
+            $ticket_images = TransportationTicketImages::where('ticket_id', $request->ticket_id)->get();
+
+            return response()->json([
+                'success' => true,
+                'ticket_images' => $ticket_images,
+            ], 200);
+        } catch (\Exception $e) {
+            // Log the error for debugging purposes
+            Log::error('Error loading job: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => "Oops! Network Error",
+            ], 500);
+        }
+    }
+
+    public function deleteTicketImage(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'ticket_id' => 'required|numeric',
+            'image_id' => 'required|numeric',
+        ]);
+        // Check if validation fails
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        try {
+
+            TransportationTicketImages::where('ticket_id', $request->ticket_id)->where('id', $request->image_id)->delete();
+
+            $ticket_images = TransportationTicketImages::where('ticket_id', $request->ticket_id)->get();
+
+            return response()->json([
+                'success' => true,
+                'ticket_images' => $ticket_images,
+            ], 200);
+        } catch (\Exception $e) {
+            // Log the error for debugging purposes
+            Log::error('Error loading job: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => "Oops! Network Error",
@@ -374,6 +440,7 @@ class TransportationTicketController extends Controller
             if($transportation_ticket_list) {
                 return response()->json([
                     'success' => true,
+                    'total' => count($transportation_ticket_list),
                     'ticket_list' => $transportation_ticket_list,
                 ], 200);
             } else {
@@ -433,13 +500,13 @@ class TransportationTicketController extends Controller
 
     public function sendEmailTransporterTicket($ticket_id){
 
-        $attachment_pdf = $this->makeTicketPDF($ticket_id);
+        $ticketDetail = TransportationTicketModel::where('id', $ticket_id)->first();
 
-        if($attachment_pdf){
+        if($ticketDetail->status == '3'){       // if status is (3) completed  then send email
             
-            $ticketDetail = TransportationTicketModel::where('id', $ticket_id)->first();
+            $attachment_pdf = $this->makeTicketPDF($ticket_id);
 
-            if($ticketDetail->status == '3'){       // if status is (3) completed  then send email
+            if($attachment_pdf){
             
                 $transporterDetail = User::where('id', $ticketDetail->created_by)->first(); // created or rigger details
 
@@ -455,6 +522,8 @@ class TransportationTicketController extends Controller
                         $status_txt = 'Issued';
                     }else if($ticketDetail->status == '3'){
                         $status_txt = 'Completed';
+                    }else{
+                        $status_txt = '';
                     }
                     
                     $mailData = [];
@@ -467,25 +536,31 @@ class TransportationTicketController extends Controller
                     $mailData['delivery_address'] = $ticketDetail->delivery_address;
 
                     $mailData['po_number'] = $ticketDetail->po_number;
-                    $mailData['ticket_date'] = date('d-M-Y', strtotime($ticketDetail->created_at));
-                    $mailData['time_in'] = date('H:i A', strtotime($ticketDetail->time_in));
-                    $mailData['time_out'] = date('H:i A', strtotime($ticketDetail->time_out));
+                    $mailData['ticket_date'] = $ticketDetail->created_at != null ? date('d-M-Y', strtotime($ticketDetail->created_at)) : '';
+                    $mailData['time_in'] = $ticketDetail->time_in != null ? date('H:i A', strtotime($ticketDetail->time_in)) : '';
+                    $mailData['time_out'] = $ticketDetail->time_out != null ? date('H:i A', strtotime($ticketDetail->time_out)) : '';
                     $mailData['status'] = $status_txt;
     
                     $mailData['text1'] = "New Transporter Ticket has been created. Ticket details are as under.";
                     $mailData['text2'] = "For more details please contact the Manager/Admin.";
     
                     $body = view('emails.transporter_ticket_template', $mailData);
-                    $userEmailsSend = 'hamza@5dsolutions.ae';//$managerDetail->email;
+                    $userEmailsSend = $managerDetail->email;//'hamza@5dsolutions.ae';//
                     sendMailAttachment($managerDetail->name, $userEmailsSend, 'Superior Crane', 'Transporter Ticket Creation', $body, $attachment_pdf);
 
+                    if(isset($ticketDetail->customer_email) && $ticketDetail->customer_email != null){
+                        $mailData['user'] = $ticketDetail->customer_name;
+                        $body = view('emails.transporter_ticket_template', $mailData);
+                        sendMailAttachment($ticketDetail->customer_name, $ticketDetail->customer_email, 'Superior Crane', 'Transporter Ticket Creation', $body, $attachment_pdf);
+                    }
+                    
                     // push notification entry
                     $Notifications = new Notifications();
                     $Notifications->module_code = 'TRANSPORTER TICKET SUBMITTED';
                     $Notifications->from_user_id = $transporterDetail->id;
                     $Notifications->to_user_id = '1';   // for super admin
                     $Notifications->subject = 'Transporter Ticket Submitted';
-                    $Notifications->message = 'Transporter Ticket T-'.$ticketDetail->id.' on '.date('d-M-Y', strtotime($ticketDetail->created_at)).' has been submitted by '.$transporterDetail->name.'.';
+                    $Notifications->message = 'Transporter Ticket T-'.$ticketDetail->id.' on '.$ticketDetail->created_at != null ? date('d-M-Y', strtotime($ticketDetail->created_at)) : ''.' has been submitted by '.$transporterDetail->name.'.';
                     $Notifications->message_html = $body;
                     $Notifications->read_flag = '0';
                     $Notifications->created_by = $transporterDetail->id;
@@ -498,7 +573,7 @@ class TransportationTicketController extends Controller
                         foreach($allAdmins as $value){
                             $mailData['user'] = $value->name;
                             $body = view('emails.transporter_ticket_template', $mailData);
-                            $userEmailsSend = 'hamza@5dsolutions.ae';//$value->email;
+                            $userEmailsSend = $value->email;//'hamza@5dsolutions.ae';//
                             sendMailAttachment($value->name, $userEmailsSend, 'Superior Crane', 'Transporter Ticket Creation', $body, $attachment_pdf);
                         }
                     }
@@ -534,28 +609,28 @@ class TransportationTicketController extends Controller
 
 
                 ['text' => $ticket->shipper_name, 'x' => 58, 'y' => 96.5],
-                ['text' => $ticket->shipper_signature, 'x' => 103, 'y' => 96.5],
-                ['text' => date('d-M-Y', strtotime($ticket->shipper_signature_date)), 'x' => 164, 'y' => 96.5],
-                ['text' => date('H:i', strtotime($ticket->shipper_time_in)), 'x' => 210, 'y' => 96.5],
+                ['base64_image' => $ticket->shipper_signature, 'x' => 122, 'y' => 98, 'width' => 20, 'height' => 5],
+                ['text' => $ticket->shipper_signature_date != null ? date('d-M-Y', strtotime($ticket->shipper_signature_date)) : '', 'x' => 164, 'y' => 96.5],
+                ['text' => $ticket->shipper_time_in != null ? date('H:i', strtotime($ticket->shipper_time_in)) : '', 'x' => 210, 'y' => 96.5],
                 ['text' => $ticket->shipper_time_out, 'x' => 241, 'y' => 96.5],
 
                 ['text' => $ticket->pickup_driver_name, 'x' => 58, 'y' => 103],
-                ['text' => $ticket->pickup_driver_signature, 'x' => 103, 'y' => 103],
-                ['text' => date('d-M-Y', strtotime($ticket->pickup_driver_signature_date)), 'x' => 164, 'y' => 103],
-                ['text' => date('H:i', strtotime($ticket->pickup_driver_time_in)), 'x' => 210, 'y' => 103],
+                ['base64_image' => $ticket->pickup_driver_signature, 'x' => 122, 'y' => 104.5, 'width' => 20, 'height' => 5],
+                ['text' => $ticket->pickup_driver_signature_date != null ? date('d-M-Y', strtotime($ticket->pickup_driver_signature_date)) : '', 'x' => 164, 'y' => 103],
+                ['text' => $ticket->pickup_driver_time_in != null ? date('H:i', strtotime($ticket->pickup_driver_time_in)) : '', 'x' => 210, 'y' => 103],
                 ['text' => $ticket->pickup_driver_time_out, 'x' => 241, 'y' => 103],
 
                 ['text' => $ticket->customer_name, 'x' => 58, 'y' => 110],
-                ['text' => $ticket->customer_signature, 'x' => 103, 'y' => 110],
-                ['text' => date('d-M-Y', strtotime($ticket->customer_signature_date)), 'x' => 164, 'y' => 110],
-                ['text' => date('H:i', strtotime($ticket->customer_time_in)), 'x' => 210, 'y' => 110],
+                ['base64_image' => $ticket->customer_signature, 'x' => 122, 'y' => 111, 'width' => 20, 'height' => 5],
+                ['text' => $ticket->customer_signature_date != null ? date('d-M-Y', strtotime($ticket->customer_signature_date)) : '', 'x' => 164, 'y' => 110],
+                ['text' => $ticket->customer_time_in != null ? date('H:i', strtotime($ticket->customer_time_in)) : '', 'x' => 210, 'y' => 110],
                 ['text' => $ticket->customer_time_out, 'x' => 241, 'y' => 110],
                 
             ];
     
             $outputFile = $this->editPdf($filepath, $output_file_path, $fields);
             
-            return $outputFile;
+            return $outputFile;//'/public'.
         }else{
             return false;
         }
@@ -576,24 +651,43 @@ class TransportationTicketController extends Controller
             $fpdi->SetFont('Helvetica', '', 10);
             foreach ($fields as $field) {
                 $fpdi->SetXY($field['x'], $field['y']);
-                // set font custom
-                if(isset($field['font'])){
-                    $fpdi->SetFont('Helvetica', '', $field['font']);
-                }
-                // set cell dimensions
-                if (isset($field['width']) && isset($field['height'])) {
-                    // Use MultiCell to prevent text from overflowing
-                    $fpdi->MultiCell($field['width'], $field['height'], $field['text']);
-                } else {
-                    // Use Write for single-line text fields
-                    $fpdi->Write(8, $field['text']);
+                
+                if(isset($field['base64_image'])){
+                    if($field['base64_image'] != '' && $field['base64_image'] != null){
+                        // Decode the base64 image and save it to a temporary file
+                        $imageData = base64_decode($field['base64_image']);
+                        $tempFilePath = tempnam(sys_get_temp_dir(), 'sig_') . '.png';
+                        file_put_contents($tempFilePath, $imageData);
+
+                        // Add the image to the PDF
+                        $fpdi->Image($tempFilePath, $field['x'], $field['y'], $field['width'], $field['height']);
+
+                        // Remove the temporary file
+                        unlink($tempFilePath);
+                    }else{
+                        $fpdi->Write(8, '');
+                    }
+                }else{
+
+                    if(isset($field['font'])){
+                        $fpdi->SetFont('Helvetica', '', $field['font']);
+                    }else{
+                        $fpdi->SetFont('Helvetica', '', 10);
+                    }
+                    
+                    if (isset($field['width']) && isset($field['height'])) {
+                        $fpdi->MultiCell($field['width'], $field['height'], isset($field['text']) ? $field['text'] : '');
+                    } else if(isset($field['text'])){
+                        $fpdi->Write(8, isset($field['text']) ? $field['text'] : '');
+                    }else{
+                        $fpdi->Write(8, '');
+                    }
                 }
             }
         }
 
         $fpdi->Output($output_file, 'F');
-        // sendMailAttachment('Admin Team', 'hamza@5dsolutions.ae', 'Superior Crane', 'Rigger Ticket Generated', 'Rigger Ticket Generated', $output_file); // send_to_name, send_to_email, email_from_name, subject, body, attachment
-
+        
         return $output_file;
     }
 }

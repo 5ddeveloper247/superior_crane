@@ -9,10 +9,16 @@ use Illuminate\Support\Facades\Auth;
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>SUPERIOR CRANE</title>
+        
+        <!-- <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" /> -->
         <link rel="stylesheet" href="{{asset('assets/css/style.css')}}">
+        
+        <link rel="stylesheet" href="{{asset('assets/plugins/select2/select2.css')}}">
         <link rel="stylesheet" href="{{asset('assets/css/bootstrap.min.css')}}">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        
+        
         <link rel="stylesheet" href="{{asset('assets/plugins/fullcalendar/core/main.css')}}">
         <link rel="stylesheet" href="{{asset('assets/plugins/fullcalendar/daygrid/main.css')}}">
         <link rel="stylesheet" href="{{asset('assets/plugins/fullcalendar/timegrid/main.css')}}">
@@ -26,6 +32,7 @@ use Illuminate\Support\Facades\Auth;
         <link rel="stylesheet" href="{{asset('assets/plugins/daterangepicker/daterangepicker.css')}}">
         <link rel="stylesheet" href="{{ asset('assets/plugins/toastr/toastr.min.css') }}"/>
         <link rel="stylesheet" href="{{asset('assets/css/custom.css')}}">
+        
         
         @stack('styles')
     </head>

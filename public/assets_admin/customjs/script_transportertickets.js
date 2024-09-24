@@ -1,3 +1,21 @@
+// shipper signature
+var canvas = document.getElementById("signature");
+var signaturePad = new SignaturePad(canvas);
+signaturePad.off();
+$('#signature').css('pointer-events', 'none');
+
+// pickup signature
+var canvas1 = document.getElementById("signature1");
+var signaturePad1 = new SignaturePad(canvas1);
+signaturePad1.off();
+$('#signature1').css('pointer-events', 'none');
+
+// customer signature
+var canvas2 = document.getElementById("signature2");
+var signaturePad2 = new SignaturePad(canvas2);
+signaturePad2.off();
+$('#signature2').css('pointer-events', 'none');
+
 function loadTransportationTicketPageData() {
     
     let form = '';
@@ -39,44 +57,51 @@ function makeTransporterTicketListing(tickets_list){
                         <td>T-${value.id}</td>
                         <td>${value.user_detail != null ? value.user_detail.name : ''}</td>
                         <td>${value.job_detail != null ? value.job_detail.client_name : ''}</td>
+                        <td>${value.job_detail != null ? formatDate(value.job_detail.date) : ''}</td>
                         <td>${value.pickup_address != null ? trimText(value.pickup_address, 20) : ''}</td>
                         <td>${value.delivery_address != null ? trimText(value.delivery_address, 20) : ''}</td>
-                        <td>${value.time_in}</td>
-                        <td>${value.time_out}</td>
+                        <td>${value.time_in != null ? value.time_in : ''}</td>
+                        <td>${value.time_out != null ? value.time_out : ''}</td>
                         <td>${value.notes != null ? trimText(value.notes, 20) : ''}</td>
-                        <td>${value.job_number}</td>
+                        <td>${value.job_number != null ? value.job_number : ''}</td>
                         <td>${value.job_special_instructions != null ? trimText(value.job_special_instructions, 20) : ''}</td>
 
-                        <td>${value.po_number}</td>
+                        <td>${value.po_number != null ? value.po_number : ''}</td>
                         <td>${value.po_special_instructions != null ? trimText(value.po_special_instructions, 20) : ''}</td>
 
-                        <td>${value.site_contact_name}</td>
+                        <td>${value.site_contact_name != null ? value.site_contact_name : ''}</td>
                         <td>${value.site_contact_name_special_instructions != null ? trimText(value.site_contact_name_special_instructions, 20) : ''}</td>
 
-                        <td>${value.site_contact_number}</td>
+                        <td>${value.site_contact_number != null ? value.site_contact_number : ''}</td>
                         <td>${value.site_contact_number_special_instructions != null ? trimText(value.site_contact_number_special_instructions, 20) : ''}</td>
 
-                        <td>${value.shipper_name}</td>
+                        <td>${value.shipper_name != null ? value.shipper_name : ''}</td>
                         <td>${value.shipper_signature_date != null ? formatDate(value.shipper_signature_date) : ''}</td>
-                        <td>${value.shipper_time_in}</td>
-                        <td>${value.shipper_time_out}</td>
+                        <td>${value.shipper_time_in != null ? value.shipper_time_in : ''}</td>
+                        <td>${value.shipper_time_out != null ? value.shipper_time_out : ''}</td>
 
-                        <td>${value.pickup_driver_name}</td>
+                        <td>${value.pickup_driver_name != null ? value.pickup_driver_name : ''}</td>
                         <td>${value.pickup_driver_signature_date != null ? formatDate(value.pickup_driver_signature_date) : ''}</td>
-                        <td>${value.pickup_driver_time_in}</td>
-                        <td>${value.pickup_driver_time_out}</td>
+                        <td>${value.pickup_driver_time_in != null ? value.pickup_driver_time_in : ''}</td>
+                        <td>${value.pickup_driver_time_out != null ? value.pickup_driver_time_out : ''}</td>
                        
-                        <td>${value.customer_name}</td>
-                        <td>${value.customer_email}</td>
+                        <td>${value.customer_name != null ? value.customer_name : ''}</td>
+                        <td>${value.customer_email != null ? value.customer_email : ''}</td>
                         <td>${value.customer_signature_date != null ? formatDate(value.customer_signature_date) : ''}</td>
-                        <td>${value.customer_time_in}</td>
-                        <td>${value.customer_time_out}</td>
+                        <td>${value.customer_time_in != null ? value.customer_time_in : ''}</td>
+                        <td>${value.customer_time_out != null ? value.customer_time_out : ''}</td>
                         <td>
                             ${value.status == '1' ? 'Draft' : ''}
                             ${value.status == '2' ? 'Issued' : ''}
                             ${value.status == '3' ? 'Completed' : ''}
                         </td>
                         <td class="d-flex gap-2 ">
+                            
+                            ${(user_role == '0' && value.status == 3) ? 
+                            `<div class="edit changeStatus_btn" data-id="${value.id}" title="Change Status">
+                                <img src="${base_url}/assets/images/change-status.png" style="width:32px;height:32px;">
+                            </div>` : ''}
+
                             <div class="edit viewTicket_btn" data-id="${value.id}">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="18" viewBox="0 0 24 24">
                                     <g fill="none" stroke="green" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" color="white">
@@ -198,22 +223,40 @@ function getSpecificTicketResponse(response) {
             $("#customer_date").val(ticket_detail.customer_signature_date);
             $("#customer_time_in").val(ticket_detail.customer_time_in);
             $("#customer_time_out").val(ticket_detail.customer_time_out);
-            
+
+            var shipper_signature = ticket_detail.shipper_signature;
+            if (shipper_signature != null) {
+                signaturePad.fromDataURL('data:image/png;base64,'+shipper_signature); // Set signature from base64 string
+            }else{
+                signaturePad.clear();
+            }
+
+            var pickup_driver_signature = ticket_detail.pickup_driver_signature;
+            if (pickup_driver_signature != null) {
+                signaturePad1.fromDataURL('data:image/png;base64,'+pickup_driver_signature); // Set signature from base64 string
+            }else{
+                signaturePad1.clear();
+            }
+
+            var customer_signature = ticket_detail.customer_signature;
+            if (customer_signature != null) {
+                signaturePad2.fromDataURL('data:image/png;base64,'+customer_signature); // Set signature from base64 string
+            }else{
+                signaturePad2.clear();
+            }
         }
 
         var att_html = '';
         if(ticket_images != null){
             $.each(ticket_images, function (index, value) {
-                var url = value.path;
-                var fileName = url.substring(url.lastIndexOf('/') + 1);
-                att_html += `<div class="d-flex align-items-center gap-2 my-2 file_section">
-                                <a class="text-dark upload-btn #000 w-50 px-0 job_image_btn" href="${value.path}" target="_default">View Attachment</a>
-                                <input type="text" name="" class="form-control" placeholder="Title" value="${value.file_name}" disabled>
+                att_html += `<div class="image-item-land mt-3">
+                                <a href="${value.path}" target="_default"><img src="${value.type == 'pdf' ? base_url+'/assets/images/pdf_icon_book.png' : value.path}"></a>
+                                <p>${value.file_name}</p>
                             </div>`;
             });
         }
-        
-        $("#uploads_section").html(att_html);
+        $("#uploaded_attachment").show();
+        $("#uploads_section1").html(att_html);
 
         $("#listing_section").hide();
         $("#detail_section").show();
@@ -227,16 +270,26 @@ function getSpecificTicketResponse(response) {
     }
 }
 
+var temp_record_id = '';
 $(document).on('click', '.deleteTicket_btn', function (e) {
-    if (confirm("Are you sure you want to delete this record?")) {
-        var ticket_id = $(this).attr('data-id');
-        let form = '';//document.getElementById('filterTicket_form');
+    temp_record_id = $(this).attr('data-id');
+    $("#delete_confirm").modal('show');
+});
+$(document).on('click', '#close_confirm', function (e) {
+    temp_record_id = '';
+    $("#delete_confirm").modal('hide');
+});
+
+$(document).on('click', '#delete_confirmed', function (e) {
+    // if (confirm("Are you sure you want to delete this record?")) {
+        var ticket_id = temp_record_id;//$(this).attr('data-id');
+        let form = '';
         let data = new FormData();
         data.append('ticket_id', ticket_id);
         let type = 'POST';
         let url = '/admin/deleteSpecificTransportationTicket';
         SendAjaxRequestToServer(type, url, data, '', deleteTicketResponse, '', '.deleteTicket_btn');
-    }
+    // }
 });
 
 function deleteTicketResponse(response) {
@@ -247,6 +300,7 @@ function deleteTicketResponse(response) {
         toastr.success(response.message, '', {
             timeOut: 3000
         });
+        $("#delete_confirm").modal('hide');
         loadTransportationTicketPageData();
     }else{
         if (response.status == 402) {
@@ -258,31 +312,72 @@ function deleteTicketResponse(response) {
     }
 }
 
+$(document).on('click', '.changeStatus_btn', function (e) {
+    var ticket_id = $(this).attr('data-id');
+    temp_record_id = ticket_id;
+    $("#change_reason").val('');
+    $("#changeStatus_confirm").modal('show');
+});
+$(document).on('click', '#close_confirm1', function (e) {
+    temp_record_id = '';
+    $("#change_reason").val('');
+    $("#changeStatus_confirm").modal('hide');
+});
+
+$(document).on('click', '#changeStatus_confirmed', function (e) {
+    var changeReason = $("#change_reason").val();
+    if(changeReason != ''){
+        var ticket_id = temp_record_id;
+        let data = new FormData();
+        data.append('ticket_id', ticket_id);
+        data.append('reason', changeReason);
+        data.append('status', 1);
+        let type = 'POST';
+        let url = '/admin/changeTransportTicketStatus';
+        SendAjaxRequestToServer(type, url, data, '', changeTicketStatusResponse, '', '#changeStatus_confirmed');
+    }else{
+        toastr.error('Reason is required.', '', {
+            timeOut: 3000
+        });
+    }
+});
+
+function changeTicketStatusResponse(response) {
+    
+    var data = response.data;
+    if (response.status == 200) {
+        toastr.success(response.message, '', {
+            timeOut: 3000
+        });
+        temp_record_id = '';
+        $("#change_reason").val('');
+        $("#changeStatus_confirm").modal('hide');
+        loadTransportationTicketPageData();
+    }else{
+        if (response.status == 402) {
+            error = response.message;
+        } 
+        toastr.error(error, '', {
+            timeOut: 3000
+        });
+    }
+}
 
 $(document).ready(function () {
 
     loadTransportationTicketPageData();
 
     // shipper signature
-    var canvas = document.getElementById("signature");
-    var signaturePad = new SignaturePad(canvas);
-
     $('#clear_signature').on('click', function () {
         signaturePad.clear();
     });
 
     // pickup signature
-    var canvas1 = document.getElementById("signature1");
-    var signaturePad1 = new SignaturePad(canvas1);
-
     $('#clear_signature1').on('click', function () {
         signaturePad1.clear();
     });
 
     // customer signature
-    var canvas2 = document.getElementById("signature2");
-    var signaturePad2 = new SignaturePad(canvas2);
-
     $('#clear_signature2').on('click', function () {
         signaturePad2.clear();
     });

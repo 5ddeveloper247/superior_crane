@@ -54,9 +54,10 @@ function makeJobsListing(jobs_list){
                             ${value.status == '1' ? 'Good to go' : ''}
                             ${value.status == '0' ? 'Problem' : ''}
                             ${value.status == '2' ? 'On-Hold' : ''}
+                            ${value.status == '3' ? 'Completed' : ''}
                         </td>
                         <td>${value.date != null ? formatDate(value.date) : ''}</td>
-                        <td>${value.user_assigned != null ? value.user_assigned.name : ''}</td>
+                        <td>${value.user_assigned != null ? value.user_assigned : ''}</td>
                         <td>${value.supplier_name}</td>
                         <td class="d-flex gap-2 ">
                             <div class="edit viewJob_btn" data-id="${value.id}">
@@ -65,9 +66,10 @@ function makeJobsListing(jobs_list){
                                     <path d="M8.9559 3.19677C8.23855 2.47962 7.52751 1.76858 6.81036 1.05164C7.00336 0.858643 7.19961 0.660149 7.39851 0.464303C7.48879 0.375449 7.57704 0.281908 7.67832 0.206912C8.07796 -0.0883852 8.66631 -0.0667831 9.03375 0.267642C9.28401 0.49528 9.52428 0.735756 9.75131 0.986422C10.0884 1.35855 10.1029 1.9253 9.80246 2.32963C9.76374 2.38159 9.72033 2.43091 9.67468 2.47697C9.43441 2.71887 9.19271 2.95975 8.9559 3.19677Z" fill="black" />
                                 </svg>
                             </div>
+                            
                             ${user_role == '0' ? 
                             `<div class="del deleteJob_btn" data-id="${value.id}">
-                                <div type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                                <div type="button">
                                     <svg width="15" viewBox="0 0 9 11" fill="none"xmlns="http://www.w3.org/2000/svg">
                                         <path d="M0.488907 6.7101C0.488907 5.86704 0.488335 5.02398 0.489193 4.18092C0.48948 3.91325 0.634045 3.73004 0.872794 3.68825C1.13645 3.64187 1.38407 3.83539 1.40354 4.1042C1.4064 4.14341 1.40497 4.18263 1.40497 4.22214C1.40497 5.86904 1.40497 7.51566 1.40497 9.16257C1.40497 9.7102 1.77798 10.0826 2.32675 10.0829C3.54111 10.0829 4.75546 10.0829 5.96953 10.0829C6.51802 10.0829 6.89131 9.70992 6.89131 9.16257C6.89131 7.50164 6.89131 5.84042 6.8916 4.17948C6.8916 3.92213 7.0293 3.73834 7.2543 3.69225C7.5128 3.63901 7.75327 3.80304 7.79736 4.06469C7.80566 4.11364 7.80738 4.16403 7.80738 4.21384C7.80795 5.86761 7.80823 7.52168 7.80766 9.17545C7.80738 10.0821 7.20134 10.8103 6.31076 10.9724C6.20599 10.9915 6.09778 10.9981 5.991 10.9984C4.76233 11.0001 3.53395 11.0004 2.30528 10.9993C1.28445 10.9984 0.490338 10.2054 0.488907 9.18604C0.488048 8.36044 0.488907 7.53542 0.488907 6.7101Z" fill="#DC2F2B" />
                                         <path d="M5.97563 2.30643C6.09529 2.30643 6.19835 2.30643 6.30169 2.30643C6.79436 2.30643 7.28703 2.30414 7.77999 2.30729C8.11406 2.30958 8.33392 2.59327 8.24317 2.89671C8.18935 3.07649 8.03133 3.20531 7.8444 3.22106C7.81949 3.22306 7.79459 3.22277 7.76939 3.22277C5.35586 3.22277 2.94204 3.22306 0.528505 3.22249C0.237656 3.22277 0.0315422 3.02897 0.0338324 2.76102C0.0361225 2.49823 0.240232 2.30786 0.527074 2.307C1.077 2.30528 1.62692 2.30643 2.17656 2.30643C2.21892 2.30643 2.26158 2.30643 2.32141 2.30643C2.32141 2.26091 2.32141 2.22341 2.32141 2.18591C2.32141 1.92884 2.31969 1.67177 2.32198 1.41441C2.32456 1.12728 2.51092 0.936343 2.79833 0.93577C3.69808 0.933194 4.59782 0.933194 5.49756 0.93577C5.78584 0.936629 5.97248 1.12643 5.97477 1.41384C5.97764 1.70583 5.97563 1.99811 5.97563 2.30643ZM3.23776 2.29698C3.85037 2.29698 4.45383 2.29698 5.05585 2.29698C5.05585 2.14354 5.05585 1.99983 5.05585 1.85756C4.44552 1.85756 3.84436 1.85756 3.23776 1.85756C3.23776 2.00527 3.23776 2.1464 3.23776 2.29698Z" fill="#DC2F2B" />
@@ -104,6 +106,15 @@ $(document).on('click', '#addNewJob_btn', function (e) {
 });
 
 $(document).on('click', '#saveJob_btn', function (e) {
+    // if($("#add_job_id").val() != ''){
+    //     var filesection = $(".file_section");
+    //     if(filesection.length <= 0){
+    //         toastr.error('first upload attachment then proceed.', '', {
+    //             timeOut: 3000
+    //         });
+    //         return;
+    //     }
+    // }
     e.preventDefault();
 
     let form = document.getElementById('addJob_from');
@@ -153,24 +164,28 @@ function resetRiggerForm(){
 
     $("#add_job_id").val('');
     $("input, select, textarea").removeClass('is-invalid');
-    $("#uploads_section, #created_by, #updated_by").html('');
-    $(".status_input,.updatedInfo_div").hide();
+    $("#uploads_section, #uploads_section1, #created_by, #updated_by, #viewPdf_btns").html('');
+    $(".status_input,.updatedInfo_div, #uploaded_attachment").hide();
     $("#deletedFileIds").val('');
+    
+    $(".ticket_attachments").hide();
+    $("#saveJob_btn").show();
+    $("#rigger_attachments,#payduty_attachments,#transporter_attachments").html('');
     setRiggerAssignedOptions();
 }
 
 function setRiggerAssignedOptions(job_type=''){
     
-    var options = `<option value="">Choose</option>`;
+    var options = '';//`<option value="">Choose</option>`;
     if(user_list.length > 0){
         $.each(user_list, function (index, value) {
             if(job_type == '1'){
-                if(value.role_id == '3' || value.role_id == '5'){   // for rigger / both
+                if(value.role_id == '2' || value.role_id == '4' || value.role_id == '5'){   // for rigger / both
                     options += `<option value="${value.id}">${value.id}-${value.name}</option>`;
                 }
             }
             if(job_type == '2'){
-                if(value.role_id == '4' || value.role_id == '5'){   // for transporter / both
+                if(value.role_id == '2' || value.role_id == '3' || value.role_id == '5'){   // for transporter / both
                     options += `<option value="${value.id}">${value.id}-${value.name}</option>`;
                 }
             }
@@ -181,14 +196,31 @@ function setRiggerAssignedOptions(job_type=''){
     }
     $("#rigger_assigned").html(options);
 
+    setTimeout(function(){
+        $('.select2-choose').select2({
+            dropdownParent: $('#addJob_modal') // This ensures the dropdown is correctly positioned within the modal
+        });
+    }, 300);
+
     if(job_type == '1'){
-        $("#riggerAssign_label").text('Rigger Assign');
+        $("#riggerAssign_label").text('Assign Transporter');
+        $("#rigger_assigned, #user_assigned").val('').trigger('change');
+        $("#riggerAssigned_div, .equip_staric").show();
+        $("#userAssigned_div").hide();
     }else if(job_type == '2'){
-        $("#riggerAssign_label").text('Transporter Assign');
+        $("#riggerAssign_label").text('Assign Rigger ');
+        $("#rigger_assigned, #user_assigned").val('').trigger('change');
+        $("#riggerAssigned_div, .equip_staric").show();
+        $("#userAssigned_div").hide();
     }else if(job_type == '3'){
-        $("#riggerAssign_label").text('Rigger/Transporter Assign');
+        $("#riggerAssign_label").text('Assign Rigger/Transporter');
+        $("#rigger_assigned, #user_assigned").val('').trigger('change');
+        $("#riggerAssigned_div, .equip_staric").hide();
+        $("#userAssigned_div").show();
     }else{
-        $("#riggerAssign_label").text('Rigger/Transporter Assign');
+        $("#riggerAssign_label").text('Assign Rigger/Transporter');
+        $("#riggerAssigned_div, .equip_staric").show();
+        $("#userAssigned_div").hide();
     }
 }
 
@@ -204,10 +236,34 @@ $(document).on('click', '#addAttachment_btn', function (e) {
                         <button type="button" class="text-dark upload-btn #000 w-50 px-0 job_image_btn">Upload</button>
                         <input type="file" name="job_images[]" class="job_image_file" accept="image/*,.pdf" single style="display:none;">
                         <input type="text" name="job_images_title[]" class="form-control" placeholder="Title" maxlength="50">
-                        <i class="fa-solid fa-xmark remove_file_section"></i>
+                        <img class="file_preview" src="" style="display:none;width: 70px;height: 70px;object-fit: cover;border-radius: 10px;">
+                        <i class="fa-solid fa-xmark remove_file_section" title="Remove"></i>
                     </div>`;
 
     $("#uploads_section").append(att_html);
+});
+
+$(document).on('change', '.job_image_file', function() {
+    var file = this.files[0];
+    var fileSection = $(this).closest('.file_section'); // Find the closest .file_section div
+
+    if (file) {
+        var reader = new FileReader();
+        var filePreview = fileSection.find('.file_preview');
+        
+        if (file.type === 'application/pdf') {
+            filePreview.attr('src', base_url+'/assets/images/pdf_icon_book.png').show(); // Replace with your placeholder image path
+        } else if (file.type.startsWith('image/')) {
+            reader.onload = function(e) {
+                filePreview.attr('src', e.target.result).show(); // Show the image preview
+            }
+            reader.readAsDataURL(file); // Convert the file to a base64 string
+        } else {
+            filePreview.attr('src', '').hide();
+        }
+    } else {
+        fileSection.find('.file_preview').attr('src', '').hide();
+    }
 });
 
 $(document).on('click', '.remove_file_section', function (e) {
@@ -265,6 +321,8 @@ function viewJobDetailsResponse(response) {
        
         var job_detail = response.data.job_detail;
         var job_images = response.data.job_detail.job_images;
+        var rigger_ticket = response.data.job_detail.rigger_ticket;
+        var transporter_ticket = response.data.job_detail.transporter_ticket;
         
         setRiggerAssignedOptions(job_detail.job_type);
         $("input, select, textarea").removeClass('is-invalid');
@@ -275,10 +333,12 @@ function viewJobDetailsResponse(response) {
         $("#job_type_crane").prop('checked', job_detail.job_type == '2' ? true : false);
         $("#job_type_other").prop('checked', job_detail.job_type == '3' ? true : false);
         setTimeout(function(){
-            $("#job_time").val(formatTime(job_detail.job_time));
+            // $("#job_time").val(formatTime(job_detail.job_time));
             $("#equipment_to_be_used").val(job_detail.equipment_to_be_used);
             $("#client_name").val(job_detail.client_name);
-            $("#rigger_assigned").val(job_detail.rigger_assigned);
+            $("#rigger_assigned").val(JSON.parse(job_detail.rigger_assigned)).trigger('change');
+            
+            $("#user_assigned").val(job_detail.user_assigned);
             $("#date").val(job_detail.date);
             $("#address").val(job_detail.address);
             $("#add_eventStart").val(job_detail.start_time);
@@ -291,26 +351,88 @@ function viewJobDetailsResponse(response) {
             $("#updated_by").text(job_detail.updated_by != null ? job_detail.updated_by.name : '');
             $(".status_input,.updatedInfo_div").show();
 
+            if(job_detail.status == 3){
+                $(".status_input, #saveJob_btn").hide();
+            }else{
+                $("#saveJob_btn").show();
+            }
+
             $("#addJob_modal").modal('show');
-        },500);
+        },1000);
         
         var att_html = '';
         if(job_images.length > 0){
             $.each(job_images, function (index, value) {
-                var url = value.path;
-                var fileName = url.substring(url.lastIndexOf('/') + 1);
-                att_html += `<div class="d-flex align-items-center gap-2 my-2 file_section">
-                                <a class="text-dark upload-btn #000 w-50 px-0 job_image_btn" href="${value.path}" target="_default">View Attachment</a>
-                                <input type="text" name="" class="form-control" placeholder="Title" value="${value.file_name}" disabled>
-                                <i class="fa-solid fa-xmark remove_file_section" data-id="${value.id}"></i>
+                att_html += `<div class="image-item-land mt-3 file_section">
+                                <a href="${value.path}" target="_default"><img src="${value.type == 'pdf' ? base_url+'/assets/images/pdf_icon_book.png' : value.path}"></a>
+                                <p>${value.file_name}</p>
+                                <span class="cancel-icon remove_file_section" data-id="${value.id}">×</span>
                             </div>`;
             });
         }
-        $("#uploads_section").html(att_html);
+        $("#uploaded_attachment").show();
+        $("#uploads_section1").html(att_html);
 
-        setTimeout(function(){
-            // window.location.reload();
-        }, 1500);
+        $("#viewPdf_btns, #uploads_section").html('');
+        var rigger_ticket_images = null;
+        var pay_duty_images = null;
+        var transporter_ticket_images = null;
+
+        if(rigger_ticket != null){
+            if(rigger_ticket.status == '3'){
+                rigger_ticket_images = rigger_ticket.ticket_images;
+                $("#viewPdf_btns").append(`<button type="button" class="btn btn-danger w-40 view_pdf" data-id="${rigger_ticket.id}" data-flag="1" style="margin-right:10px;">View Rigger Ticket</button>`);  
+                if(rigger_ticket.pay_duty != null){
+                    if(rigger_ticket.pay_duty.status == '3'){
+                        pay_duty_images = rigger_ticket.pay_duty.duty_images;
+                        $("#viewPdf_btns").append(`<button type="button" class="btn btn-danger w-40 view_pdf" data-id="${rigger_ticket.pay_duty.id}" data-flag="3" style="margin-right:10px;">View Pay Duty</button>`);  
+                    }
+                }   
+            }
+        }else if(transporter_ticket != null){
+            if(transporter_ticket.status == '3'){
+                transporter_ticket_images = transporter_ticket.ticket_images;
+                $("#viewPdf_btns").append(`<button type="button" class="btn btn-danger w-70 view_pdf" data-id="${transporter_ticket.id}" data-flag="2" style="margin-right:10px;">View Transporter Ticket</button>`);  
+            }
+        }
+        
+        $(".ticket_attachments").hide();
+        var att_html1 = '';
+        if(rigger_ticket_images != null){
+            $.each(rigger_ticket_images, function (index, value) {
+                att_html1 += `<div class="image-item-land mt-3">
+                                <a href="${value.path}" target="_default"><img src="${value.type == 'pdf' ? base_url+'/assets/images/pdf_icon_book.png' : value.path}"></a>
+                                <p>${value.file_name}</p>
+                            </div>`;
+            });
+            $("#rigger_att_section").show();
+        }
+        $("#rigger_attachments").html(att_html1);
+
+        var att_html2 = '';
+        if(pay_duty_images != null){
+            $.each(pay_duty_images, function (index, value) {
+                att_html2 += `<div class="image-item-land mt-3">
+                                <a href="${value.path}" target="_default"><img src="${value.type == 'pdf' ? base_url+'/assets/images/pdf_icon_book.png' : value.path}"></a>
+                                <p>${value.file_name}</p>
+                            </div>`;
+            });
+            $("#payduty_att_section").show();
+        }
+        $("#payduty_attachments").html(att_html2);
+        
+        var att_html3 = '';
+        if(transporter_ticket_images != null){
+            $.each(transporter_ticket_images, function (index, value) {
+                att_html3 += `<div class="image-item-land mt-3">
+                                <a href="${value.path}" target="_default"><img src="${value.type == 'pdf' ? base_url+'/assets/images/pdf_icon_book.png' : value.path}"></a>
+                                <p>${value.file_name}</p>
+                            </div>`;
+            });
+            $("#transporter_att_section").show();
+        }
+        $("#transporter_attachments").html(att_html3);
+      
 
     }else{
         
@@ -320,17 +442,26 @@ function viewJobDetailsResponse(response) {
         });
     }
 }
-
+var temp_record_id = '';
 $(document).on('click', '.deleteJob_btn', function (e) {
-   
-    if (confirm("Are you sure you want to delete this record?")) {
-        var job_id = $(this).attr('data-id');
+    temp_record_id = $(this).attr('data-id');
+    $("#delete_confirm").modal('show');
+});
+$(document).on('click', '#close_confirm', function (e) {
+    temp_record_id = '';
+    $("#delete_confirm").modal('hide');
+});
+
+
+$(document).on('click', '#delete_confirmed', function (e) {
+    // if (confirm("Are you sure you want to delete this record?")) {
+        var job_id = temp_record_id;//$(this).attr('data-id');
         let data = new FormData();
         data.append('job_id', job_id);
         let type = 'POST';
         let url = '/admin/deleteSpecificJob';
         SendAjaxRequestToServer(type, url, data, '', deleteJobResponse, '', '.deleteJob_btn');
-    }
+    // }
 });
 
 function deleteJobResponse(response) {
@@ -340,6 +471,7 @@ function deleteJobResponse(response) {
         toastr.success(response.message, '', {
             timeOut: 3000
         });
+        $("#delete_confirm").modal('hide');
         loadJobsPageData();
     }else{
         if (response.status == 402) {
@@ -378,6 +510,41 @@ function searchJobsListingResponse(response) {
     }
 }
 
+$(document).on('click', '.view_pdf', function (e) {
+   
+    var id = $(this).attr('data-id');
+    var flag = $(this).attr('data-flag');
+    let data = new FormData();
+    data.append('id', id);
+    data.append('flag', flag);
+    let type = 'POST';
+    let url = '/admin/viewTicketPdf';
+    SendAjaxRequestToServer(type, url, data, '', viewTicketPdfponse, '', '.view_pdf');
+    
+});
+
+function viewTicketPdfponse(response) {
+    
+    var data = response.data;
+    var pdf_url = data.pdf_url;
+    if(pdf_url != ''){
+        var popupWindow = window.open(pdf_url, 'pdfPopup', 'width=800,height=600');
+        
+        if (popupWindow) {
+            popupWindow.focus();
+        } else {
+            toastr.error('Please allow popups for this website', '', {
+                timeOut: 3000
+            });
+        }
+    }else{
+        toastr.error('Something went wrong...', '', {
+            timeOut: 3000
+        });
+    }
+    
+}
+
 $(document).ready(function () {
 
     loadJobsPageData();
@@ -390,7 +557,7 @@ $(document).ready(function () {
     });
 });
 
-$('#client_name,#supplier_name').on('keydown', function(e) {
+$('#client_name,#supplier_name').on('keydown', function(e) {    // only characters allow
     var key = e.keyCode || e.which;
     var char = String.fromCharCode(key);
     var controlKeys = ['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight', 'Delete'];
@@ -404,22 +571,23 @@ $('#client_name,#supplier_name').on('keydown', function(e) {
     }
 });
 
-$('#phone_number').on('keydown', function(e) {
-    var key = e.keyCode || e.which;
-    var char = String.fromCharCode(key);
-    var controlKeys = ['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight', 'Delete', 'Enter'];
+// $('#phone_number').on('keydown', function(e) {      // only numbers allow
+//     var key = e.keyCode || e.which;
+//     var char = String.fromCharCode(key);
+//     var controlKeys = ['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight', 'Delete', 'Enter'];
 
-    // Allow control keys and numeric characters
-    if (controlKeys.includes(e.key) || char.match(/[0-9]/)) {
-        return true;
-    } else {
-        e.preventDefault();
-        return false;
-    }
-});
-
-
+//     // Allow control keys and numeric characters
+//     if (controlKeys.includes(e.key) || char.match(/[0-9]/)) {
+//         return true;
+//     } else {
+//         e.preventDefault();
+//         return false;
+//     }
+// });
 
 $(document).ready(function () {
     $('input[name="filter_daterange"]').daterangepicker();
+    $('.select2-choose').select2({
+        dropdownParent: $('#addJob_modal') // This ensures the dropdown is correctly positioned within the modal
+    });
 })

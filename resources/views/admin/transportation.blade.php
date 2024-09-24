@@ -140,6 +140,45 @@
             max-width: 100%;
             text-align: center;
         }
+        .cancel-icon {
+            position: absolute !important;
+            top: -10px !important;
+            right: -8px !important;
+            background: #dc2f2b !important;
+            color: #fff;
+            border-radius: 50%;
+            cursor: pointer;
+            padding: 2px 8px;
+            font-size: 14px;
+        }
+        .image-item-land p {
+            font-size:12px;
+            color: #dc2f2b;
+            background: transparent;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .image-item-land img {
+            width: 70px;
+            height: 70px;
+            object-fit: cover;
+            /* border: 1px solid #dc2f2b; */
+            border-radius: 10px;
+        }
+        .image-item-land {
+            position: relative !important;
+            display: inline-block !important;
+            margin-right: 20px !important;
+            width: 80px !important;
+            text-align: center !important;
+            vertical-align: top !important;
+        }
+        .image-container {
+            overflow-x: auto;
+            width: 100%;
+            margin-left: 0;
+        }
     </style>
 @endpush
 
@@ -237,37 +276,45 @@
             <div class="filter">
                 <form id="filterTicket_form">
                     <div class="row gy-3">
-                        <div class="col-4">
+                        <div class="col-4 col-md-3 d-none">
                             <label class="fw-semibold">Ticket Number</label>
                             <input class="py-1 px-3 rounded-1 form-control" name="search_ticket_number" type="text"
                                 placeholder="Type here...">
                         </div>
-                        <div class="col-4">
+                        <div class="col-4 col-md-3">
                             <label class="fw-semibold">Transporter Name</label>
                             <input class="py-1 px-3 rounded-1 form-control" name="search_transporter_name" type="text"
                                 placeholder="Type here...">
                         </div>
-                        <div class="col-4">
+                        <div class="col-4 col-md-3">
                             <label class="fw-semibold">Job Client Name</label>
                             <input class="py-1 px-3 rounded-1 form-control" name="search_job_client_name" type="text"
                                 placeholder="Type here...">
                         </div>
-                        <div class="col-4">
+                        <div class="col-4 col-md-3">
+                            <label class="fw-semibold">Job From Date</label>
+                            <input type="date" class="py-1 px-3 rounded-1 form-control" name="search_job_from_date">
+                        </div>
+                        <div class="col-4 col-md-3">
+                            <label class="fw-semibold">Job To Date</label>
+                            <input type="date" class="py-1 px-3 rounded-1 form-control" name="search_job_to_date">
+                        </div>
+                        <div class="col-4 col-md-3">
                             <label class="fw-semibold">Pickup Address</label>
                             <input class="py-1 px-3 rounded-1 form-control" name="search_pickup_address" type="text"
                                 placeholder="Type here...">
                         </div>
-                        <div class="col-4">
+                        <div class="col-4 col-md-3">
                             <label class="fw-semibold">Delivery Address</label>
                             <input class="py-1 px-3 rounded-1 form-control" name="search_delivery_address" type="text"
                                 placeholder="Type here...">
                         </div>
-                        <div class="col-4">
+                        <div class="col-4 col-md-3">
                             <label class="fw-semibold">Customer Email</label>
                             <input class="py-1 px-3 rounded-1 form-control" name="search_customer_email" type="text"
                                 placeholder="Type here...">
                         </div>
-                        <div class="col-4">
+                        <div class="col-4 col-md-3">
                             <label class="fw-semibold">Status</label>
                             <select class="form-control" name="search_status" id="">
                                 <option value="">Choose</option>
@@ -293,6 +340,7 @@
                         <th class="px3" scope="col">Ticket No#</th>
                         <th class="px3" scope="col">Transporter Name</th>
                         <th class="px-3" scope="col">Job Client Name</th>
+                        <th class="px-3" scope="col">Job Date</th>
                         <th class="px-3" scope="col">Pickup Address</th>
                         <th class="px3" scope="col">Delivery Address</th>
                         <th class="px3" scope="col">Time In</th>
@@ -399,7 +447,7 @@
                     <label class="fw-semibold form-label" for="notes">
                         Notes
                     </label>
-                    <textarea disabled class="rounded-1 py-2 px-2 w-100 form-control" id="notes" row="3"></textarea>
+                    <textarea disabled class="rounded-1 py-2 px-2 w-100 form-control" id="notes" rows="5" style="resize:none;"></textarea>
                 </div>
 
                 <!-- /////////////////////////////////////////////////////////////////////// -->
@@ -506,7 +554,7 @@
                     </label>
                     <canvas id="signature" width="450" height="150" style="border: 1px solid #ddd;"></canvas>
                     <div class="d-flex justify-content-end ">
-                        <button class="px-4 rounded-1 py-1 clear-btn" id="clear_signature">Clear</button>
+                        <!-- <button class="px-4 rounded-1 py-1 clear-btn" id="clear_signature">Clear</button> -->
                     </div>
                 </div>
                 <div class="col-12 col-md-12"></div>
@@ -547,7 +595,7 @@
                     </label>
                     <canvas id="signature1" width="450" height="150" style="border: 1px solid #ddd;"></canvas>
                     <div class="d-flex justify-content-end ">
-                        <button class="px-4 rounded-1 py-1 clear-btn" id="clear_signature1">Clear</button>
+                        <!-- <button class="px-4 rounded-1 py-1 clear-btn" id="clear_signature1">Clear</button> -->
                     </div>
                 </div>
                 <div class="col-12 col-md-12"></div>
@@ -596,13 +644,29 @@
                     </label>
                     <canvas id="signature2" width="450" height="150" style="border: 1px solid #ddd;"></canvas>
                     <div class="d-flex justify-content-end ">
-                        <button class="px-4 rounded-1 py-1 clear-btn" id="clear_signature2">Clear</button>
+                        <!-- <button class="px-4 rounded-1 py-1 clear-btn" id="clear_signature2">Clear</button> -->
                     </div>
                 </div>
-                <div class="col-12 col-md-6"></div>
+                <!-- <div class="col-12 col-md-6"></div>
                 <div class="col-12 col-md-6 d-flex flex-column">
                     <div id="uploads_section">
-                        <!-- all attachments -->
+                        
+                    </div>
+                </div> -->
+                <div class="col-12 col-md-6 d-flex flex-column my-3">
+                    <div class="accordion" id="accordionExample">
+                        <div class="accordion-item" id="uploaded_attachment" style="display:none;">
+                            <h2 class="accordion-header" id="headingZero">
+                                <button class="accordion-button  p-2" type="button" data-bs-toggle="collapse" data-bs-target="#uploadedAtt" aria-expanded="true" aria-controls="uploadedAtt">
+                                    Uploaded Attachments
+                                </button>
+                            </h2>
+                            <div id="uploadedAtt" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                                <div class="white image-container mx-4" id="uploads_section1">
+                                    
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -610,6 +674,49 @@
             <div class="d-flex justify-content-center gap-2">
                 <button id="save-btn" class="py-1 px-4 add-btn rounded-1 backToListing">Back</button>
                 <!-- <button id="save-btn" type="button" class="add-btn px-4 py-1 rounded-1">Save</button> -->
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="delete_confirm" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <img src="{{asset('assets/images/remove.png')}}" width="60" alt="">
+                <h6 class="text-danger mt-3">
+                    Are you sure you want to delete this record?
+                </h6>
+            </div>
+            <div class="modal-footer d-flex align-items-center justify-content-center" style="border: none" >
+                <button type="button" class="btn btn-secondary px-5" id="close_confirm">No</button>
+                <button type="button" class="btn btn-danger px-5" id="delete_confirmed">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="changeStatus_confirm" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <img src="{{asset('assets/images/remove.png')}}" width="60" alt="">
+                <h6 class="text-danger mt-3">
+                    Are you sure you want to change ticket status to "Draft"?
+                </h6>
+                <div class="row">
+                    <div class="col-12 col-md-12 d-flex flex-column px-4">
+                        <label class="pb-2 form-label" for="supplier_name">
+                            Change Reason<span class="text-danger">*</span>
+                        </label>
+                        <input class="form-control rounded-1 py-1 px-2 w-100" id="change_reason" type="text" name="" placeholder="Enter Reason Here" maxlength="100">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer d-flex align-items-center justify-content-center" style="border: none" >
+                <button type="button" class="btn btn-secondary px-5" id="close_confirm1">No</button>
+                <button type="button" class="btn btn-danger px-5" id="changeStatus_confirmed">Yes</button>
             </div>
         </div>
     </div>

@@ -32,6 +32,7 @@ Route::group(['prefix' => '/'], function () {
         Route::get('/transportation', [AdminController::class, 'transportation'])->name('transportation');
         Route::get('/pay_duty', [AdminController::class, 'pay_duty'])->name('pay_duty');
         Route::get('/inventory', [AdminController::class, 'inventory'])->name('inventory');
+        Route::get('/notification', [AdminController::class, 'notification'])->name('notification');
         
         /************** AJAX ROUTES ******************/
         Route::post('/admin/getProfilePageData', [AdminController::class, 'getProfilePageData'])->name('admin.getProfilePageData');
@@ -57,16 +58,20 @@ Route::group(['prefix' => '/'], function () {
         Route::post('/admin/searchRiggerTicketListing', [AdminController::class, 'searchRiggerTicketListing'])->name('admin.searchRiggerTicketListing');
         Route::post('/admin/viewRiggerTicketDetails', [AdminController::class, 'viewRiggerTicketDetails'])->name('admin.viewRiggerTicketDetails');
         Route::post('/admin/deleteSpecificRiggerTicket', [AdminController::class, 'deleteSpecificRiggerTicket'])->name('admin.deleteSpecificRiggerTicket');
+        Route::post('/admin/changeRiggerTicketStatus', [AdminController::class, 'changeRiggerTicketStatus'])->name('admin.changeRiggerTicketStatus');
         
+
         Route::post('/admin/getTransporterTicketPageData', [AdminController::class, 'getTransporterTicketPageData'])->name('admin.getTransporterTicketPageData');
         Route::post('/admin/viewTransporterTicketDetails', [AdminController::class, 'viewTransporterTicketDetails'])->name('admin.viewTransporterTicketDetails');
         Route::post('/admin/searchTransporterTicketListing', [AdminController::class, 'searchTransporterTicketListing'])->name('admin.searchTransporterTicketListing');
         Route::post('/admin/deleteSpecificTransportationTicket', [AdminController::class, 'deleteSpecificTransportationTicket'])->name('admin.deleteSpecificTransportationTicket');
+        Route::post('/admin/changeTransportTicketStatus', [AdminController::class, 'changeTransportTicketStatus'])->name('admin.changeTransportTicketStatus');
         
         Route::post('/admin/getPayDutyPageData', [AdminController::class, 'getPayDutyPageData'])->name('admin.getPayDutyPageData');
         Route::post('/admin/viewPayDutyFormDetails', [AdminController::class, 'viewPayDutyFormDetails'])->name('admin.viewPayDutyFormDetails');
         Route::post('/admin/searchPayDutyListing', [AdminController::class, 'searchPayDutyListing'])->name('admin.searchPayDutyListing');
         Route::post('/admin/deleteSpecificPayDutyForm', [AdminController::class, 'deleteSpecificPayDutyForm'])->name('admin.deleteSpecificPayDutyForm');
+        Route::post('/admin/changePayDutyStatus', [AdminController::class, 'changePayDutyStatus'])->name('admin.changePayDutyStatus');
         
         Route::post('/admin/saveInventoryData', [AdminController::class, 'saveInventoryData'])->name('admin.saveInventoryData');
         Route::post('/admin/getInventoryPageData', [AdminController::class, 'getInventoryPageData'])->name('admin.getInventoryPageData');
@@ -74,18 +79,12 @@ Route::group(['prefix' => '/'], function () {
         Route::post('/admin/searchInventoryListing', [AdminController::class, 'searchInventoryListing'])->name('admin.searchInventoryListing');
         Route::post('/admin/deleteSpecificInventory', [AdminController::class, 'deleteSpecificInventory'])->name('admin.deleteSpecificInventory');
         
+        Route::post('/admin/getNotificationsPageData', [AdminController::class, 'getNotificationsPageData'])->name('admin.getNotificationsPageData');
+        Route::post('/admin/markNotificationRead', [AdminController::class, 'markNotificationRead'])->name('admin.markNotificationRead');
+        Route::post('/admin/searchNotificationsListing', [AdminController::class, 'searchNotificationsListing'])->name('admin.searchNotificationsListing');
         
+        Route::post('/admin/viewTicketPdf', [AdminController::class, 'viewTicketPdf'])->name('admin.viewTicketPdf');
 
-        // Route::get('/emailRiggerPdf', function () {
-        //     $pageTitle = 'Dashboard';
-        //     return view('admin/emailRiggerPdf', compact('pageTitle'));
-        // });
-        
-        // Route::post('/sendtomailRigger', [AdminController::class, 'sendtomailRigger'])->name('sendtomailRigger');
-        // Route::post('/sendtomailTransporter', [AdminController::class, 'sendtomailTransporter'])->name('sendtomailTransporter');
-        // Route::post('/sendtomailPayduty', [AdminController::class, 'sendtomailPayduty'])->name('sendtomailPayduty');
-        
-        
     });
 });
 
@@ -163,10 +162,10 @@ Route::get('/basic_user', function () {
 //     return view('admin/profile', compact('pageTitle'));
 // });
 
-Route::get('/notification', function () {
-    $pageTitle = 'Notification';
-    return view('admin/notification', compact('pageTitle'));
-});
+// Route::get('/notification', function () {
+//     $pageTitle = 'Notification';
+//     return view('admin/notification', compact('pageTitle'));
+// });
 
 Route::get('/web_api_users', function () {
     $pageTitle = 'Web_api_users';
