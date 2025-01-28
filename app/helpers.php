@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\Mail;
 use App\Models\Roles;
 use App\Models\Notifications;
 
+use Illuminate\Support\Facades\Config;
+use App\Models\EmailSetting;
+
 if (!function_exists('saveMultipleImages')) {
 
     function saveMultipleImages($files, $path)
@@ -80,11 +83,15 @@ if (!function_exists('sendMail')) {
     function sendMail($send_to_name, $send_to_email, $email_from_name, $subject, $body)
     {
 
+        if (env('USE_DYNAMIC_SMTP', false)) {
+            $emailSettings = EmailSetting::find(1);
+        }  
+
         try {
             $mail_val = [
                 'send_to_name' => $send_to_name,
                 'send_to' => $send_to_email,
-                'email_from' => env('MAIL_FROM_ADDRESS'),
+                'email_from' => $emailSettings->from_email ?? 'donotreplyscci@scserver.org',
                 'email_from_name' => $email_from_name,
                 'subject' => $subject,
             ];
@@ -97,7 +104,7 @@ if (!function_exists('sendMail')) {
             return true;
         } catch (\Exception $e) {
             Log::error($e->getMessage());
-            echo "An error occurred while sending the email: " . $e->getMessage();
+            // echo "An error occurred while sending the email: " . $e->getMessage();
             return false;
         }
     }
@@ -106,11 +113,15 @@ if (!function_exists('sendMail')) {
 if (!function_exists('sendMailAttachment')) {
     function sendMailAttachment($send_to_name, $send_to_email, $email_from_name, $subject, $body, $attachment_path)
     {
+        if (env('USE_DYNAMIC_SMTP', false)) {
+            $emailSettings = EmailSetting::find(1);
+        }
+
         try {
             $mail_val = [
                 'send_to_name' => $send_to_name,
                 'send_to' => $send_to_email,
-                'email_from' => 'noreply@pancard.com',
+                'email_from' => $emailSettings->from_email ?? 'donotreplyscci@scserver.org',
                 'email_from_name' => $email_from_name,
                 'subject' => $subject,
             ];
@@ -129,7 +140,7 @@ if (!function_exists('sendMailAttachment')) {
             return true;
         } catch (\Exception $e) {
             Log::error($e->getMessage());
-            echo "An error occurred while sending the email: " . $e->getMessage();
+            // echo "An error occurred while sending the email: " . $e->getMessage();
             return false;
         }
     }
@@ -160,7 +171,7 @@ if (!function_exists('sendMailAttachment')) {
                 return true;
             } catch (\Exception $e) {
                 Log::error($e->getMessage());
-                echo "An error occurred while sending the email: " . $e->getMessage();
+                // echo "An error occurred while sending the email: " . $e->getMessage();
                 return false;
             }
         }

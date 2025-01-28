@@ -56,7 +56,7 @@
                     POST
                 </button>
                 <small>
-                    https://beta.scserver.org/api/sc/v1/job/add
+                    https://scserver.org/api/sc/v1/job/add
                 </small>
             </div>
         </div>
@@ -220,7 +220,7 @@
                     POST
                 </button>
                 <small>
-                    https://beta.scserver.org/api/sc/v1/job/updatejob
+                    https://scserver.org/api/sc/v1/job/updatejob
                 </small>
             </div>
         </div>
@@ -385,7 +385,7 @@
                     POST
                 </button>
                 <small>
-                    https://beta.scserver.org/api/sc/v1/job/filter_jobs
+                    https://scserver.org/api/sc/v1/job/filter_jobs
                 </small>
             </div>
         </div>
@@ -504,7 +504,7 @@
                     POST
                 </button>
                 <small>
-                    https://beta.scserver.org/api/sc/v1/job/advance_filter_jobs
+                    https://scserver.org/api/sc/v1/job/advance_filter_jobs
                 </small>
             </div>
         </div>
@@ -650,7 +650,7 @@
                     POST
                 </button>
                 <small>
-                    https://beta.scserver.org/api/sc/v1/job/job_details
+                    https://scserver.org/api/sc/v1/job/job_details
                 </small>
             </div>
         </div>
@@ -750,7 +750,7 @@
                     POST
                 </button>
                 <small>
-                    https://beta.scserver.org/api/sc/v1/job/changestatus
+                    https://scserver.org/api/sc/v1/job/changestatus
                 </small>
             </div>
         </div>

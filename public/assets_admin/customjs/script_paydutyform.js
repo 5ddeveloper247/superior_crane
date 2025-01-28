@@ -40,7 +40,7 @@ function makePayDutyFormsListing(forms_list){
 		$.each(forms_list, function (index, value) {
             
             html += `<tr>
-                        <td>P-${value.id}</td>
+                        <td>PDTY-${value.id}</td>
                         <td>${value.rigger_ticket_id != null ? "R-"+value.rigger_ticket_id : ''}</td>
                         <td>${value.user_detail != null ? value.user_detail.name : ''}</td>
                         <td>${value.date != null ? formatDate(value.date) : ''}</td>

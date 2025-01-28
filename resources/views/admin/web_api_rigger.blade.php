@@ -56,7 +56,7 @@
                     POST
                 </button>
                 <small>
-                    https://beta.scserver.org/api/sc/v1/riggerticket/add
+                    https://scserver.org/api/sc/v1/riggerticket/add
                 </small>
             </div>
         </div>
@@ -317,7 +317,7 @@
                     POST
                 </button>
                 <small>
-                    https://beta.scserver.org/api/sc/v1/riggerticket/update
+                    https://scserver.org/api/sc/v1/riggerticket/update
                 </small>
             </div>
         </div>
@@ -523,7 +523,7 @@
                     POST
                 </button>
                 <small>
-                    https://beta.scserver.org/api/sc/v1/riggerticket/ticket_list
+                    https://scserver.org/api/sc/v1/riggerticket/ticket_list
                 </small>
             </div>
         </div>
@@ -665,7 +665,7 @@
                     POST
                 </button>
                 <small>
-                    https://beta.scserver.org/api/sc/v1/riggerticket/ticket_detail
+                    https://scserver.org/api/sc/v1/riggerticket/ticket_detail
                 </small>
             </div>
         </div>
@@ -775,7 +775,7 @@
                     POST
                 </button>
                 <small>
-                    https://beta.scserver.org/api/sc/v1/job/job_details
+                    https://scserver.org/api/sc/v1/job/job_details
                 </small>
             </div>
         </div>

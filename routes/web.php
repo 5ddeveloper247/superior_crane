@@ -32,6 +32,7 @@ Route::group(['prefix' => '/'], function () {
         Route::get('/transportation', [AdminController::class, 'transportation'])->name('transportation');
         Route::get('/pay_duty', [AdminController::class, 'pay_duty'])->name('pay_duty');
         Route::get('/inventory', [AdminController::class, 'inventory'])->name('inventory');
+        Route::get('/email_settings', [AdminController::class, 'email_settings'])->name('email_settings');
         Route::get('/notification', [AdminController::class, 'notification'])->name('notification');
         
         /************** AJAX ROUTES ******************/
@@ -84,6 +85,8 @@ Route::group(['prefix' => '/'], function () {
         Route::post('/admin/searchNotificationsListing', [AdminController::class, 'searchNotificationsListing'])->name('admin.searchNotificationsListing');
         
         Route::post('/admin/viewTicketPdf', [AdminController::class, 'viewTicketPdf'])->name('admin.viewTicketPdf');
+        
+        Route::post('/admin/saveEmailSettings', [AdminController::class, 'saveEmailSettings'])->name('admin.saveEmailSettings');
 
     });
 });

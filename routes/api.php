@@ -30,6 +30,7 @@ Route::prefix('sc/v1')->group(function () {
 
 Route::post('register', [RegistrationController::class,'register'])->name('register');
 Route::get('userslist', [RegistrationController::class,'getAllUsersList'])->name('userslist');
+Route::post('delete_user', [RegistrationController::class,'delete_user'])->name('delete_user');
 
 Route::post('login', [LoginController::class,'login'])->name('login');
 Route::post('validateemail', [LoginController::class,'validateemail'])->name('validateemail');

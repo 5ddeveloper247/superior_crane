@@ -57,7 +57,7 @@
                     POST
                 </button>
                 <small>
-                    https://beta.scserver.org/api/sc/v1/transportationticket/add
+                    https://scserver.org/api/sc/v1/transportationticket/add
                 </small>
             </div>
         </div>
@@ -299,7 +299,7 @@
                     POST
                 </button>
                 <small>
-                    https://beta.scserver.org/api/sc/v1/transportationticket/update
+                    https://scserver.org/api/sc/v1/transportationticket/update
                 </small>
             </div>
         </div>
@@ -545,7 +545,7 @@
                     POST
                 </button>
                 <small>
-                    https://beta.scserver.org/api/sc/v1/transportationticket/ticket_list
+                    https://scserver.org/api/sc/v1/transportationticket/ticket_list
                 </small>
             </div>
         </div>
@@ -705,7 +705,7 @@
                     POST
                 </button>
                 <small>
-                    https://beta.scserver.org/api/sc/v1/transportationticket/ticket_detail
+                    https://scserver.org/api/sc/v1/transportationticket/ticket_detail
                 </small>
             </div>
         </div>

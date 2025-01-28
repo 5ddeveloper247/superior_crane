@@ -29,6 +29,8 @@ use App\Models\PayDutytImages;
 use App\Models\InventoryModel;
 use App\Models\Notifications;
 
+use App\Models\EmailSetting;
+
 class AdminController extends Controller
 {
     /**
@@ -137,6 +139,13 @@ class AdminController extends Controller
     {
         $data['pageTitle'] = 'Notification';
         return view('admin/notification')->with($data);
+    }
+
+    public function email_settings(Request $request)
+    {
+        $data['pageTitle'] = 'Email Settings';
+        $data['settings'] = EmailSetting::find('1');
+        return view('admin/email_settings')->with($data);
     }
 
     
@@ -519,15 +528,34 @@ class AdminController extends Controller
                 $role = '';
             }
             
+            if($job->user_assigned != null){
+                $riggerCount = $job->user_assigned;
+            }else{
+                $riggerArray = json_decode($job->rigger_assigned);
+            
+                if (is_countable($riggerArray)) {
+                    $riggerCount = 'Riggers:'.count($riggerArray);
+                } else {
+                    $riggerCount = $job->user_assigned;
+                }
+            }
+            
             return [
                 'id' => $job->id,
                 'title' => substr($job->client_name, 0, 7) . '/' . $job->address,
                 'start' => $job->date.' '.$job->start_time,
                 'end' => $job->date.' '.$job->end_time,
+                // 'extendedProps' => [
+                //     'title_full' => date('H:i', strtotime($job->start_time)) . ' ' . 
+                //                         $job->client_name . '/' . $job->address . '/' . 
+                //                         $job->equipment_to_be_used . '/' . $role.''.$job->rigger_assigned,
+                //     'type' => $job->job_type,
+                //     'status' => $job->status,
+                // ],
                 'extendedProps' => [
                     'title_full' => date('H:i', strtotime($job->start_time)) . ' ' . 
                                         $job->client_name . '/' . $job->address . '/' . 
-                                        $job->equipment_to_be_used . '/' . $role.''.$job->rigger_assigned,
+                                        $job->equipment_to_be_used . '/' . $riggerCount,
                     'type' => $job->job_type,
                     'status' => $job->status,
                 ],
@@ -566,7 +594,7 @@ class AdminController extends Controller
                 'job_images_title.*' => 'string|max:255',
                 // 'status' => 'required',
             ], [
-                'rigger_assigned.required' => 'Assigned User field is required.',
+                'rigger_assigned.required_unless' => 'Assigned User field is required.',
                 'job_images.required' => 'Job attachment is required.',
                 'job_images.*.required' => 'Job attachment is required.',
                 'job_images.*.mimes' => 'Job attachment must be a file of type: jpeg, png, jpg, gif, svg, pdf.',
@@ -597,7 +625,7 @@ class AdminController extends Controller
                 'job_images_title.*' => 'string|max:255',
                 'status' => 'required',
             ], [
-                'rigger_assigned.required' => 'Assigned User field is required.',
+                'rigger_assigned.required_unless' => 'Assigned User field is required.',
                 'job_images.*.required' => 'Job attachment is required.',
                 'job_images.*.mimes' => 'Job attachment must be a file of type: jpeg, png, jpg, gif, svg, pdf.',
                 'job_images.*.max' => 'Job attachment may not be greater than 2048 kilobytes.',
@@ -612,6 +640,12 @@ class AdminController extends Controller
                 if(!$request->hasFile('job_images')){
                     return response()->json(['status' => 402, 'message' => 'The job attachment field is required.']);
                 }
+            }
+        }
+
+        if($request->job_type == '1'){
+            if(count($request->rigger_assigned) > 1){
+                return response()->json(['status' => 402, 'message' => 'Please assign only one transporter when job type is SCCI.']);
             }
         }
         
@@ -719,8 +753,10 @@ class AdminController extends Controller
             $mailData['job_type'] = $job_type;
             $mailData['assigned_to'] = isset($user->name) ? $user->name : $jobDetail->user_assigned;
             $mailData['client_name'] = $jobDetail->client_name;
-            $mailData['start_time'] = $jobDetail->start_time;
+            $mailData['start_time'] = date('H:i A', strtotime($jobDetail->start_time));
             // $mailData['end_time'] = $jobDetail->end_time;
+            $mailData['job_date'] = date('d M,Y', strtotime($jobDetail->date));
+            $mailData['job_address'] = $jobDetail->address;
             $mailData['status'] = $status_txt;
 
             $mailData['text1'] = "New job has been assigned by " . $createdBy->name . ". Job details are as under.";
@@ -802,6 +838,8 @@ class AdminController extends Controller
                 $mailData['client_name'] = $jobDetail->client_name;
                 $mailData['start_time'] = $jobDetail->start_time;
                 // $mailData['end_time'] = $jobDetail->end_time;
+                $mailData['job_date'] = date('d M,Y', strtotime($jobDetail->date));
+                $mailData['job_address'] = $jobDetail->address;
                 $mailData['status'] = $status_txt;
 
                 $mailData['text1'] = "Job status has been changed by admin. Job details are as under.";
@@ -998,7 +1036,7 @@ class AdminController extends Controller
                     } else {
                         $assignedUsers = array();
                     }
-                    $value->user_assigned = implode(', ', $assignedUsers);;
+                    $value->user_assigned = implode(', ', $assignedUsers);
                     $jobs_list_new[] = $value;
                 }
             }
@@ -1628,6 +1666,44 @@ class AdminController extends Controller
     }
 
 
+    public function saveEmailSettings(Request $request){
+        
+        $validatedData = $request->validate([
+            'smtp_host' => 'required|max:50',
+            'smtp_port' => 'required|numeric|digits_between:1,5',
+            'smtp_username' => 'required|max:50',
+            'smtp_password' => 'required',
+            'encryption_type' => 'required',
+            'from_email' => 'required|email|max:100',
+            'from_name' => 'required|max:50',
+        ]); 
+        
+        $EmailSetting = EmailSetting::find('1');
+
+        if(!$EmailSetting){
+            $EmailSetting = new EmailSetting();
+        }
+        
+        $EmailSetting->smtp_host = $request->smtp_host;
+        $EmailSetting->smtp_port = $request->smtp_port;
+        $EmailSetting->smtp_username = $request->smtp_username;
+        $EmailSetting->smtp_password = $request->smtp_password;
+        $EmailSetting->encryption_type = $request->encryption_type;
+        $EmailSetting->from_email = $request->from_email;
+        $EmailSetting->from_name = $request->from_name;
+        
+        if($EmailSetting->id == ''){
+            $EmailSetting->created_by = Auth::user()->id;
+            $EmailSetting->created_at = date('Y-m-d H:i:s');
+        }else{
+            $EmailSetting->updated_by= Auth::user()->id;
+            $EmailSetting->updated_at= date('Y-m-d H:i:s');
+        }
+        
+        $EmailSetting->save();
+
+        return response()->json(['status' => 200, 'message' => 'Settings Updated Successfully']);
+    }
     
 
 
@@ -1640,13 +1716,13 @@ class AdminController extends Controller
         $ticket = RiggerTicket::find($id);
         if($ticket){
             $fields = [
-                ['text' => 'R-'.$ticket->id, 'x' => 245, 'y' => 6.5],
+                ['text' => 'RTKT-'.$ticket->id, 'x' => 245, 'y' => 6.5],
                 ['text' => $ticket->specifications_remarks, 'x' => 128, 'y' => 58, 'width' => 138, 'height' => 6],
                 
                 ['text' => $ticket->customer_name, 'x' => 14, 'y' => 94],
                 ['text' => $ticket->location, 'x' => 99, 'y' => 94],
                 ['text' => $ticket->po_number, 'x' => 226, 'y' => 94],
-                ['text' => date('d-M-Y', strtotime($ticket->date)), 'x' => 14, 'y' => 106],
+                ['text' => $ticket->date != null ? date('d-M-Y', strtotime($ticket->date)) : '', 'x' => 14, 'y' => 106],
                 ['text' => $ticket->leave_yard, 'x' => 42, 'y' => 106],
                 ['text' => $ticket->start_job, 'x' => 70, 'y' => 106],
                 ['text' => $ticket->finish_job, 'x' => 99, 'y' => 106],
@@ -1684,7 +1760,7 @@ class AdminController extends Controller
         $ticket = TransportationTicketModel::find($id);
         if($ticket){
             $fields = [
-                ['text' => 'T-'.$ticket->id, 'x' => 245, 'y' => 13],
+                ['text' => 'TTKT-'.$ticket->id, 'x' => 245, 'y' => 13],
                 ['text' => $ticket->pickup_address, 'x' => 58, 'y' => 33, 'width' => 210, 'height' => 6],
                 ['text' => $ticket->delivery_address, 'x' => 58, 'y' => 41, 'width' => 210, 'height' => 6],
                 // ['text' => $ticket->delivery_address, 'x' => 58, 'y' => 49, 'width' => 210, 'height' => 6],
@@ -1704,20 +1780,20 @@ class AdminController extends Controller
 
                 ['text' => $ticket->shipper_name, 'x' => 58, 'y' => 96.5],
                 ['base64_image' => $ticket->shipper_signature, 'x' => 122, 'y' => 98, 'width' => 20, 'height' => 5],
-                ['text' => date('d-M-Y', strtotime($ticket->shipper_signature_date)), 'x' => 164, 'y' => 96.5],
-                ['text' => date('H:i', strtotime($ticket->shipper_time_in)), 'x' => 210, 'y' => 96.5],
+                ['text' => $ticket->shipper_signature_date != null ? date('d-M-Y', strtotime($ticket->shipper_signature_date)) : '', 'x' => 164, 'y' => 96.5],
+                ['text' => $ticket->shipper_time_in != null ? date('H:i', strtotime($ticket->shipper_time_in)) : '', 'x' => 210, 'y' => 96.5],
                 ['text' => $ticket->shipper_time_out, 'x' => 241, 'y' => 96.5],
 
                 ['text' => $ticket->pickup_driver_name, 'x' => 58, 'y' => 103],
                 ['base64_image' => $ticket->pickup_driver_signature, 'x' => 122, 'y' => 104.5, 'width' => 20, 'height' => 5],
-                ['text' => date('d-M-Y', strtotime($ticket->pickup_driver_signature_date)), 'x' => 164, 'y' => 103],
-                ['text' => date('H:i', strtotime($ticket->pickup_driver_time_in)), 'x' => 210, 'y' => 103],
+                ['text' => $ticket->pickup_driver_signature_date != null ? date('d-M-Y', strtotime($ticket->pickup_driver_signature_date)) : '', 'x' => 164, 'y' => 103],
+                ['text' => $ticket->pickup_driver_time_in != null ? date('H:i', strtotime($ticket->pickup_driver_time_in)) : '', 'x' => 210, 'y' => 103],
                 ['text' => $ticket->pickup_driver_time_out, 'x' => 241, 'y' => 103],
 
                 ['text' => $ticket->customer_name, 'x' => 58, 'y' => 110],
                 ['base64_image' => $ticket->customer_signature, 'x' => 122, 'y' => 111, 'width' => 20, 'height' => 5],
-                ['text' => date('d-M-Y', strtotime($ticket->customer_signature_date)), 'x' => 164, 'y' => 110],
-                ['text' => date('H:i', strtotime($ticket->customer_time_in)), 'x' => 210, 'y' => 110],
+                ['text' => $ticket->customer_signature_date != null ? date('d-M-Y', strtotime($ticket->customer_signature_date)) : '', 'x' => 164, 'y' => 110],
+                ['text' => $ticket->customer_time_in != null ? date('H:i', strtotime($ticket->customer_time_in)) : '', 'x' => 210, 'y' => 110],
                 ['text' => $ticket->customer_time_out, 'x' => 241, 'y' => 110],
                 
             ];
@@ -1740,14 +1816,14 @@ class AdminController extends Controller
         $form = PayDutyModel::find($id);
         if($form){
             $fields = [
-                ['text' => 'P-'.$form->rigger_ticket_id, 'x' => 68, 'y' => 31],
-                ['text' => 'P-'.$form->id, 'x' => 167, 'y' => 31],
-                ['text' => date('d-M-Y', strtotime($form->date)), 'x' => 86, 'y' => 87.5],
+                ['text' => 'RTKT-'.$form->rigger_ticket_id, 'x' => 68, 'y' => 31],
+                ['text' => 'PDTY-'.$form->id, 'x' => 167, 'y' => 31],
+                ['text' => $form->date != null ? date('d-M-Y', strtotime($form->date)) : '', 'x' => 86, 'y' => 87.5],
                 ['text' => $form->location, 'x' => 86, 'y' => 105],
-                ['text' => date('h:i', strtotime($form->start_time)), 'x' => 86, 'y' => 123],
-                ['text' => date('h:i', strtotime($form->finish_time)), 'x' => 86, 'y' => 141],
+                ['text' => $form->start_time != null ? date('h:i', strtotime($form->start_time)) : '', 'x' => 86, 'y' => 123],
+                ['text' => $form->finish_time != null ? date('h:i', strtotime($form->finish_time)) : '', 'x' => 86, 'y' => 141],
 
-                ['text' => date('h:i', strtotime($form->total_hours)), 'x' => 86, 'y' => 159],
+                ['text' => $form->total_hours != null ? date('h:i', strtotime($form->total_hours)) : '', 'x' => 86, 'y' => 159],
                 ['text' => $form->officer, 'x' => 86, 'y' => 177],
                 ['text' => $form->officer_name, 'x' => 110, 'y' => 194],
                 ['text' => $form->division, 'x' => 86, 'y' => 212],
@@ -1780,20 +1856,29 @@ class AdminController extends Controller
 
                 if(isset($field['base64_image'])){
                     if($field['base64_image'] != '' && $field['base64_image'] != null){
-                       // Decode the base64 image and save it to a temporary file
+                        // Decode the base64 image
                         $imageData = base64_decode($field['base64_image']);
-                        $tempFilePath = tempnam(sys_get_temp_dir(), 'sig_') . '.png';
-                        file_put_contents($tempFilePath, $imageData);
-
-                        // Add the image to the PDF
-                        $fpdi->Image($tempFilePath, $field['x'], $field['y'], $field['width'], $field['height']);
-
-                        // Remove the temporary file
-                        unlink($tempFilePath);     
-                    }else{
+                        $image = imagecreatefromstring($imageData);
+                
+                        // Convert the image to 8-bit or 24-bit format
+                        if ($image !== false) {
+                            $tempFilePath = tempnam(sys_get_temp_dir(), 'sig_') . '.png';
+                            
+                            // Save the image in 24-bit format
+                            imagepng($image, $tempFilePath);
+                            imagedestroy($image);
+                
+                            // Add the image to the PDF
+                            $fpdi->Image($tempFilePath, $field['x'], $field['y'], $field['width'], $field['height']);
+                
+                            // Remove the temporary file
+                            unlink($tempFilePath);
+                        } else {
+                            throw new Exception('Invalid image data');
+                        }
+                    } else {
                         $fpdi->Write(8, '');
                     }
-
                 }else{
 
                     if(isset($field['font'])){

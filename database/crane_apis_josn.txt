@@ -1,7 +1,7 @@
 registration api
 
 url: http://127.0.0.1:8000/api/sc/v1/register
-live url: https://beta.scserver.org/api/sc/v1/register
+live url: https://scserver.org/api/sc/v1/register
 
 {
     "name": "JohnPie",
@@ -13,16 +13,22 @@ live url: https://beta.scserver.org/api/sc/v1/register
 }
 
 
+url: http://127.0.0.1:8000/api/sc/v1/delete_user
+live url: https://scserver.org/api/sc/v1/delete_user
+
+{
+    "user_id": "5" 
+}
+
 
 login api
 url: http://127.0.0.1:8000/api/sc/v1/login
-live url: https://beta.scserver.org/api/sc/v1/login
+live url: https://scserver.org/api/sc/v1/login
 
 
 {
     "email": "zaid@gmail.com",
     "password": "12345678Zk@"
-    
 }
 
 
@@ -32,7 +38,7 @@ forget password api
 step1 : validate email and send otp
 
 url: http://127.0.0.1:8000/api/sc/v1/validateemail
-live url: https://beta.scserver.org/api/sc/v1/validateemail
+live url: https://scserver.org/api/sc/v1/validateemail
 
 {
     "email":"zaid@gmail.com"
@@ -44,7 +50,7 @@ step 2
 verify otp
 
 url: http://127.0.0.1:8000/api/sc/v1/verifyotp
-live url: https://beta.scserver.org/api/sc/v1/verifyotp
+live url: https://scserver.org/api/sc/v1/verifyotp
 
 {
     "email":"zaid@gmail.com",
@@ -56,7 +62,7 @@ step 3
 update password
 
 url: http://127.0.0.1:8000/api/sc/v1/resetpassword
-live url: https://beta.scserver.org/api/sc/v1/resetpassword
+live url: https://scserver.org/api/sc/v1/resetpassword
 
 {
     "email":"zaid@gmail.com",
@@ -67,13 +73,13 @@ live url: https://beta.scserver.org/api/sc/v1/resetpassword
 
 Get all users list for lov Api
 url: http://127.0.0.1:8000/api/sc/v1/userslist
-live url: https://beta.scserver.org/api/sc/v1/userslist
+live url: https://scserver.org/api/sc/v1/userslist
 type: GET
 
 
 Add Job Api
 url: http://127.0.0.1:8000/api/sc/v1/job/add
-live url: https://beta.scserver.org/api/sc/v1/job/add
+live url: https://scserver.org/api/sc/v1/job/add
 
 //job_image optional 
 {
@@ -109,7 +115,7 @@ live url: https://beta.scserver.org/api/sc/v1/job/add
 update job api
 
 url:  http://127.0.0.1:8000/api/sc/v1/job/updatejob
-live url: https://beta.scserver.org/api/sc/v1/job/updatejob
+live url: https://scserver.org/api/sc/v1/job/updatejob
 
 {   
     "job_id": "1",
@@ -142,7 +148,7 @@ live url: https://beta.scserver.org/api/sc/v1/job/updatejob
 Add Job Images API
 
 url: http://127.0.0.1:8000/api/sc/v1/job/addJobImages
-live url: https://beta.scserver.org/api/sc/v1/job/addJobImages
+live url: https://scserver.org/api/sc/v1/job/addJobImages
 
 {       
     "job_id":"1",              // job_id of edit record
@@ -163,7 +169,7 @@ live url: https://beta.scserver.org/api/sc/v1/job/addJobImages
 Delete Job Image API
 
 url: http://127.0.0.1:8000/api/sc/v1/job/deleteJobImage
-live url: https://beta.scserver.org/api/sc/v1/job/deleteJobImage
+live url: https://scserver.org/api/sc/v1/job/deleteJobImage
 
 {       
     "job_id":"1", 
@@ -173,7 +179,7 @@ live url: https://beta.scserver.org/api/sc/v1/job/deleteJobImage
 Filter Jobs
 
 url: http://127.0.0.1:8000/api/sc/v1/job/filter_jobs
-live url: https://beta.scserver.org/api/sc/v1/job/filter_jobs
+live url: https://scserver.org/api/sc/v1/job/filter_jobs
 
 {       
     "user_id":"1",              // logged in user_id
@@ -184,7 +190,7 @@ live url: https://beta.scserver.org/api/sc/v1/job/filter_jobs
 Advance Filter Jobs
 
 url: http://127.0.0.1:8000/api/sc/v1/job/advance_filter_jobs
-live url: https://beta.scserver.org/api/sc/v1/job/advance_filter_jobs
+live url: https://scserver.org/api/sc/v1/job/advance_filter_jobs
 
 {
     "user_id":"1",              // logged in user_id
@@ -204,7 +210,7 @@ live url: https://beta.scserver.org/api/sc/v1/job/advance_filter_jobs
 get job details API
 
 url: http://127.0.0.1:8000/api/sc/v1/job/job_details
-live url: https://beta.scserver.org/api/sc/v1/job/job_details
+live url: https://scserver.org/api/sc/v1/job/job_details
 
 {
     "job_id":"2"
@@ -213,7 +219,7 @@ live url: https://beta.scserver.org/api/sc/v1/job/job_details
 Change job status api
 
 url: http://127.0.0.1:8000/api/sc/v1/job/changestatus
-live url: https://beta.scserver.org/api/sc/v1/job/changestatus
+live url: https://scserver.org/api/sc/v1/job/changestatus
 
 {
     "job_id":"1",
@@ -232,7 +238,7 @@ live url: https://beta.scserver.org/api/sc/v1/job/changestatus
 Assigned Jobs for Rigger page
 
 url: http://127.0.0.1:8000/api/sc/v1/job/getAssignedJobs
-live url: https://beta.scserver.org/api/sc/v1/job/getAssignedJobs
+live url: https://scserver.org/api/sc/v1/job/getAssignedJobs
 
 {
     "user_id":"1",
@@ -243,7 +249,7 @@ live url: https://beta.scserver.org/api/sc/v1/job/getAssignedJobs
 Rigger Tickets add api
 
 url: http://127.0.0.1:8000/api/sc/v1/riggerticket/add
-live url: https://beta.scserver.org/api/sc/v1/riggerticket/add
+live url: https://scserver.org/api/sc/v1/riggerticket/add
 
 // site_images is optional
 {
@@ -289,7 +295,7 @@ live url: https://beta.scserver.org/api/sc/v1/riggerticket/add
 Rigger Tickets update api
 
 url: http://127.0.0.1:8000/api/sc/v1/riggerticket/update
-live url: https://beta.scserver.org/api/sc/v1/riggerticket/update
+live url: https://scserver.org/api/sc/v1/riggerticket/update
 
 
 // site_images is optional
@@ -325,7 +331,7 @@ live url: https://beta.scserver.org/api/sc/v1/riggerticket/update
 Add Ticket Images API
 
 url: http://127.0.0.1:8000/api/sc/v1/riggerticket/addTicketImages
-live url: https://beta.scserver.org/api/sc/v1/riggerticket/addTicketImages
+live url: https://scserver.org/api/sc/v1/riggerticket/addTicketImages
 {
     "ticket_id":"1",
     "site_images": [
@@ -345,7 +351,7 @@ live url: https://beta.scserver.org/api/sc/v1/riggerticket/addTicketImages
 Delete Ticket Image API
 
 url: http://127.0.0.1:8000/api/sc/v1/riggerticket/deleteTicketImage
-live url: https://beta.scserver.org/api/sc/v1/riggerticket/deleteTicketImage
+live url: https://scserver.org/api/sc/v1/riggerticket/deleteTicketImage
 {
     "ticket_id":"1",
     "image_id":"1"
@@ -354,7 +360,7 @@ live url: https://beta.scserver.org/api/sc/v1/riggerticket/deleteTicketImage
 Rigger Ticket listing API
 
 url: http://127.0.0.1:8000/api/sc/v1/riggerticket/ticket_list
-live url: https://beta.scserver.org/api/sc/v1/riggerticket/ticket_list
+live url: https://scserver.org/api/sc/v1/riggerticket/ticket_list
 {
     "user_id":"1"
 }
@@ -362,7 +368,7 @@ live url: https://beta.scserver.org/api/sc/v1/riggerticket/ticket_list
 Rigger Ticket detail API
 
 url: http://127.0.0.1:8000/api/sc/v1/riggerticket/ticket_detail
-live url: https://beta.scserver.org/api/sc/v1/riggerticket/ticket_detail
+live url: https://scserver.org/api/sc/v1/riggerticket/ticket_detail
 {
     "ticket_id":"1"
 }
@@ -382,7 +388,7 @@ url: http://127.0.0.1:8000/api/sc/v1/riggerticket/sendtomail
 Completed Rigger Tickets For Pay duty form
 
 url: http://127.0.0.1:8000/api/sc/v1/riggerticket/getTicketsForPayduty
-live url: https://beta.scserver.org/api/sc/v1/riggerticket/getTicketsForPayduty
+live url: https://scserver.org/api/sc/v1/riggerticket/getTicketsForPayduty
 
 {
     "user_id":"1"
@@ -391,7 +397,7 @@ live url: https://beta.scserver.org/api/sc/v1/riggerticket/getTicketsForPayduty
 Add Pay Duty Form API
 
 url: http://127.0.0.1:8000/api/sc/v1/payduty/add
-live url: https://beta.scserver.org/api/sc/v1/payduty/add
+live url: https://scserver.org/api/sc/v1/payduty/add
 
 // images is optional
 {
@@ -426,7 +432,7 @@ live url: https://beta.scserver.org/api/sc/v1/payduty/add
 Update Pay Duty Form API
 
 url: http://127.0.0.1:8000/api/sc/v1/payduty/update
-live url: https://beta.scserver.org/api/sc/v1/payduty/update
+live url: https://scserver.org/api/sc/v1/payduty/update
 
 // images is optional
 {
@@ -459,7 +465,7 @@ live url: https://beta.scserver.org/api/sc/v1/payduty/update
 Add Pay Duty Form Images API
 
 url: http://127.0.0.1:8000/api/sc/v1/payduty/addPayDutyImages
-live url: https://beta.scserver.org/api/sc/v1/payduty/addPayDutyImages
+live url: https://scserver.org/api/sc/v1/payduty/addPayDutyImages
 {
     "pay_duty_id":"1",
     "images": [
@@ -479,7 +485,7 @@ live url: https://beta.scserver.org/api/sc/v1/payduty/addPayDutyImages
 Delete Pay Duty Form Image API
 
 url: http://127.0.0.1:8000/api/sc/v1/payduty/deletePayDutyImage
-live url: https://beta.scserver.org/api/sc/v1/payduty/deletePayDutyImage
+live url: https://scserver.org/api/sc/v1/payduty/deletePayDutyImage
 {
     "pay_duty_id":"1",
     "image_id":"1"
@@ -488,7 +494,7 @@ live url: https://beta.scserver.org/api/sc/v1/payduty/deletePayDutyImage
 Pay Duty Listing API
 
 url: http://127.0.0.1:8000/api/sc/v1/payduty/pay_duty_list
-live url: https://beta.scserver.org/api/sc/v1/payduty/pay_duty_list
+live url: https://scserver.org/api/sc/v1/payduty/pay_duty_list
 
 {
     "user_id":"1"
@@ -497,7 +503,7 @@ live url: https://beta.scserver.org/api/sc/v1/payduty/pay_duty_list
 Pay Duty Detail API
 
 url: http://127.0.0.1:8000/api/sc/v1/payduty/pay_duty_detail
-live url: https://beta.scserver.org/api/sc/v1/payduty/pay_duty_detail
+live url: https://scserver.org/api/sc/v1/payduty/pay_duty_detail
 
 {
     "pay_duty_id":"1"
@@ -517,7 +523,7 @@ live url: https://beta.scserver.org/api/sc/v1/payduty/pay_duty_detail
 Add Transportation Ticket API
 
 url: http://127.0.0.1:8000/api/sc/v1/transportationticket/add
-live url: https://beta.scserver.org/api/sc/v1/transportationticket/add
+live url: https://scserver.org/api/sc/v1/transportationticket/add
 
 //images is optional
 {
@@ -579,7 +585,7 @@ live url: https://beta.scserver.org/api/sc/v1/transportationticket/add
 Update Transportation Ticket API
 
 url: http://127.0.0.1:8000/api/sc/v1/transportationticket/update
-live url: https://beta.scserver.org/api/sc/v1/transportationticket/update
+live url: https://scserver.org/api/sc/v1/transportationticket/update
 
 //images is optional
 {
@@ -640,7 +646,7 @@ live url: https://beta.scserver.org/api/sc/v1/transportationticket/update
 Add Transporter Ticket Images API
 
 url: http://127.0.0.1:8000/api/sc/v1/transportationticket/addTicketImages
-live url: https://beta.scserver.org/api/sc/v1/transportationticket/addTicketImages
+live url: https://scserver.org/api/sc/v1/transportationticket/addTicketImages
 {
     "ticket_id":"1",
     "images": [
@@ -660,7 +666,7 @@ live url: https://beta.scserver.org/api/sc/v1/transportationticket/addTicketImag
 Delete Transporter Ticket Image API
 
 url: http://127.0.0.1:8000/api/sc/v1/transportationticket/deleteTicketImage
-live url: https://beta.scserver.org/api/sc/v1/transportationticket/deleteTicketImage
+live url: https://scserver.org/api/sc/v1/transportationticket/deleteTicketImage
 {
     "ticket_id":"1",
     "image_id":"1"
@@ -669,7 +675,7 @@ live url: https://beta.scserver.org/api/sc/v1/transportationticket/deleteTicketI
 Transportation Ticket Listing API
 
 url: http://127.0.0.1:8000/api/sc/v1/transportationticket/ticket_list
-live url: https://beta.scserver.org/api/sc/v1/transportationticket/ticket_list
+live url: https://scserver.org/api/sc/v1/transportationticket/ticket_list
 
 {
     "user_id":"1"
@@ -678,7 +684,7 @@ live url: https://beta.scserver.org/api/sc/v1/transportationticket/ticket_list
 Transportation Ticket Detail API
 
 url: http://127.0.0.1:8000/api/sc/v1/transportationticket/ticket_detail
-live url: https://beta.scserver.org/api/sc/v1/transportationticket/ticket_detail
+live url: https://scserver.org/api/sc/v1/transportationticket/ticket_detail
 
 {
     "ticket_id":"1"
@@ -688,7 +694,7 @@ live url: https://beta.scserver.org/api/sc/v1/transportationticket/ticket_detail
 View ticket Pdf API
 
 url: http://127.0.0.1:8000/api/sc/v1/job/viewTicketPdf
-live url: https://beta.scserver.org/api/sc/v1/job/viewTicketPdf
+live url: https://scserver.org/api/sc/v1/job/viewTicketPdf
 
 {
     "id":"1",       

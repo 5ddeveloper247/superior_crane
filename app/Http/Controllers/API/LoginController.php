@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 use App\Models\User;
 
 
@@ -15,8 +16,22 @@ class LoginController extends Controller
 {
     public function login(Request $request)
     {
+        // $validator = Validator::make($request->all(), [
+        //     'email' => 'required|email|exists:users,email',
+        //     'password' => 'required',
+        // ]);
         $validator = Validator::make($request->all(), [
-            'email' => 'required|email|exists:users,email',
+            'email' => [
+                'required',
+                'email',
+                'exists:users,email',
+                function ($attribute, $value, $fail) {
+                    $user = DB::table('users')->where('email', $value)->first();
+                    if ($user && $user->status == 2) {
+                        $fail('The selected email is invalid.');
+                    }
+                },
+            ],
             'password' => 'required',
         ]);
         
@@ -32,7 +47,22 @@ class LoginController extends Controller
             $credentials = $request->only('email', 'password');
             if (Auth::attempt($credentials)) {
                 $user = User::where('email', $request->email)->first();
-                if($user->role_id == '2' || $user->role_id == '3' || $user->role_id == '4' || $user->role_id == '5'){
+                
+                if($user->status == '0'){
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'User Account is InActive. Please Contact Admin.'
+                    ], 401);
+                
+                }else if($user->status == '2'){
+                
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'The selected email is invalid.'
+                    ], 401);
+                
+                }else if($user->role_id == '2' || $user->role_id == '3' || $user->role_id == '4' || $user->role_id == '5'){
+                
                     return response()->json([
                         'success' => true,
                         'message' => 'Logged in successfully',
@@ -41,7 +71,7 @@ class LoginController extends Controller
                 }else{
                     return response()->json([
                         'success' => false,
-                        'message' => 'Invalid Credentials'
+                        'message' => 'Invalid Credentials.'
                     ], 401);
                 }
             }

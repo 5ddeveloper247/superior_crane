@@ -19,8 +19,17 @@
                 -Job Type: {{@$job_type}}<br>
                 -Assigned To: {{@$assigned_to}}<br>
                 -Job Client Name: {{@$client_name}}<br>
+                @if(@$job_date != '')
+                -Job Date: {{@$job_date}}<br>
+                @endif
+                
+                
                 -Job Start Time: {{@$start_time}}<br>
                 <!-- -Job End Time: {{@$end_time}}<br> -->
+                @if(@$job_address != '')
+                -Address: {{@$job_address}}<br>
+                @endif
+                
                 @if(@$status != '')
                 -Status: {{@$status}}<br>
                 @endif

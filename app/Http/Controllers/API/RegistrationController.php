@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Models\Roles;
 
@@ -20,22 +21,29 @@ class RegistrationController extends Controller
                 'required',
                 'email',
                 'max:100',
-                'unique:users',
-                'regex:/^[\w.%+-]+@[A-Za-z0-9.-]+\.[A-Z]{2,}$/i'
+                'regex:/^[\w.%+-]+@[A-Za-z0-9.-]+\.[A-Z]{2,}$/i',
+                function ($attribute, $value, $fail) {
+                    // Check if email exists with status != 2
+                    $existingUser = DB::table('users')->where('email', $value)->where('status', '!=', 2)->first();
+                    if ($existingUser) {
+                        $fail('The email has already been taken.');
+                    }
+                },
             ],
             'phone_number' => 'required|numeric|digits_between:7,18',
             'role' => 'required|in:3,4,5', // 3=>Rigger, 4=>Transporter, 5=> Both Rigger & Transporter
             'password' => [
-                        'required',
-                        'string',
-                        'min:8', // Minimum length of 8 characters
-                        'max:20',
-                        'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/',
-                        'confirmed',
-                    ],
+                'required',
+                'string',
+                'min:8', // Minimum length of 8 characters
+                'max:20',
+                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/',
+                'confirmed',
+            ],
         ], [
             'password.regex' => 'The new password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.',
         ]);
+        
         // Check if validation fails
         if ($validator->fails()) {
             return response()->json([
@@ -43,15 +51,31 @@ class RegistrationController extends Controller
                 'errors' => $validator->errors(),
             ], 422);
         }
+
         try {
             
-            $user = new User;
-            $user->name = $request->name;
-            $user->email= $request->email;
-            $user->phone_number= $request->phone_number;
-            $user->password= bcrypt($request->password);
-            $user->role_id = $request->role;
-            $user->save();
+            $existingUser = User::where('email', $request->email)->where('status', 2)->first();
+
+            if ($existingUser) {
+                // Update the existing user with status = 2
+                $existingUser->name = $request->name;
+                $existingUser->phone_number = $request->phone_number;
+                $existingUser->password = bcrypt($request->password);
+                $existingUser->role_id = $request->role;
+                $existingUser->status = 1; // Reactivate the user
+                $existingUser->save();
+                
+                $user = $existingUser;
+            } else {
+                // If no user with status 2 exists, create a new user
+                $user = new User;
+                $user->name = $request->name;
+                $user->email= $request->email;
+                $user->phone_number= $request->phone_number;
+                $user->password= bcrypt($request->password);
+                $user->role_id = $request->role;
+                $user->save();
+            }
             
             $roleName = Roles::where('id', $request->role)->value('role_name');
 
@@ -93,7 +117,7 @@ class RegistrationController extends Controller
     {
         try {
 
-            $users = User::whereIn('role_id', ['2','3','4','5'])->get();
+            $users = User::whereIn('role_id', ['2','3','4','5'])->where('status', '1')->get();
             
             if($users) {
                 return response()->json([
@@ -110,6 +134,50 @@ class RegistrationController extends Controller
         } catch (\Exception $e) {
             // Log the error for debugging purposes
             Log::error('Error loading job: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => "Oops! Network Error",
+            ], 500);
+        }
+    }
+
+    public function delete_user(Request $request)
+   {
+        // Define validation rules
+        $validator = Validator::make($request->all(), [
+            'user_id' => [
+                'required',
+                'exists:users,id',
+                function ($attribute, $value, $fail) {
+                    $user = DB::table('users')->where('id', $value)->first();
+                    if ($user && in_array($user->role_id, [0, 1])) {
+                        $fail('The selected user id is invalid.');
+                    }
+                },
+            ],
+        ]);
+        // Check if validation fails
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        try {
+            
+            // $user = User::where('id', $request->user_id)->delete();
+            $user = User::where('id', $request->user_id)->first();
+            $user->status = '2'; //0:InActive, 1:Active, 2:Deleted
+            $user->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'User Deleted Successfully...'
+            ], 200);
+        } catch (\Exception $e) {
+            // Log the error for debugging purposes
+            Log::error('Error storing user info: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => "Oops! Network Error",

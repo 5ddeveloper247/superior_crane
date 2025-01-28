@@ -391,6 +391,9 @@
         .select2-container {
             z-index: 9999 !important;
         }
+        .select2-container .select2-dropdown {
+            margin-top: -25px;
+        }
     </style>
 @endpush
 
@@ -738,9 +741,12 @@
                                 </div>
                                 
                                 <div class="col-12 col-md-8 d-flex flex-column">
-                                    <button type="button" class="atc-btn w-50 mt-2" id="addAttachment_btn">
-                                        Add Attachment<span class="text-danger">*</span>
+                                    <button class="py-1 px-5 w-50 mt-2 add-btn rounded-1" type="button" id="addAttachment_btn">
+                                        Add Attachment
                                     </button>
+                                    <!-- <button type="button" class="atc-btn w-50 mt-2" id="addAttachment_btn">
+                                        Add Attachment<span class="text-danger">*</span>
+                                    </button> -->
                                     <input type="hidden" id="deletedFileIds" name="deletedFileIds" value="">
                                     <div id="uploads_section">
                                         

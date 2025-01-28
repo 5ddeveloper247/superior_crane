@@ -56,7 +56,7 @@
                     POST
                 </button>
                 <small>
-                    https://beta.scserver.org/api/sc/v1/register
+                    https://scserver.org/api/sc/v1/register
                 </small>
             </div>
         </div>
@@ -170,7 +170,7 @@
                     POST
                 </button>
                 <small>
-                    https://beta.scserver.org/api/sc/v1/login
+                    https://scserver.org/api/sc/v1/login
                 </small>
             </div>
         </div>
@@ -267,7 +267,7 @@
                     POST
                 </button>
                 <small>
-                    https://beta.scserver.org/api/sc/v1/validateemail
+                    https://scserver.org/api/sc/v1/validateemail
                 </small>
             </div>
         </div>
@@ -348,7 +348,7 @@
                     POST
                 </button>
                 <small>
-                    https://beta.scserver.org/api/sc/v1/verifyotp
+                    https://scserver.org/api/sc/v1/verifyotp
                 </small>
             </div>
         </div>
@@ -431,7 +431,7 @@
                     POST
                 </button>
                 <small>
-                    https://beta.scserver.org/api/sc/v1/resetpassword
+                    https://scserver.org/api/sc/v1/resetpassword
                 </small>
             </div>
         </div>

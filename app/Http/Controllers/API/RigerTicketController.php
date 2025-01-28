@@ -71,7 +71,7 @@ class RigerTicketController extends Controller
             ], 422);
         }
     
-        try {
+        // try {
 
             $ticket = new RiggerTicket;
             $ticket->user_id = $request->user_id;
@@ -151,14 +151,14 @@ class RigerTicketController extends Controller
                 'message' => 'Rigger ticket added successfully',
                 'id' => $ticket->id
             ], 200);
-        } catch (\Exception $e) {
-            // Log the error for debugging purposes
-            Log::error('Error adding rigger ticket: ' . $e->getMessage());
-            return response()->json([
-                'success' => false,
-                'message' => "Oops! Network Error",
-            ], 500);
-        }
+        // } catch (\Exception $e) {
+        //     // Log the error for debugging purposes
+        //     Log::error('Error adding rigger ticket: ' . $e->getMessage());
+        //     return response()->json([
+        //         'success' => false,
+        //         'message' => "Oops! Network Error",
+        //     ], 500);
+        // }
     }
 
     public function update_rigger_ticket(Request $request)
@@ -386,18 +386,30 @@ class RigerTicketController extends Controller
 
         try {
 
-            $tickets = RiggerTicket::where('user_id', $request->user_id)->with(['ticketImages'])->get();
+            // $tickets = RiggerTicket::where('user_id', $request->user_id)->with(['ticketImages','jobDetail'])->get();
+            $tickets = RiggerTicket::whereHas('jobDetail', function ($query) use ($request) {
+                                $query->whereJsonContains('rigger_assigned', (string) $request->user_id);
+                            })
+                            ->with(['ticketImages', 'jobDetail'])
+                            ->get();
+            // $ticketsIds = RiggerTicket::whereHas('jobDetail', function ($query) use ($request) {
+            //     $query->whereJsonContains('rigger_assigned', (string) $request->user_id);
+            // })
+            // ->with(['ticketImages', 'jobDetail'])->pluck('id')->toArray();
+            
             if($tickets) {
-            return response()->json([
-                'success' => true,
-                'ticket_list' => $tickets,
-            ], 200);
-        } else {
-            return response()->json([
-                'success' => false,
-                'message' => 'No Data Found',
-            ], 401);
-        }
+                return response()->json([
+                    'success' => true,
+                    // 'ticket_list_ids' => $ticketsIds,
+                    'ticket_list' => $tickets,
+                    
+                ], 200);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No Data Found',
+                ], 401);
+            }
 
         } catch (\Exception $e) {
             // Log the error for debugging purposes
@@ -481,7 +493,7 @@ class RigerTicketController extends Controller
                     $mailData['user'] = $managerDetail->name;
                     $mailData['rigger_name'] = $riggerDetail->name;
                     $mailData['job_number'] = 'J-'.$ticketDetail->job_id;
-                    $mailData['rigger_number'] = 'R-'.$ticketDetail->id;
+                    $mailData['rigger_number'] = 'RTKT-'.$ticketDetail->id;
                     $mailData['customer_name'] = $ticketDetail->customer_name;
                     $mailData['location'] = $ticketDetail->location;
                     $mailData['po_number'] = $ticketDetail->po_number;
@@ -509,7 +521,7 @@ class RigerTicketController extends Controller
                     $Notifications->from_user_id = $riggerDetail->id;
                     $Notifications->to_user_id = '1';   // for super admin
                     $Notifications->subject = 'Rigger Ticket Submitted';
-                    $Notifications->message = 'Rigger Ticket R-'.$ticketDetail->id.' on '.$ticketDetail->date != null ? date('d-M-Y', strtotime($ticketDetail->date)) : ''.' has been submitted by '.$riggerDetail->name.'.';
+                    $Notifications->message = 'Rigger Ticket RTKT-'.$ticketDetail->id.' on '.$ticketDetail->date != null ? date('d-M-Y', strtotime($ticketDetail->date)) : ''.' has been submitted by '.$riggerDetail->name.'.';
                     $Notifications->message_html = $body;
                     $Notifications->read_flag = '0';
                     $Notifications->created_by = $riggerDetail->id;
@@ -576,6 +588,60 @@ class RigerTicketController extends Controller
         
     }
 
+    // public function editPdf($file, $output_file, $fields)
+    // {
+    //     $fpdi = new Fpdi();
+    //     $count = $fpdi->setSourceFile($file);
+
+    //     for ($i = 1; $i <= $count; $i++) {
+    //         $template = $fpdi->importPage($i);
+    //         $size = $fpdi->getTemplateSize($template);
+    //         $fpdi->AddPage($size['orientation'], [$size['width'], $size['height']]);
+    //         $fpdi->useTemplate($template);
+
+    //         $fpdi->SetFont('Helvetica', '', 10);
+    //         foreach ($fields as $field) {
+    //             $fpdi->SetXY($field['x'], $field['y']);
+                
+    //             if(isset($field['base64_image']) ){
+    //                 if($field['base64_image'] != '' && $field['base64_image'] != null){
+    //                     // Decode the base64 image and save it to a temporary file
+    //                     $imageData = base64_decode($field['base64_image']);
+    //                     $tempFilePath = tempnam(sys_get_temp_dir(), 'sig_') . '.png';
+    //                     file_put_contents($tempFilePath, $imageData);
+
+    //                     // Add the image to the PDF
+    //                     $fpdi->Image($tempFilePath, $field['x'], $field['y'], $field['width'], $field['height']);
+
+    //                     // Remove the temporary file
+    //                     unlink($tempFilePath);   
+    //                 }else{
+    //                     $fpdi->Write(8, '');
+    //                 }
+                     
+
+    //             }else{
+
+    //                 if(isset($field['font'])){
+    //                     $fpdi->SetFont('Helvetica', '', $field['font']);
+    //                 }else{
+    //                     $fpdi->SetFont('Helvetica', '', 10);
+    //                 }
+                    
+    //                 if (isset($field['width']) && isset($field['height'])) {
+    //                     $fpdi->MultiCell($field['width'], $field['height'], isset($field['text']) ? $field['text'] : '');
+    //                 } else {
+    //                     $fpdi->Write(8, isset($field['text']) ? $field['text'] : '');
+    //                 }
+    //             }
+    //         }
+    //     }
+
+    //     $fpdi->Output($output_file, 'F');
+        
+    //     return $output_file;
+    // }
+
     public function editPdf($file, $output_file, $fields)
     {
         $fpdi = new Fpdi();
@@ -590,24 +656,32 @@ class RigerTicketController extends Controller
             $fpdi->SetFont('Helvetica', '', 10);
             foreach ($fields as $field) {
                 $fpdi->SetXY($field['x'], $field['y']);
-                
-                if(isset($field['base64_image']) ){
+
+                if(isset($field['base64_image'])){
                     if($field['base64_image'] != '' && $field['base64_image'] != null){
-                        // Decode the base64 image and save it to a temporary file
+                        // Decode the base64 image
                         $imageData = base64_decode($field['base64_image']);
-                        $tempFilePath = tempnam(sys_get_temp_dir(), 'sig_') . '.png';
-                        file_put_contents($tempFilePath, $imageData);
-
-                        // Add the image to the PDF
-                        $fpdi->Image($tempFilePath, $field['x'], $field['y'], $field['width'], $field['height']);
-
-                        // Remove the temporary file
-                        unlink($tempFilePath);   
-                    }else{
+                        $image = imagecreatefromstring($imageData);
+                
+                        // Convert the image to 8-bit or 24-bit format
+                        if ($image !== false) {
+                            $tempFilePath = tempnam(sys_get_temp_dir(), 'sig_') . '.png';
+                            
+                            // Save the image in 24-bit format
+                            imagepng($image, $tempFilePath);
+                            imagedestroy($image);
+                
+                            // Add the image to the PDF
+                            $fpdi->Image($tempFilePath, $field['x'], $field['y'], $field['width'], $field['height']);
+                
+                            // Remove the temporary file
+                            unlink($tempFilePath);
+                        } else {
+                            throw new Exception('Invalid image data');
+                        }
+                    } else {
                         $fpdi->Write(8, '');
                     }
-                     
-
                 }else{
 
                     if(isset($field['font'])){
@@ -624,9 +698,7 @@ class RigerTicketController extends Controller
                 }
             }
         }
-
         $fpdi->Output($output_file, 'F');
-        
         return $output_file;
     }
 
@@ -647,7 +719,20 @@ class RigerTicketController extends Controller
             
             $tickets = RiggerTicket::where('user_id', $request->user_id)->where('status', '3')
                             ->whereDoesntHave('payDuty')->get();
+
             if(is_countable($tickets) && count($tickets) > 0) {
+                $tickets_list_new = [];
+
+                foreach($tickets as $ticket){
+                    $jobAddress = JobModel::where('id', $ticket->job_id)->value('address');
+                    if($jobAddress){
+                        $ticket->ticket_name = 'RTKT-' . $ticket->id . ' | ' . $ticket->customer_name . ' | ' . substr($jobAddress, 0, 12).'...';
+                        // $ticket->ticket_name = 'RTKT-' . $ticket->id . ' | ' . $ticket->customer_name . ' | ' . $jobAddress;
+                    }else{
+                        $ticket->ticket_name = 'RTKT-'.$ticket->id .' | '.$ticket->customer_name;
+                    }
+                    
+                }
                 return response()->json([
                     'success' => true,
                     'tickets' => $tickets,

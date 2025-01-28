@@ -32,15 +32,15 @@ class PayDutyController extends Controller
                 'start_time' => 'required|date_format:H:i',
                 'finish_time' => 'required|date_format:H:i',
                 'total_hours' => 'required|string|max:100',
-                'officer' => 'required|string|max:100',
+                'officer' => 'nullable|max:100',
                 'officer_name' => 'required|string|max:100',
-                'division' => 'required|string|max:200',
+                'division' => 'nullable|max:200',
                 'email' => 'required|string|email|max:100',
                 'signature' => 'required|string',
-                'images' => 'required',
-                'images.*.file' => 'required|string',
-                'images.*.title' => 'required|string|max:255',
-                'images.*.type' => 'required|string|max:255',
+                // 'images' => 'required',
+                'images.*.file' => 'string',
+                'images.*.title' => 'string|max:255',
+                'images.*.type' => 'string|max:255',
                 'status' => 'required|integer',   // 1=>draft, 2=>issued, 3=>complete
                 'created_by' => 'required|integer',
             ]);
@@ -151,9 +151,9 @@ class PayDutyController extends Controller
                 'start_time' => 'required|date_format:H:i',
                 'finish_time' => 'required|date_format:H:i',
                 'total_hours' => 'required|string|max:100',
-                'officer' => 'required|string|max:100',
+                'officer' => 'nullable|max:100',
                 'officer_name' => 'required|string|max:100',
-                'division' => 'required|string|max:200',
+                'division' => 'nullable|max:200',
                 'email' => 'required|string|email|max:100',
                 'signature' => 'required|string',
                 // 'images' => 'required',
@@ -336,9 +336,13 @@ class PayDutyController extends Controller
             ], 422);
         }
 
-        try {
+        // try {
 
-            $pay_duties = PayDutyModel::where('user_id', $request->user_id)->with(['dutyImages'])->get();
+            // $pay_duties = PayDutyModel::where('user_id', $request->user_id)->with(['dutyImages'])->get();
+            $pay_duties = PayDutyModel::where('user_id', $request->user_id)
+                                        ->whereHas('riggerTicket', function ($query) use ($request) {
+                                            $query->where('status', '3');
+                                        })->with(['dutyImages','riggerTicket'])->get();
             
             if($pay_duties) {
                 return response()->json([
@@ -352,14 +356,14 @@ class PayDutyController extends Controller
                 ], 401);
             }
 
-        } catch (\Exception $e) {
-            // Log the error for debugging purposes
-            Log::error('Error loading job: ' . $e->getMessage());
-            return response()->json([
-                'success' => false,
-                'message' => "Oops! Network Error",
-            ], 500);
-        }
+        // } catch (\Exception $e) {
+        //     // Log the error for debugging purposes
+        //     Log::error('Error loading job: ' . $e->getMessage());
+        //     return response()->json([
+        //         'success' => false,
+        //         'message' => "Oops! Network Error",
+        //     ], 500);
+        // }
     }
 
     public function getPayDutyDetail(Request $request)
@@ -375,10 +379,21 @@ class PayDutyController extends Controller
             ], 422);
         }
 
-        try {
+        // try {
 
             $pay_duty_detail = PayDutyModel::where('id', $request->pay_duty_id)->with(['dutyImages','riggerTicket'])->first();
             if($pay_duty_detail) {
+                
+                $ticket = RiggerTicket::where('id', $pay_duty_detail->rigger_ticket_id)->first();
+                
+                $jobAddress = JobModel::where('id', $ticket->job_id)->value('address');
+                
+                if($jobAddress){
+                    $pay_duty_detail->ticket_name = 'RTKT-' . $ticket->id . ' | ' . $ticket->customer_name . ' | ' . substr($jobAddress, 0, 12).'...';
+                }else{
+                    $pay_duty_detail->ticket_name = 'RTKT-'.$ticket->id .' | '.$ticket->customer_name;
+                }
+                
                 return response()->json([
                     'success' => true,
                     'pay_duty_detail' => $pay_duty_detail,
@@ -389,14 +404,14 @@ class PayDutyController extends Controller
                     'message' => 'No Data Found',
                 ], 401);
             }
-        } catch (\Exception $e) {
-            // Log the error for debugging purposes
-            Log::error('Error loading job: ' . $e->getMessage());
-            return response()->json([
-                'success' => false,
-                'message' => "Oops! Network Error",
-            ], 500);
-        }
+        // } catch (\Exception $e) {
+        //     // Log the error for debugging purposes
+        //     Log::error('Error loading job: ' . $e->getMessage());
+        //     return response()->json([
+        //         'success' => false,
+        //         'message' => "Oops! Network Error",
+        //     ], 500);
+        // }
     }
 
     public function sendEmailPayDutyForm($form_id){
@@ -428,8 +443,8 @@ class PayDutyController extends Controller
                 
                 $mailData['user'] = $managerDetail->name;
                 $mailData['rigger_name'] = $riggerDetail->name;
-                $mailData['rigger_number'] = 'R-'.$formDetail->rigger_ticket_id;
-                $mailData['form_number'] = 'P-'.$formDetail->id;
+                $mailData['rigger_number'] = 'RTKT-'.$formDetail->rigger_ticket_id;
+                $mailData['form_number'] = 'PDTY-'.$formDetail->id;
                 
                 $mailData['form_date'] = $formDetail->date != null ? date('d-M-Y', strtotime($formDetail->date)) : '';
                 $mailData['location'] = $formDetail->location;
@@ -462,7 +477,7 @@ class PayDutyController extends Controller
                 $Notifications->from_user_id = $riggerDetail->id;
                 $Notifications->to_user_id = '1';   // for super admin
                 $Notifications->subject = 'Pay Duty From Submitted';
-                $Notifications->message = 'Pay Duty From P-'.$formDetail->id.' on '.$formDetail->date != null ? date('d-M-Y', strtotime($formDetail->date)) : ''.' has been submitted by '.$riggerDetail->name.'.';
+                $Notifications->message = 'Pay Duty From PDTY-'.$formDetail->id.' on '.$formDetail->date != null ? date('d-M-Y', strtotime($formDetail->date)) : ''.' has been submitted by '.$riggerDetail->name.'.';
                 $Notifications->message_html = $body;
                 $Notifications->read_flag = '0';
                 $Notifications->created_by = $riggerDetail->id;
@@ -491,8 +506,8 @@ class PayDutyController extends Controller
         $form = PayDutyModel::find($id);
         if($form){
             $fields = [
-                ['text' => 'R-'.$form->rigger_ticket_id, 'x' => 68, 'y' => 31],
-                ['text' => 'P-'.$form->id, 'x' => 167, 'y' => 31],
+                ['text' => 'RTKT-'.$form->rigger_ticket_id, 'x' => 68, 'y' => 31],
+                ['text' => 'PDTY-'.$form->id, 'x' => 167, 'y' => 31],
                 ['text' => $form->date != null ? date('d-M-Y', strtotime($form->date)) : '', 'x' => 86, 'y' => 87.5],
                 ['text' => $form->location, 'x' => 86, 'y' => 105],
                 ['text' => $form->start_time != null ? date('h:i', strtotime($form->start_time)) : '', 'x' => 86, 'y' => 123],
@@ -533,15 +548,27 @@ class PayDutyController extends Controller
                 
                 if(isset($field['base64_image'])){
                     if($field['base64_image'] != '' && $field['base64_image'] != null){
-                        // Decode the base64 image and save it to a temporary file
+                        // Decode the base64 image
                         $imageData = base64_decode($field['base64_image']);
-                        $tempFilePath = tempnam(sys_get_temp_dir(), 'sig_') . '.png';
-                        file_put_contents($tempFilePath, $imageData);
-
-                        // Add the image to the PDF
-                        $fpdi->Image($tempFilePath, $field['x'], $field['y'], $field['width'], $field['height']);
-                        unlink($tempFilePath);  
-                    }else {
+                        $image = imagecreatefromstring($imageData);
+                
+                        // Convert the image to 8-bit or 24-bit format
+                        if ($image !== false) {
+                            $tempFilePath = tempnam(sys_get_temp_dir(), 'sig_') . '.png';
+                            
+                            // Save the image in 24-bit format
+                            imagepng($image, $tempFilePath);
+                            imagedestroy($image);
+                
+                            // Add the image to the PDF
+                            $fpdi->Image($tempFilePath, $field['x'], $field['y'], $field['width'], $field['height']);
+                
+                            // Remove the temporary file
+                            unlink($tempFilePath);
+                        } else {
+                            throw new Exception('Invalid image data');
+                        }
+                    } else {
                         $fpdi->Write(8, '');
                     }
                 }else{

@@ -531,7 +531,7 @@ class TransportationTicketController extends Controller
                     $mailData['user'] = $managerDetail->name;
                     $mailData['transporter_name'] = $transporterDetail->name;
                     $mailData['job_number'] = 'J-'.$ticketDetail->job_id;
-                    $mailData['ticket_number'] = 'T-'.$ticketDetail->id;
+                    $mailData['ticket_number'] = 'TTKT-'.$ticketDetail->id;
                     $mailData['pickup_address'] = $ticketDetail->pickup_address;
                     $mailData['delivery_address'] = $ticketDetail->delivery_address;
 
@@ -560,7 +560,7 @@ class TransportationTicketController extends Controller
                     $Notifications->from_user_id = $transporterDetail->id;
                     $Notifications->to_user_id = '1';   // for super admin
                     $Notifications->subject = 'Transporter Ticket Submitted';
-                    $Notifications->message = 'Transporter Ticket T-'.$ticketDetail->id.' on '.$ticketDetail->created_at != null ? date('d-M-Y', strtotime($ticketDetail->created_at)) : ''.' has been submitted by '.$transporterDetail->name.'.';
+                    $Notifications->message = 'Transporter Ticket TTKT-'.$ticketDetail->id.' on '.$ticketDetail->created_at != null ? date('d-M-Y', strtotime($ticketDetail->created_at)) : ''.' has been submitted by '.$transporterDetail->name.'.';
                     $Notifications->message_html = $body;
                     $Notifications->read_flag = '0';
                     $Notifications->created_by = $transporterDetail->id;
@@ -590,7 +590,7 @@ class TransportationTicketController extends Controller
         $ticket = TransportationTicketModel::find($id);
         if($ticket){
             $fields = [
-                ['text' => 'T-'.$ticket->id, 'x' => 245, 'y' => 13],
+                ['text' => 'TTKT-'.$ticket->id, 'x' => 245, 'y' => 13],
                 ['text' => $ticket->pickup_address, 'x' => 58, 'y' => 33, 'width' => 210, 'height' => 6],
                 ['text' => $ticket->delivery_address, 'x' => 58, 'y' => 41, 'width' => 210, 'height' => 6],
                 // ['text' => $ticket->delivery_address, 'x' => 58, 'y' => 49, 'width' => 210, 'height' => 6],
@@ -654,17 +654,27 @@ class TransportationTicketController extends Controller
                 
                 if(isset($field['base64_image'])){
                     if($field['base64_image'] != '' && $field['base64_image'] != null){
-                        // Decode the base64 image and save it to a temporary file
+                        // Decode the base64 image
                         $imageData = base64_decode($field['base64_image']);
-                        $tempFilePath = tempnam(sys_get_temp_dir(), 'sig_') . '.png';
-                        file_put_contents($tempFilePath, $imageData);
-
-                        // Add the image to the PDF
-                        $fpdi->Image($tempFilePath, $field['x'], $field['y'], $field['width'], $field['height']);
-
-                        // Remove the temporary file
-                        unlink($tempFilePath);
-                    }else{
+                        $image = imagecreatefromstring($imageData);
+                
+                        // Convert the image to 8-bit or 24-bit format
+                        if ($image !== false) {
+                            $tempFilePath = tempnam(sys_get_temp_dir(), 'sig_') . '.png';
+                            
+                            // Save the image in 24-bit format
+                            imagepng($image, $tempFilePath);
+                            imagedestroy($image);
+                
+                            // Add the image to the PDF
+                            $fpdi->Image($tempFilePath, $field['x'], $field['y'], $field['width'], $field['height']);
+                
+                            // Remove the temporary file
+                            unlink($tempFilePath);
+                        } else {
+                            throw new Exception('Invalid image data');
+                        }
+                    } else {
                         $fpdi->Write(8, '');
                     }
                 }else{

@@ -118,7 +118,7 @@ class JobController extends Controller
             
             $jobDetail = JobModel::where('id', $job->id)->first();
             $riggerAssignedIds = json_decode($jobDetail->rigger_assigned);
-            $assignedUsers = User::whereIn('id', $riggerAssignedIds)->get();// assigned user details
+            $assignedUsers = User::whereIn('id', $riggerAssignedIds)->where('status', '1')->get();// assigned user details
             
             $createdBy = User::where('id', $jobDetail->created_by)->first();
             
@@ -146,6 +146,8 @@ class JobController extends Controller
             $mailData['job_number'] = 'J-'.$jobDetail->id;
             $mailData['job_type'] = $job_type;
             $mailData['client_name'] = $jobDetail->client_name;
+            $mailData['job_address'] = $jobDetail->address;
+            $mailData['job_date'] = date('d M,Y', strtotime($jobDetail->date));
             $mailData['start_time'] = date('H:i A', strtotime($jobDetail->start_time));
             $mailData['end_time'] = date('H:i A', strtotime($jobDetail->end_time));
             $mailData['status'] = $status_txt;
@@ -423,6 +425,22 @@ class JobController extends Controller
             if(isset($jobs) && count($jobs) > 0) {
                 foreach($jobs as $job){
                     $job->rigger_assigned = json_decode($job->rigger_assigned);
+
+                    if($job->job_type == '3'){
+                        $job->assigned_users = $job->user_assigned;
+                        $jobs_list_new[] = $job;
+                        
+                    }else{
+                        $riggerAssignedIds = $job->rigger_assigned;
+                    
+                        if (is_array($riggerAssignedIds)) {
+                            $assignedUsers = User::whereIn('id', $riggerAssignedIds)->pluck('name')->toArray();
+                        } else {
+                            $assignedUsers = array();
+                        }
+                        $job->assigned_users = implode(', ', $assignedUsers);
+                        $jobs_list_new[] = $job;
+                    }
                 }
                 return response()->json([
                     'success' => true,
@@ -535,12 +553,30 @@ class JobController extends Controller
             $jobs = $query->get();
             
             if(is_countable($jobs) && count($jobs) > 0) {
+                
+                $jobs_list_new = [];
+
                 foreach($jobs as $job){
                     $job->rigger_assigned = json_decode($job->rigger_assigned);
+
+                    if($job->job_type == '3'){
+                        $job->assigned_users = $job->user_assigned;
+                        $jobs_list_new[] = $job;
+                    }else{
+                        $riggerAssignedIds = $job->rigger_assigned;
+                    
+                        if (is_array($riggerAssignedIds)) {
+                            $assignedUsers = User::whereIn('id', $riggerAssignedIds)->pluck('name')->toArray();
+                        } else {
+                            $assignedUsers = array();
+                        }
+                        $job->assigned_users = implode(', ', $assignedUsers);
+                        $jobs_list_new[] = $job;
+                    }
                 }
                 return response()->json([
                     'success' => true,
-                    'jobs' => $jobs,
+                    'jobs' => $jobs_list_new,
                 ], 200);
             } else {
                 return response()->json([
@@ -592,10 +628,26 @@ class JobController extends Controller
             if($job) {
                 
                 $job->rigger_assigned = $job->rigger_assigned != null ? json_decode($job->rigger_assigned) : [];
+                $jobs_detail_new = null;
+
                 
+                if($job->job_type == '3'){
+                    $jobs_detail_new = $job;
+                }else{
+                    // $riggerAssignedIds = json_decode($job->rigger_assigned, true);
+                
+                    if (is_array($job->rigger_assigned)) {
+                        $assignedUsers = User::whereIn('id', $job->rigger_assigned)->pluck('name')->toArray();
+                    } else {
+                        $assignedUsers = array();
+                    }
+                    $job->assigned_users = implode(', ', $assignedUsers);
+                    $jobs_detail_new = $job;
+                }
+
                 return response()->json([
                     'success' => true,
-                    'job_detail' => $job,
+                    'job_detail' => $jobs_detail_new,
                 ], 200);
             } else {
                 return response()->json([
@@ -640,7 +692,7 @@ class JobController extends Controller
                 $jobDetail = JobModel::where('id', $request->job_id)->first();
                 $riggerAssignedIds = json_decode($jobDetail->rigger_assigned); 
                 // $user = User::whereIn('id', $jobDetail->rigger_assigned)->get();
-                $assignedUsers = User::whereIn('id', $riggerAssignedIds)->pluck('name')->toArray();
+                $assignedUsers = User::whereIn('id', $riggerAssignedIds)->where('status', '1')->pluck('name')->toArray();
                 $userNames = implode(', ', $assignedUsers);
 
                 $createdBy = User::where('id', $jobDetail->created_by)->first();
@@ -669,8 +721,10 @@ class JobController extends Controller
                 $mailData['job_type'] = $job_type;
                 $mailData['assigned_to'] = isset($userNames) ? $userNames : '';
                 $mailData['client_name'] = $jobDetail->client_name;
-                $mailData['start_time'] = $jobDetail->start_time;
-                $mailData['end_time'] = $jobDetail->end_time;
+                $mailData['job_address'] = $jobDetail->address;
+                $mailData['job_date'] = date('d M,Y', strtotime($jobDetail->date));
+                $mailData['start_time'] = date('H:i A', strtotime($jobDetail->start_time));
+                $mailData['end_time'] = date('H:i A', strtotime($jobDetail->end_time));
                 $mailData['status'] = $status_txt;
 
                 $mailData['text1'] = "Job status has been changed by manager/user. Job details are as under.";
@@ -743,8 +797,28 @@ class JobController extends Controller
             }
             
             if(is_countable($jobs) && count($jobs) > 0) {
+                // foreach($jobs as $job){
+                //     $job->rigger_assigned = json_decode($job->rigger_assigned);
+                // }
+                $jobs_list_new = [];
+
                 foreach($jobs as $job){
                     $job->rigger_assigned = json_decode($job->rigger_assigned);
+
+                    if($job->job_type == '3'){
+                        $job->assigned_users = $job->user_assigned;
+                        $jobs_list_new[] = $job;
+                    }else{
+                        $riggerAssignedIds = $job->rigger_assigned;
+                    
+                        if (is_array($riggerAssignedIds)) {
+                            $assignedUsers = User::whereIn('id', $riggerAssignedIds)->pluck('name')->toArray();
+                        } else {
+                            $assignedUsers = array();
+                        }
+                        $job->assigned_users = implode(', ', $assignedUsers);
+                        $jobs_list_new[] = $job;
+                    }
                 }
                 return response()->json([
                     'success' => true,
@@ -821,7 +895,7 @@ class JobController extends Controller
         $ticket = RiggerTicket::find($id);
         if($ticket){
             $fields = [
-                ['text' => 'R-'.$ticket->id, 'x' => 245, 'y' => 6.5],
+                ['text' => 'RTKT-'.$ticket->id, 'x' => 245, 'y' => 6.5],
                 ['text' => $ticket->specifications_remarks, 'x' => 128, 'y' => 58, 'width' => 138, 'height' => 6],
                 
                 ['text' => $ticket->customer_name, 'x' => 14, 'y' => 94],
@@ -865,7 +939,7 @@ class JobController extends Controller
         $ticket = TransportationTicketModel::find($id);
         if($ticket){
             $fields = [
-                ['text' => 'T-'.$ticket->id, 'x' => 245, 'y' => 13],
+                ['text' => 'TTKT-'.$ticket->id, 'x' => 245, 'y' => 13],
                 ['text' => $ticket->pickup_address, 'x' => 58, 'y' => 33, 'width' => 210, 'height' => 6],
                 ['text' => $ticket->delivery_address, 'x' => 58, 'y' => 41, 'width' => 210, 'height' => 6],
                 // ['text' => $ticket->delivery_address, 'x' => 58, 'y' => 49, 'width' => 210, 'height' => 6],
@@ -921,8 +995,8 @@ class JobController extends Controller
         $form = PayDutyModel::find($id);
         if($form){
             $fields = [
-                ['text' => 'P-'.$form->rigger_ticket_id, 'x' => 68, 'y' => 31],
-                ['text' => 'P-'.$form->id, 'x' => 167, 'y' => 31],
+                ['text' => 'RTKT-'.$form->rigger_ticket_id, 'x' => 68, 'y' => 31],
+                ['text' => 'PDTY-'.$form->id, 'x' => 167, 'y' => 31],
                 ['text' => date('d-M-Y', strtotime($form->date)), 'x' => 86, 'y' => 87.5],
                 ['text' => $form->location, 'x' => 86, 'y' => 105],
                 ['text' => $form->start_time != null ? date('h:i', strtotime($form->start_time)) : '', 'x' => 86, 'y' => 123],
@@ -962,17 +1036,27 @@ class JobController extends Controller
 
                 if(isset($field['base64_image'])){
                     if($field['base64_image'] != '' && $field['base64_image'] != null){
-                        // Decode the base64 image and save it to a temporary file
+                        // Decode the base64 image
                         $imageData = base64_decode($field['base64_image']);
-                        $tempFilePath = tempnam(sys_get_temp_dir(), 'sig_') . '.png';
-                        file_put_contents($tempFilePath, $imageData);
-
-                        // Add the image to the PDF
-                        $fpdi->Image($tempFilePath, $field['x'], $field['y'], $field['width'], $field['height']);
-
-                        // Remove the temporary file
-                        unlink($tempFilePath);  
-                    }else {
+                        $image = imagecreatefromstring($imageData);
+                
+                        // Convert the image to 8-bit or 24-bit format
+                        if ($image !== false) {
+                            $tempFilePath = tempnam(sys_get_temp_dir(), 'sig_') . '.png';
+                            
+                            // Save the image in 24-bit format
+                            imagepng($image, $tempFilePath);
+                            imagedestroy($image);
+                
+                            // Add the image to the PDF
+                            $fpdi->Image($tempFilePath, $field['x'], $field['y'], $field['width'], $field['height']);
+                
+                            // Remove the temporary file
+                            unlink($tempFilePath);
+                        } else {
+                            throw new Exception('Invalid image data');
+                        }
+                    } else {
                         $fpdi->Write(8, '');
                     }
                 }else{

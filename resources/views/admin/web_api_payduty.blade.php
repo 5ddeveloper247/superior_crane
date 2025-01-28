@@ -56,7 +56,7 @@
                     POST
                 </button>
                 <small>
-                    https://beta.scserver.org/api/sc/v1/payduty/add
+                    https://scserver.org/api/sc/v1/payduty/add
                 </small>
             </div>
         </div>
@@ -197,7 +197,7 @@
                     POST
                 </button>
                 <small>
-                    https://beta.scserver.org/api/sc/v1/payduty/update
+                    https://scserver.org/api/sc/v1/payduty/update
                 </small>
             </div>
         </div>
@@ -343,7 +343,7 @@
                     POST
                 </button>
                 <small>
-                    https://beta.scserver.org/api/sc/v1/payduty/pay_duty_list
+                    https://scserver.org/api/sc/v1/payduty/pay_duty_list
                 </small>
             </div>
         </div>
@@ -463,7 +463,7 @@
                     POST
                 </button>
                 <small>
-                    https://beta.scserver.org/api/sc/v1/payduty/pay_duty_detail
+                    https://scserver.org/api/sc/v1/payduty/pay_duty_detail
                 </small>
             </div>
         </div>
