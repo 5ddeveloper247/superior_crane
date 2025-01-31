@@ -336,13 +336,15 @@ class PayDutyController extends Controller
             ], 422);
         }
 
-        // try {
-
+        try {
+            $dateLimit = getApiRecordLimitDate();
             // $pay_duties = PayDutyModel::where('user_id', $request->user_id)->with(['dutyImages'])->get();
             $pay_duties = PayDutyModel::where('user_id', $request->user_id)
                                         ->whereHas('riggerTicket', function ($query) use ($request) {
                                             $query->where('status', '3');
-                                        })->with(['dutyImages','riggerTicket'])->get();
+                                        })
+                                        ->whereDate('created_at', '>=', $dateLimit)
+                                        ->with(['dutyImages','riggerTicket'])->get();
             
             if($pay_duties) {
                 return response()->json([
@@ -356,14 +358,14 @@ class PayDutyController extends Controller
                 ], 401);
             }
 
-        // } catch (\Exception $e) {
-        //     // Log the error for debugging purposes
-        //     Log::error('Error loading job: ' . $e->getMessage());
-        //     return response()->json([
-        //         'success' => false,
-        //         'message' => "Oops! Network Error",
-        //     ], 500);
-        // }
+        } catch (\Exception $e) {
+            // Log the error for debugging purposes
+            Log::error('Error loading job: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => "Oops! Network Error",
+            ], 500);
+        }
     }
 
     public function getPayDutyDetail(Request $request)
@@ -379,7 +381,7 @@ class PayDutyController extends Controller
             ], 422);
         }
 
-        // try {
+        try {
 
             $pay_duty_detail = PayDutyModel::where('id', $request->pay_duty_id)->with(['dutyImages','riggerTicket'])->first();
             if($pay_duty_detail) {
@@ -404,14 +406,14 @@ class PayDutyController extends Controller
                     'message' => 'No Data Found',
                 ], 401);
             }
-        // } catch (\Exception $e) {
-        //     // Log the error for debugging purposes
-        //     Log::error('Error loading job: ' . $e->getMessage());
-        //     return response()->json([
-        //         'success' => false,
-        //         'message' => "Oops! Network Error",
-        //     ], 500);
-        // }
+        } catch (\Exception $e) {
+            // Log the error for debugging purposes
+            Log::error('Error loading job: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => "Oops! Network Error",
+            ], 500);
+        }
     }
 
     public function sendEmailPayDutyForm($form_id){
@@ -497,6 +499,7 @@ class PayDutyController extends Controller
             }
         }
     }
+
     public function makeRiggerPDF($form_id='')
     {
 

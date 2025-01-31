@@ -4,11 +4,11 @@ $(document).on('click', '#saveSettings_submit', function (e) {
     let form = document.getElementById('addSettings_form');
     let data = new FormData(form);
     let type = 'POST';
-    let url = '/admin/saveEmailSettings';
-    SendAjaxRequestToServer(type, url, data, '', saveEmailSettingsResponse, '', '#saveSettings_submit');
+    let url = '/admin/saveApiSettings';
+    SendAjaxRequestToServer(type, url, data, '', saveApiSettingsResponse, '', '#saveSettings_submit');
 });
 
-function saveEmailSettingsResponse(response) {
+function saveApiSettingsResponse(response) {
     
     if (response.status == 200) {
         toastr.success(response.message, '', {

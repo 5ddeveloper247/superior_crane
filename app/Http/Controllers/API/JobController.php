@@ -404,6 +404,7 @@ class JobController extends Controller
             'role_id' => 'required',
             'date' => 'required|date_format:Y-m-d',
         ]);
+
         // Check if validation fails
         if ($validator->fails()) {
             return response()->json([
@@ -500,7 +501,7 @@ class JobController extends Controller
         }
 
         try {
-            
+            $dateLimit = getApiRecordLimitDate();
             // make query for get listing
             // if($role_id == '2'){
                 $query = JobModel::with(['jobImages']);
@@ -549,6 +550,8 @@ class JobController extends Controller
                 $query->whereDate('date', '>=', $start_date)->whereDate('date', '<=', $end_date);
             
             }
+
+            $query->whereDate('date', '>=', $dateLimit);
 
             $jobs = $query->get();
             
@@ -776,23 +779,27 @@ class JobController extends Controller
         }
 
         try {
+            $dateLimit = getApiRecordLimitDate();
             $user = User::where('id', $request->user_id)->first();
             if($user->role_id == '5' || $user->role_id == '2'){
                 if($request->type == '1'){
                     $jobs = JobModel::where('job_type', '2')->whereJsonContains('rigger_assigned', $request->user_id)->where('status', '1')->with(['jobImages'])
                                 ->whereDoesntHave('riggerTicket')
                                 ->whereDoesntHave('transporterTicket')
+                                ->whereDate('date', '>=', $dateLimit)
                                 ->get();
                 }else{
                     $jobs = JobModel::where('job_type', '1')->whereJsonContains('rigger_assigned', $request->user_id)->where('status', '1')->with(['jobImages'])
                                 ->whereDoesntHave('riggerTicket')
                                 ->whereDoesntHave('transporterTicket')
+                                ->whereDate('date', '>=', $dateLimit)
                                 ->get();
                 }
             }else{
                 $jobs = JobModel::where('job_type','!=', '3')->whereJsonContains('rigger_assigned', $request->user_id)->where('status', '1')->with(['jobImages'])
                                         ->whereDoesntHave('riggerTicket')
                                         ->whereDoesntHave('transporterTicket')
+                                        ->whereDate('date', '>=', $dateLimit)
                                         ->get();
             }
             

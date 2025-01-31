@@ -385,12 +385,13 @@ class RigerTicketController extends Controller
         }
 
         try {
-
+            $dateLimit = getApiRecordLimitDate();
             // $tickets = RiggerTicket::where('user_id', $request->user_id)->with(['ticketImages','jobDetail'])->get();
             $tickets = RiggerTicket::whereHas('jobDetail', function ($query) use ($request) {
                                 $query->whereJsonContains('rigger_assigned', (string) $request->user_id);
                             })
                             ->with(['ticketImages', 'jobDetail'])
+                            ->whereDate('date', '>=', $dateLimit)
                             ->get();
             // $ticketsIds = RiggerTicket::whereHas('jobDetail', function ($query) use ($request) {
             //     $query->whereJsonContains('rigger_assigned', (string) $request->user_id);
@@ -542,6 +543,7 @@ class RigerTicketController extends Controller
             }
         }
     }
+
     public function makeRiggerPDF($ticket_id='')
     {
 
@@ -716,9 +718,10 @@ class RigerTicketController extends Controller
         }
 
         try {
-            
+            $dateLimit = getApiRecordLimitDate();
             $tickets = RiggerTicket::where('user_id', $request->user_id)->where('status', '3')
-                            ->whereDoesntHave('payDuty')->get();
+                            ->whereDoesntHave('payDuty')
+                            ->whereDate('date', '>=', $dateLimit)->get();
 
             if(is_countable($tickets) && count($tickets) > 0) {
                 $tickets_list_new = [];

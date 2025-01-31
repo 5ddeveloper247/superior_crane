@@ -11,6 +11,7 @@ use App\Models\Notifications;
 
 use Illuminate\Support\Facades\Config;
 use App\Models\EmailSetting;
+use Carbon\Carbon;
 
 if (!function_exists('saveMultipleImages')) {
 
@@ -144,67 +145,86 @@ if (!function_exists('sendMailAttachment')) {
             return false;
         }
     }
+}
 
-    if (!function_exists('sendMailAttachment')) {
-        function sendMailAttachment($send_to_name, $send_to_email, $email_from_name, $subject, $body, $attachment_path)
-        {
-            try {
-                $mail_val = [
-                    'send_to_name' => $send_to_name,
-                    'send_to' => $send_to_email,
-                    'email_from' => 'noreply@pancard.com',
-                    'email_from_name' => $email_from_name,
-                    'subject' => $subject,
-                ];
+if (!function_exists('sendMailAttachment')) {
+    function sendMailAttachment($send_to_name, $send_to_email, $email_from_name, $subject, $body, $attachment_path)
+    {
+        try {
+            $mail_val = [
+                'send_to_name' => $send_to_name,
+                'send_to' => $send_to_email,
+                'email_from' => 'noreply@pancard.com',
+                'email_from_name' => $email_from_name,
+                'subject' => $subject,
+            ];
 
-                Mail::send('emails.mail', ['body' => $body], function ($send) use ($mail_val, $attachment_path) {
-                    $send->from($mail_val['email_from'], $mail_val['email_from_name']);
-                    $send->replyTo($mail_val['email_from'], $mail_val['email_from_name']);
-                    $send->to($mail_val['send_to'], $mail_val['send_to_name'])->subject($mail_val['subject']);
-                    
-                    // Attach the file
-                    if (!empty($attachment_path) && file_exists($attachment_path)) {
-                        $send->attach($attachment_path);
-                    }
-                });
+            Mail::send('emails.mail', ['body' => $body], function ($send) use ($mail_val, $attachment_path) {
+                $send->from($mail_val['email_from'], $mail_val['email_from_name']);
+                $send->replyTo($mail_val['email_from'], $mail_val['email_from_name']);
+                $send->to($mail_val['send_to'], $mail_val['send_to_name'])->subject($mail_val['subject']);
+                
+                // Attach the file
+                if (!empty($attachment_path) && file_exists($attachment_path)) {
+                    $send->attach($attachment_path);
+                }
+            });
 
-                return true;
-            } catch (\Exception $e) {
-                Log::error($e->getMessage());
-                // echo "An error occurred while sending the email: " . $e->getMessage();
-                return false;
-            }
+            return true;
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            // echo "An error occurred while sending the email: " . $e->getMessage();
+            return false;
         }
     }
+}
 
-    if (!function_exists('getRoles')) {
-        function getRoles()
-        {
-            try {
-                
-                $roles = Roles::get();
-                return $roles;
-            } catch (\Exception $e) {
-                Log::error($e->getMessage());
-                echo "An error occurred while sending the email: " . $e->getMessage();
-                return false;
-            }
+if (!function_exists('getRoles')) {
+    function getRoles()
+    {
+        try {
+            
+            $roles = Roles::get();
+            return $roles;
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            echo "An error occurred while sending the email: " . $e->getMessage();
+            return false;
         }
     }
+}
 
-    if (!function_exists('getNotificationsLimited')) {
-        function getNotificationsLimited()
-        {
-            try {
-                
-                $notifications = Notifications::where('read_flag', '0')->with(['fromUser'])->orderBy('created_at', 'desc')->limit('5')->get();
-                return $notifications;
-                
-            } catch (\Exception $e) {
-                Log::error($e->getMessage());
-                echo "An error occurred while sending the email: " . $e->getMessage();
-                return false;
-            }
+if (!function_exists('getNotificationsLimited')) {
+    function getNotificationsLimited()
+    {
+        try {
+            
+            $notifications = Notifications::where('read_flag', '0')->with(['fromUser'])->orderBy('created_at', 'desc')->limit('5')->get();
+            return $notifications;
+            
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            echo "An error occurred while sending the email: " . $e->getMessage();
+            return false;
+        }
+    }
+}
+
+if (!function_exists('getApiRecordLimitDate')) {
+    function getApiRecordLimitDate()
+    {
+        try {
+            $daysLimit = env('API_RECORD_LIMIT') != '' ? env('API_RECORD_LIMIT') : 30;
+            
+            $today = Carbon::now(); // Current date
+            $backDate = $today->subDays($daysLimit)->format('Y-m-d');
+
+            return $backDate;
+            
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            echo "An error occurred";
+            return false;
         }
     }
 }

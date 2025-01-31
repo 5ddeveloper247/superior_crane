@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
@@ -30,6 +31,7 @@ use App\Models\InventoryModel;
 use App\Models\Notifications;
 
 use App\Models\EmailSetting;
+use App\Models\ArchiveService;
 
 class AdminController extends Controller
 {
@@ -147,7 +149,20 @@ class AdminController extends Controller
         $data['settings'] = EmailSetting::find('1');
         return view('admin/email_settings')->with($data);
     }
+    
+    public function api_settings(Request $request)
+    {
+        $data['pageTitle'] = 'API Settings';
+        $data['api_record_limit'] = env('API_RECORD_LIMIT');
+        return view('admin/api_settings')->with($data);
+    }
 
+    public function archive_services(Request $request)
+    {
+        $data['pageTitle'] = 'Archive Services';
+        return view('admin/archive_services')->with($data);
+    }
+    
     
     public function getProfilePageData(Request $request){
 
@@ -1705,8 +1720,126 @@ class AdminController extends Controller
         return response()->json(['status' => 200, 'message' => 'Settings Updated Successfully']);
     }
     
+    public function saveApiSettings(Request $request){
+        
+        $validatedData = $request->validate([
+            'api_record_limit_days' => [
+                'required',
+                'regex:/^\d+$/',
+                'max:5'
+            ],
+        ], [
+            'api_record_limit_days.regex' => 'The :attribute must contain only numbers.',
+            'api_record_limit_days.max' => 'The :attribute must not exceed 5 numbers.'
+        ]);
+        
+        $key = 'API_RECORD_LIMIT';
+        $value = $request->api_record_limit_days;
+
+        $path = base_path('.env');
+
+        if (file_exists($path)) {
+            $envContent = file_get_contents($path);
+
+            // Check if the key already exists
+            if (preg_match("/^{$key}=.*/m", $envContent)) {
+                // Update the existing key
+                $updatedContent = preg_replace(
+                    "/^{$key}=.*/m",
+                    "{$key}={$value}",
+                    $envContent
+                );
+            } else {
+                // Add the new key to the end of the file
+                $updatedContent = $envContent . PHP_EOL . "{$key}={$value}";
+            }
+
+            // Write the updated content back to the .env file
+            file_put_contents($path, $updatedContent);
+        }
+        
+        return response()->json(['status' => 200, 'message' => 'Settings Updated Successfully']);
+    }
+
+    public function getServicesPageData(Request $request){
+
+        $data['services_list'] = ArchiveService::get();
+        $data['total_services'] = ArchiveService::count();
+        $data['total_pending'] = ArchiveService::where('status', '0')->count();
+        $data['total_inprocess'] = ArchiveService::where('status', '1')->count();
+        $data['total_completed'] = ArchiveService::where('status', '2')->count();
+        $data['total_cancelled'] = ArchiveService::where('status', '3')->count();
+        
+        return response()->json(['status' => 200, 'message' => "",'data' => $data]);
+    }
 
 
+    public function saveArchiveServiceData(Request $request){
+        
+        $validatedData = $request->validate([
+            'service_title' => 'required|string|max:50',
+            'service_module' => 'required|string',
+            'from_date' => 'required|date|before:today',
+            'to_date' => 'required|date|after:from_date',
+            'service_description' => 'nullable|string|max:250',
+            
+        ]); 
+        
+       
+        if($request->service_id == ''){
+            $ArchiveService = new ArchiveService();
+        }else{
+            $ArchiveService = ArchiveService::where('id', $request->service_id)->first();
+        }
+        
+        $ArchiveService->title = $request->service_title;
+        $ArchiveService->module = $request->service_module;
+        $ArchiveService->from_date = $request->from_date;
+        $ArchiveService->to_date = $request->to_date;
+        $ArchiveService->description = $request->service_description;
+        $ArchiveService->status = '0';
+        
+        if($request->service_id == ''){
+            $ArchiveService->created_by = Auth::user()->id;
+            $ArchiveService->created_at = date('Y-m-d H:i:s');
+        }else{
+            $ArchiveService->updated_by= Auth::user()->id;
+            $ArchiveService->updated_at= date('Y-m-d H:i:s');
+        }
+        
+        $ArchiveService->save();
+
+        if($request->service_id == ''){
+            return response()->json(['status' => 200, 'message' => 'Service Updated Successfully']);
+        }else{
+            return response()->json(['status' => 200, 'message' => 'Service Added Successfully']);
+        }
+    }
+
+    public function getSpecificServiceDetails(Request $request){
+        $service_id = $request->service_id;
+        
+        $service = ArchiveService::where('id', $service_id)->first();
+        if($service){
+            $data['service_detail'] = $service;
+            return response()->json(['status' => 200, 'message' => "", 'data' => $data]);
+        }else{
+            return response()->json(['status' => 402, 'message' => "Service not found..."]);
+        }
+    }
+
+    public function cancelSpecificService(Request $request){
+        $service_id = $request->service_id;
+        $service = ArchiveService::where('id', $service_id)->first();
+        if($service){
+            $service->status = '3';// 0:pending, 1:inprocess, 2:completed, 3:cancelled
+            $service->save();
+
+            return response()->json(['status' => 200, 'message' => "Service cancelled successfully"]);
+        }else{
+            return response()->json(['status' => 402, 'message' => "Something went wrong..."]);
+        }
+    }
 
     public function makeRiggerTicketPdf($id)
     {

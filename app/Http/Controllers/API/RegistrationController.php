@@ -12,8 +12,8 @@ use App\Models\Roles;
 
 class RegistrationController extends Controller
 {
-   public function register(Request $request)
-   {
+    public function register(Request $request)
+    {
         // Define validation rules
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:100',
@@ -116,7 +116,7 @@ class RegistrationController extends Controller
     public function getAllUsersList(Request $request)
     {
         try {
-
+            
             $users = User::whereIn('role_id', ['2','3','4','5'])->where('status', '1')->get();
             
             if($users) {
@@ -142,7 +142,7 @@ class RegistrationController extends Controller
     }
 
     public function delete_user(Request $request)
-   {
+    {
         // Define validation rules
         $validator = Validator::make($request->all(), [
             'user_id' => [

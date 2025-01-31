@@ -33,6 +33,8 @@ Route::group(['prefix' => '/'], function () {
         Route::get('/pay_duty', [AdminController::class, 'pay_duty'])->name('pay_duty');
         Route::get('/inventory', [AdminController::class, 'inventory'])->name('inventory');
         Route::get('/email_settings', [AdminController::class, 'email_settings'])->name('email_settings');
+        Route::get('/api_settings', [AdminController::class, 'api_settings'])->name('api_settings');
+        Route::get('/archive_services', [AdminController::class, 'archive_services'])->name('archive_services');
         Route::get('/notification', [AdminController::class, 'notification'])->name('notification');
         
         /************** AJAX ROUTES ******************/
@@ -87,7 +89,14 @@ Route::group(['prefix' => '/'], function () {
         Route::post('/admin/viewTicketPdf', [AdminController::class, 'viewTicketPdf'])->name('admin.viewTicketPdf');
         
         Route::post('/admin/saveEmailSettings', [AdminController::class, 'saveEmailSettings'])->name('admin.saveEmailSettings');
+        Route::post('/admin/saveApiSettings', [AdminController::class, 'saveApiSettings'])->name('admin.saveApiSettings');
 
+        // archive services page routes
+        Route::post('/admin/saveArchiveServiceData', [AdminController::class, 'saveArchiveServiceData'])->name('admin.saveArchiveServiceData');
+        Route::post('/admin/getServicesPageData', [AdminController::class, 'getServicesPageData'])->name('admin.getServicesPageData');
+        Route::post('/admin/getSpecificServiceDetails', [AdminController::class, 'getSpecificServiceDetails'])->name('admin.getSpecificServiceDetails');
+        // Route::post('/admin/searchInventoryListing', [AdminController::class, 'searchInventoryListing'])->name('admin.searchInventoryListing');
+        Route::post('/admin/cancelSpecificService', [AdminController::class, 'cancelSpecificService'])->name('admin.cancelSpecificService');
     });
 });
 

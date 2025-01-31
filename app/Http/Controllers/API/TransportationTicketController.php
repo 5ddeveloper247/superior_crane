@@ -434,8 +434,11 @@ class TransportationTicketController extends Controller
         }
 
         try {
-
-            $transportation_ticket_list = TransportationTicketModel::where('user_id', $request->user_id)->with(['ticketImages'])->get();
+            $dateLimit = getApiRecordLimitDate();
+            $transportation_ticket_list = TransportationTicketModel::where('user_id', $request->user_id)
+                                                                    ->whereDate('created_at', '>=', $dateLimit)
+                                                                    ->with(['ticketImages'])
+                                                                    ->get();
             
             if($transportation_ticket_list) {
                 return response()->json([
@@ -581,6 +584,7 @@ class TransportationTicketController extends Controller
             }
         }
     }
+    
     public function makeTicketPDF($ticket_id='')
     {
 
