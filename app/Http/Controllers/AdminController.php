@@ -32,6 +32,11 @@ use App\Models\Notifications;
 
 use App\Models\EmailSetting;
 use App\Models\ArchiveService;
+use App\Models\ArchiveJob;
+use App\Models\ArchiveRiggerTicket;
+use App\Models\ArchiveTransportationTicket;
+use App\Models\ArchivePayDutyForm;
+
 
 class AdminController extends Controller
 {
@@ -1836,6 +1841,40 @@ class AdminController extends Controller
             $service->save();
 
             return response()->json(['status' => 200, 'message' => "Service cancelled successfully"]);
+        }else{
+            return response()->json(['status' => 402, 'message' => "Something went wrong..."]);
+        }
+    }
+
+    public function deleteSpecificService(Request $request){
+        
+        $service_id = $request->service_id;
+
+        $service = ArchiveService::where('id', $service_id)->first();
+
+        if($service && $service->status == '2'){
+
+            $service->status = '4';// 0:pending, 1:inprocess, 2:completed, 3:cancelled, 4:deleted
+            $service->save();
+
+            if($service->module == 'JOB'){
+                $archiveData = ArchiveJob::where('service_id', $service->id)->first();
+            }
+            if($service->module == 'RIGGER TICKET'){
+                $archiveData = ArchiveRiggerTicket::where('service_id', $service->id)->first();
+            }
+            if($service->module == 'RIGGER TICKET'){
+                $archiveData = ArchiveTransportationTicket::where('service_id', $service->id)->first();
+            }
+            if($service->module == 'RIGGER TICKET'){
+                $archiveData = ArchivePayDutyForm::where('service_id', $service->id)->first();
+            }
+
+            if($archiveData){
+                $archiveData->json_data = '[]';
+                $archiveData->save();
+            }
+            return response()->json(['status' => 200, 'message' => "Service data deleted successfully"]);
         }else{
             return response()->json(['status' => 402, 'message' => "Something went wrong..."]);
         }

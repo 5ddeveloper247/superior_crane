@@ -214,8 +214,7 @@
         </li>
     </ul>
     <div class="tab-content" id="myTabContent">
-        <div class="tab-pane fade show active" id="admin-tab-pane" role="tabpanel" aria-labelledby="admin-tab"
-            tabindex="0">
+        <div class="tab-pane fade show active" id="admin-tab-pane" role="tabpanel" aria-labelledby="admin-tab"tabindex="0">
             <div class="job-list">
                 <div class="d-flex align-items-center justify-content-between mb-4">
                     <button class="collapse-btn d-flex align-items-center gap-1" type="button" data-bs-toggle="collapse"

@@ -375,6 +375,7 @@
                         <th class="px3" scope="col">Customer Time Out</th>
 
                         <th class="px3" scope="col">Status</th>
+                        <th class="px3" scope="col">Created Date</th>
 
                         <th scope="col">Action</th>
                     </tr>

@@ -95,6 +95,7 @@ function makeTransporterTicketListing(tickets_list){
                             ${value.status == '2' ? 'Issued' : ''}
                             ${value.status == '3' ? 'Completed' : ''}
                         </td>
+                        <td>${value.created_at != null ? formatDate(value.created_at) : ''}</td>
                         <td class="d-flex gap-2 ">
                             
                             ${(user_role == '0' && value.status == 3) ? 

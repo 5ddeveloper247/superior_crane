@@ -180,6 +180,13 @@
             color: #fff;
             border: none !important;
         }
+        .nav-tabs {
+            border-bottom: none !important
+        }
+
+        .nav-tabs .nav-link {
+            color: #000 !important;
+        }
     </style>
 @endpush
 
@@ -290,10 +297,6 @@
         </div>
     </div>
 
-    <!-- <h6 class="mt-3">
-        Inventory
-    </h6> -->
-
     <div class="job-list">
         <!-- <div class="d-flex align-items-center justify-content-between mb-4">
             <button class="collapse-btn d-flex align-items-center gap-1" type="button" data-bs-toggle="collapse"
@@ -363,24 +366,66 @@
                 </form>
             </div>
         </div> -->
-        <div class="table-container">
-            <table id="services_table" class="table-responsive w-100">
-                <thead>
-                    <tr>
-                        <th class="px-3" scope="col">Service ID#</th>
-                        <th class="px-3" scope="col">Service Title</th>
-                        <th class="px3" scope="col">Service Module</th>
-                        <th class="px3" scope="col">From Date</th>
-                        <th class="px3" scope="col">To Date</th>
-                        <th class="px3" scope="col">Status</th>
-                        <th scope="col">Action</th>
-                    </tr>
-                </thead>
-                <tbody id="services_body">
+        <ul class="nav nav-tabs mt-4 mb-4" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="services-tab" data-bs-toggle="tab" data-bs-target="#services-tab-pane"
+                    type="button" role="tab" aria-controls="services-tab-pane" aria-selected="true">Archive Services</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="manager-tab" data-bs-toggle="tab" data-bs-target="#manager-tab-pane"
+                    type="button" role="tab" aria-controls="manager-tab-pane" aria-selected="false">Export Services</button>
+            </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="services-tab-pane" role="tabpanel" aria-labelledby="services-tab"tabindex="0">
+                <div class="job-list">
                     
-                </tbody>
-            </table>
+                    <div class="table-container">
+                        <table id="services_table" class="table-responsive w-100">
+                            <thead>
+                                <tr>
+                                    <th class="px-3" scope="col">Service ID#</th>
+                                    <th class="px-3" scope="col">Service Title</th>
+                                    <th class="px3" scope="col">Service Module</th>
+                                    <th class="px3" scope="col">From Date</th>
+                                    <th class="px3" scope="col">To Date</th>
+                                    <th class="px3" scope="col">Status</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="services_body">
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="manager-tab-pane" role="tabpanel" aria-labelledby="manager-tab" tabindex="0">
+                <div class="job-list">
+                    
+                <div class="table-container">
+                    <table id="completed_services_table" class="table-responsive w-100">
+                        <thead>
+                            <tr>
+                                <th class="px-3" scope="col">Service ID#</th>
+                                <th class="px-3" scope="col">Service Title</th>
+                                <th class="px3" scope="col">Service Module</th>
+                                <th class="px3" scope="col">From Date</th>
+                                <th class="px3" scope="col">To Date</th>
+                                <th class="px3" scope="col">Status</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="completed_services_body">
+                            
+                        </tbody>
+                    </table>
+                </div>
+                </div>
+            </div>
+            
         </div>
+        
     </div>
 </div>
 
@@ -448,6 +493,44 @@
             <div class="modal-footer d-flex align-items-center justify-content-center" style="border: none" >
                 <button type="button" class="btn btn-secondary px-5" id="close_confirm">No</button>
                 <button type="button" class="btn btn-danger px-5" id="cancel_confirmed">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteConfirmation_modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <img src="{{asset('assets/images/remove.png')}}" width="60" alt="">
+                <h6 class="text-danger mt-3">
+                    Are you sure you want to delete this service and its related records?
+                </h6>
+            </div>
+            <div class="modal-footer d-flex align-items-center justify-content-center" style="border: none" >
+                <button type="button" class="btn btn-secondary px-5" id="close_confirm1">No</button>
+                <button type="button" class="btn btn-danger px-5" id="delete_confirmed">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Export Confirmation Modal -->
+<div class="modal fade" id="export_confirmation_modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <img src="{{asset('assets/images/export_icon.png')}}" width="60" alt="">
+                <h6 class="text-danger mt-3">
+                    Are you sure you want to export this service data?
+                </h6>
+            </div>
+            <div class="modal-footer d-flex align-items-center justify-content-center" style="border: none" >
+                <button type="button" class="btn btn-secondary px-5" id="export_close_confirm">No</button>
+                <button type="button" class="btn btn-danger px-5" id="export_confirmed">Yes</button>
             </div>
         </div>
     </div>

@@ -2,14 +2,19 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\ForgetPasswordController;
 
-
+// phpinfo();
+// exit();
 Route::get('/', function () {
     return redirect('/login');// view('welcome');
 });
 Route::group(['prefix' => '/'], function () {
     
+    Route::get('/cron/run_archive_service', [ServiceController::class, 'index'])->name('cron.run_service');
+    
+
     Route::get('/login', [AdminController::class, 'login'])->name('login');
     Route::post('/loginSubmit', [AdminController::class, 'loginSubmit'])->name('loginSubmit');
     Route::get('/logout', [AdminController::class, 'logout'])->name('logout');
@@ -95,8 +100,13 @@ Route::group(['prefix' => '/'], function () {
         Route::post('/admin/saveArchiveServiceData', [AdminController::class, 'saveArchiveServiceData'])->name('admin.saveArchiveServiceData');
         Route::post('/admin/getServicesPageData', [AdminController::class, 'getServicesPageData'])->name('admin.getServicesPageData');
         Route::post('/admin/getSpecificServiceDetails', [AdminController::class, 'getSpecificServiceDetails'])->name('admin.getSpecificServiceDetails');
-        // Route::post('/admin/searchInventoryListing', [AdminController::class, 'searchInventoryListing'])->name('admin.searchInventoryListing');
         Route::post('/admin/cancelSpecificService', [AdminController::class, 'cancelSpecificService'])->name('admin.cancelSpecificService');
+        Route::post('/admin/deleteSpecificService', [AdminController::class, 'deleteSpecificService'])->name('admin.deleteSpecificService');
+        
+        Route::get('/admin/exportSpecificService/{serviceId}', [ServiceController::class, 'exportArchiveJobs']);
+        Route::get('/admin/download-zip', [ServiceController::class, 'createZip1']);
+        // Route::get('/admin/download-zip', [ServiceController::class, 'downloadFolder']);
+        Route::post('/admin/exportSpecificService', [ServiceController::class, 'exportArchiveJobs']);
     });
 });
 
