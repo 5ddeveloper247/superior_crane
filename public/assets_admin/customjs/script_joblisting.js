@@ -17,11 +17,24 @@ function getJobsPageDataResponse(response) {
     $("#total_scci").html(data.total_scci);
     $("#total_crane").html(data.total_crane);
     $("#total_other").html(data.total_other);
-
+    $("#total_crane_logistic").html(data.total_crane_logistic);
+    
     var options = `<option value="">Choose</option>`;
     if(user_list.length > 0){
         $.each(user_list, function (index, value) {
-            options += `<option value="${value.id}">${value.id}-${value.name}</option>`;
+            var prefix_user = '';
+            if(value.role_id == 2){
+                prefix_user = 'M';
+            }else if(value.role_id == 3){
+                prefix_user = 'R';
+            }else if(value.role_id == 4){
+                prefix_user = 'T';
+            }else if(value.role_id == 5){
+                prefix_user = 'RT';
+            }else{
+                prefix_user = 'U';
+            }
+            options += `<option value="${value.id}">${prefix_user}-${value.id} | ${value.name}</option>`;
         });
     }
     $("#search_assigned_user").html(options);
@@ -49,6 +62,7 @@ function makeJobsListing(jobs_list){
                             ${value.job_type == '1' ? 'SCCI (Logistic Job)' : ''}
                             ${value.job_type == '2' ? 'Crane Job' : ''}
                             ${value.job_type == '3' ? 'Other Job' : ''}
+                            ${value.job_type == '4' ? 'Crane & Logistics' : ''}
                         </td>
                         <td>
                             ${value.status == '1' ? 'Good to go' : ''}
@@ -179,18 +193,32 @@ function setRiggerAssignedOptions(job_type=''){
     var options = '';//`<option value="">Choose</option>`;
     if(user_list.length > 0){
         $.each(user_list, function (index, value) {
+            
+            var prefix_user = '';
+            if(value.role_id == 2){
+                prefix_user = 'M';
+            }else if(value.role_id == 3){
+                prefix_user = 'R';
+            }else if(value.role_id == 4){
+                prefix_user = 'T';
+            }else if(value.role_id == 5){
+                prefix_user = 'RT';
+            }else{
+                prefix_user = 'U';
+            }
+
             if(job_type == '1'){
                 if(value.role_id == '2' || value.role_id == '4' || value.role_id == '5'){   // for rigger / both
-                    options += `<option value="${value.id}">${value.id}-${value.name}</option>`;
+                    options += `<option value="${value.id}">${prefix_user}-${value.id} | ${value.name}</option>`;
                 }
             }
-            if(job_type == '2'){
+            if(job_type == '2' || job_type == '4'){
                 if(value.role_id == '2' || value.role_id == '3' || value.role_id == '5'){   // for transporter / both
-                    options += `<option value="${value.id}">${value.id}-${value.name}</option>`;
+                    options += `<option value="${value.id}">${prefix_user}-${value.id} | ${value.name}</option>`;
                 }
             }
             if(job_type == '3'){
-                options += `<option value="${value.id}">${value.id}-${value.name}</option>`;
+                options += `<option value="${value.id}">${prefix_user}-${value.id} | ${value.name}</option>`;
             }
         });
     }
@@ -207,7 +235,7 @@ function setRiggerAssignedOptions(job_type=''){
         $("#rigger_assigned, #user_assigned").val('').trigger('change');
         $("#riggerAssigned_div, .equip_staric").show();
         $("#userAssigned_div").hide();
-    }else if(job_type == '2'){
+    }else if(job_type == '2' || job_type == '4'){
         $("#riggerAssign_label").text('Assign Rigger ');
         $("#rigger_assigned, #user_assigned").val('').trigger('change');
         $("#riggerAssigned_div, .equip_staric").show();
@@ -222,9 +250,15 @@ function setRiggerAssignedOptions(job_type=''){
         $("#riggerAssigned_div, .equip_staric").show();
         $("#userAssigned_div").hide();
     }
+    // hide show driver instruction section if type is crane & logistics
+    if(job_type == '4'){
+        $("#driver_instructions_div").show();
+    }else{
+        $("#driver_instructions_div").hide();
+    }
 }
 
-$(document).on('click', '#job_type_logistic,#job_type_crane,#job_type_other', function (e) {
+$(document).on('click', '#job_type_logistic,#job_type_crane,#job_type_crane_logistic,#job_type_other', function (e) {
     
     var job_type = $(this).val();
     setRiggerAssignedOptions(job_type);
@@ -332,6 +366,7 @@ function viewJobDetailsResponse(response) {
         $("#job_type_logistic").prop('checked', job_detail.job_type == '1' ? true : false);
         $("#job_type_crane").prop('checked', job_detail.job_type == '2' ? true : false);
         $("#job_type_other").prop('checked', job_detail.job_type == '3' ? true : false);
+        $("#job_type_crane_logistic").prop('checked', job_detail.job_type == '4' ? true : false);
         setTimeout(function(){
             // $("#job_time").val(formatTime(job_detail.job_time));
             $("#equipment_to_be_used").val(job_detail.equipment_to_be_used);
@@ -345,6 +380,7 @@ function viewJobDetailsResponse(response) {
             $("#add_eventEnd").val(job_detail.end_time);
             $("#supplier_name").val(job_detail.supplier_name);
             $("#add_status").val(job_detail.status);
+            $("#driver_instructions").val(job_detail.driver_instructions);
             $("#add_notes").val(job_detail.notes);
             
             $("#created_by").text(job_detail.created_by != null ? job_detail.created_by.name : '');
@@ -369,6 +405,8 @@ function viewJobDetailsResponse(response) {
                                 <span class="cancel-icon remove_file_section" data-id="${value.id}">×</span>
                             </div>`;
             });
+        }else{
+            att_html = '<p class="mt-2" style="font-size:12px;">No attachments found...</p>';
         }
         $("#uploaded_attachment").show();
         $("#uploads_section1").html(att_html);
@@ -406,6 +444,8 @@ function viewJobDetailsResponse(response) {
                             </div>`;
             });
             $("#rigger_att_section").show();
+        }else{
+            att_html1 = '<p class="mt-2" style="font-size:12px;">No attachments found...</p>';
         }
         $("#rigger_attachments").html(att_html1);
 
@@ -418,6 +458,8 @@ function viewJobDetailsResponse(response) {
                             </div>`;
             });
             $("#payduty_att_section").show();
+        }else{
+            att_html2 = '<p class="mt-2" style="font-size:12px;">No attachments found...</p>';
         }
         $("#payduty_attachments").html(att_html2);
         
@@ -430,6 +472,8 @@ function viewJobDetailsResponse(response) {
                             </div>`;
             });
             $("#transporter_att_section").show();
+        }else{
+            att_html3 = '<p class="mt-2" style="font-size:12px;">No attachments found...</p>';
         }
         $("#transporter_attachments").html(att_html3);
       

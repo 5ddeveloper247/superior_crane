@@ -525,6 +525,7 @@ class AdminController extends Controller
         $data['total_scci'] = JobModel::where('job_type', '1')->count();
         $data['total_crane'] = JobModel::where('job_type', '2')->count();
         $data['total_other'] = JobModel::where('job_type', '3')->count();
+        $data['total_crane_logistic'] = JobModel::where('job_type', '4')->count();
         $data['total_jobs'] = JobModel::count();
         
         return response()->json(['status' => 200, 'message' => "",'data' => $data]);
@@ -554,7 +555,7 @@ class AdminController extends Controller
                 $riggerArray = json_decode($job->rigger_assigned);
             
                 if (is_countable($riggerArray)) {
-                    $riggerCount = 'Riggers:'.count($riggerArray);
+                    $riggerCount = 'Assigned Users:'.count($riggerArray);
                 } else {
                     $riggerCount = $job->user_assigned;
                 }
@@ -606,6 +607,7 @@ class AdminController extends Controller
                 'rigger_assigned' => 'required_unless:job_type,3|array',
                 'user_assigned' => 'max:50',
                 'supplier_name' => 'max:50',
+                'driver_instructions' => 'required_if:job_type,4',
                 'notes' => 'nullable|string',
                 // 'scci' => 'boolean',
                 // 'job_images' => 'required',
@@ -615,6 +617,7 @@ class AdminController extends Controller
                 // 'status' => 'required',
             ], [
                 'rigger_assigned.required_unless' => 'Assigned User field is required.',
+                'driver_instructions.required_if' => 'Driver Instruction field is required.',
                 'job_images.required' => 'Job attachment is required.',
                 'job_images.*.required' => 'Job attachment is required.',
                 'job_images.*.mimes' => 'Job attachment must be a file of type: jpeg, png, jpg, gif, svg, pdf.',
@@ -638,6 +641,7 @@ class AdminController extends Controller
                 'rigger_assigned' => 'required_unless:job_type,3|array',
                 'user_assigned' => 'max:50',
                 'supplier_name' => 'max:50',
+                'driver_instructions' => 'required_if:job_type,4',
                 'notes' => 'nullable|string',
                 // 'job_images.*' => 'required',
                 'job_images.*' => 'mimes:jpeg,png,jpg,gif,svg,pdf|max:2048',
@@ -646,6 +650,7 @@ class AdminController extends Controller
                 'status' => 'required',
             ], [
                 'rigger_assigned.required_unless' => 'Assigned User field is required.',
+                'driver_instructions.required_if' => 'Driver Instruction field is required.',
                 'job_images.*.required' => 'Job attachment is required.',
                 'job_images.*.mimes' => 'Job attachment must be a file of type: jpeg, png, jpg, gif, svg, pdf.',
                 'job_images.*.max' => 'Job attachment may not be greater than 2048 kilobytes.',
@@ -675,11 +680,12 @@ class AdminController extends Controller
             $job->created_by = Auth::user()->id;
         }else{
             $job = JobModel::where('id', $request->job_id)->first();
-            $job->status = $request->status;
-            $job->updated_by = Auth::user()->id;
-
+            
             $previousStatus = $job->status;
             $currentStatus = $request->status;
+
+            $job->status = $request->status;
+            $job->updated_by = Auth::user()->id;
         }
         
         $job->job_type = $request->job_type;
@@ -693,6 +699,7 @@ class AdminController extends Controller
         $job->start_time = $request->start_time;
         // $job->end_time = $request->end_time;
         $job->supplier_name = $request->supplier_name;
+        $job->driver_instructions = $request->driver_instructions;
         $job->notes = $request->notes;
         $job->save();
 
@@ -751,6 +758,8 @@ class AdminController extends Controller
                 $job_type = 'Logistic Job(SCCI)';  
             }else if($jobDetail->job_type == '2'){
                 $job_type = 'Crane Job';  
+            }else if($jobDetail->job_type == '4'){
+                $job_type = 'Crane & Logistics Job';  
             }else{
                 $job_type = 'Other Job';  
             }
@@ -793,16 +802,16 @@ class AdminController extends Controller
                 }
             }
 
-            $allUsers = User::whereIn('role_id', ['0','1','2'])->where('status', '1')->where('id','!=',Auth::user()->id)->get();
+            // $allUsers = User::whereIn('role_id', ['0','1','2'])->where('status', '1')->where('id','!=',Auth::user()->id)->get();
 
-            if($allUsers){
-                foreach($allUsers as $value){
-                    $mailData['user'] = $value->name;
-                    $body = view('emails.job_template', $mailData);
-                    $userEmailsSend = $value->email;//'hamza@5dsolutions.ae';//
-                    sendMail($value->name, $userEmailsSend, 'Superior Crane', 'Job Creation', $body);
-                }
-            }
+            // if($allUsers){
+            //     foreach($allUsers as $value){
+            //         $mailData['user'] = $value->name;
+            //         $body = view('emails.job_template', $mailData);
+            //         $userEmailsSend = $value->email;//'hamza@5dsolutions.ae';//
+            //         sendMail($value->name, $userEmailsSend, 'Superior Crane', 'Job Creation', $body);
+            //     }
+            // }
 
             // push notification entry
             $Notifications = new Notifications();
@@ -822,7 +831,9 @@ class AdminController extends Controller
             $Notifications->save();
 
         }else{
+            // dd($previousStatus.'|'.$currentStatus);
             if($previousStatus != $currentStatus){
+                
                 $jobDetail = JobModel::where('id', $job->id)->first();
                 $riggerAssignedIds = json_decode($jobDetail->rigger_assigned);
                 $users = User::whereIn('id', $riggerAssignedIds)->get();
@@ -834,6 +845,8 @@ class AdminController extends Controller
                     $job_type = 'Logistic Job(SCCI)';  
                 }else if($jobDetail->job_type == '2'){
                     $job_type = 'Crane Job';  
+                }else if($jobDetail->job_type == '4'){
+                    $job_type = 'Crane & Logistics Job';  
                 }else{
                     $job_type = 'Other Job';  
                 }
@@ -876,16 +889,16 @@ class AdminController extends Controller
                     }
                 }
 
-                $allUsers = User::whereIn('role_id', ['0','1','3'])->where('status', '1')->where('id','!=',Auth::user()->id)->get();
+                // $allUsers = User::whereIn('role_id', ['0','1','3'])->where('status', '1')->where('id','!=',Auth::user()->id)->get();
 
-                if($allUsers){
-                    foreach($allUsers as $value){
-                        $mailData['user'] = $value->name;
-                        $body = view('emails.job_template', $mailData);
-                        $userEmailsSend = $value->email;//'hamza@5dsolutions.ae';//
-                        sendMail($value->name, $userEmailsSend, 'Superior Crane', 'Job Status Change', $body);
-                    }
-                }
+                // if($allUsers){
+                //     foreach($allUsers as $value){
+                //         $mailData['user'] = $value->name;
+                //         $body = view('emails.job_template', $mailData);
+                //         $userEmailsSend = $value->email;//'hamza@5dsolutions.ae';//
+                //         sendMail($value->name, $userEmailsSend, 'Superior Crane', 'Job Status Change', $body);
+                //     }
+                // }
             }
         }
 
@@ -1067,6 +1080,7 @@ class AdminController extends Controller
         $data['total_scci'] = JobModel::where('job_type', '1')->count();
         $data['total_crane'] = JobModel::where('job_type', '2')->count();
         $data['total_other'] = JobModel::where('job_type', '3')->count();
+        $data['total_crane_logistic'] = JobModel::where('job_type', '4')->count();
         $data['total_jobs'] = JobModel::count();
         
         return response()->json(['status' => 200, 'message' => "",'data' => $data]);

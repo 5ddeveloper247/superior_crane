@@ -422,6 +422,10 @@
                     <small>Crane</small>
                 </div>
                 <div class="d-flex align-items-center gap-1">
+                    <div style="background-color: #ff0000; height: 13px; width: 7px;"></div>
+                    <small>Crane & Logistics</small>
+                </div>
+                <div class="d-flex align-items-center gap-1">
                     <div style="background-color: #800080; height: 13px; width: 7px;"></div>
                     <small>Other</small>
                 </div>
@@ -456,7 +460,8 @@
         <div class="tab-pane fade" id="list-tab-pane" role="tabpanel" aria-labelledby="list-tab" tabindex="0">
             <div class="all-jobs px-2">
                 <div class="row align-items-center mb-5 g-0 pe-2">
-                    <div class="col-6 col-md-3">
+
+                    <div class="col">
                         <div class="counters d-flex gap-2 align-items-center ">
                             <!-- <img src="{{asset('assets/images/customer-service.png')}}" width="40" alt=""> -->
                             <img src="{{asset('assets/images/supplier.png')}}" width="40" alt="">
@@ -467,8 +472,7 @@
                         </div>
                     </div>
 
-
-                    <div class="col-6 col-md-3">
+                    <div class="col">
                         <div class="counters  d-flex gap-2 align-items-center justify-content-center">
                             <img src="{{asset('assets/images/tour.png')}}" width="50" alt="">
                             <div class="pt-2">
@@ -478,8 +482,17 @@
                         </div>
                     </div>
 
+                    <div class="col">
+                        <div class="counters d-flex gap-2 align-items-center justify-content-end">
+                        <img src="{{asset('assets/images/tour.png')}}" width="50" alt="">
+                            <div class="pt-2">
+                                <h6 class="mb-0">Total Crane & Logistics Jobs</h6>
+                                <small id="total_crane_logistic">0</small>
+                            </div>
+                        </div>
+                    </div>
 
-                    <div class="col-6 col-md-3">
+                    <div class="col">
                         <div class="counters d-flex gap-2 align-items-center justify-content-end">
                             <!-- <img src="{{asset('assets/images/tour.png')}}" width="50" alt=""> -->
                             <img src="{{asset('assets/images/supplier.png')}}" width="40" alt="">
@@ -490,8 +503,7 @@
                         </div>
                     </div>
 
-
-                    <div class="col-6 col-md-3">
+                    <div class="col">
                         <div class="counters d-flex gap-2 align-items-center justify-content-end">
                             <img src="{{asset('assets/images/businessman.png')}}" width="50" alt="">
                             <div class="pt-2">
@@ -546,6 +558,7 @@
                                             <option value="">Choose</option>
                                             <option value="1">SCCI(Logistic Job)</option>
                                             <option value="2">Crane Job</option>
+                                            <option value="4">Crane & Logistics</option>
                                             <option value="3">Other</option>
                                         </select>
                                     </div>
@@ -643,6 +656,11 @@
                                         <label style="margin-top: 0rem !important" class="form-label m-0"
                                             for="job_type_crane">Crane Job</label>
                                     </div>
+                                    <div class="col-md-3">
+                                        <input type="radio" name="job_type" id="job_type_crane_logistic" value="4">
+                                        <label style="margin-top: 0rem !important" class="form-label m-0"
+                                            for="job_type_crane_logistic">Crane & Logistics</label>
+                                    </div>
                                     <div class="col-md-2">
                                         <input type="radio" name="job_type" id="job_type_other" value="3">
                                         <label style="margin-top: 0rem !important" class="form-label m-0"
@@ -731,6 +749,13 @@
                                         <option value="1">Good To Go</option>
                                         <option value="0">Problem</option>
                                     </select>
+                                </div>
+                                <div class="col-12 col-md-12 flex-column" id="driver_instructions_div" style="display:none;">
+                                    <label class="pb-2 form-label" for="driver_instructions">
+                                        Driver Instructions<span class="text-danger">*</span>
+                                    </label>
+                                    <textarea class="form-control" name="driver_instructions" id="driver_instructions" rows="5"
+                                    placeholder="Type Notes Here....." maxlength="500" style="resize:none;"></textarea>
                                 </div>
                                 <div class="col-12 col-md-12 d-flex flex-column">
                                     <label class="pb-2 form-label" for="notes">

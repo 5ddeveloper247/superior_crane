@@ -17,7 +17,8 @@
                 Details:<br>
                 <b>-Job Number:</b> {{@$job_number}}<br>
                 <b>-Ticket Number:</b> {{@$ticket_number}}<br>
-                <b>-Transporter Name:</b> {{@$transporter_name}}<br>
+                <b>-Ticket Submitted By:</b> {{@$transporter_name}}<br>
+                <b>-Assigned Users:</b> {{@$assigned_user_names}}<br>
 
                 <b>-Pickup Address:</b> {{@$pickup_address}}<br>
                 <b>-Delivery Address:</b> {{@$delivery_address}}<br>

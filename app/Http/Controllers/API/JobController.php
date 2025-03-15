@@ -41,6 +41,7 @@ class JobController extends Controller
             'start_time' => 'required|date_format:H:i',
             // 'end_time' => 'required|date_format:H:i|after:start_time',
             'supplier_name' => 'max:50',
+            'driver_instructions' => 'nullable|string',
             'notes' => 'nullable|string',
             // 'scci' => 'boolean',
             // 'job_images' => 'required',
@@ -73,6 +74,7 @@ class JobController extends Controller
             // $job->end_time = isset($request->end_time) ? $request->end_time : '';
             $job->supplier_name = $request->supplier_name;
             $job->notes = $request->notes;
+            $job->driver_instructions = $request->driver_instructions;
             // $job->scci = $request->scci ?? false;
             $job->status = $request->status != '' ? $request->status : '1';     //2=>on-hold, 1=>goodtogo , 3=>complete
             $job->created_by = $request->created_by;
@@ -126,6 +128,8 @@ class JobController extends Controller
                 $job_type = 'Logistic Job(SCCI)';  
             }else if($jobDetail->job_type == '2'){
                 $job_type = 'Crane Job';  
+            }else if($jobDetail->job_type == '4'){
+                $job_type = 'Crane & Logistics Job';  
             }else{
                 $job_type = 'Other Job';  
             }
@@ -183,16 +187,16 @@ class JobController extends Controller
             $Notifications->created_at = date('Y-m-d H:i:s');
             $Notifications->save();
             
-            $allAdmins = User::whereIn('role_id', ['0','1'])->where('status', '1')->get();
+            // $allAdmins = User::whereIn('role_id', ['0','1'])->where('status', '1')->get();
 
-            if($allAdmins){
-                foreach($allAdmins as $value){
-                    $mailData['user'] = 'Admin';
-                    $body = view('emails.job_template', $mailData);
-                    $userEmailsSend = $value->email;//'hamza@5dsolutions.ae';//
-                    sendMail('Admin', $userEmailsSend, 'Superior Crane', 'Job Creation', $body);
-                }
-            }
+            // if($allAdmins){
+            //     foreach($allAdmins as $value){
+            //         $mailData['user'] = 'Admin';
+            //         $body = view('emails.job_template', $mailData);
+            //         $userEmailsSend = $value->email;//'hamza@5dsolutions.ae';//
+            //         sendMail('Admin', $userEmailsSend, 'Superior Crane', 'Job Creation', $body);
+            //     }
+            // }
 
             return response()->json([
                 'success' => true,
@@ -229,6 +233,7 @@ class JobController extends Controller
             'start_time' => 'required|date_format:H:i',
             // 'end_time' => 'required|date_format:H:i|after:start_time',
             'supplier_name' => 'max:50',
+            'driver_instructions' => 'nullable|string',
             'notes' => 'nullable|string',
             // 'scci' => 'boolean',
             // 'job_images' => 'required',
@@ -260,6 +265,7 @@ class JobController extends Controller
                 // $job->end_time = isset($request->end_time) ? $request->end_time : '';
                 $job->supplier_name = $request->supplier_name;
                 $job->notes = $request->notes;
+                $job->driver_instructions = $request->driver_instructions;
                 // $job->scci = $request->scci ?? false;
                 $job->status = $request->status;
                 $job->updated_by = $request->created_by;
@@ -692,57 +698,59 @@ class JobController extends Controller
                 $job->status = $request->status;
                 $job->save();
                 
-                $jobDetail = JobModel::where('id', $request->job_id)->first();
-                $riggerAssignedIds = json_decode($jobDetail->rigger_assigned); 
-                // $user = User::whereIn('id', $jobDetail->rigger_assigned)->get();
-                $assignedUsers = User::whereIn('id', $riggerAssignedIds)->where('status', '1')->pluck('name')->toArray();
-                $userNames = implode(', ', $assignedUsers);
+                // $jobDetail = JobModel::where('id', $request->job_id)->first();
+                // $riggerAssignedIds = json_decode($jobDetail->rigger_assigned); 
+                // // $user = User::whereIn('id', $jobDetail->rigger_assigned)->get();
+                // $assignedUsers = User::whereIn('id', $riggerAssignedIds)->where('status', '1')->pluck('name')->toArray();
+                // $userNames = implode(', ', $assignedUsers);
 
-                $createdBy = User::where('id', $jobDetail->created_by)->first();
+                // $createdBy = User::where('id', $jobDetail->created_by)->first();
                 
-                if($jobDetail->job_type == '1'){
-                    $job_type = 'Logistic Job(SCCI)';  
-                }else if($jobDetail->job_type == '2'){
-                    $job_type = 'Crane Job';  
-                }else{
-                    $job_type = 'Other Job';  
-                }
+                // if($jobDetail->job_type == '1'){
+                //     $job_type = 'Logistic Job(SCCI)';  
+                // }else if($jobDetail->job_type == '2'){
+                //     $job_type = 'Crane Job';  
+                // }else if($jobDetail->job_type == '4'){
+                //     $job_type = 'Crane & Logistics Job';  
+                // }else{
+                //     $job_type = 'Other Job';  
+                // }
 
-                if($jobDetail->status == '0'){
-                    $status_txt = 'Problem';
-                }else if($jobDetail->status == '1'){
-                    $status_txt = 'Good To Go';
-                }else if($jobDetail->status == '2'){
-                    $status_txt = 'On-Hold';
-                }
+                // if($jobDetail->status == '0'){
+                //     $status_txt = 'Problem';
+                // }else if($jobDetail->status == '1'){
+                //     $status_txt = 'Good To Go';
+                // }else if($jobDetail->status == '2'){
+                //     $status_txt = 'On-Hold';
+                // }
                 
-                $mailData = [];
+                // $mailData = [];
                 
-                $mailData['user'] = isset($userNames) ? $userNames : '';
-                $mailData['username'] = isset($userNames) ? $userNames : '';
-                $mailData['job_number'] = 'J-'.$jobDetail->id;
-                $mailData['job_type'] = $job_type;
-                $mailData['assigned_to'] = isset($userNames) ? $userNames : '';
-                $mailData['client_name'] = $jobDetail->client_name;
-                $mailData['job_address'] = $jobDetail->address;
-                $mailData['job_date'] = date('d M,Y', strtotime($jobDetail->date));
-                $mailData['start_time'] = date('H:i A', strtotime($jobDetail->start_time));
-                $mailData['end_time'] = date('H:i A', strtotime($jobDetail->end_time));
-                $mailData['status'] = $status_txt;
+                // $mailData['user'] = isset($userNames) ? $userNames : '';
+                // $mailData['username'] = isset($userNames) ? $userNames : '';
+                // $mailData['job_number'] = 'J-'.$jobDetail->id;
+                // $mailData['job_type'] = $job_type;
+                // $mailData['assigned_to'] = isset($userNames) ? $userNames : '';
+                // $mailData['client_name'] = $jobDetail->client_name;
+                // $mailData['job_address'] = $jobDetail->address;
+                // $mailData['job_date'] = date('d M,Y', strtotime($jobDetail->date));
+                // $mailData['start_time'] = date('H:i A', strtotime($jobDetail->start_time));
+                // $mailData['end_time'] = date('H:i A', strtotime($jobDetail->end_time));
+                // $mailData['status'] = $status_txt;
 
-                $mailData['text1'] = "Job status has been changed by manager/user. Job details are as under.";
-                $mailData['text2'] = "For more details please contact the Manager/Admin.";
+                // $mailData['text1'] = "Job status has been changed by manager/user. Job details are as under.";
+                // $mailData['text2'] = "For more details please contact the Manager/Admin.";
 
-                $allUsers = User::whereIn('role_id', ['0','1','3'])->where('status', '1')->get();
+                // $allUsers = User::whereIn('role_id', ['0','1','3'])->where('status', '1')->get();
 
-                if($allUsers){
-                    foreach($allUsers as $value){
-                        $mailData['user'] = $value->name;
-                        $body = view('emails.job_template', $mailData);
-                        $userEmailsSend = $value->email;//'hamza@5dsolutions.ae';//
-                        sendMail($value->name, $userEmailsSend, 'Superior Crane', 'Job Status Change', $body);
-                    }
-                }
+                // if($allUsers){
+                //     foreach($allUsers as $value){
+                //         $mailData['user'] = $value->name;
+                //         $body = view('emails.job_template', $mailData);
+                //         $userEmailsSend = $value->email;//'hamza@5dsolutions.ae';//
+                //         sendMail($value->name, $userEmailsSend, 'Superior Crane', 'Job Status Change', $body);
+                //     }
+                // }
                 
                 return response()->json([
                     'success' => true,
@@ -783,7 +791,7 @@ class JobController extends Controller
             $user = User::where('id', $request->user_id)->first();
             if($user->role_id == '5' || $user->role_id == '2'){
                 if($request->type == '1'){
-                    $jobs = JobModel::where('job_type', '2')->whereJsonContains('rigger_assigned', $request->user_id)->where('status', '1')->with(['jobImages'])
+                    $jobs = JobModel::whereIn('job_type', ['2','4'])->whereJsonContains('rigger_assigned', $request->user_id)->where('status', '1')->with(['jobImages'])
                                 ->whereDoesntHave('riggerTicket')
                                 ->whereDoesntHave('transporterTicket')
                                 ->whereDate('date', '>=', $dateLimit)

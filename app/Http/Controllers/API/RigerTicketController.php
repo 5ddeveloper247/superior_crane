@@ -42,7 +42,7 @@ class RigerTicketController extends Controller
                 'boom_length' => 'nullable|string|max:255',
                 'operator' => 'nullable|string|max:100',
                 'other_equipment' => 'nullable|string|max:255',
-                'email' => 'required|string|email|max:100',
+                'email' => 'nullable|string|email|max:100',
                 'notes' => 'nullable|string',
                 'signature' => 'required|string',
                 'status' => 'required',
@@ -186,7 +186,7 @@ class RigerTicketController extends Controller
                 'boom_length' => 'nullable|string|max:255',
                 'operator' => 'nullable|string|max:100',
                 'other_equipment' => 'nullable|string|max:255',
-                'email' => 'required|string|email|max:100',
+                'email' => 'nullable|string|email|max:100',
                 'notes' => 'nullable|string',
                 'signature' => 'required|string',
                 'status' => 'required',
@@ -479,6 +479,10 @@ class RigerTicketController extends Controller
                     
                     $managerDetail = User::where('id', $jobDetail->created_by)->first(); // manager/ JOB createby details
 
+                    $riggerAssignedIds = json_decode($jobDetail->rigger_assigned); 
+                    $assignedUsers = User::whereIn('id', $riggerAssignedIds)->where('status', '1')->pluck('name')->toArray();
+                    $assignedUserNames = implode(', ', $assignedUsers);
+
                     if($ticketDetail->status == '1'){
                         $status_txt = 'Draft';
                     }else if($ticketDetail->status == '2'){
@@ -493,6 +497,7 @@ class RigerTicketController extends Controller
                     
                     $mailData['user'] = $managerDetail->name;
                     $mailData['rigger_name'] = $riggerDetail->name;
+                    $mailData['assigned_user_names'] = $assignedUserNames;
                     $mailData['job_number'] = 'J-'.$ticketDetail->job_id;
                     $mailData['rigger_number'] = 'RTKT-'.$ticketDetail->id;
                     $mailData['customer_name'] = $ticketDetail->customer_name;
@@ -529,16 +534,16 @@ class RigerTicketController extends Controller
                     $Notifications->created_at = date('Y-m-d H:i:s');
                     $Notifications->save();
 
-                    $allAdmins = User::whereIn('role_id', ['0','1'])->where('status', '1')->get();
+                    // $allAdmins = User::whereIn('role_id', ['0','1'])->where('status', '1')->get();
 
-                    if($allAdmins){
-                        foreach($allAdmins as $value){
-                            $mailData['user'] = $value->name;
-                            $body = view('emails.rigger_ticket_template', $mailData);
-                            $userEmailsSend = $value->email;//'hamza@5dsolutions.ae';//
-                            sendMailAttachment($value->name, $userEmailsSend, 'Superior Crane', 'Rigger Ticket Creation', $body, $attachment_pdf);
-                        }
-                    }
+                    // if($allAdmins){
+                    //     foreach($allAdmins as $value){
+                    //         $mailData['user'] = $value->name;
+                    //         $body = view('emails.rigger_ticket_template', $mailData);
+                    //         $userEmailsSend = $value->email;//'hamza@5dsolutions.ae';//
+                    //         sendMailAttachment($value->name, $userEmailsSend, 'Superior Crane', 'Rigger Ticket Creation', $body, $attachment_pdf);
+                    //     }
+                    // }
                 }
             }
         }

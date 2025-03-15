@@ -281,6 +281,10 @@
           </a>
         </li>
 
+        
+        
+        
+        @if(@Auth::user()->role_id == '0')
         <li class="nav-item pt-2">
           <a href="{{url('email_settings')}}"
             class="nav-link d-flex align-items-center gap-2 {{$pageTitle == 'Email Settings' ? 'activenav' : ''}}">
@@ -293,7 +297,6 @@
             <span>Email Settings</span>
           </a>
         </li>
-        
         <li class="nav-item pt-2">
           <a href="{{url('api_settings')}}"
             class="nav-link d-flex align-items-center gap-2 {{$pageTitle == 'API Settings' ? 'activenav' : ''}}">
@@ -303,7 +306,6 @@
             <span>API Config Settings</span>
           </a>
         </li>
-
         <li class="nav-item pt-2">
           <a href="{{url('archive_services')}}"
             class="nav-link d-flex align-items-center gap-2 {{$pageTitle == 'Archive Services' ? 'activenav' : ''}}">
@@ -313,7 +315,6 @@
             <span>Archive Data Services</span>
           </a>
         </li>
-
         <li class="nav-item pt-2">
           <a href="#web_api" data-bs-toggle="collapse" aria-expanded="false" aria-controls="collapseExample"
             class="nav-link d-flex align-items-center gap-2 {{$pageTitle == 'Web_api' ? 'activenav' : ''}}">
@@ -355,6 +356,9 @@
             </ul>
           </div>
         </li>
+        @endif
+
+        
       </ul>
     </div>
   </div>

@@ -17,7 +17,8 @@
                 Details:<br>
                 <b>-Job Number:</b> {{@$job_number}}<br>
                 <b>-Ticket Number:</b> {{@$rigger_number}}<br>
-                <b>-Rigger Name:</b> {{@$rigger_name}}<br>
+                <b>-Ticket Submitted By:</b> {{@$rigger_name}}<br>
+                <b>-Assigned Users:</b> {{@$assigned_user_names}}<br>
 
                 <b>-Customer Name:</b> {{@$customer_name}}<br>
                 <b>-Location:</b> {{@$location}}<br>
