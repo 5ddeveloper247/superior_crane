@@ -914,6 +914,14 @@ class AdminController extends Controller
         $status = $request->status;
         $job = JobModel::where('id', $job_id)->first();
         if($job){
+            
+            $riggerExist = RiggerTicket::where('job_id', $job->id)->where('status', '3')->exists();
+            $transportExist = TransportationTicketModel::where('job_id', $job->id)->where('status', '3')->exists();
+            
+            if($riggerExist || $transportExist){
+                return response()->json(['status' => 402, 'message' => "Status of the completed job can not be change, first change status of linked tickets then proceed"]);
+            }
+
             $job->status = $status;
             $job->save();
             return response()->json(['status' => 200, 'message' => "Job status updated successfully."]);

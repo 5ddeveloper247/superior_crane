@@ -468,6 +468,7 @@ function viewJobDetailsResponse(response) {
         
         $(".ticket_attachments").hide();
         var att_html1 = '';
+        console.log(rigger_ticket_images);
         if(rigger_ticket_images != null){
             $.each(rigger_ticket_images, function (index, value) {
                 att_html1 += `<div class="image-item-land mt-3">
@@ -475,6 +476,9 @@ function viewJobDetailsResponse(response) {
                                 <p>${value.file_name}</p>
                             </div>`;
             });
+            if(rigger_ticket_images.length <= 0){
+                att_html1 = '<p class="mt-2" style="font-size:12px;">No attachments found...</p>';
+            }
             $("#rigger_att_section").show();
         }else{
             att_html1 = '<p class="mt-2" style="font-size:12px;">No attachments found...</p>';
@@ -489,6 +493,9 @@ function viewJobDetailsResponse(response) {
                                 <p>${value.file_name}</p>
                             </div>`;
             });
+            if(pay_duty_images.length <= 0){
+                att_html2 = '<p class="mt-2" style="font-size:12px;">No attachments found...</p>';
+            }
             $("#payduty_att_section").show();
         }else{
             att_html2 = '<p class="mt-2" style="font-size:12px;">No attachments found...</p>';
@@ -503,6 +510,9 @@ function viewJobDetailsResponse(response) {
                                 <p>${value.file_name}</p>
                             </div>`;
             });
+            if(transporter_ticket_images.length <= 0){
+                att_html3 = '<p class="mt-2" style="font-size:12px;">No attachments found...</p>';
+            }
             $("#transporter_att_section").show();
         }else{
             att_html3 = '<p class="mt-2" style="font-size:12px;">No attachments found...</p>';

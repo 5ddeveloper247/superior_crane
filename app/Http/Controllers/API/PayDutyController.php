@@ -486,16 +486,16 @@ class PayDutyController extends Controller
                 $Notifications->created_at = date('Y-m-d H:i:s');
                 $Notifications->save();
 
-                $allAdmins = User::whereIn('role_id', ['0','1'])->where('status', '1')->get();
+                // $allAdmins = User::whereIn('role_id', ['0','1'])->where('status', '1')->get();
 
-                if($allAdmins){
-                    foreach($allAdmins as $value){
-                        $mailData['user'] = $value->name;
-                        $body = view('emails.pay_duty_form_template', $mailData);
-                        $userEmailsSend = $value->email;//'hamza@5dsolutions.ae';//
-                        sendMailAttachment($value->name, $userEmailsSend, 'Superior Crane', 'Pay Duty Form Creation', $body, $attachment_pdf);
-                    }
-                }
+                // if($allAdmins){
+                //     foreach($allAdmins as $value){
+                //         $mailData['user'] = $value->name;
+                //         $body = view('emails.pay_duty_form_template', $mailData);
+                //         $userEmailsSend = $value->email;//'hamza@5dsolutions.ae';//
+                //         sendMailAttachment($value->name, $userEmailsSend, 'Superior Crane', 'Pay Duty Form Creation', $body, $attachment_pdf);
+                //     }
+                // }
             }
         }
     }
