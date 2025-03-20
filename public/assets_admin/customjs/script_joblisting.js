@@ -70,10 +70,10 @@ function makeJobsListing(jobs_list){
                             ${value.status == '2' ? 'On-Hold' : ''}
                             ${value.status == '3' ? 'Completed' : ''}
                         </td>
-                        <td>${value.date != null ? formatDate(value.date) : ''}</td>
-                        <td>${value.user_assigned != null ? value.user_assigned : ''}</td>
+                        <td>${value.date != null ? formatDate(value.date) : 'null'}</td>
+                        <td>${value.user_assigned != '' ? value.user_assigned : 'null'}</td>
                         <td>${value.supplier_name}</td>
-                        <td class="d-flex gap-2 ">
+                        <td class="d-flex gap-2 justify-content-right">
                             <div class="edit viewJob_btn" data-id="${value.id}">
                                 <svg width="15" viewBox="0 0 11 10" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M0.00561523 9.70695C0.0634926 9.49154 0.124427 9.27694 0.17884 9.06072C0.324756 8.48052 0.466596 7.8993 0.614754 7.31971C0.630039 7.2602 0.665703 7.19825 0.709314 7.15463C2.51329 5.34719 4.31911 3.54178 6.12472 1.73617C6.14286 1.71803 6.16242 1.70092 6.17302 1.69093C6.88589 2.4036 7.59631 3.11402 8.31489 3.8326C8.30552 3.84279 8.2833 3.86867 8.25905 3.89271C6.46241 5.68895 4.66617 7.4856 2.86728 9.27959C2.81511 9.33176 2.74134 9.37497 2.67001 9.3931C1.89172 9.5918 1.11201 9.78459 0.332908 9.97942C0.314566 9.98411 0.297244 9.99307 0.27931 10C0.240182 10 0.201053 10 0.161925 10C0.109754 9.94783 0.0575826 9.89566 0.00561523 9.84369C0.00561523 9.79804 0.00561523 9.75239 0.00561523 9.70695Z" fill="black" />
@@ -443,6 +443,9 @@ function viewJobDetailsResponse(response) {
                                 <p>${value.file_name}</p>
                             </div>`;
             });
+            if(rigger_ticket_images.length <= 0){
+                att_html1 = '<p class="mt-2" style="font-size:12px;">No attachments found...</p>';
+            }
             $("#rigger_att_section").show();
         }else{
             att_html1 = '<p class="mt-2" style="font-size:12px;">No attachments found...</p>';
@@ -457,6 +460,9 @@ function viewJobDetailsResponse(response) {
                                 <p>${value.file_name}</p>
                             </div>`;
             });
+            if(pay_duty_images.length <= 0){
+                att_html2 = '<p class="mt-2" style="font-size:12px;">No attachments found...</p>';
+            }
             $("#payduty_att_section").show();
         }else{
             att_html2 = '<p class="mt-2" style="font-size:12px;">No attachments found...</p>';
@@ -471,6 +477,9 @@ function viewJobDetailsResponse(response) {
                                 <p>${value.file_name}</p>
                             </div>`;
             });
+            if(transporter_ticket_images.length <= 0){
+                att_html3 = '<p class="mt-2" style="font-size:12px;">No attachments found...</p>';
+            }
             $("#transporter_att_section").show();
         }else{
             att_html3 = '<p class="mt-2" style="font-size:12px;">No attachments found...</p>';

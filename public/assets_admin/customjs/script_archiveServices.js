@@ -42,10 +42,10 @@ function makeServicesListing(services_list){
             if ([0, 1, 3].includes(value.status)) {
                 html += `<tr>
                         <td>AS-00${value.id}</td>
-                        <td>${value.title != null ? trimText(value.title, 20) : ''}</td>
-                        <td>${value.module}</td>
-                        <td>${value.from_date != null ? formatDate(value.from_date) : ''}</td>
-                        <td>${value.to_date != null ? formatDate(value.to_date) : ''}</td>
+                        <td>${value.title != null ? trimText(value.title, 20) : 'null'}</td>
+                        <td>${value.module != null ? value.module : 'null'}</td>
+                        <td>${value.from_date != null ? formatDate(value.from_date) : 'null'}</td>
+                        <td>${value.to_date != null ? formatDate(value.to_date) : 'null'}</td>
                         <td>
                             ${value.status == '0' ? 'Pending' : ''}
                             ${value.status == '1' ? 'In-Process' : ''}
@@ -53,7 +53,7 @@ function makeServicesListing(services_list){
                             ${value.status == '3' ? 'Cancelled' : ''}
                             ${value.status == '4' ? 'Deleted' : ''}
                         </td>
-                        <td class="d-flex gap-2 ">
+                        <td class="d-flex gap-2 justify-content-right">
                             ${(user_role == '0' && value.status == '0') ? 
                             `<div class="edit viewService_btn" data-id="${value.id}">
                                 <svg width="15" viewBox="0 0 11 10" fill="none" xmlns="http://www.w3.org/2000/svg">

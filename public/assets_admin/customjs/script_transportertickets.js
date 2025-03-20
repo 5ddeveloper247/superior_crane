@@ -55,52 +55,52 @@ function makeTransporterTicketListing(tickets_list){
             
             html += `<tr>
                         <td>TTKT-${value.id}</td>
-                        <td>${value.user_detail != null ? value.user_detail.name : ''}</td>
-                        <td>${value.job_detail != null ? value.job_detail.client_name : ''}</td>
-                        <td>${value.job_detail != null ? formatDate(value.job_detail.date) : ''}</td>
-                        <td>${value.pickup_address != null ? trimText(value.pickup_address, 20) : ''}</td>
-                        <td>${value.delivery_address != null ? trimText(value.delivery_address, 20) : ''}</td>
-                        <td>${value.time_in != null ? value.time_in : ''}</td>
-                        <td>${value.time_out != null ? value.time_out : ''}</td>
-                        <td>${value.notes != null ? trimText(value.notes, 20) : ''}</td>
-                        <td>${value.job_number != null ? value.job_number : ''}</td>
-                        <td>${value.job_special_instructions != null ? trimText(value.job_special_instructions, 20) : ''}</td>
+                        <td>${value.user_detail != null ? value.user_detail.name : 'null'}</td>
+                        <td>${value.job_detail != null ? value.job_detail.client_name : 'null'}</td>
+                        <td>${value.job_detail != null ? formatDate(value.job_detail.date) : 'null'}</td>
+                        <td>${value.pickup_address != null ? trimText(value.pickup_address, 20) : 'null'}</td>
+                        <td>${value.delivery_address != null ? trimText(value.delivery_address, 20) : 'null'}</td>
+                        <td>${value.time_in != null ? value.time_in : 'null'}</td>
+                        <td>${value.time_out != null ? value.time_out : 'null'}</td>
+                        <td>${value.notes != null ? trimText(value.notes, 20) : 'null'}</td>
+                        <td>${value.job_number != null ? value.job_number : 'null'}</td>
+                        <td>${value.job_special_instructions != null ? trimText(value.job_special_instructions, 20) : 'null'}</td>
 
-                        <td>${value.po_number != null ? value.po_number : ''}</td>
-                        <td>${value.po_special_instructions != null ? trimText(value.po_special_instructions, 20) : ''}</td>
+                        <td>${value.po_number != null ? value.po_number : 'null'}</td>
+                        <td>${value.po_special_instructions != null ? trimText(value.po_special_instructions, 20) : 'null'}</td>
 
-                        <td>${value.site_contact_name != null ? value.site_contact_name : ''}</td>
-                        <td>${value.site_contact_name_special_instructions != null ? trimText(value.site_contact_name_special_instructions, 20) : ''}</td>
+                        <td>${value.site_contact_name != null ? value.site_contact_name : 'null'}</td>
+                        <td>${value.site_contact_name_special_instructions != null ? trimText(value.site_contact_name_special_instructions, 20) : 'null'}</td>
 
-                        <td>${value.site_contact_number != null ? value.site_contact_number : ''}</td>
-                        <td>${value.site_contact_number_special_instructions != null ? trimText(value.site_contact_number_special_instructions, 20) : ''}</td>
+                        <td>${value.site_contact_number != null ? value.site_contact_number : 'null'}</td>
+                        <td>${value.site_contact_number_special_instructions != null ? trimText(value.site_contact_number_special_instructions, 20) : 'null'}</td>
 
-                        <td>${value.shipper_name != null ? value.shipper_name : ''}</td>
-                        <td>${value.shipper_signature_date != null ? formatDate(value.shipper_signature_date) : ''}</td>
-                        <td>${value.shipper_time_in != null ? value.shipper_time_in : ''}</td>
-                        <td>${value.shipper_time_out != null ? value.shipper_time_out : ''}</td>
+                        <td>${value.shipper_name != null ? value.shipper_name : 'null'}</td>
+                        <td>${value.shipper_signature_date != null ? formatDate(value.shipper_signature_date) : 'null'}</td>
+                        <td>${value.shipper_time_in != null ? value.shipper_time_in : 'null'}</td>
+                        <td>${value.shipper_time_out != null ? value.shipper_time_out : 'null'}</td>
 
-                        <td>${value.pickup_driver_name != null ? value.pickup_driver_name : ''}</td>
-                        <td>${value.pickup_driver_signature_date != null ? formatDate(value.pickup_driver_signature_date) : ''}</td>
-                        <td>${value.pickup_driver_time_in != null ? value.pickup_driver_time_in : ''}</td>
-                        <td>${value.pickup_driver_time_out != null ? value.pickup_driver_time_out : ''}</td>
+                        <td>${value.pickup_driver_name != null ? value.pickup_driver_name : 'null'}</td>
+                        <td>${value.pickup_driver_signature_date != null ? formatDate(value.pickup_driver_signature_date) : 'null'}</td>
+                        <td>${value.pickup_driver_time_in != null ? value.pickup_driver_time_in : 'null'}</td>
+                        <td>${value.pickup_driver_time_out != null ? value.pickup_driver_time_out : 'null'}</td>
                        
-                        <td>${value.customer_name != null ? value.customer_name : ''}</td>
-                        <td>${value.customer_email != null ? value.customer_email : ''}</td>
-                        <td>${value.customer_signature_date != null ? formatDate(value.customer_signature_date) : ''}</td>
-                        <td>${value.customer_time_in != null ? value.customer_time_in : ''}</td>
-                        <td>${value.customer_time_out != null ? value.customer_time_out : ''}</td>
+                        <td>${value.customer_name != null ? value.customer_name : 'null'}</td>
+                        <td>${value.customer_email != null ? value.customer_email : 'null'}</td>
+                        <td>${value.customer_signature_date != null ? formatDate(value.customer_signature_date) : 'null'}</td>
+                        <td>${value.customer_time_in != null ? value.customer_time_in : 'null'}</td>
+                        <td>${value.customer_time_out != null ? value.customer_time_out : 'null'}</td>
                         <td>
                             ${value.status == '1' ? 'Draft' : ''}
                             ${value.status == '2' ? 'Issued' : ''}
                             ${value.status == '3' ? 'Completed' : ''}
                         </td>
-                        <td>${value.created_at != null ? formatDate(value.created_at) : ''}</td>
-                        <td class="d-flex gap-2 ">
+                        <td>${value.created_at != null ? formatDate(value.created_at) : 'null'}</td>
+                        <td class="d-flex gap-2 justify-content-right">
                             
                             ${(user_role == '0' && value.status == 3) ? 
                             `<div class="edit changeStatus_btn" data-id="${value.id}" title="Change Status">
-                                <img src="${base_url}/assets/images/change-status.png" style="width:32px;height:32px;">
+                                <img src="${base_url}/assets/images/change-status.png" style="width:25px;height:25px;">
                             </div>` : ''}
 
                             <div class="edit viewTicket_btn" data-id="${value.id}">

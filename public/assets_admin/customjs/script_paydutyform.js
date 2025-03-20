@@ -41,27 +41,27 @@ function makePayDutyFormsListing(forms_list){
             
             html += `<tr>
                         <td>PDTY-${value.id}</td>
-                        <td>${value.rigger_ticket_id != null ? "R-"+value.rigger_ticket_id : ''}</td>
-                        <td>${value.user_detail != null ? value.user_detail.name : ''}</td>
-                        <td>${value.date != null ? formatDate(value.date) : ''}</td>
-                        <td>${value.location != null ? value.location : ''}</td>
-                        <td>${value.start_time != null ? formatTime(value.start_time) : ''}</td>
-                        <td>${value.finish_time != null ? formatTime(value.finish_time) : ''}</td>
-                        <td>${value.total_hours != null ? value.total_hours : ''}</td>
-                        <td>${value.officer != null ? value.officer : ''}</td>
-                        <td>${value.officer_name != null ? value.officer_name : ''}</td>
-                        <td>${value.email != null ? value.email : ''}</td>
-                        <td>${value.division != null ? value.division : ''}</td>
+                        <td>${value.rigger_ticket_id != null ? "R-"+value.rigger_ticket_id : 'null'}</td>
+                        <td>${value.user_detail != null ? value.user_detail.name : 'null'}</td>
+                        <td>${value.date != null ? formatDate(value.date) : 'null'}</td>
+                        <td>${value.location != null ? value.location : 'null'}</td>
+                        <td>${value.start_time != null ? formatTime(value.start_time) : 'null'}</td>
+                        <td>${value.finish_time != null ? formatTime(value.finish_time) : 'null'}</td>
+                        <td>${value.total_hours != null ? value.total_hours : 'null'}</td>
+                        <td>${value.officer != null ? value.officer : 'null'}</td>
+                        <td>${value.officer_name != null ? value.officer_name : 'null'}</td>
+                        <td>${value.email != null ? value.email : 'null'}</td>
+                        <td>${value.division != null ? value.division : 'null'}</td>
                         <td>
                             ${value.status == '1' ? 'Draft' : ''}
                             ${value.status == '2' ? 'Issued' : ''}
                             ${value.status == '3' ? 'Completed' : ''}
                         </td>
-                        <td class="d-flex gap-2 ">
+                        <td class="d-flex gap-2 justify-content-right">
                             
                             ${(user_role == '0' && value.status == 3) ? 
                             `<div class="edit changeStatus_btn" data-id="${value.id}" title="Change Status">
-                                <img src="${base_url}/assets/images/change-status.png" style="width:32px;height:32px;">
+                                <img src="${base_url}/assets/images/change-status.png" style="width:25px;height:25px;">
                             </div>` : ''}
 
                             <div class="edit viewPayDuty_btn" data-id="${value.id}">

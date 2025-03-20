@@ -377,7 +377,7 @@
                         <th class="px3" scope="col">Status</th>
                         <th class="px3" scope="col">Created Date</th>
 
-                        <th scope="col">Action</th>
+                        <th scope="col justify-content-right">Action</th>
                     </tr>
                 </thead>
                 <tbody id="transporterTickets_body">

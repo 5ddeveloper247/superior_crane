@@ -1,3 +1,6 @@
 .is-invalid{
     background-image:none !important;
 }
+.justify-content-right{
+    justify-content: right;
+}

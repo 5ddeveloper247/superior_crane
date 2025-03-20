@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
         <title>SUPERIOR CRANE</title>
         
         <!-- <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" /> -->
+        <link rel="icon" type="image/png" href="{{asset('assets/images/image-removebg-preview.png')}}">
         <link rel="stylesheet" href="{{asset('assets/css/style.css')}}">
         
         <link rel="stylesheet" href="{{asset('assets/plugins/select2/select2.css')}}">

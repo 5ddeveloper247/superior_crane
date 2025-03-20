@@ -21,7 +21,7 @@
 
                 <b>-Date:</b> {{@$form_date}}<br>
                 <b>-Location:</b> {{@$location}}<br>
-                <b>-Po Number:</b> {{@$po_number}}<br>
+                <!-- <b>-Po Number:</b> {{@$po_number}}<br> -->
                 <b>-Start Time:</b> {{@$start_time}}<br>
                 <b>-Finish Time:</b> {{@$finish_time}}<br>
                 @if(@$status != '')

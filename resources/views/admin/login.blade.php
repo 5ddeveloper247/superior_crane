@@ -72,7 +72,7 @@
                     <div class="mt-4 text-white">
                         <label for="">Email</label>
                         <br>
-                        <input class="w-100 p-2 mt-1" type="text" name="email" placeholder="someone@example.com" autocomplete="off">
+                        <input class="w-100 p-2 mt-1" type="text" name="email" placeholder="Enter your email" autocomplete="off">
                     </div>
                     <div class="mt-3 text-white">
                         <label for="">Password</label>

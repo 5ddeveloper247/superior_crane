@@ -430,6 +430,9 @@ class PayDutyController extends Controller
                 $ticketDetail = RiggerTicket::where('id', $formDetail->rigger_ticket_id)->first();  // linked rigger ticket details
                 $jobDetail = JobModel::where('id', $ticketDetail->job_id)->first(); // lnked job details
                 $managerDetail = User::where('id', $jobDetail->created_by)->first(); // manager/createby details
+                
+                $riggerAssignedIds = json_decode($jobDetail->rigger_assigned);
+                $assignedUsers = User::whereIn('id', $riggerAssignedIds)->where('status', '1')->get();// assigned user details
 
                 if($formDetail->status == '1'){
                     $status_txt = 'Draft';
@@ -457,9 +460,17 @@ class PayDutyController extends Controller
                 $mailData['text1'] = "New Pay Duty Form has been created. Pay Duty details are as under.";
                 $mailData['text2'] = "For more details please contact the Manager/Admin.";
 
-                $body = view('emails.pay_duty_form_template', $mailData);
-                $userEmailsSend = $managerDetail->email;//'hamza@5dsolutions.ae';//
-                sendMailAttachment($managerDetail->name, $userEmailsSend, 'Superior Crane', 'Pay Duty Form Creation', $body, $attachment_pdf);
+                // $body = view('emails.pay_duty_form_template', $mailData);
+                // $userEmailsSend = $managerDetail->email;//'hamza@5dsolutions.ae';//
+                // sendMailAttachment($managerDetail->name, $userEmailsSend, 'Superior Crane', 'Pay Duty Form Creation', $body, $attachment_pdf);
+
+                if($jobDetail->job_type != 3){
+                    foreach($assignedUsers as $user){
+                        $mailData['user'] = $user->name;
+                        $body = view('emails.pay_duty_form_template', $mailData);
+                        sendMailAttachment($user->name, $user->email, 'Superior Crane', 'Pay Duty Form Creation', $body, $attachment_pdf);
+                    }
+                }
 
                 if($ticketDetail->email !=  null && $ticketDetail->email != ''){
                     $mailData['user'] = $ticketDetail->customer_name;

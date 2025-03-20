@@ -37,18 +37,18 @@ function makeInventoryListing(inventory_list){
             
             html += `<tr>
                         <td>I-${value.id}</td>
-                        <td>${value.customer_name}</td>
-                        <td>${value.site_address != null ? trimText(value.site_address, 20) : ''}</td>
-                        <td>${value.inventory_location != null ? trimText(value.inventory_location, 20) : ''}</td>
-                        <td>${value.date_received != null ? formatDate(value.date_received) : ''}</td>
-                        <td>${value.date_shipped != null ? formatDate(value.date_shipped) : ''}</td>
-                        <td>${value.items != null ? trimText(value.items, 20) : ''}</td>
-                        <td class="text-center">${value.dimension}</td>
+                        <td>${value.customer_name != null ? value.customer_name : 'null'}</td>
+                        <td>${value.site_address != null ? trimText(value.site_address, 20) : 'null'}</td>
+                        <td>${value.inventory_location != null ? trimText(value.inventory_location, 20) : 'null'}</td>
+                        <td>${value.date_received != null ? formatDate(value.date_received) : 'null'}</td>
+                        <td>${value.date_shipped != null ? formatDate(value.date_shipped) : 'null'}</td>
+                        <td>${value.items != null ? trimText(value.items, 20) : 'null'}</td>
+                        <td class="text-center">${value.dimension != null ? value.dimension : 'null'}</td>
                         <td>
                             ${value.status == '1' ? 'Active' : ''}
                             ${value.status == '0' ? 'InActive' : ''}
                         </td>
-                        <td class="d-flex gap-2 ">
+                        <td class="d-flex gap-2 justify-content-right">
                             <div class="edit viewInventory_btn" data-id="${value.id}">
                                 <svg width="15" viewBox="0 0 11 10" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M0.00561523 9.70695C0.0634926 9.49154 0.124427 9.27694 0.17884 9.06072C0.324756 8.48052 0.466596 7.8993 0.614754 7.31971C0.630039 7.2602 0.665703 7.19825 0.709314 7.15463C2.51329 5.34719 4.31911 3.54178 6.12472 1.73617C6.14286 1.71803 6.16242 1.70092 6.17302 1.69093C6.88589 2.4036 7.59631 3.11402 8.31489 3.8326C8.30552 3.84279 8.2833 3.86867 8.25905 3.89271C6.46241 5.68895 4.66617 7.4856 2.86728 9.27959C2.81511 9.33176 2.74134 9.37497 2.67001 9.3931C1.89172 9.5918 1.11201 9.78459 0.332908 9.97942C0.314566 9.98411 0.297244 9.99307 0.27931 10C0.240182 10 0.201053 10 0.161925 10C0.109754 9.94783 0.0575826 9.89566 0.00561523 9.84369C0.00561523 9.79804 0.00561523 9.75239 0.00561523 9.70695Z" fill="black" />

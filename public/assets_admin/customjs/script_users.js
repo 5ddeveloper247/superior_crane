@@ -104,7 +104,7 @@ function makeManagersListing(manager_list){
                         <td class="text-start px-3">M-${value.id}</td>
                         <td class="px-3">${value.name}</td>
                         <td class="px-3">${value.email}</td>
-                        <td class="px-3">${value.phone_number != null ? value.phone_number : ''}</td>
+                        <td class="px-3">${value.phone_number != null ? value.phone_number : 'N/A'}</td>
                         <td class="px-3">
                             <div class="form-check form-switch">
                                 <input class="form-check-input change_status" data-id="${value.id}" 

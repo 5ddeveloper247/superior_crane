@@ -522,6 +522,8 @@ class TransportationTicketController extends Controller
                     $riggerAssignedIds = json_decode($jobDetail->rigger_assigned); 
                     $assignedUsers = User::whereIn('id', $riggerAssignedIds)->where('status', '1')->pluck('name')->toArray();
                     $assignedUserNames = implode(', ', $assignedUsers);
+                    // assigned job emails
+                    $assignedUsers = User::whereIn('id', $riggerAssignedIds)->where('status', '1')->get();// assigned user details
 
                     if($ticketDetail->status == '1'){
                         $status_txt = 'Draft';
@@ -552,9 +554,17 @@ class TransportationTicketController extends Controller
                     $mailData['text1'] = "New Transporter Ticket has been created. Ticket details are as under.";
                     $mailData['text2'] = "For more details please contact the Manager/Admin.";
     
-                    $body = view('emails.transporter_ticket_template', $mailData);
-                    $userEmailsSend = $managerDetail->email;//'hamza@5dsolutions.ae';//
-                    sendMailAttachment($managerDetail->name, $userEmailsSend, 'Superior Crane', 'Transporter Ticket Creation', $body, $attachment_pdf);
+                    // $body = view('emails.transporter_ticket_template', $mailData);
+                    // $userEmailsSend = $managerDetail->email;//'hamza@5dsolutions.ae';//
+                    // sendMailAttachment($managerDetail->name, $userEmailsSend, 'Superior Crane', 'Transporter Ticket Creation', $body, $attachment_pdf);
+
+                    if($jobDetail->job_type != 3){
+                        foreach($assignedUsers as $user){
+                            $mailData['user'] = $user->name;
+                            $body = view('emails.transporter_ticket_template', $mailData);
+                            sendMailAttachment($user->name, $user->email, 'Superior Crane', 'Transporter Ticket Creation', $body, $attachment_pdf);
+                        }
+                    }
 
                     if(isset($ticketDetail->customer_email) && $ticketDetail->customer_email != null){
                         $mailData['user'] = $ticketDetail->customer_name;

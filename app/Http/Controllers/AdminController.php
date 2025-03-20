@@ -707,7 +707,9 @@ class AdminController extends Controller
             $deletedIdsArr = explode(',', $request->deletedFileIds);
             foreach($deletedIdsArr as $index => $value){
                 $JobImage = JobImages::where('id', $value)->first();
-                deleteImage(str_replace(url('/'),"",$JobImage->path));
+                if(isset($JobImage->path)){
+                    deleteImage(str_replace(url('/'),"",$JobImage->path));
+                }
                 JobImages::where('id', $value)->delete();
             }   
         }

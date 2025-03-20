@@ -42,31 +42,31 @@ function makeRiggerTicketListing(tickets_list){
             
             html += `<tr>
                         <td>RTKT-${value.id}</td>
-                        <td>${value.user_detail != null ? value.user_detail.name : ''}</td>
-                        <td>${value.job_detail != null ? value.job_detail.client_name : ''}</td>
-                        <td>${value.customer_name != null ? value.customer_name : ''}</td>
-                        <td>${value.location != null ? value.location : ''}</td>
-                        <td>${value.po_number != null ? value.po_number : ''}</td>
-                        <td>${value.date != null ? formatDate(value.date) : ''}</td>
-                        <td>${value.leave_yard != null ? value.leave_yard : ''}</td>
-                        <td>${value.start_job != null ? value.start_job : ''}</td>
-                        <td>${value.finish_job != null ? value.finish_job : ''}</td>
-                        <td>${value.arrival_yard != null ? value.arrival_yard : ''}</td>
-                        <td>${value.travel_time != null ? value.travel_time : ''}</td>
-                        <td>${value.crane_time != null ? value.crane_time : ''}</td>
-                        <td>${value.total_hours != null ? value.total_hours : ''}</td>
-                        <td>${value.operator != null ? value.operator : ''}</td>
-                        <td>${value.email != null ? value.email : ''}</td>
+                        <td>${value.user_detail != null ? value.user_detail.name : 'null'}</td>
+                        <td>${value.job_detail != null ? value.job_detail.client_name : 'null'}</td>
+                        <td>${value.customer_name != null ? value.customer_name : 'null'}</td>
+                        <td>${value.location != null ? value.location : 'null'}</td>
+                        <td>${value.po_number != null ? value.po_number : 'null'}</td>
+                        <td>${value.date != null ? formatDate(value.date) : 'null'}</td>
+                        <td>${value.leave_yard != null ? value.leave_yard : 'null'}</td>
+                        <td>${value.start_job != null ? value.start_job : 'null'}</td>
+                        <td>${value.finish_job != null ? value.finish_job : 'null'}</td>
+                        <td>${value.arrival_yard != null ? value.arrival_yard : 'null'}</td>
+                        <td>${value.travel_time != null ? value.travel_time : 'null'}</td>
+                        <td>${value.crane_time != null ? value.crane_time : 'null'}</td>
+                        <td>${value.total_hours != null ? value.total_hours : 'null'}</td>
+                        <td>${value.operator != null ? value.operator : 'null'}</td>
+                        <td>${value.email != null ? value.email : 'null'}</td>
                         <td>
                             ${value.status == '1' ? 'Draft' : ''}
                             ${value.status == '2' ? 'Issued' : ''}
                             ${value.status == '3' ? 'Completed' : ''}
                         </td>
                         
-                        <td class="d-flex gap-2 ">
+                        <td class="d-flex gap-2 justify-content-right">
                             ${(user_role == '0' && value.status == 3) ? 
                             `<div class="edit changeStatus_btn" data-id="${value.id}" title="Change Status">
-                                <img src="${base_url}/assets/images/change-status.png" style="width:32px;height:32px;">
+                                <img src="${base_url}/assets/images/change-status.png" style="width:25px;height:25px;">
                             </div>` : ''}
                             
                             <div class="edit viewTicket_btn" data-id="${value.id}">
