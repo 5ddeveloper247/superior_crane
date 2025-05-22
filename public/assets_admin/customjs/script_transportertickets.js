@@ -1,8 +1,8 @@
 // shipper signature
-var canvas = document.getElementById("signature");
-var signaturePad = new SignaturePad(canvas);
-signaturePad.off();
-$('#signature').css('pointer-events', 'none');
+// var canvas = document.getElementById("signature");
+// var signaturePad = new SignaturePad(canvas);
+// signaturePad.off();
+// $('#signature').css('pointer-events', 'none');
 
 // pickup signature
 var canvas1 = document.getElementById("signature1");
@@ -10,11 +10,11 @@ var signaturePad1 = new SignaturePad(canvas1);
 signaturePad1.off();
 $('#signature1').css('pointer-events', 'none');
 
-// customer signature
-var canvas2 = document.getElementById("signature2");
-var signaturePad2 = new SignaturePad(canvas2);
-signaturePad2.off();
-$('#signature2').css('pointer-events', 'none');
+// // customer signature
+// var canvas2 = document.getElementById("signature2");
+// var signaturePad2 = new SignaturePad(canvas2);
+// signaturePad2.off();
+// $('#signature2').css('pointer-events', 'none');
 
 function loadTransportationTicketPageData() {
     
@@ -211,28 +211,28 @@ function getSpecificTicketResponse(response) {
             $("#site_contact_number").val(ticket_detail.site_contact_number);
             $("#site_contact_number_instruction").val(ticket_detail.site_contact_number_special_instructions);
 
-            $("#shipper_name").val(ticket_detail.shipper_name);
-            $("#shipper_date").val(ticket_detail.shipper_signature_date);
-            $("#shipper_time_in").val(ticket_detail.shipper_time_in);
-            $("#shipper_time_out").val(ticket_detail.shipper_time_out);
+            // $("#shipper_name").val(ticket_detail.shipper_name);
+            // $("#shipper_date").val(ticket_detail.shipper_signature_date);
+            // $("#shipper_time_in").val(ticket_detail.shipper_time_in);
+            // $("#shipper_time_out").val(ticket_detail.shipper_time_out);
 
             $("#pickup_name").val(ticket_detail.pickup_driver_name);
             $("#pickup_date").val(ticket_detail.pickup_driver_signature_date);
             $("#pickup_time_in").val(ticket_detail.pickup_driver_time_in);
             $("#pickup_time_out").val(ticket_detail.pickup_driver_time_out);
 
-            $("#customer_name").val(ticket_detail.customer_name);
-            $("#customer_email").val(ticket_detail.customer_email);
-            $("#customer_date").val(ticket_detail.customer_signature_date);
-            $("#customer_time_in").val(ticket_detail.customer_time_in);
-            $("#customer_time_out").val(ticket_detail.customer_time_out);
+            // $("#customer_name").val(ticket_detail.customer_name);
+            // $("#customer_email").val(ticket_detail.customer_email);
+            // $("#customer_date").val(ticket_detail.customer_signature_date);
+            // $("#customer_time_in").val(ticket_detail.customer_time_in);
+            // $("#customer_time_out").val(ticket_detail.customer_time_out);
 
-            var shipper_signature = ticket_detail.shipper_signature;
-            if (shipper_signature != null) {
-                signaturePad.fromDataURL('data:image/png;base64,'+shipper_signature); // Set signature from base64 string
-            }else{
-                signaturePad.clear();
-            }
+            // var shipper_signature = ticket_detail.shipper_signature;
+            // if (shipper_signature != null) {
+            //     signaturePad.fromDataURL('data:image/png;base64,'+shipper_signature); // Set signature from base64 string
+            // }else{
+            //     signaturePad.clear();
+            // }
 
             var pickup_driver_signature = ticket_detail.pickup_driver_signature;
             if (pickup_driver_signature != null) {
@@ -241,12 +241,12 @@ function getSpecificTicketResponse(response) {
                 signaturePad1.clear();
             }
 
-            var customer_signature = ticket_detail.customer_signature;
-            if (customer_signature != null) {
-                signaturePad2.fromDataURL('data:image/png;base64,'+customer_signature); // Set signature from base64 string
-            }else{
-                signaturePad2.clear();
-            }
+            // var customer_signature = ticket_detail.customer_signature;
+            // if (customer_signature != null) {
+            //     signaturePad2.fromDataURL('data:image/png;base64,'+customer_signature); // Set signature from base64 string
+            // }else{
+            //     signaturePad2.clear();
+            // }
         }
 
         var att_html = '';
