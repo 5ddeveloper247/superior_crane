@@ -483,7 +483,7 @@ class AdminController extends Controller
         $user_id = $request->user_id;
         $user = User::where('id', $user_id)->where('role_id','!=','0')->first();
         
-        $jobsCount = JobModel::where('rigger_assigned', $user->id)->count();
+        $jobsCount = JobModel::where('rigger_assigned', 'LIKE', '%'.$user->id.'%')->count();
         if($jobsCount > 0){
             return response()->json(['status' => 402, 'message' => "Unable to delete. There is a job assigned to this user."]);
         }
@@ -607,7 +607,7 @@ class AdminController extends Controller
                 'rigger_assigned' => 'required_unless:job_type,3|array',
                 'user_assigned' => 'max:50',
                 'supplier_name' => 'max:50',
-                'driver_instructions' => 'required_if:job_type,4',
+                'driver_instructions' => 'nullable|string',//'required_if:job_type,4',
                 'notes' => 'nullable|string',
                 // 'scci' => 'boolean',
                 // 'job_images' => 'required',
@@ -641,7 +641,7 @@ class AdminController extends Controller
                 'rigger_assigned' => 'required_unless:job_type,3|array',
                 'user_assigned' => 'max:50',
                 'supplier_name' => 'max:50',
-                'driver_instructions' => 'required_if:job_type,4',
+                'driver_instructions' => 'nullable|string',//'required_if:job_type,4',
                 'notes' => 'nullable|string',
                 // 'job_images.*' => 'required',
                 'job_images.*' => 'mimes:jpeg,png,jpg,gif,svg,pdf|max:2048',
@@ -797,7 +797,7 @@ class AdminController extends Controller
                 foreach($users as $user){
                     $mailData['user'] = isset($user->name) ? $user->name : $jobDetail->user_assigned;
                     $mailData['username'] = isset($user->name) ? $user->name : $jobDetail->user_assigned;
-                    $mailData['assigned_to'] = isset($user->name) ? $user->name : $jobDetail->user_assigned;
+                    $mailData['assigned_to'] = isset($userNames) ? $userNames : $jobDetail->user_assigned;
                     $body = view('emails.job_template', $mailData);
                     $userEmailsSend = $user->email;//'hamza@5dsolutions.ae';//
                     sendMail(isset($user->name) ? $user->name : $jobDetail->user_assigned, $userEmailsSend, 'Superior Crane', 'Job Creation', $body);
@@ -826,7 +826,7 @@ class AdminController extends Controller
             }else{
                 $Notifications->message = 'Job J-'.$jobDetail->id.' on '.date('d-M-Y', strtotime($jobDetail->date)).' at '.date('H:i A', strtotime($jobDetail->job_time)).' has been assigned to '. $jobDetail->user_assigned .'.';
             }
-            $Notifications->message_html = $body;
+            $Notifications->message_html = isset($body) ? "$body" : '';
             $Notifications->read_flag = '0';
             $Notifications->created_by = $createdBy->id;
             $Notifications->created_at = date('Y-m-d H:i:s');
@@ -884,7 +884,7 @@ class AdminController extends Controller
                     foreach($users as $user){
                         $mailData['user'] = isset($user->name) ? $user->name : $jobDetail->user_assigned;
                         $mailData['username'] = isset($user->name) ? $user->name : $jobDetail->user_assigned;
-                        $mailData['assigned_to'] = isset($user->name) ? $user->name : $jobDetail->user_assigned;
+                        $mailData['assigned_to'] = isset($userNames) ? $userNames : $jobDetail->user_assigned;
                         $body = view('emails.job_template', $mailData);
                         $userEmailsSend = $user->email;//'hamza@5dsolutions.ae';//
                         sendMail(isset($user->name) ? $user->name : $jobDetail->user_assigned, $userEmailsSend, 'Superior Crane', 'Job Creation', $body);

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Models\Roles;
+use App\Models\EmailSetting;
 
 class RegistrationController extends Controller
 {
@@ -88,14 +89,18 @@ class RegistrationController extends Controller
             $mailData['text1'] = "Welcome to Superior Crane! We're thrilled to have you on board.";
             $mailData['text2'] = "If you have any questions, feel free to reach out to us at support@superiorcrane.com.";
 
+            
+
             $body = view('emails.signup_welcome', $mailData);
             $userEmailsSend = $user->email;//'hamza@5dsolutions.ae';//
             sendMail($user->name, $userEmailsSend, 'Superior Crane', 'Register User', $body);
 
+            $emailSettings = EmailSetting::find(1);
+
             $mailData['user'] = 'Admin';
             $mailData['text1'] = "A new user has just signed up on Superior Crane.";
             $mailData['text2'] = "Please review their details in the admin panel.";
-            $userEmailsSend1 = env('MAIL_ADMIN');
+            $userEmailsSend1 = $emailSettings->from_email ?? 'donotreplyscci@scserver.org';// admin email
             $body = view('emails.signup_welcome', $mailData);
             sendMail($user->name, $userEmailsSend1, 'Superior Crane', 'Register User', $body);
             

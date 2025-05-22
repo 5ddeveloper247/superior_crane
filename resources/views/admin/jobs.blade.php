@@ -617,7 +617,7 @@
                         </div>
                         <div class="col-12 col-md-12 flex-column" id="driver_instructions_div" style="display:none;">
                             <label class="pb-2 form-label" for="driver_instructions">
-                                Driver Instructions<span class="text-danger">*</span>
+                                Driver Instructions
                             </label>
                             <textarea class="form-control" name="driver_instructions" id="driver_instructions" rows="5"
                                placeholder="Type Notes Here....." maxlength="500" style="resize:none;"></textarea>

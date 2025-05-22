@@ -77,6 +77,17 @@ Route::post('transportationticket/ticket_detail', [TransportationTicketControlle
 Route::post('transportationticket/addTicketImages', [TransportationTicketController::class,'addTicketImages'])->name('transportationticket/addTicketImages');
 Route::post('transportationticket/deleteTicketImage', [TransportationTicketController::class,'deleteTicketImage'])->name('transportationticket/deleteTicketImage');
 
+// Transportation Ticket Shippers
+// Route::post('transportationticket/shipper/add', [TransportationTicketController::class,'add_transportation_shipper'])->name('transportationticket/shipper/add');
+// Route::post('transportationticket/shipper/update', [TransportationTicketController::class,'update_transportation_shipper'])->name('transportationticket/shipper/update');
+Route::post('transportationticket/shipper/delete', [TransportationTicketController::class,'delete_shipper'])->name('transportationticket/shipper/delete');
+Route::post('transportationticket/shipper/view', [TransportationTicketController::class,'get_specific_shipper'])->name('transportationticket/shipper/view');
+
+// Transportation Ticket Customers
+// Route::post('transportationticket/customer/add', [TransportationTicketController::class,'add_transportation_customer'])->name('transportationticket/customer/add');
+// Route::post('transportationticket/customer/update', [TransportationTicketController::class,'update_transportation_customer'])->name('transportationticket/customer/update');
+Route::post('transportationticket/customer/delete', [TransportationTicketController::class,'delete_customer'])->name('transportationticket/customer/delete');
+Route::post('transportationticket/customer/view', [TransportationTicketController::class,'get_specific_customer'])->name('transportationticket/customer/view');
 
 
 

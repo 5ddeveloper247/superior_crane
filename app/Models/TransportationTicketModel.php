@@ -20,6 +20,16 @@ class TransportationTicketModel extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
+    public function shippers()
+    {
+    	return $this->hasMany(TransportationTicketShipper::class, 'ticket_id');
+    }
+
+    public function customers()
+    {
+    	return $this->hasMany(TransportationTicketCustomer::class, 'ticket_id');
+    }
+
     public function ticketImages()
     {
     	return $this->hasMany(TransportationTicketImages::class, 'ticket_id');

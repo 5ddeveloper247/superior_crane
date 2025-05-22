@@ -75,21 +75,14 @@ function makeTransporterTicketListing(tickets_list){
                         <td>${value.site_contact_number != null ? value.site_contact_number : 'null'}</td>
                         <td>${value.site_contact_number_special_instructions != null ? trimText(value.site_contact_number_special_instructions, 20) : 'null'}</td>
 
-                        <td>${value.shipper_name != null ? value.shipper_name : 'null'}</td>
-                        <td>${value.shipper_signature_date != null ? formatDate(value.shipper_signature_date) : 'null'}</td>
-                        <td>${value.shipper_time_in != null ? value.shipper_time_in : 'null'}</td>
-                        <td>${value.shipper_time_out != null ? value.shipper_time_out : 'null'}</td>
+                        
 
                         <td>${value.pickup_driver_name != null ? value.pickup_driver_name : 'null'}</td>
                         <td>${value.pickup_driver_signature_date != null ? formatDate(value.pickup_driver_signature_date) : 'null'}</td>
                         <td>${value.pickup_driver_time_in != null ? value.pickup_driver_time_in : 'null'}</td>
                         <td>${value.pickup_driver_time_out != null ? value.pickup_driver_time_out : 'null'}</td>
                        
-                        <td>${value.customer_name != null ? value.customer_name : 'null'}</td>
-                        <td>${value.customer_email != null ? value.customer_email : 'null'}</td>
-                        <td>${value.customer_signature_date != null ? formatDate(value.customer_signature_date) : 'null'}</td>
-                        <td>${value.customer_time_in != null ? value.customer_time_in : 'null'}</td>
-                        <td>${value.customer_time_out != null ? value.customer_time_out : 'null'}</td>
+                        
                         <td>
                             ${value.status == '1' ? 'Draft' : ''}
                             ${value.status == '2' ? 'Issued' : ''}
@@ -122,6 +115,15 @@ function makeTransporterTicketListing(tickets_list){
                             </div>` : ''}
                         </td>
                     </tr>`;
+                    // <td>${value.shipper_name != null ? value.shipper_name : 'null'}</td>
+                    //     <td>${value.shipper_signature_date != null ? formatDate(value.shipper_signature_date) : 'null'}</td>
+                    //     <td>${value.shipper_time_in != null ? value.shipper_time_in : 'null'}</td>
+                    //     <td>${value.shipper_time_out != null ? value.shipper_time_out : 'null'}</td>
+                    // <td>${value.customer_name != null ? value.customer_name : 'null'}</td>
+                    //     <td>${value.customer_email != null ? value.customer_email : 'null'}</td>
+                    //     <td>${value.customer_signature_date != null ? formatDate(value.customer_signature_date) : 'null'}</td>
+                    //     <td>${value.customer_time_in != null ? value.customer_time_in : 'null'}</td>
+                    //     <td>${value.customer_time_out != null ? value.customer_time_out : 'null'}</td>
 		});
 	}
 

@@ -358,21 +358,21 @@
                         <th class="px3" scope="col">Site Contact Number</th>
                         <th class="px3" scope="col">Site Contact Number Inst.</th>
 
-                        <th class="px3" scope="col">Shipper Name</th>
+                        <!-- <th class="px3" scope="col">Shipper Name</th>
                         <th class="px3" scope="col">Shipper Date</th>
                         <th class="px3" scope="col">Shipper Time In</th>
-                        <th class="px3" scope="col">Shipper Time Out</th>
+                        <th class="px3" scope="col">Shipper Time Out</th> -->
 
                         <th class="px3" scope="col">Pickup Driver Name</th>
                         <th class="px3" scope="col">Pickup Date</th>
                         <th class="px3" scope="col">Pickup Time In</th>
                         <th class="px3" scope="col">Pickup Time Out</th>
 
-                        <th class="px3" scope="col">Customer Name</th>
+                        <!-- <th class="px3" scope="col">Customer Name</th>
                         <th class="px3" scope="col">Customer Email</th>
                         <th class="px3" scope="col">Customer Date</th>
                         <th class="px3" scope="col">Customer Time In</th>
-                        <th class="px3" scope="col">Customer Time Out</th>
+                        <th class="px3" scope="col">Customer Time Out</th> -->
 
                         <th class="px3" scope="col">Status</th>
                         <th class="px3" scope="col">Created Date</th>

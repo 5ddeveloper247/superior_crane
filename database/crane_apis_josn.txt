@@ -527,7 +527,7 @@ live url: https://scserver.org/api/sc/v1/transportationticket/add
 
 //images is optional
 {
-    "user_id": "1",
+    "id": "1",
     "job_id": "1",
     "pickup_address": "123 Pickup St",
     "delivery_address": "456 Delivery Ave",
@@ -547,25 +547,50 @@ live url: https://scserver.org/api/sc/v1/transportationticket/add
     "site_contact_number": "1234567890",
     "site_number_special_instructions": "Call ahead",
 
-    "shipper_name": "Jane Smith",
-    "shipper_signature": "Jane's Signature",
-    "shipper_signature_date": "2024-07-18",
-    "shipper_time_in": "08:30",
-    "shipper_time_out": "09:00",
-
     "pickup_driver_name": "Mike Johnson",
     "pickup_driver_signature": "Mike's Signature",
     "pickup_driver_signature_date": "2024-07-18",
     "pickup_driver_time_in": "08:00",
     "pickup_driver_time_out": "08:30",
+    "shippers": [
+        {
+            "id": "",	// add case
+            "shipper_name": "Jane Smith",
+            "shipper_signature": "Jane's Signature",
+            "shipper_signature_date": "2024-07-18",
+            "shipper_time_in": "08:30",
+            "shipper_time_out": "09:00"
+        },
+        {
+            "id": "",	// add case
+            "shipper_name": "Jane Smith",
+            "shipper_signature": "Jane's Signature",
+            "shipper_signature_date": "2024-07-18",
+            "shipper_time_in": "08:30",
+            "shipper_time_out": "09:00"
+        }
+    ],
+    "customers": [
+        {
+            "id": "",	// add case
+            "customer_name": "Alice Brown",
+            "customer_email": "alice.brown@example.com",
+            "customer_signature": "Alice's Signature",
+            "customer_signature_date": "2024-07-18",
+            "customer_time_in": "16:30",
+            "customer_time_out": "17:00"
+        },
+        {
+            "id": "",	// add case
+            "customer_name": "Alice Brown",
+            "customer_email": "alice.brown@example.com",
+            "customer_signature": "Alice's Signature",
+            "customer_signature_date": "2024-07-18",
+            "customer_time_in": "16:30",
+            "customer_time_out": "17:00"
+        }
+    ],
 
-    "customer_name": "Alice Brown",
-    "customer_email": "alice.brown@example.com",
-    "customer_signature": "Alice's Signature",
-    "customer_signature_date": "2024-07-18",
-    "customer_time_in": "16:30",
-    "customer_time_out": "17:00",
-    
     "images": [
         {
             "file": "/9j/4AAQSkZJRgABAQEAAAAAAAD/4QBWRXhpZgAATU0AKgAAAAgAAYdpAAQA", 
@@ -589,7 +614,7 @@ live url: https://scserver.org/api/sc/v1/transportationticket/update
 
 //images is optional
 {
-    "ticket_id": "1",
+    "id": "1",
     "user_id": "1",
     "job_id": "1",
     "pickup_address": "123 Pickup St",
@@ -610,25 +635,67 @@ live url: https://scserver.org/api/sc/v1/transportationticket/update
     "site_contact_number": "1234567890",
     "site_number_special_instructions": "Call ahead",
 
-    "shipper_name": "Jane Smith",
-    "shipper_signature": "Jane's Signature",
-    "shipper_signature_date": "2024-07-18",
-    "shipper_time_in": "08:30",
-    "shipper_time_out": "09:00",
-
     "pickup_driver_name": "Mike Johnson",
     "pickup_driver_signature": "Mike's Signature",
     "pickup_driver_signature_date": "2024-07-18",
     "pickup_driver_time_in": "08:00",
     "pickup_driver_time_out": "08:30",
+    "shippers": [
+        {
+            "id": "1",	// update case
+            "shipper_name": "Jane Smith",
+            "shipper_signature": "Jane's Signature",
+            "shipper_signature_date": "2024-07-18",
+            "shipper_time_in": "08:30",
+            "shipper_time_out": "09:00"
+        },
+        {
+            "id": "2",	// update case
+            "shipper_name": "Jane Smith",
+            "shipper_signature": "Jane's Signature",
+            "shipper_signature_date": "2024-07-18",
+            "shipper_time_in": "08:30",
+            "shipper_time_out": "09:00"
+        },
+        {
+            "id": "",	// add case
+            "shipper_name": "Jane Smith",
+            "shipper_signature": "Jane's Signature",
+            "shipper_signature_date": "2024-07-18",
+            "shipper_time_in": "08:30",
+            "shipper_time_out": "09:00"
+        }
+    ],
+    "customers": [
+        {
+            "id": "1",	// update case
+            "customer_name": "Alice Brown",
+            "customer_email": "alice.brown@example.com",
+            "customer_signature": "Alice's Signature",
+            "customer_signature_date": "2024-07-18",
+            "customer_time_in": "16:30",
+            "customer_time_out": "17:00"
+        },
+        {
+            "id": "2",	// update case
+            "customer_name": "Alice Brown",
+            "customer_email": "alice.brown@example.com",
+            "customer_signature": "Alice's Signature",
+            "customer_signature_date": "2024-07-18",
+            "customer_time_in": "16:30",
+            "customer_time_out": "17:00"
+        },
+        {
+            "id": "",	// add case
+            "customer_name": "new",
+            "customer_email": "alice.brown@example.com",
+            "customer_signature": "Alice's Signature",
+            "customer_signature_date": "2024-07-18",
+            "customer_time_in": "16:30",
+            "customer_time_out": "17:00"
+        }
+    ],
 
-    "customer_name": "Alice Brown",
-    "customer_email": "alice.brown@example.com",
-    "customer_signature": "Alice's Signature",
-    "customer_signature_date": "2024-07-18",
-    "customer_time_in": "16:30",
-    "customer_time_out": "17:00",
-    
     "images": [
         {
             "file": "/9j/4AAQSkZJRgABAQEAAAAAAAD/4QBWRXhpZgAATU0AKgAAAAgAAYdpAAQA", 
@@ -704,3 +771,41 @@ live url: https://scserver.org/api/sc/v1/job/viewTicketPdf
 when flag is '1' then id will be rigger ticket primary id
 when flag is '2' then id will be transporter ticket primary id
 when flag is '3' then id will be payduty form primary id
+
+
+
+
+
+
+url: http://127.0.0.1:8000/api/sc/v1/transportationticket/shipper/delete
+live url: https://scserver.org/api/sc/v1/transportationticket/shipper/delete
+
+{
+    "shipper_id": "1",
+    "ticket_id": "1"
+}
+
+url: http://127.0.0.1:8000/api/sc/v1/transportationticket/shipper/view
+live url: https://scserver.org/api/sc/v1/transportationticket/shipper/view
+
+{
+    "shipper_id": "1"
+}
+
+
+
+
+url: http://127.0.0.1:8000/api/sc/v1/transportationticket/customer/delete
+live url: https://scserver.org/api/sc/v1/transportationticket/customer/delete
+
+{
+    "customer_id": "1",
+    "ticket_id": "1"
+}
+
+url: http://127.0.0.1:8000/api/sc/v1/transportationticket/customer/view
+live url: https://scserver.org/api/sc/v1/transportationticket/customer/view
+
+{
+    "customer_id": "1"
+}

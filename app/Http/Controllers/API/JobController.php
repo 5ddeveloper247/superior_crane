@@ -122,6 +122,9 @@ class JobController extends Controller
             $riggerAssignedIds = json_decode($jobDetail->rigger_assigned);
             $assignedUsers = User::whereIn('id', $riggerAssignedIds)->where('status', '1')->get();// assigned user details
             
+            $assignedUsersIds = User::whereIn('id', $riggerAssignedIds != null ? $riggerAssignedIds : [])->pluck('name')->toArray();
+            $userNames = implode(', ', $assignedUsersIds);
+            
             $createdBy = User::where('id', $jobDetail->created_by)->first();
             
             if($jobDetail->job_type == '1'){
@@ -163,7 +166,7 @@ class JobController extends Controller
                 foreach($assignedUsers as $user){
                     $mailData['user'] = isset($user->name) ? $user->name : $jobDetail->user_assigned;
                     $mailData['username'] = isset($user->name) ? $user->name : $jobDetail->user_assigned;
-                    $mailData['assigned_to'] = isset($user->name) ? $user->name : $jobDetail->user_assigned;
+                    $mailData['assigned_to'] = isset($userNames) ? $userNames : $jobDetail->user_assigned;
                     $body = view('emails.job_template', $mailData);
                     $userEmailsSend = $user->email;//'hamza@5dsolutions.ae';//
                     sendMail(isset($user->name) ? $user->name : $jobDetail->user_assigned, $userEmailsSend, 'Superior Crane', 'Job Creation', $body);
@@ -181,7 +184,7 @@ class JobController extends Controller
             }else{
                 $Notifications->message = 'Job J-'.$jobDetail->id.' on '.date('d-M-Y', strtotime($jobDetail->date)).' at '.date('H:i A', strtotime($jobDetail->job_time)).' has been assigned to '.$jobDetail->user_assigned.'.';
             }
-            $Notifications->message_html = $body;
+            $Notifications->message_html = "$body";
             $Notifications->read_flag = '0';
             $Notifications->created_by = $createdBy->id;
             $Notifications->created_at = date('Y-m-d H:i:s');

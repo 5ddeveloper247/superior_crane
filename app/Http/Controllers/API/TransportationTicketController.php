@@ -8,6 +8,8 @@ use App\Models\User;
 use App\Models\JobModel;
 use App\Models\TransportationTicketModel;
 use App\Models\TransportationTicketImages;
+use App\Models\TransportationTicketShipper;
+use App\Models\TransportationTicketCustomer;
 use App\Models\Notifications;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
@@ -21,12 +23,8 @@ class TransportationTicketController extends Controller
         $request->merge([
             'time_in' => $request->input('time_in') != null ? date('H:i', strtotime($request->input('time_in'))) : null,
             'time_out' => $request->input('time_out') != null ? date('H:i', strtotime($request->input('time_out'))) : null,
-            'shipper_time_in' => $request->input('shipper_time_in') != null ? date('H:i', strtotime($request->input('shipper_time_in'))) : null,
-            'shipper_time_out' => $request->input('shipper_time_out') != null ? date('H:i', strtotime($request->input('shipper_time_out'))) : null,
             'pickup_driver_time_in' => $request->input('pickup_driver_time_in') != null ? date('H:i', strtotime($request->input('pickup_driver_time_in'))) : null,
             'pickup_driver_time_out' => $request->input('pickup_driver_time_out') != null ? date('H:i', strtotime($request->input('pickup_driver_time_out'))) : null,
-            'customer_time_in' => $request->input('customer_time_in') != null ? date('H:i', strtotime($request->input('customer_time_in'))) : null,
-            'customer_time_out' => $request->input('customer_time_out') != null ? date('H:i', strtotime($request->input('customer_time_out'))) : null,
         ]);
         if(isset($request->status) && $request->status == '3'){
             $validator = Validator::make($request->all(), [
@@ -45,30 +43,41 @@ class TransportationTicketController extends Controller
                 'site_name_special_instructions' => 'nullable|string',
                 'site_contact_number' => 'nullable|string|max:17',
                 'site_number_special_instructions' => 'nullable|string',
-                'shipper_name' => 'nullable|string|max:100',
-                'shipper_signature' => 'nullable|string',
-                'shipper_signature_date' => 'nullable|date',
-                'shipper_time_in' => 'nullable|date_format:H:i',
-                'shipper_time_out' => 'nullable|date_format:H:i',
+                
                 'pickup_driver_name' => 'nullable|string|max:100',
                 'pickup_driver_signature' => 'nullable|string',
                 'pickup_driver_signature_date' => 'nullable|date',
                 'pickup_driver_time_in' => 'nullable|date_format:H:i',
                 'pickup_driver_time_out' => 'nullable|date_format:H:i',
-                'customer_name' => 'nullable|string|max:100',
-                'customer_email' => 'nullable|string|email|max:100',
-                'customer_signature' => 'nullable|string',
-                'customer_signature_date' => 'nullable|date',
-                'customer_time_in' => 'nullable|date_format:H:i',
-                'customer_time_out' => 'nullable|date_format:H:i',
+                
                 'status' => 'required|integer',   // 1=>draft, 2=>issued, 3=>complete
                 // 'images' => 'required',
                 'images.*.file' => 'string',
                 'images.*.title' => 'string|max:255',
                 'images.*.type' => 'string|max:255',
-                // 'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                
+                // Shippers array (optional, but if present, all fields are required)
+                'shippers' => 'nullable|array',
+                'shippers.*.id' => 'nullable|integer', 
+                'shippers.*.shipper_name' => 'required_with:shippers|required|string|max:100',
+                'shippers.*.shipper_signature' => 'required_with:shippers|required|string',
+                'shippers.*.shipper_signature_date' => 'required_with:shippers|required|date',
+                'shippers.*.shipper_time_in' => 'required_with:shippers|required|date_format:H:i',
+                'shippers.*.shipper_time_out' => 'required_with:shippers|required|date_format:H:i',
+                
+                // Consignees validation (array optional, fields required if present)
+                'customers' => 'nullable|array',
+                'customers.*.id' => 'nullable|integer',
+                'customers.*.customer_name' => 'required_with:customers|required|string|max:100',
+                'customers.*.customer_email' => 'required_with:customers|required|string|email|max:100',
+                'customers.*.customer_signature' => 'required_with:customers|required|string',
+                'customers.*.customer_signature_date' => 'required_with:customers|required|date',
+                'customers.*.customer_time_in' => 'required_with:customers|required|date_format:H:i',
+                'customers.*.customer_time_out' => 'required_with:customers|required|date_format:H:i',
+                
                 'created_by' => 'required|integer',
             ]);
+            
         }else{
             $validator = Validator::make($request->all(), [
                 'user_id' => 'required',
@@ -104,28 +113,61 @@ class TransportationTicketController extends Controller
             $record->site_contact_name_special_instructions = $request->site_name_special_instructions;
             $record->site_contact_number = $request->site_contact_number;
             $record->site_contact_number_special_instructions = $request->site_number_special_instructions;
-            $record->shipper_name = $request->shipper_name;
-            $record->shipper_signature = $request->shipper_signature;
-            $record->shipper_signature_date = $request->shipper_signature_date;
-            $record->shipper_time_in = $request->shipper_time_in;
-            $record->shipper_time_out = $request->shipper_time_out;
+            
             $record->pickup_driver_name = $request->pickup_driver_name;
             $record->pickup_driver_signature = $request->pickup_driver_signature;
             $record->pickup_driver_signature_date = $request->pickup_driver_signature_date;
             $record->pickup_driver_time_in = $request->pickup_driver_time_in;
             $record->pickup_driver_time_out = $request->pickup_driver_time_out;
-            $record->customer_name = $request->customer_name;
-            $record->customer_email = $request->customer_email;
-            $record->customer_signature = $request->customer_signature;
-            $record->customer_signature_date = $request->customer_signature_date;
-            $record->customer_time_in = $request->customer_time_in;
-            $record->customer_time_out = $request->customer_time_out;
+            
             $record->status = $request->status;
             $record->created_by = $request->created_by;
             $record->save();
 
             if($request->status == '3'){
                 JobModel::where('id', $record->job_id)->update(['status' => '3']);
+            }
+
+            $shippers = $request->shippers;
+            
+            if(is_countable($shippers) && count($shippers) > 0){
+                foreach ($shippers as $index => $shipperData) {
+                    
+                    if($shipperData['id'] != null && $shipperData['id'] != ''){
+                        $shipper = TransportationTicketShipper::where('id', $shipperData['id'])->first();
+                    }else{
+                        $shipper = new TransportationTicketShipper();
+                    }
+                    
+                    $shipper->ticket_id = $record->id;
+                    $shipper->shipper_name = $shipperData['shipper_name'] ?? '';
+                    $shipper->shipper_signature = $shipperData['shipper_signature'] ?? '';
+                    $shipper->shipper_signature_date = $shipperData['shipper_signature_date'] ?? '';
+                    $shipper->shipper_time_in = date('H:i', strtotime($shipperData['shipper_time_in'])) ?? null;
+                    $shipper->shipper_time_out = date('H:i', strtotime($shipperData['shipper_time_out'])) ?? null;
+                    $shipper->save();
+                }
+            }
+
+            $customers = $request->customers;
+            if(is_countable($customers) && count($customers) > 0){
+                foreach ($customers as $index => $customerData) {
+
+                    if($customerData['id'] != null && $customerData['id'] != ''){
+                        $customer = TransportationTicketCustomer::where('id', $shipperData['id'])->first();
+                    }else{
+                        $customer = new TransportationTicketCustomer();
+                    }
+
+                    $customer->ticket_id = $record->id;
+                    $customer->customer_name = $customerData['customer_name'] ?? '';
+                    $customer->customer_email = $customerData['customer_email'] ?? '';
+                    $customer->customer_signature = $customerData['customer_signature'] ?? '';
+                    $customer->customer_signature_date = $customerData['customer_signature_date'] ?? '';
+                    $customer->customer_time_in = date('H:i', strtotime($customerData['customer_time_in'])) ?? null;
+                    $customer->customer_time_out = date('H:i', strtotime($customerData['customer_time_out'])) ?? null;
+                    $customer->save();
+                }
             }
 
             $images = $request->images;
@@ -188,16 +230,12 @@ class TransportationTicketController extends Controller
         $request->merge([
             'time_in' => $request->input('time_in') != null ? date('H:i', strtotime($request->input('time_in'))) : null,
             'time_out' => $request->input('time_out') != null ? date('H:i', strtotime($request->input('time_out'))) : null,
-            'shipper_time_in' => $request->input('shipper_time_in') != null ? date('H:i', strtotime($request->input('shipper_time_in'))) : null,
-            'shipper_time_out' => $request->input('shipper_time_out') != null ? date('H:i', strtotime($request->input('shipper_time_out'))) : null,
             'pickup_driver_time_in' => $request->input('pickup_driver_time_in') != null ? date('H:i', strtotime($request->input('pickup_driver_time_in'))) : null,
             'pickup_driver_time_out' => $request->input('pickup_driver_time_out') != null ? date('H:i', strtotime($request->input('pickup_driver_time_out'))) : null,
-            'customer_time_in' => $request->input('customer_time_in') != null ? date('H:i', strtotime($request->input('customer_time_in'))) : null,
-            'customer_time_out' => $request->input('customer_time_out') != null ? date('H:i', strtotime($request->input('customer_time_out'))) : null,
         ]);
         if(isset($request->status) && $request->status == '3'){
             $validator = Validator::make($request->all(), [
-                'ticket_id' => 'required',
+                'id' => 'required',
                 'user_id' => 'required',
                 'job_id' => 'required',
                 'pickup_address' => 'required|string',
@@ -213,31 +251,37 @@ class TransportationTicketController extends Controller
                 'site_name_special_instructions' => 'nullable|string',
                 'site_contact_number' => 'nullable|string|max:17',
                 'site_number_special_instructions' => 'nullable|string',
-                'shipper_name' => 'nullable|string|max:100',
-                'shipper_signature' => 'nullable|string',
-                'shipper_signature_date' => 'nullable|date',
-                'shipper_time_in' => 'nullable|date_format:H:i',
-                'shipper_time_out' => 'nullable|date_format:H:i',
                 'pickup_driver_name' => 'nullable|string|max:100',
                 'pickup_driver_signature' => 'nullable|string',
                 'pickup_driver_signature_date' => 'nullable|date',
                 'pickup_driver_time_in' => 'nullable|date_format:H:i',
                 'pickup_driver_time_out' => 'nullable|date_format:H:i',
-                'customer_name' => 'nullable|string|max:100',
-                'customer_email' => 'nullable|string|email|max:100',
-                'customer_signature' => 'nullable|string',
-                'customer_signature_date' => 'nullable|date',
-                'customer_time_in' => 'nullable|date_format:H:i',
-                'customer_time_out' => 'nullable|date_format:H:i',
+                
+                // Shippers array (optional, but if present, all fields are required)
+                'shippers' => 'nullable|array',
+                'shippers.*.id' => 'nullable|integer', 
+                'shippers.*.shipper_name' => 'required_with:shippers|required|string|max:100',
+                'shippers.*.shipper_signature' => 'required_with:shippers|required|string',
+                'shippers.*.shipper_signature_date' => 'required_with:shippers|required|date',
+                'shippers.*.shipper_time_in' => 'required_with:shippers|required|date_format:H:i',
+                'shippers.*.shipper_time_out' => 'required_with:shippers|required|date_format:H:i',
+                
+                // Consignees validation (array optional, fields required if present)
+                'customers' => 'nullable|array',
+                'customers.*.id' => 'nullable|integer',
+                'customers.*.customer_name' => 'required_with:customers|required|string|max:100',
+                'customers.*.customer_email' => 'required_with:customers|required|string|email|max:100',
+                'customers.*.customer_signature' => 'required_with:customers|required|string',
+                'customers.*.customer_signature_date' => 'required_with:customers|required|date',
+                'customers.*.customer_time_in' => 'required_with:customers|required|date_format:H:i',
+                'customers.*.customer_time_out' => 'required_with:customers|required|date_format:H:i',
+
                 'status' => 'required|integer',   // 1=>draft, 2=>issued, 3=>complete
-                // 'images' => 'required',
-                // 'images.*.file' => 'required|string',
-                // 'images.*.title' => 'required|string|max:255',
                 'created_by' => 'required|integer',
             ]);
         }else{
             $validator = Validator::make($request->all(), [
-                'ticket_id' => 'required',
+                'id' => 'required',
                 'user_id' => 'required',
                 'job_id' => 'required',
                 'status' => 'required|integer',   // 1=>draft, 2=>issued, 3=>complete
@@ -254,7 +298,7 @@ class TransportationTicketController extends Controller
         }
 
         try {
-            $record = TransportationTicketModel::where('id', $request->ticket_id)->first();
+            $record = TransportationTicketModel::where('id', $request->id)->first();
             if($record){
                 $record->user_id = $request->user_id;
                 $record->job_id = $request->job_id;
@@ -271,22 +315,13 @@ class TransportationTicketController extends Controller
                 $record->site_contact_name_special_instructions = $request->site_name_special_instructions;
                 $record->site_contact_number = $request->site_contact_number;
                 $record->site_contact_number_special_instructions = $request->site_number_special_instructions;
-                $record->shipper_name = $request->shipper_name;
-                $record->shipper_signature = $request->shipper_signature;
-                $record->shipper_signature_date = $request->shipper_signature_date;
-                $record->shipper_time_in = $request->shipper_time_in;
-                $record->shipper_time_out = $request->shipper_time_out;
+                
                 $record->pickup_driver_name = $request->pickup_driver_name;
                 $record->pickup_driver_signature = $request->pickup_driver_signature;
                 $record->pickup_driver_signature_date = $request->pickup_driver_signature_date;
                 $record->pickup_driver_time_in = $request->pickup_driver_time_in;
                 $record->pickup_driver_time_out = $request->pickup_driver_time_out;
-                $record->customer_name = $request->customer_name;
-                $record->customer_email = $request->customer_email;
-                $record->customer_signature = $request->customer_signature;
-                $record->customer_signature_date = $request->customer_signature_date;
-                $record->customer_time_in = $request->customer_time_in;
-                $record->customer_time_out = $request->customer_time_out;
+                
                 $record->status = $request->status;
                 $record->created_by = $request->created_by;
                 $record->save();
@@ -295,6 +330,48 @@ class TransportationTicketController extends Controller
                     JobModel::where('id', $record->job_id)->update(['status' => '3']);
                 }
 
+                $shippers = $request->shippers;
+            
+            if(is_countable($shippers) && count($shippers) > 0){
+                foreach ($shippers as $index => $shipperData) {
+                    
+                    if($shipperData['id'] != null && $shipperData['id'] != ''){
+                        $shipper = TransportationTicketShipper::where('id', $shipperData['id'])->first();
+                    }else{
+                        $shipper = new TransportationTicketShipper();
+                    }
+                    
+                    $shipper->ticket_id = $record->id;
+                    $shipper->shipper_name = $shipperData['shipper_name'] ?? '';
+                    $shipper->shipper_signature = $shipperData['shipper_signature'] ?? '';
+                    $shipper->shipper_signature_date = $shipperData['shipper_signature_date'] ?? '';
+                    $shipper->shipper_time_in = date('H:i', strtotime($shipperData['shipper_time_in'])) ?? null;
+                    $shipper->shipper_time_out = date('H:i', strtotime($shipperData['shipper_time_out'])) ?? null;
+                    $shipper->save();
+                }
+            }
+
+            $customers = $request->customers;
+            if(is_countable($customers) && count($customers) > 0){
+                foreach ($customers as $index => $customerData) {
+
+                    if($customerData['id'] != null && $customerData['id'] != ''){
+                        $customer = TransportationTicketCustomer::where('id', $customerData['id'])->first();
+                    }else{
+                        $customer = new TransportationTicketCustomer();
+                    }
+
+                    $customer->ticket_id = $record->id;
+                    $customer->customer_name = $customerData['customer_name'] ?? '';
+                    $customer->customer_email = $customerData['customer_email'] ?? '';
+                    $customer->customer_signature = $customerData['customer_signature'] ?? '';
+                    $customer->customer_signature_date = $customerData['customer_signature_date'] ?? '';
+                    $customer->customer_time_in = date('H:i', strtotime($customerData['customer_time_in'])) ?? null;
+                    $customer->customer_time_out = date('H:i', strtotime($customerData['customer_time_out'])) ?? null;
+                    $customer->save();
+                }
+            }
+                
                 $this->sendEmailTransporterTicket($record->id);
             }
             
@@ -437,7 +514,7 @@ class TransportationTicketController extends Controller
             $dateLimit = getApiRecordLimitDate();
             $transportation_ticket_list = TransportationTicketModel::where('user_id', $request->user_id)
                                                                     ->whereDate('created_at', '>=', $dateLimit)
-                                                                    ->with(['ticketImages'])
+                                                                    ->with(['ticketImages','shippers','customers'])
                                                                     ->get();
             
             if($transportation_ticket_list) {
@@ -478,7 +555,7 @@ class TransportationTicketController extends Controller
 
         try {
 
-            $ticket_detail = TransportationTicketModel::where('id', $request->ticket_id)->with(['ticketImages'])->first();
+            $ticket_detail = TransportationTicketModel::where('id', $request->ticket_id)->with(['ticketImages','shippers','customers'])->first();
             if($ticket_detail) {
                 return response()->json([
                     'success' => true,
@@ -500,6 +577,412 @@ class TransportationTicketController extends Controller
             ], 500);
         }
     }
+
+
+    /* ======================= Transportation Ticket Shipper ========================== */
+
+    // public function add_transportation_shipper(Request $request)
+    // {
+    //     $request->merge([
+    //         'shipper_time_in' => $request->input('shipper_time_in') != null ? date('H:i', strtotime($request->input('shipper_time_in'))) : null,
+    //         'shipper_time_out' => $request->input('shipper_time_out') != null ? date('H:i', strtotime($request->input('shipper_time_out'))) : null,
+    //     ]);
+       
+    //     $validator = Validator::make($request->all(), [
+    //         'ticket_id' => 'required|exists:transportation_tickets,id',
+    //         'shipper_name' => 'required|string|max:100',
+    //         'shipper_signature' => 'required|string',
+    //         'shipper_signature_date' => 'required|date',
+    //         'shipper_time_in' => 'required|date_format:H:i',
+    //         'shipper_time_out' => 'required|date_format:H:i',
+    //     ]);
+    
+    //     // Check if validation fails
+    //     if ($validator->fails()) {
+    //         return response()->json([
+    //             'success' => false,
+    //             'errors' => $validator->errors(),
+    //         ], 422);
+    //     }
+
+    //     try {
+    //         $record = new TransportationTicketShipper; 
+    //         $record->ticket_id = $request->ticket_id;
+    //         $record->shipper_name = $request->shipper_name;
+    //         $record->shipper_signature = $request->shipper_signature;
+    //         $record->shipper_signature_date = $request->shipper_signature_date;
+    //         $record->shipper_time_in = $request->shipper_time_in;
+    //         $record->shipper_time_out = $request->shipper_time_out;
+    //         $record->save();
+
+    //         return response()->json([
+    //             'success' => true,
+    //             'message' => 'Shipper added successfully...'
+    //         ], 200);
+    //     } catch (\Exception $e) {
+    //         // Log the error for debugging purposes
+    //         Log::error('Error adding record: ' . $e->getMessage());
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => "Oops! Network Error",
+    //         ], 500);
+    //     }
+    // }
+
+    // public function update_transportation_shipper(Request $request)
+    // {
+    //     $request->merge([
+    //         'shipper_time_in' => $request->input('shipper_time_in') != null ? date('H:i', strtotime($request->input('shipper_time_in'))) : null,
+    //         'shipper_time_out' => $request->input('shipper_time_out') != null ? date('H:i', strtotime($request->input('shipper_time_out'))) : null,
+    //     ]);
+    //     $validator = Validator::make($request->all(), [
+    //         'shipper_id' => 'required|exists:transportation_ticket_shippers,id',
+    //         'ticket_id' => 'required|exists:transportation_tickets,id',
+    //         'shipper_name' => 'required|string|max:100',
+    //         'shipper_signature' => 'required|string',
+    //         'shipper_signature_date' => 'required|date',
+    //         'shipper_time_in' => 'required|date_format:H:i',
+    //         'shipper_time_out' => 'required|date_format:H:i',
+    //     ]);
+
+    //     // Check if validation fails
+    //     if ($validator->fails()) {
+    //         return response()->json([
+    //             'success' => false,
+    //             'errors' => $validator->errors(),
+    //         ], 422);
+    //     }
+
+    //     try {
+    //         $record = TransportationTicketShipper::where('id', $request->shipper_id)->first();
+    //         if($record){
+    //             $record->ticket_id = $request->ticket_id;
+    //             $record->shipper_name = $request->shipper_name;
+    //             $record->shipper_signature = $request->shipper_signature;
+    //             $record->shipper_signature_date = $request->shipper_signature_date;
+    //             $record->shipper_time_in = $request->shipper_time_in;
+    //             $record->shipper_time_out = $request->shipper_time_out;
+    //             $record->save();
+    //         }
+            
+    //         return response()->json([
+    //             'success' => true,
+    //             'message' => 'Shipper updated successfully...'
+    //         ], 200);
+    //     } catch (\Exception $e) {
+    //         // Log the error for debugging purposes
+    //         Log::error('Error adding record: ' . $e->getMessage());
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => "Oops! Network Error",
+    //         ], 500);
+    //     }
+    // }
+
+    public function delete_shipper(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'ticket_id' => 'required|numeric',
+            'shipper_id' => 'required|numeric',
+        ]);
+        // Check if validation fails
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        try {
+
+            TransportationTicketShipper::where('ticket_id', $request->ticket_id)->where('id', $request->shipper_id)->delete();
+
+            $shippers = TransportationTicketShipper::where('ticket_id', $request->ticket_id)->get();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Shipper deleted successfully...',
+                'shippers' => $shippers,
+            ], 200);
+        } catch (\Exception $e) {
+            // Log the error for debugging purposes
+            Log::error('Error loading job: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => "Oops! Network Error",
+            ], 500);
+        }
+    }
+
+    public function get_specific_shipper(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'shipper_id' => 'required|exists:transportation_ticket_shippers,id',
+        ]);
+        // Check if validation fails
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        try {
+
+            $shipper_detail = TransportationTicketShipper::where('id', $request->shipper_id)->first();
+            if($shipper_detail) {
+                return response()->json([
+                    'success' => true,
+                    'shipper_detail' => $shipper_detail,
+                ], 200);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No Data Found',
+                ], 401);
+            }
+
+        } catch (\Exception $e) {
+            // Log the error for debugging purposes
+            Log::error('Error loading job: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => "Oops! Network Error",
+            ], 500);
+        }
+    }
+
+    /* ======================= Transportation Ticket Customer ========================== */
+
+    // public function add_transportation_customer(Request $request)
+    // {
+    //     $request->merge([
+    //         'customer_time_in' => $request->input('customer_time_in') != null ? date('H:i', strtotime($request->input('customer_time_in'))) : null,
+    //         'customer_time_out' => $request->input('customer_time_out') != null ? date('H:i', strtotime($request->input('customer_time_out'))) : null,
+    //     ]);
+       
+    //     $validator = Validator::make($request->all(), [
+    //         'ticket_id' => 'required|exists:transportation_tickets,id',
+    //         'customer_name' => 'required|string|max:100',
+    //         'customer_email' => 'required|string|email|max:100',
+    //         'customer_signature' => 'required|string',
+    //         'customer_signature_date' => 'required|date',
+    //         'customer_time_in' => 'required|date_format:H:i',
+    //         'customer_time_out' => 'required|date_format:H:i',
+    //     ], [
+    //         'ticket_id.required' => 'The transportation ticket ID is required.',
+    //         'ticket_id.exists' => 'The selected transportation ticket does not exist.',
+
+    //         'customer_name.required' => 'The consignee name is required.',
+    //         'customer_name.max' => 'The consignee name must not be greater than 100 characters.',
+        
+    //         'customer_email.required' => 'The consignee email is required.',
+    //         'customer_email.email' => 'The consignee email must be a valid email address.',
+    //         'customer_email.max' => 'The consignee email must not be greater than 100 characters.',
+        
+    //         'customer_signature.required' => 'The consignee signature is required.',
+    //         'customer_signature.string' => 'The consignee signature must be a valid string.',
+        
+    //         'customer_signature_date.required' => 'The consignee signature date is required.',
+    //         'customer_signature_date.date' => 'The consignee signature date must be a valid date.',
+        
+    //         'customer_time_in.required' => 'The consignee time in is required.',
+    //         'customer_time_in.date_format' => 'The consignee time in must be in the format HH:MM.',
+        
+    //         'customer_time_out.required' => 'The consignee time out is required.',
+    //         'customer_time_out.date_format' => 'The consignee time out must be in the format HH:MM.',
+    //     ]);
+    
+    //     // Check if validation fails
+    //     if ($validator->fails()) {
+    //         return response()->json([
+    //             'success' => false,
+    //             'errors' => $validator->errors(),
+    //         ], 422);
+    //     }
+
+    //     try {
+    //         $record = new TransportationTicketCustomer; 
+    //         $record->ticket_id = $request->ticket_id;
+    //         $record->customer_name = $request->customer_name;
+    //         $record->customer_email = $request->customer_email;
+    //         $record->customer_signature = $request->customer_signature;
+    //         $record->customer_signature_date = $request->customer_signature_date;
+    //         $record->customer_time_in = $request->customer_time_in;
+    //         $record->customer_time_out = $request->customer_time_out;
+    //         $record->save();
+
+    //         return response()->json([
+    //             'success' => true,
+    //             'message' => 'Consignee added successfully...'
+    //         ], 200);
+    //     } catch (\Exception $e) {
+    //         // Log the error for debugging purposes
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => "Oops! Network Error",
+    //         ], 500);
+    //     }
+    // }
+
+    // public function update_transportation_customer(Request $request)
+    // {
+    //     $request->merge([
+    //         'customer_time_in' => $request->input('customer_time_in') != null ? date('H:i', strtotime($request->input('customer_time_in'))) : null,
+    //         'customer_time_out' => $request->input('customer_time_out') != null ? date('H:i', strtotime($request->input('customer_time_out'))) : null,
+    //     ]);
+       
+    //     $validator = Validator::make($request->all(), [
+    //         'ticket_id' => 'required|exists:transportation_tickets,id',
+    //         'customer_id' => 'required|exists:transportation_ticket_customers,id',
+    //         'customer_name' => 'required|string|max:100',
+    //         'customer_email' => 'required|string|email|max:100',
+    //         'customer_signature' => 'required|string',
+    //         'customer_signature_date' => 'required|date',
+    //         'customer_time_in' => 'required|date_format:H:i',
+    //         'customer_time_out' => 'required|date_format:H:i',
+    //     ], [
+    //         'ticket_id.required' => 'The transportation ticket ID is required.',
+    //         'ticket_id.exists' => 'The selected transportation ticket does not exist.',
+        
+    //         'customer_id.required' => 'The consignee ID is required.',
+    //         'customer_id.exists' => 'The selected consignee does not exist.',
+        
+    //         'customer_name.required' => 'The consignee name is required.',
+    //         'customer_name.string' => 'The consignee name must be a valid string.',
+    //         'customer_name.max' => 'The consignee name must not be greater than 100 characters.',
+        
+    //         'customer_email.required' => 'The consignee email is required.',
+    //         'customer_email.string' => 'The consignee email must be a valid string.',
+    //         'customer_email.email' => 'The consignee email must be a valid email address.',
+    //         'customer_email.max' => 'The consignee email must not be greater than 100 characters.',
+        
+    //         'customer_signature.required' => 'The consignee signature is required.',
+    //         'customer_signature.string' => 'The consignee signature must be a valid string.',
+        
+    //         'customer_signature_date.required' => 'The consignee signature date is required.',
+    //         'customer_signature_date.date' => 'The consignee signature date must be a valid date.',
+        
+    //         'customer_time_in.required' => 'The consignee time in is required.',
+    //         'customer_time_in.date_format' => 'The consignee time in must be in the format HH:MM.',
+        
+    //         'customer_time_out.required' => 'The consignee time out is required.',
+    //         'customer_time_out.date_format' => 'The consignee time out must be in the format HH:MM.',
+    //     ]);
+        
+
+    //     // Check if validation fails
+    //     if ($validator->fails()) {
+    //         return response()->json([
+    //             'success' => false,
+    //             'errors' => $validator->errors(),
+    //         ], 422);
+    //     }
+
+    //     try {
+    //         $record = TransportationTicketCustomer::where('id', $request->customer_id)->first();
+    //         if($record){
+    //             $record->ticket_id = $request->ticket_id;
+    //             $record->customer_name = $request->customer_name;
+    //             $record->customer_email = $request->customer_email;
+    //             $record->customer_signature = $request->customer_signature;
+    //             $record->customer_signature_date = $request->customer_signature_date;
+    //             $record->customer_time_in = $request->customer_time_in;
+    //             $record->customer_time_out = $request->customer_time_out;
+    //             $record->save();
+    //         }
+            
+    //         return response()->json([
+    //             'success' => true,
+    //             'message' => 'Consignee updated successfully...'
+    //         ], 200);
+    //     } catch (\Exception $e) {
+    //         // Log the error for debugging purposes
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => "Oops! Network Error",
+    //         ], 500);
+    //     }
+    // }
+
+    public function delete_customer(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'ticket_id' => 'required|exists:transportation_tickets,id',
+            'customer_id' => 'required|exists:transportation_ticket_customers,id',
+        ], [
+            'ticket_id.required' => 'The transportation ticket ID is required.',
+            'ticket_id.exists' => 'The selected transportation ticket does not exist.',
+        
+            'customer_id.required' => 'The consignee ID is required.',
+            'customer_id.exists' => 'The selected consignee does not exist.'
+        ]);
+        // Check if validation fails
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        try {
+
+            TransportationTicketCustomer::where('ticket_id', $request->ticket_id)->where('id', $request->customer_id)->delete();
+
+            $customers = TransportationTicketCustomer::where('ticket_id', $request->ticket_id)->get();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Shipper deleted successfully...',
+                'customers' => $customers,
+            ], 200);
+        } catch (\Exception $e) {
+            // Log the error for debugging purposes
+            return response()->json([
+                'success' => false,
+                'message' => "Oops! Network Error",
+            ], 500);
+        }
+    }
+
+    public function get_specific_customer(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'customer_id' => 'required|exists:transportation_ticket_customers,id',
+        ]);
+        // Check if validation fails
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        try {
+
+            $customer_detail = TransportationTicketCustomer::where('id', $request->customer_id)->first();
+            if($customer_detail) {
+                return response()->json([
+                    'success' => true,
+                    'customer_detail' => $customer_detail,
+                ], 200);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No Data Found',
+                ], 401);
+            }
+
+        } catch (\Exception $e) {
+            // Log the error for debugging purposes
+            return response()->json([
+                'success' => false,
+                'message' => "Oops! Network Error",
+            ], 500);
+        }
+    }
+
+    
 
     public function sendEmailTransporterTicket($ticket_id){
 
@@ -628,7 +1111,7 @@ class TransportationTicketController extends Controller
 
 
                 ['text' => $ticket->shipper_name, 'x' => 58, 'y' => 96.5],
-                ['base64_image' => $ticket->shipper_signature, 'x' => 122, 'y' => 98, 'width' => 20, 'height' => 5],
+                // ['base64_image' => $ticket->shipper_signature, 'x' => 122, 'y' => 98, 'width' => 20, 'height' => 5],
                 ['text' => $ticket->shipper_signature_date != null ? date('d-M-Y', strtotime($ticket->shipper_signature_date)) : '', 'x' => 164, 'y' => 96.5],
                 ['text' => $ticket->shipper_time_in != null ? date('H:i', strtotime($ticket->shipper_time_in)) : '', 'x' => 210, 'y' => 96.5],
                 ['text' => $ticket->shipper_time_out, 'x' => 241, 'y' => 96.5],
@@ -640,7 +1123,7 @@ class TransportationTicketController extends Controller
                 ['text' => $ticket->pickup_driver_time_out, 'x' => 241, 'y' => 103],
 
                 ['text' => $ticket->customer_name, 'x' => 58, 'y' => 110],
-                ['base64_image' => $ticket->customer_signature, 'x' => 122, 'y' => 111, 'width' => 20, 'height' => 5],
+                // ['base64_image' => $ticket->customer_signature, 'x' => 122, 'y' => 111, 'width' => 20, 'height' => 5],
                 ['text' => $ticket->customer_signature_date != null ? date('d-M-Y', strtotime($ticket->customer_signature_date)) : '', 'x' => 164, 'y' => 110],
                 ['text' => $ticket->customer_time_in != null ? date('H:i', strtotime($ticket->customer_time_in)) : '', 'x' => 210, 'y' => 110],
                 ['text' => $ticket->customer_time_out, 'x' => 241, 'y' => 110],
