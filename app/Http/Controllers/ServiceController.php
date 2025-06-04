@@ -191,7 +191,7 @@ class ServiceController extends Controller
 
             $tickets = TransportationTicketModel::whereDate('created_at', '>=', $from_date)
                                     ->whereDate('created_at', '<=', $to_date)
-                                    ->with('ticketImages')
+                                    ->with(['ticketImages','shippers','customers'])
                                     ->get();
             
             if (!$tickets->isEmpty()) { // Check if there are tickets to archive
@@ -274,45 +274,6 @@ class ServiceController extends Controller
                 }
 
                 $jsonData = json_decode($archiveJob->json_data, true);  // Assuming 'json_data' is the column that stores your JSON
-                // $dummyFolder = public_path("service_images");
-                
-                // if (!file_exists($dummyFolder)) {
-                //     mkdir($dummyFolder, 0777, true);
-                // }
-
-                // if($jsonData){
-                //     foreach($jsonData as $job){
-                       
-                //         $jobImagesPath = $dummyFolder . '/' . $serviceId . '/job';
-                //         $jobImagesPath .= '/' . $job['id'];
-
-                //         if (!file_exists($jobImagesPath)) {
-                //             mkdir($jobImagesPath, 0777, true);
-                //         }
-                //         $jobImages = $job['job_images'];
-
-                //         foreach($jobImages as $image){
-                //             if (isset($image['path'])) {
-                //                 $cleanedPath = preg_replace('/^public\//', '', $image['path']);
-                //                 $cleanedPath = str_replace("/public","",$image['path']);
-                                
-                //                 $imagePath = public_path($cleanedPath);
-                               
-                //                 $destinationPath = $jobImagesPath . '/' . basename($image['path']);
-                //                 if (file_exists($imagePath)) {
-                //                     copy($imagePath, $destinationPath);
-                //                 }
-                //             }
-                //         }
-                //     }
-                    
-                    
-                // }
-                
-                // $zipFilePath = $this->createZip($dummyFolder);
-                // $zipUrl = url('public/' . basename($zipFilePath));
-                // dd($zipUrl);
-                
                 
                 return Excel::download(new ArchiveJobsExport($jsonData), 'archive_jobs.xlsx');
 

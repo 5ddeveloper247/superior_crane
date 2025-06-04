@@ -394,6 +394,31 @@
         .select2-container .select2-dropdown {
             margin-top: -25px;
         }
+
+        .fc-event {
+            position: relative; /* Required for absolute positioning inside */
+        }
+        .tick-icon {
+            position: absolute;
+            right: 0px;
+            top: 12px;
+            transform: translateY(-50%);
+            color: #db2a2a;
+            font-weight: 900;
+            font-size: 16px !important;
+            vertical-align: text-top;
+        }
+        .left-bar {
+            display: inline-block;
+            width: 5px;
+            height: 1em;
+            background-color: red;
+            margin-right: 6px;
+            vertical-align: text-top;
+        }
+        .fc-timegrid-event {
+            min-width: 70px;
+        }
     </style>
 @endpush
 
@@ -717,7 +742,7 @@
                                     </label>
                                     <input class="form-control rounded-1 py-1 px-2 w-100" id="equipment_to_be_used" 
                                         name="equipment_to_be_used" type="text"
-                                        placeholder="Enter Equipment To Be Used Here" maxlength="50">
+                                        placeholder="Enter Equipment To Be Used Here" >
                                 </div>
                                 <div class="col-12 col-md-6 flex-column" id="riggerAssigned_div">
                                     <label class="form-label pb-2" for="rigger_assigned">
@@ -741,7 +766,8 @@
                                     <input class="form-control rounded-1 py-1 px-2 w-100" id="supplier_name" type="text"
                                         name="supplier_name" placeholder="Enter Supplier Name Here" maxlength="50">
                                 </div>
-                                <div class="mb-3 col-md-6 status_input" style="display:none;">
+                                
+                                <div class="mb-3 col-md-4 status_input" style="display:none;">
                                     <label for="add_status" class="pb-2 form-label">Status<span class="text-danger">*</span></label>
                                     <select class="form-control" name="status" id="add_status" required>
                                         <option value="">Select Status</option>
@@ -749,6 +775,11 @@
                                         <option value="1">Good To Go</option>
                                         <option value="0">Problem</option>
                                     </select>
+                                </div>
+                                <div class="col-md-2 mt-5">
+                                    <input type="checkbox" name="booked_check" id="booked_check" value="1" style="accent-color:#db2a2a;">
+                                    <label style="margin-top: 0rem !important" class="form-label m-0"
+                                        for="booked_check">Booked</label>
                                 </div>
                                 <div class="col-12 col-md-12 flex-column" id="driver_instructions_div" style="display:none;">
                                     <label class="pb-2 form-label" for="driver_instructions">
@@ -765,18 +796,26 @@
                                         name="notes" placeholder="Type Notes Here....." maxlength="500" style="resize:none;"></textarea>
                                 </div>
                                 
-                                <div class="col-12 col-md-8 d-flex flex-column">
+                                <div class="col-12 col-md-12 d-flex flex-column">
+                                    <label class="pb-2 form-label" for="add_notes">
+                                        Upload Attachment
+                                    </label>
+
+                                    <input type="hidden" id="deletedFileIds" name="deletedFileIds" value="">
+                                    
+                                    <div id="file-dropzone" class="dropzone"></div>
+                                </div>
+                                
+                                {{-- <div class="col-12 col-md-8 d-flex flex-column">
                                     <button class="py-1 px-5 w-50 mt-2 add-btn rounded-1" type="button" id="addAttachment_btn">
                                         Add Attachment
                                     </button>
-                                    <!-- <button type="button" class="atc-btn w-50 mt-2" id="addAttachment_btn">
-                                        Add Attachment<span class="text-danger">*</span>
-                                    </button> -->
+                                    
                                     <input type="hidden" id="deletedFileIds" name="deletedFileIds" value="">
                                     <div id="uploads_section">
                                         
                                     </div>
-                                </div>
+                                </div> --}}
 
                                 <div class="col-12 d-flex flex-column my-3">
                                     <div class="accordion" id="accordionExample">
@@ -895,4 +934,35 @@
 
 @push('scripts')
     <script src="{{ asset('assets_admin/customjs/script_dashboard.js') }}"></script>
+    <script>
+        Dropzone.autoDiscover = false;
+
+        let uploadedFiles = [];
+
+        let myDropzone = new Dropzone("#file-dropzone", {
+            url: "#", // Prevent auto upload
+            autoProcessQueue: false,
+            addRemoveLinks: true,
+            maxFilesize: 10, // MB
+            acceptedFiles: ".jpeg,.jpg,.png,.gif,.pdf",
+            init: function () {
+                this.on("addedfile", function (file) {
+                    uploadedFiles.push(file);
+                    console.log(uploadedFiles);
+                });
+
+                this.on("removedfile", function (file) {
+                    uploadedFiles = uploadedFiles.filter(f => f.name !== file.name);
+                    console.log(uploadedFiles);
+                });
+            }
+        });
+        function resetDropzone() {
+            myDropzone.removeAllFiles(true); // true = force remove
+            uploadedFiles = []; // reset your custom array
+        }
+        $('#addJob_modal').on('show.bs.modal', function () {
+            resetDropzone();
+        });
+    </script>
 @endpush

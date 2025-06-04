@@ -33,6 +33,7 @@ use Illuminate\Support\Facades\Auth;
         <link rel="stylesheet" href="{{asset('assets/plugins/daterangepicker/daterangepicker.css')}}">
         <link rel="stylesheet" href="{{ asset('assets/plugins/toastr/toastr.min.css') }}"/>
         <link rel="stylesheet" href="{{asset('assets/css/custom.css')}}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.css">
         
         
         @stack('styles')

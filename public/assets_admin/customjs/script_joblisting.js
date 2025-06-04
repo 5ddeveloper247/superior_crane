@@ -133,6 +133,11 @@ $(document).on('click', '#saveJob_btn', function (e) {
 
     let form = document.getElementById('addJob_from');
     let data = new FormData(form);
+
+    uploadedFiles.forEach((file, index) => {
+        data.append('job_images[]', file);
+    });
+
     let type = 'POST';
     let url = '/admin/saveJobData';
     SendAjaxRequestToServer(type, url, data, '', saveJobDataResponse, '', '#saveuser_btn');
@@ -382,6 +387,7 @@ function viewJobDetailsResponse(response) {
             $("#add_status").val(job_detail.status);
             $("#driver_instructions").val(job_detail.driver_instructions);
             $("#add_notes").val(job_detail.notes);
+            $("#booked_check").prop('checked', job_detail.booked_flag == '1' ? true : false);
             
             $("#created_by").text(job_detail.created_by != null ? job_detail.created_by.name : '');
             $("#updated_by").text(job_detail.updated_by != null ? job_detail.updated_by.name : '');
@@ -643,4 +649,25 @@ $(document).ready(function () {
     $('.select2-choose').select2({
         dropdownParent: $('#addJob_modal') // This ensures the dropdown is correctly positioned within the modal
     });
+
+    // Dropzone.autoDiscover = false;
+
+    // let uploadedFiles = [];
+
+    // let myDropzone = new Dropzone("#file-dropzone", {
+    //     url: "#", // Prevent auto upload
+    //     autoProcessQueue: false,
+    //     addRemoveLinks: true,
+    //     maxFilesize: 10, // MB
+    //     acceptedFiles: ".jpeg,.jpg,.png,.gif,.pdf,.doc,.docx",
+    //     init: function () {
+    //         this.on("addedfile", function (file) {
+    //             uploadedFiles.push(file);
+    //         });
+
+    //         this.on("removedfile", function (file) {
+    //             uploadedFiles = uploadedFiles.filter(f => f.name !== file.name);
+    //         });
+    //     }
+    // });
 })

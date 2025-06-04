@@ -986,7 +986,7 @@ class TransportationTicketController extends Controller
 
     public function sendEmailTransporterTicket($ticket_id){
 
-        $ticketDetail = TransportationTicketModel::where('id', $ticket_id)->first();
+        $ticketDetail = TransportationTicketModel::where('id', $ticket_id)->with(['shippers', 'customers'])->first();
 
         if($ticketDetail->status == '3'){       // if status is (3) completed  then send email
             
@@ -1049,10 +1049,16 @@ class TransportationTicketController extends Controller
                         }
                     }
 
-                    if(isset($ticketDetail->customer_email) && $ticketDetail->customer_email != null){
-                        $mailData['user'] = $ticketDetail->customer_name;
-                        $body = view('emails.transporter_ticket_template', $mailData);
-                        sendMailAttachment($ticketDetail->customer_name, $ticketDetail->customer_email, 'Superior Crane', 'Transporter Ticket Creation', $body, $attachment_pdf);
+                    $customers = $ticketDetail->customers ?? [];
+                    
+                    if($customers){
+                        foreach($customers as $customer){
+                            if(isset($customer->customer_email) && $customer->customer_email != null){
+                                $mailData['user'] = $customer->customer_name;
+                                $body = view('emails.transporter_ticket_template', $mailData);
+                                sendMailAttachment($customer->customer_name, $customer->customer_email, 'Superior Crane', 'Transporter Ticket Creation', $body, $attachment_pdf);
+                            }
+                        }
                     }
                     
                     // push notification entry
@@ -1087,9 +1093,47 @@ class TransportationTicketController extends Controller
     {
 
         $id = $ticket_id;
-        $filepath = public_path('assets/pdf/pdf_samples/transporter_ticket.pdf');
+        // $filepath = public_path('assets/pdf/pdf_samples/transporter_ticket.pdf');
+        $filepath = public_path('assets/pdf/pdf_samples/transporter_ticket_new.pdf');
         $output_file_path = public_path('assets/pdf/transporter_ticket_pdfs/ticket_' .$id. '.pdf'); 
-        $ticket = TransportationTicketModel::find($id);
+        $ticket = TransportationTicketModel::with(['shippers', 'customers'])->find($id);
+
+        $pickupDriver = collect([[
+            'type' => 0, // Pickup driver
+            'name' => $ticket->pickup_driver_name ?? null,
+            'email' => '',
+            'signature' => $ticket->pickup_driver_signature ?? null,
+            'signature_date' => $ticket->pickup_driver_signature_date ?? null,
+            'time_in' => $ticket->pickup_driver_time_in ?? null,
+            'time_out' => $ticket->pickup_driver_time_out ?? null,
+        ]]); // wrap in collect() to make it mergeable
+        
+        $shippers = $ticket->shippers->map(function ($shipper) {
+            return [
+                'type' => 1, // Shipper
+                'name' => $shipper->shipper_name ?? null,
+                'email' => '',
+                'signature' => $shipper->shipper_signature ?? null,
+                'signature_date' => $shipper->shipper_signature_date ?? null,
+                'time_in' => $shipper->shipper_time_in ?? null,
+                'time_out' => $shipper->shipper_time_out ?? null,
+            ];
+        });
+        
+        $customers = $ticket->customers->map(function ($customer) {
+            return [
+                'type' => 2, // Customer
+                'name' => $customer->customer_name ?? null,
+                'email' => $customer->customer_email ?? null,
+                'signature' => $customer->customer_signature ?? null,
+                'signature_date' => $customer->customer_signature_date ?? null,
+                'time_in' => $customer->customer_time_in ?? null,
+                'time_out' => $customer->customer_time_out ?? null,
+            ];
+        });
+        
+        $mergedArray = $pickupDriver->merge($shippers)->merge($customers);
+
         if($ticket){
             $fields = [
                 ['text' => 'TTKT-'.$ticket->id, 'x' => 245, 'y' => 13],
@@ -1110,29 +1154,55 @@ class TransportationTicketController extends Controller
                 ['text' => $ticket->site_contact_number_special_instructions, 'x' => 105, 'y' => 82, 'width' => 170, 'height' => 6],
 
 
-                ['text' => $ticket->shipper_name, 'x' => 58, 'y' => 96.5],
-                // ['base64_image' => $ticket->shipper_signature, 'x' => 122, 'y' => 98, 'width' => 20, 'height' => 5],
-                ['text' => $ticket->shipper_signature_date != null ? date('d-M-Y', strtotime($ticket->shipper_signature_date)) : '', 'x' => 164, 'y' => 96.5],
-                ['text' => $ticket->shipper_time_in != null ? date('H:i', strtotime($ticket->shipper_time_in)) : '', 'x' => 210, 'y' => 96.5],
-                ['text' => $ticket->shipper_time_out, 'x' => 241, 'y' => 96.5],
+                // ['text' => $ticket->shipper_name, 'x' => 58, 'y' => 96.5],
+                // // ['base64_image' => $ticket->shipper_signature, 'x' => 122, 'y' => 98, 'width' => 20, 'height' => 5],
+                // ['text' => $ticket->shipper_signature_date != null ? date('d-M-Y', strtotime($ticket->shipper_signature_date)) : '', 'x' => 164, 'y' => 96.5],
+                // ['text' => $ticket->shipper_time_in != null ? date('H:i', strtotime($ticket->shipper_time_in)) : '', 'x' => 210, 'y' => 96.5],
+                // ['text' => $ticket->shipper_time_out, 'x' => 241, 'y' => 96.5],
 
-                ['text' => $ticket->pickup_driver_name, 'x' => 58, 'y' => 103],
-                ['base64_image' => $ticket->pickup_driver_signature, 'x' => 122, 'y' => 104.5, 'width' => 20, 'height' => 5],
-                ['text' => $ticket->pickup_driver_signature_date != null ? date('d-M-Y', strtotime($ticket->pickup_driver_signature_date)) : '', 'x' => 164, 'y' => 103],
-                ['text' => $ticket->pickup_driver_time_in != null ? date('H:i', strtotime($ticket->pickup_driver_time_in)) : '', 'x' => 210, 'y' => 103],
-                ['text' => $ticket->pickup_driver_time_out, 'x' => 241, 'y' => 103],
+                // ['text' => $ticket->pickup_driver_name, 'x' => 58, 'y' => 103],
+                // ['base64_image' => $ticket->pickup_driver_signature, 'x' => 122, 'y' => 104.5, 'width' => 20, 'height' => 5],
+                // ['text' => $ticket->pickup_driver_signature_date != null ? date('d-M-Y', strtotime($ticket->pickup_driver_signature_date)) : '', 'x' => 164, 'y' => 103],
+                // ['text' => $ticket->pickup_driver_time_in != null ? date('H:i', strtotime($ticket->pickup_driver_time_in)) : '', 'x' => 210, 'y' => 103],
+                // ['text' => $ticket->pickup_driver_time_out, 'x' => 241, 'y' => 103],
 
-                ['text' => $ticket->customer_name, 'x' => 58, 'y' => 110],
-                // ['base64_image' => $ticket->customer_signature, 'x' => 122, 'y' => 111, 'width' => 20, 'height' => 5],
-                ['text' => $ticket->customer_signature_date != null ? date('d-M-Y', strtotime($ticket->customer_signature_date)) : '', 'x' => 164, 'y' => 110],
-                ['text' => $ticket->customer_time_in != null ? date('H:i', strtotime($ticket->customer_time_in)) : '', 'x' => 210, 'y' => 110],
-                ['text' => $ticket->customer_time_out, 'x' => 241, 'y' => 110],
+                // ['text' => $ticket->customer_name, 'x' => 58, 'y' => 110],
+                // // ['base64_image' => $ticket->customer_signature, 'x' => 122, 'y' => 111, 'width' => 20, 'height' => 5],
+                // ['text' => $ticket->customer_signature_date != null ? date('d-M-Y', strtotime($ticket->customer_signature_date)) : '', 'x' => 164, 'y' => 110],
+                // ['text' => $ticket->customer_time_in != null ? date('H:i', strtotime($ticket->customer_time_in)) : '', 'x' => 210, 'y' => 110],
+                // ['text' => $ticket->customer_time_out, 'x' => 241, 'y' => 110],
                 
             ];
-    
+            
+            // code for multiple shippers and customers in pdf
+            $startY = 96.5; // initial Y-position
+            $lineHeight = 6.55; // vertical spacing between rows
+            $shipperSeq = $customerSeq = 1;
+            
+
+            foreach ($mergedArray as $index => $person) {
+                $fields[] = ['text' => $person['type'] == 0 ? 'Pickup Driver' : ($person['type'] == 1 ? 'Shipper '.$shipperSeq : 'Consignee '. $customerSeq), 'x' => 13, 'y' => $startY];
+                $fields[] = ['text' => $person['name'], 'x' => 58, 'y' => $startY];
+                
+                if (!empty($person['signature'])) {
+                    $fields[] = ['base64_image' => $person['signature'], 'x' => 121, 'y' => $startY + 1.3, 'width' => 20, 'height' => 5];
+                }
+
+                $fields[] = ['text' => !empty($person['signature_date']) ? date('d-M-Y', strtotime($person['signature_date'])) : '', 'x' => 164, 'y' => $startY];
+                $fields[] = ['text' => !empty($person['time_in']) ? date('H:i', strtotime($person['time_in'])) : '', 'x' => 210, 'y' => $startY];
+                $fields[] = ['text' => !empty($person['time_out']) ? date('H:i', strtotime($person['time_out'])) : '', 'x' => 241, 'y' => $startY];
+
+                $startY += $lineHeight; // move to next row
+                if($person['type'] == 1){
+                    $shipperSeq++;
+                }else if($person['type'] == 2){
+                    $customerSeq++;
+                }
+            }
+
             $outputFile = $this->editPdf($filepath, $output_file_path, $fields);
             
-            return $outputFile;//'/public'.
+            return '/public'.$outputFile;//
         }else{
             return false;
         }

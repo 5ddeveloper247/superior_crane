@@ -74,6 +74,13 @@ Route::group(['prefix' => '/'], function () {
         Route::post('/admin/searchTransporterTicketListing', [AdminController::class, 'searchTransporterTicketListing'])->name('admin.searchTransporterTicketListing');
         Route::post('/admin/deleteSpecificTransportationTicket', [AdminController::class, 'deleteSpecificTransportationTicket'])->name('admin.deleteSpecificTransportationTicket');
         Route::post('/admin/changeTransportTicketStatus', [AdminController::class, 'changeTransportTicketStatus'])->name('admin.changeTransportTicketStatus');
+
+        Route::post('/admin/viewTransporterShipperDetails', [AdminController::class, 'viewTransporterShipperDetails'])->name('admin.viewTransporterShipperDetails');
+        Route::post('/admin/deleteSpecificShipper', [AdminController::class, 'deleteSpecificShipper'])->name('admin.deleteSpecificShipper');
+        Route::post('/admin/viewTransporterCustomerDetails', [AdminController::class, 'viewTransporterCustomerDetails'])->name('admin.viewTransporterCustomerDetails');
+        Route::post('/admin/deleteSpecificCustomer', [AdminController::class, 'deleteSpecificCustomer'])->name('admin.deleteSpecificCustomer');
+        
+        
         
         Route::post('/admin/getPayDutyPageData', [AdminController::class, 'getPayDutyPageData'])->name('admin.getPayDutyPageData');
         Route::post('/admin/viewPayDutyFormDetails', [AdminController::class, 'viewPayDutyFormDetails'])->name('admin.viewPayDutyFormDetails');

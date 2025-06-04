@@ -4,3 +4,16 @@
 .justify-content-right{
     justify-content: right;
 }
+
+        .dropzone {
+            border: 2px dashed #007bff;
+            background: #f9f9f9;
+            padding: 30px;
+        }
+
+        .dz-progress {
+            display: none !important;
+        }
+        .dz-remove{
+            color: red !important;
+        }

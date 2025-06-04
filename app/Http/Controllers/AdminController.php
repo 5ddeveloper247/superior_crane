@@ -24,6 +24,8 @@ use App\Models\RiggerTicketImages;
 
 use App\Models\TransportationTicketModel;
 use App\Models\TransportationTicketImages;
+use App\Models\TransportationTicketShipper;
+use App\Models\TransportationTicketCustomer;
 
 use App\Models\PayDutyModel;
 use App\Models\PayDutytImages;
@@ -554,18 +556,40 @@ class AdminController extends Controller
             }else{
                 $riggerArray = json_decode($job->rigger_assigned);
             
+                $riggerNamesArray = User::whereIn('id', $riggerArray != null ? $riggerArray : [])->pluck('name')->toArray();
+
+                $riggerNames = implode(', ', $riggerNamesArray);
+
                 if (is_countable($riggerArray)) {
-                    $riggerCount = 'Assigned Users:'.count($riggerArray);
+                    $riggerCount = 'Assigned Users:'.$riggerNames;
                 } else {
                     $riggerCount = $job->user_assigned;
                 }
             }
-            
+            $bookedCheck = $job->booked_flag == 1 ? '✓' : '';
+
+            $startDateTime = Carbon::parse($job->date . ' ' . $job->start_time);
+
+            if ($job->end_time) {
+                $endDateTime = Carbon::parse($job->date . ' ' . $job->end_time);
+            } else {
+                // Calculate minutes until midnight
+                $minutesUntilMidnight = 1439 - ($startDateTime->hour * 60 + $startDateTime->minute);
+
+                if ($minutesUntilMidnight < 60) {
+                    // End at 23:59 of the same day
+                    $endDateTime = Carbon::parse($job->date . ' 23:59:00')->format('Y-m-d H:i:s');
+                } else {
+                    // Add 60 minutes to start time
+                    $endDateTime = $startDateTime->copy()->addMinutes(60)->format('Y-m-d H:i:s');
+                }
+            }
+
             return [
                 'id' => $job->id,
-                'title' => substr($job->client_name, 0, 7) . '/' . $job->address,
+                'title' => $bookedCheck . substr($job->client_name, 0, 7) . '/' . $job->address,
                 'start' => $job->date.' '.$job->start_time,
-                'end' => $job->date.' '.$job->end_time,
+                'end' => $endDateTime,
                 // 'extendedProps' => [
                 //     'title_full' => date('H:i', strtotime($job->start_time)) . ' ' . 
                 //                         $job->client_name . '/' . $job->address . '/' . 
@@ -603,7 +627,7 @@ class AdminController extends Controller
                 'start_time' => 'required|date_format:H:i',
                 // 'end_time' => 'required|date_format:H:i',
                 'address' => 'required|string|max:200',
-                'equipment_to_be_used' => 'required_unless:job_type,3|max:255',
+                'equipment_to_be_used' => 'required_unless:job_type,3',
                 'rigger_assigned' => 'required_unless:job_type,3|array',
                 'user_assigned' => 'max:50',
                 'supplier_name' => 'max:50',
@@ -613,7 +637,7 @@ class AdminController extends Controller
                 // 'job_images' => 'required',
                 'job_images.*' => 'mimes:jpeg,png,jpg,gif,svg,pdf|max:2048',
                 // 'job_images_title' => 'required',
-                'job_images_title.*' => 'string|max:255',
+                // 'job_images_title.*' => 'string|max:255',
                 // 'status' => 'required',
             ], [
                 'rigger_assigned.required_unless' => 'Assigned User field is required.',
@@ -622,10 +646,10 @@ class AdminController extends Controller
                 'job_images.*.required' => 'Job attachment is required.',
                 'job_images.*.mimes' => 'Job attachment must be a file of type: jpeg, png, jpg, gif, svg, pdf.',
                 'job_images.*.max' => 'Job attachment may not be greater than 2048 kilobytes.',
-                'job_images_title.required' => 'Job attachment title is required.',
-                'job_images_title.*.required' => 'Job attachment title is required.',
-                'job_images_title.*.string' => 'Job attachment title must be a string.',
-                'job_images_title.*.max' => 'Job attachment title may not be greater than 255 characters.',
+                // 'job_images_title.required' => 'Job attachment title is required.',
+                // 'job_images_title.*.required' => 'Job attachment title is required.',
+                // 'job_images_title.*.string' => 'Job attachment title must be a string.',
+                // 'job_images_title.*.max' => 'Job attachment title may not be greater than 255 characters.',
             ]); 
         }else{
             $validatedData = $request->validate([
@@ -637,7 +661,7 @@ class AdminController extends Controller
                 'start_time' => 'required|date_format:H:i',
                 // 'end_time' => 'required|date_format:H:i|after:start_time',
                 'address' => 'required|string|max:200',
-                'equipment_to_be_used' => 'required_unless:job_type,3|max:255',
+                'equipment_to_be_used' => 'required_unless:job_type,3',
                 'rigger_assigned' => 'required_unless:job_type,3|array',
                 'user_assigned' => 'max:50',
                 'supplier_name' => 'max:50',
@@ -646,7 +670,7 @@ class AdminController extends Controller
                 // 'job_images.*' => 'required',
                 'job_images.*' => 'mimes:jpeg,png,jpg,gif,svg,pdf|max:2048',
                 // 'job_images_title' => 'required',
-                'job_images_title.*' => 'string|max:255',
+                // 'job_images_title.*' => 'string|max:255',
                 'status' => 'required',
             ], [
                 'rigger_assigned.required_unless' => 'Assigned User field is required.',
@@ -654,9 +678,9 @@ class AdminController extends Controller
                 'job_images.*.required' => 'Job attachment is required.',
                 'job_images.*.mimes' => 'Job attachment must be a file of type: jpeg, png, jpg, gif, svg, pdf.',
                 'job_images.*.max' => 'Job attachment may not be greater than 2048 kilobytes.',
-                'job_images_title.*.required' => 'Job attachment title is required.',
-                'job_images_title.*.string' => 'Job attachment title must be a string.',
-                'job_images_title.*.max' => 'Job attachment title may not be greater than 255 characters.',
+                // 'job_images_title.*.required' => 'Job attachment title is required.',
+                // 'job_images_title.*.string' => 'Job attachment title must be a string.',
+                // 'job_images_title.*.max' => 'Job attachment title may not be greater than 255 characters.',
             ]); 
             
             $imageTitlesArray = $request->input('job_images_title');
@@ -701,6 +725,7 @@ class AdminController extends Controller
         $job->supplier_name = $request->supplier_name;
         $job->driver_instructions = $request->driver_instructions;
         $job->notes = $request->notes;
+        $job->booked_flag = $request->booked_check ?? 0;
         $job->save();
 
         if(isset($request->deletedFileIds) && $request->deletedFileIds != ''){
@@ -725,11 +750,11 @@ class AdminController extends Controller
             
             // $uploadedFiles = $request->file($req_file);
             $uploadedFiles = $request->job_images;
-            $uploadedFilesTitle = $request->job_images_title;
+            // $uploadedFilesTitle = $request->job_images_title;
 
             foreach ($uploadedFiles as $index => $file) {
                 
-                $file_title = $uploadedFilesTitle[$index];
+                $file_title = $file->getClientOriginalName(); //$uploadedFilesTitle[$index];
 
                 $file_extension = $file->getClientOriginalExtension();
                 $date_append = Str::random(32);
@@ -1208,7 +1233,7 @@ class AdminController extends Controller
 
     public function getTransporterTicketPageData(Request $request){
 
-        $data['tickets_list'] = TransportationTicketModel::with(['jobDetail','userDetail'])->get();
+        $data['tickets_list'] = TransportationTicketModel::with(['jobDetail','userDetail'])->withCount(['shippers','customers'])->get();
         $data['total_tickets'] = TransportationTicketModel::count();
         $data['total_draft'] = TransportationTicketModel::where('status', '1')->count();
         $data['total_completed'] = TransportationTicketModel::where('status', '3')->count();
@@ -1295,7 +1320,7 @@ class AdminController extends Controller
     public function viewTransporterTicketDetails(Request $request){
         $ticket_id = $request->ticket_id;
         
-        $ticket = TransportationTicketModel::where('id', $ticket_id)->with(['jobDetail','userDetail','ticketImages'])->first();
+        $ticket = TransportationTicketModel::where('id', $ticket_id)->with(['jobDetail','userDetail','ticketImages','shippers', 'customers'])->first();
         if($ticket){
             $data['ticket_detail'] = $ticket;
             return response()->json(['status' => 200, 'message' => "", 'data' => $data]);
@@ -1316,7 +1341,68 @@ class AdminController extends Controller
                 } 
             }
             TransportationTicketModel::where('id', $ticket_id)->delete();
+            TransportationTicketShipper::where('ticket_id', $ticket_id)->delete();
+            TransportationTicketCustomer::where('ticket_id', $ticket_id)->delete();
+
             return response()->json(['status' => 200, 'message' => "Ticket deleted successfully"]);
+        }else{
+            return response()->json(['status' => 402, 'message' => "Something went wrong..."]);
+        }
+    }
+
+    public function viewTransporterShipperDetails(Request $request){
+        $shipper_id = $request->shipper_id;
+        
+        $shipper = TransportationTicketShipper::where('id', $shipper_id)->first();
+        if($shipper){
+            $data['shipper_detail'] = $shipper;
+            return response()->json(['status' => 200, 'message' => "", 'data' => $data]);
+        }else{
+            return response()->json(['status' => 402, 'message' => "Job not found..."]);
+        }
+    }
+
+    public function deleteSpecificShipper(Request $request){
+        
+        $shipper = TransportationTicketShipper::where('id', $request->shipper_id)->first();
+        if($shipper){
+
+            $ticket_id = $shipper->ticket_id;
+            
+            TransportationTicketShipper::where('id', $request->shipper_id)->delete();
+
+            $data['ticket_detail'] = TransportationTicketModel::where('id', $ticket_id)->with(['jobDetail','userDetail','ticketImages','shippers', 'customers'])->first();
+            
+            return response()->json(['status' => 200, 'message' => "Shipper deleted successfully", 'data' => $data]);
+        }else{
+            return response()->json(['status' => 402, 'message' => "Something went wrong..."]);
+        }
+    }
+
+    public function viewTransporterCustomerDetails(Request $request){
+        $customer_id = $request->customer_id;
+        
+        $customer = TransportationTicketCustomer::where('id', $customer_id)->first();
+        if($customer){
+            $data['customer_detail'] = $customer;
+            return response()->json(['status' => 200, 'message' => "", 'data' => $data]);
+        }else{
+            return response()->json(['status' => 402, 'message' => "Job not found..."]);
+        }
+    }
+
+    public function deleteSpecificCustomer(Request $request){
+        
+        $customer = TransportationTicketCustomer::where('id', $request->customer_id)->first();
+        if($customer){
+
+            $ticket_id = $customer->ticket_id;
+            
+            TransportationTicketCustomer::where('id', $request->customer_id)->delete();
+            
+            $data['ticket_detail'] = TransportationTicketModel::where('id', $ticket_id)->with(['jobDetail','userDetail','ticketImages','shippers', 'customers'])->first();
+            
+            return response()->json(['status' => 200, 'message' => "Consignee deleted successfully", 'data' => $data]);
         }else{
             return response()->json(['status' => 402, 'message' => "Something went wrong..."]);
         }
@@ -1704,7 +1790,7 @@ class AdminController extends Controller
             $pdfUrl = '';
         }
         
-        $data['pdf_url'] = '/public'.$pdfUrl;
+        $data['pdf_url'] = '/public'.$pdfUrl;//$pdfUrl;//
         return response()->json(['status' => 200, 'message' => "", 'data' => $data]);
         
     }
@@ -1951,9 +2037,47 @@ class AdminController extends Controller
     public function makeTransporterTicketPdf($id)
     {
 
-        $filepath = public_path('assets/pdf/pdf_samples/transporter_ticket.pdf');
+        // $filepath = public_path('assets/pdf/pdf_samples/transporter_ticket.pdf');
+        $filepath = public_path('assets/pdf/pdf_samples/transporter_ticket_new.pdf');
         $output_file_path = public_path('assets/pdf/transporter_ticket_pdfs/ticket_' .$id. '.pdf'); 
-        $ticket = TransportationTicketModel::find($id);
+        $ticket = TransportationTicketModel::with(['shippers', 'customers'])->find($id);
+        
+        $pickupDriver = collect([[
+            'type' => 0, // Pickup driver
+            'name' => $ticket->pickup_driver_name ?? null,
+            'email' => '',
+            'signature' => $ticket->pickup_driver_signature ?? null,
+            'signature_date' => $ticket->pickup_driver_signature_date ?? null,
+            'time_in' => $ticket->pickup_driver_time_in ?? null,
+            'time_out' => $ticket->pickup_driver_time_out ?? null,
+        ]]); // wrap in collect() to make it mergeable
+        
+        $shippers = $ticket->shippers->map(function ($shipper) {
+            return [
+                'type' => 1, // Shipper
+                'name' => $shipper->shipper_name ?? null,
+                'email' => '',
+                'signature' => $shipper->shipper_signature ?? null,
+                'signature_date' => $shipper->shipper_signature_date ?? null,
+                'time_in' => $shipper->shipper_time_in ?? null,
+                'time_out' => $shipper->shipper_time_out ?? null,
+            ];
+        });
+        
+        $customers = $ticket->customers->map(function ($customer) {
+            return [
+                'type' => 2, // Customer
+                'name' => $customer->customer_name ?? null,
+                'email' => $customer->customer_email ?? null,
+                'signature' => $customer->customer_signature ?? null,
+                'signature_date' => $customer->customer_signature_date ?? null,
+                'time_in' => $customer->customer_time_in ?? null,
+                'time_out' => $customer->customer_time_out ?? null,
+            ];
+        });
+        
+        $mergedArray = $pickupDriver->merge($shippers)->merge($customers);
+        
         if($ticket){
             $fields = [
                 ['text' => 'TTKT-'.$ticket->id, 'x' => 245, 'y' => 13],
@@ -1974,26 +2098,53 @@ class AdminController extends Controller
                 ['text' => $ticket->site_contact_number_special_instructions, 'x' => 105, 'y' => 82, 'width' => 170, 'height' => 6],
 
 
-                ['text' => $ticket->shipper_name, 'x' => 58, 'y' => 96.5],
-                ['base64_image' => $ticket->shipper_signature, 'x' => 122, 'y' => 98, 'width' => 20, 'height' => 5],
-                ['text' => $ticket->shipper_signature_date != null ? date('d-M-Y', strtotime($ticket->shipper_signature_date)) : '', 'x' => 164, 'y' => 96.5],
-                ['text' => $ticket->shipper_time_in != null ? date('H:i', strtotime($ticket->shipper_time_in)) : '', 'x' => 210, 'y' => 96.5],
-                ['text' => $ticket->shipper_time_out, 'x' => 241, 'y' => 96.5],
+                // ['text' => $ticket->shipper_name, 'x' => 58, 'y' => 96.5],
+                // ['base64_image' => $ticket->shipper_signature, 'x' => 122, 'y' => 98, 'width' => 20, 'height' => 5],
+                // ['text' => $ticket->shipper_signature_date != null ? date('d-M-Y', strtotime($ticket->shipper_signature_date)) : '', 'x' => 164, 'y' => 96.5],
+                // ['text' => $ticket->shipper_time_in != null ? date('H:i', strtotime($ticket->shipper_time_in)) : '', 'x' => 210, 'y' => 96.5],
+                // ['text' => $ticket->shipper_time_out, 'x' => 241, 'y' => 96.5],
+                
+                // ['text' => 'Pickup Driver', 'x' => 13, 'y' => 96.5],
+                // ['text' => $ticket->pickup_driver_name, 'x' => 58, 'y' => 96.5],
+                // ['base64_image' => $ticket->pickup_driver_signature, 'x' => 122, 'y' => 98, 'width' => 20, 'height' => 5],
+                // ['text' => $ticket->pickup_driver_signature_date != null ? date('d-M-Y', strtotime($ticket->pickup_driver_signature_date)) : '', 'x' => 164, 'y' => 96.5],
+                // ['text' => $ticket->pickup_driver_time_in != null ? date('H:i', strtotime($ticket->pickup_driver_time_in)) : '', 'x' => 210, 'y' => 96.5],
+                // ['text' => $ticket->pickup_driver_time_out, 'x' => 241, 'y' => 96.5],
 
-                ['text' => $ticket->pickup_driver_name, 'x' => 58, 'y' => 103],
-                ['base64_image' => $ticket->pickup_driver_signature, 'x' => 122, 'y' => 104.5, 'width' => 20, 'height' => 5],
-                ['text' => $ticket->pickup_driver_signature_date != null ? date('d-M-Y', strtotime($ticket->pickup_driver_signature_date)) : '', 'x' => 164, 'y' => 103],
-                ['text' => $ticket->pickup_driver_time_in != null ? date('H:i', strtotime($ticket->pickup_driver_time_in)) : '', 'x' => 210, 'y' => 103],
-                ['text' => $ticket->pickup_driver_time_out, 'x' => 241, 'y' => 103],
-
-                ['text' => $ticket->customer_name, 'x' => 58, 'y' => 110],
-                ['base64_image' => $ticket->customer_signature, 'x' => 122, 'y' => 111, 'width' => 20, 'height' => 5],
-                ['text' => $ticket->customer_signature_date != null ? date('d-M-Y', strtotime($ticket->customer_signature_date)) : '', 'x' => 164, 'y' => 110],
-                ['text' => $ticket->customer_time_in != null ? date('H:i', strtotime($ticket->customer_time_in)) : '', 'x' => 210, 'y' => 110],
-                ['text' => $ticket->customer_time_out, 'x' => 241, 'y' => 110],
+                // ['text' => $ticket->customer_name, 'x' => 58, 'y' => 110],
+                // ['base64_image' => $ticket->customer_signature, 'x' => 122, 'y' => 111, 'width' => 20, 'height' => 5],
+                // ['text' => $ticket->customer_signature_date != null ? date('d-M-Y', strtotime($ticket->customer_signature_date)) : '', 'x' => 164, 'y' => 110],
+                // ['text' => $ticket->customer_time_in != null ? date('H:i', strtotime($ticket->customer_time_in)) : '', 'x' => 210, 'y' => 110],
+                // ['text' => $ticket->customer_time_out, 'x' => 241, 'y' => 110],
                 
             ];
-    
+            
+            // code for multiple shippers and customers in pdf
+            $startY = 96.5; // initial Y-position
+            $lineHeight = 6.55; // vertical spacing between rows
+            $shipperSeq = $customerSeq = 1;
+            
+
+            foreach ($mergedArray as $index => $person) {
+                $fields[] = ['text' => $person['type'] == 0 ? 'Pickup Driver' : ($person['type'] == 1 ? 'Shipper '.$shipperSeq : 'Consignee '. $customerSeq), 'x' => 13, 'y' => $startY];
+                $fields[] = ['text' => $person['name'], 'x' => 58, 'y' => $startY];
+                
+                if (!empty($person['signature'])) {
+                    $fields[] = ['base64_image' => $person['signature'], 'x' => 121, 'y' => $startY + 1.3, 'width' => 20, 'height' => 5];
+                }
+
+                $fields[] = ['text' => !empty($person['signature_date']) ? date('d-M-Y', strtotime($person['signature_date'])) : '', 'x' => 164, 'y' => $startY];
+                $fields[] = ['text' => !empty($person['time_in']) ? date('H:i', strtotime($person['time_in'])) : '', 'x' => 210, 'y' => $startY];
+                $fields[] = ['text' => !empty($person['time_out']) ? date('H:i', strtotime($person['time_out'])) : '', 'x' => 241, 'y' => $startY];
+
+                $startY += $lineHeight; // move to next row
+                if($person['type'] == 1){
+                    $shipperSeq++;
+                }else if($person['type'] == 2){
+                    $customerSeq++;
+                }
+            }
+
             $outputFile = $this->editPdf($filepath, $output_file_path, $fields);
             $publicPath = str_replace(public_path(), '', $outputFile); // Remove the public path part
             $publicUrl = url($publicPath); // Generate a full URL to the PDF file

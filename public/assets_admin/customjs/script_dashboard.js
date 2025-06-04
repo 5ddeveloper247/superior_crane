@@ -126,6 +126,11 @@ $(document).on('click', '#saveJob_btn', function (e) {
 
     let form = document.getElementById('addJob_from');
     let data = new FormData(form);
+
+    uploadedFiles.forEach((file, index) => {
+        data.append('job_images[]', file);
+    });
+    
     let type = 'POST';
     let url = '/admin/saveJobData';
     SendAjaxRequestToServer(type, url, data, '', saveJobDataResponse, '', '#saveuser_btn');
@@ -302,6 +307,7 @@ $(document).on('click', '.remove_file_section', function (e) {
             $("#deletedFileIds").val($(this).attr('data-id'));
         }else{
             deletedIds = deletedIds + ',' + $(this).attr('data-id');
+            $("#deletedFileIds").val(deletedIds);
         }
     }
 });
@@ -407,6 +413,7 @@ function viewJobDetailsResponse(response) {
             $("#add_status").val(job_detail.status);
             $("#driver_instructions").val(job_detail.driver_instructions);
             $("#add_notes").val(job_detail.notes);
+            $("#booked_check").prop('checked', job_detail.booked_flag == '1' ? true : false);
             
             $("#created_by").text(job_detail.created_by != null ? job_detail.created_by.name : '');
             $("#updated_by").text(job_detail.updated_by != null ? job_detail.updated_by.name : '');
@@ -694,6 +701,7 @@ $('#client_name,#supplier_name').on('keydown', function(e) {
         initialView: 'dayGridMonth',
         slotMinTime: '00:00:00',
         slotMaxTime: '24:00:00',
+
         slotLabelFormat: {
             hour: '2-digit',
             minute: '2-digit',
@@ -708,8 +716,15 @@ $('#client_name,#supplier_name').on('keydown', function(e) {
         headerToolbar: {
             left: 'prev,next today',
             center: 'title',
-            right: 'dayGridMonth'//,timeGridWeek
+            right: 'dayGridMonth,timeGridDay'//,timeGridWeek
         },
+        views: {
+            timeGridDay: {
+              type: 'timeGrid',
+              duration: { days: 3 },
+              buttonText: "day's"
+            }
+          },
         // events: events,
         events: function(fetchInfo, successCallback, failureCallback) {
             fetch('/admin/getAllJobs') // URL to fetch jobs from Laravel
@@ -789,9 +804,66 @@ $('#client_name,#supplier_name').on('keydown', function(e) {
                     eventEl.querySelector('.fc-daygrid-event-dot').style.backgroundColor = '#ff0000'; // red background
                 }
             }
+
             // show title on event hover all details 
             info.el.setAttribute('title', info.event.extendedProps.title_full);
-        }
+            
+            // Inject custom icon and bar in week/day views (timeGrid)
+            const viewType = info.view.type;
+            const titleEl = info.el.querySelector('.fc-event-title');
+
+            if (titleEl) {
+                let tickIcon = '';
+                let colorBar = '';
+                let titleText = info.event.title;
+
+                // Tick icon if ✓ present
+                if (titleText.includes('✓')) {
+                    tickIcon = `<span class="fa fa-square-check tick-icon" title="Booked"></span> `;
+                    titleText = titleText.replace('✓', '').trim();
+                }
+
+                // Colored bar based on type
+                if (viewType === 'timeGridWeek' || viewType === 'timeGridDay') {
+                    let barColor = '';
+                    const type = info.event.extendedProps.type;
+
+                    if (type === 1) barColor = '#0000ff';
+                    else if (type === 2) barColor = '#ffa500';
+                    else if (type === 3) barColor = '#800080';
+                    else if (type === 4) barColor = '#ff0000';
+
+                    if (barColor) {
+                        colorBar = `<span class="left-bar" style="display:inline-block; width:5px; height:90px; background:${barColor}; margin-right:4px;"></span>`;
+                    }
+                }
+
+                // Final combined content
+                titleEl.innerHTML = `${colorBar}${tickIcon}${titleText}`;
+            }
+        },
+        // eventContent: function(arg) {
+        //     // Get title and your custom long string (e.g., event.extendedProps.details)
+        //     var titleText = arg.event.title;
+        //     var details = arg.event.extendedProps.title_full;
+        //     var viewType = arg.view.type;
+
+        //     if (titleText.includes('✓')) {
+        //         tickIcon = `<span class="fa fa-square-check tick-icon" title="Booked"></span> `;
+        //         titleText = titleText.replace('✓', '').trim();
+        //     }
+            
+        //     if(viewType === 'timeGridDay'){
+        //         return {
+        //             html: 
+        //                 `<div style="color:black;">
+        //                     <strong >${titleText}${tickIcon}</strong><br/>
+        //                     <small style="white-space: normal;color:black;">${details}</small>
+        //                 </div>`
+        //             }
+        //     }
+            
+        // }
     });
     calendar.render();
     
