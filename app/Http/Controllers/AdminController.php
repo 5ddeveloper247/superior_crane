@@ -530,6 +530,8 @@ class AdminController extends Controller
         $data['total_crane_logistic'] = JobModel::where('job_type', '4')->count();
         $data['total_jobs'] = JobModel::count();
         
+        $result = $this->getStrictWeekRange(2025, 7, 1);
+        // dd($result['dates']);
         return response()->json(['status' => 200, 'message' => "",'data' => $data]);
     }
 
@@ -608,6 +610,37 @@ class AdminController extends Controller
         });
         
         return response()->json($events);
+    }
+
+    public function getStrictWeekRange($year, $month, $week)
+    {
+        $year = $year;       // e.g., 2025
+        $month = $month;     // e.g., 6 (June)
+        $weekNumber = $week; // e.g., 1 (Week 1)
+
+        // Get the first day of the month
+        $firstOfMonth = Carbon::createFromDate($year, $month, 1)->startOfDay();
+
+        // Get the first Monday on or **before** the 1st of the month
+        $firstMonday = $firstOfMonth->copy()->startOfWeek(Carbon::MONDAY);
+
+        // Calculate week start and end
+        $weekStart = $firstMonday->copy()->addWeeks($weekNumber - 1);
+        $weekEnd = $weekStart->copy()->endOfWeek(Carbon::SUNDAY);
+
+        // Create array of all dates in this week
+        $dates = [];
+        $current = $weekStart->copy();
+        while ($current->lte($weekEnd)) {
+            $dates[] = $current->toDateString();
+            $current->addDay();
+        }
+        return array(
+            'week' => $weekNumber,
+            'start_date' => $weekStart->toDateString(),
+            'end_date' => $weekEnd->toDateString(),
+            'dates' => $dates,
+        );
     }
 
     public function saveJobData(Request $request){

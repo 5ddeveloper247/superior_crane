@@ -1202,7 +1202,7 @@ class TransportationTicketController extends Controller
 
             $outputFile = $this->editPdf($filepath, $output_file_path, $fields);
             
-            return '/public'.$outputFile;//
+            return $outputFile;//'/public'.
         }else{
             return false;
         }
