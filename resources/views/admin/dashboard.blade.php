@@ -272,7 +272,7 @@
             padding: 5px;
             cursor: pointer;
             /* position: absolute;
-                                                        z-index: 1000; */
+                                                                        z-index: 1000; */
         }
 
         .status-dropdown li:hover {
@@ -441,49 +441,74 @@
         }
 
         /* .schedule-table {
-            table-layout: fixed;
-            width: 100%;
-        } */
+                            table-layout: fixed;
+                            width: 100%;
+                        } */
 
         /* .schedule-table th,
-        .schedule-table td {
-            text-align: center;
-            vertical-align: middle;
-            border: 1px solid #dee2e6;
-            min-height: 50px;
-            min-width: 100px;
+                        .schedule-table td {
+                            text-align: center;
+                            vertical-align: middle;
+                            border: 1px solid #dee2e6;
+                            min-height: 50px;
+                            min-width: 100px;
+                        }
+
+                        .time-header {
+                            background-color: #f8f9fa;
+                        }
+
+                        .day-header {
+                            font-weight: bold;
+                            background-color: #f1f1f1;
+                        }
+
+                        .sticky-top-left {
+                            position: sticky;
+                            left: 0;
+                            z-index: 4 !important;
+                            background-color: #f1f1f1;
+                        }
+
+                        .sticky-header {
+                            position: sticky;
+                            top: 0;
+                            z-index: 3;
+                            background-color: #fff;
+                        }
+
+                        .event {
+                            border-radius: 5px;
+                            padding: 4px;
+                            font-size: 10px;
+                            line-height: 1.2;
+                            color: #000;
+                        } */
+
+        .filter-bar {
+            padding: 1rem;
+            background: #f4f4f4;
         }
 
-        .time-header {
-            background-color: #f8f9fa;
+        .filter-bar .form-select {
+            padding: 0.4rem !important;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 12px;
         }
 
-        .day-header {
-            font-weight: bold;
-            background-color: #f1f1f1;
+        .filter-bar .form-select:focus {
+            border-color: #ff0000;
+            outline: none;
+            box-shadow: none !important
         }
 
-        .sticky-top-left {
-            position: sticky;
-            left: 0;
-            z-index: 4 !important;
-            background-color: #f1f1f1;
+        /* Style dropdown options on hover and .form-selection */
+        .filter-bar .form-select option:hover,
+        .filter-bar .form-select option:checked {
+            background-color: #ff0000 !important;
+            color: #fff;
         }
-
-        .sticky-header {
-            position: sticky;
-            top: 0;
-            z-index: 3;
-            background-color: #fff;
-        }
-
-        .event {
-            border-radius: 5px;
-            padding: 4px;
-            font-size: 10px;
-            line-height: 1.2;
-            color: #000;
-        } */
     </style>
 @endpush
 
@@ -533,12 +558,12 @@
                         <i class="fa-solid fa-table-list fs-5"></i>
                     </button>
                 </li>
-                <li class="nav-item" role="presentation">
+                {{-- <li class="nav-item" role="presentation">
                     <button class="nav-link" id="week-tab" data-bs-toggle="tab" data-bs-target="#week-tab-pane"
                         type="button" role="tab" aria-controls="week-tab-pane" aria-selected="false" title="week View">
                         <i class="fa-solid fa-calendar-week fs-5"></i>
                     </button>
-                </li>
+                </li> --}}
             </div>
         </ul>
 
@@ -546,8 +571,205 @@
         <div class="tab-content" id="myTabContent">
             <div class="tab-pane fade show active px-2" id="calender-tab-pane" role="tabpanel"
                 aria-labelledby="calender-tab" tabindex="0">
-                <div id="container">
-                    <div id="calendar"></div>
+                <ul class="nav nav-tabs mb-3" id="pills-tab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill"
+                            data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home"
+                            aria-selected="true">Month</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="pills-profile-tab" data-bs-toggle="pill"
+                            data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile"
+                            aria-selected="false">Week</button>
+                    </li>
+                </ul>
+                <div class="tab-content" id="pills-tabContent">
+                    <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab"
+                        tabindex="0">
+                        <div id="container">
+                            <div id="calendar"></div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab"
+                        tabindex="0">
+                        <div class="filter-bar mb-3 d-flex align-items-center justify-content-between gap-3 rounded-2 p-2">
+                            <select class="form-select" name="year" id="year-select">
+                                <option selected disabled>Select Year</option>
+                                <option>2021</option>
+                                <option>2022</option>
+                                <option>2023</option>
+                                <option>2024</option>
+                                <option>2025</option>
+                                <option>2026</option>
+                            </select>
+
+                            <select class="form-select" name="month" id="month-select">
+                                <option selected disabled>Select Month</option>
+                                <option>January</option>
+                                <option>February</option>
+                                <option>March</option>
+                                <option>April</option>
+                                <option>May</option>
+                                <option>June</option>
+                                <option>July</option>
+                                <option>August</option>
+                                <option>September</option>
+                                <option>October</option>
+                                <option>November</option>
+                                <option>December</option>
+                            </select>
+
+                            <select class="form-select" name="week" id="week-select">
+                                <option selected disabled>Select Week</option>
+                                <option>Week 01</option>
+                                <option>Week 02</option>
+                                <option>Week 03</option>
+                                <option>Week 04</option>
+                                <option>Week 05</option>
+                            </select>
+                        </div>
+
+                        <div class="d-flex align-items-center justify-content-between border px-2">
+                            <small style="padding-left: 8.2rem" class="pe-4">00:00</small>
+                            <span
+                                style="background: linear-gradient(303deg,rgba(255, 255, 255, 1) 0%, rgba(188, 28, 28, 0.434) 57%, rgba(255, 255, 255, 1) 100%);"
+                                class="w-100 d-flex align-items-center justify-content-center">AM</span>
+                            <span
+                                style="background: linear-gradient(303deg,rgba(255, 255, 255, 1) 0%, rgba(188, 28, 28, 0.414) 57%, rgba(255, 255, 255, 1) 100%);"
+                                class="border-start w-100 d-flex align-items-center justify-content-center">PM</span>
+                            <small class="ps-4">24:00</small>
+                        </div>
+
+                        <div class="row g-0">
+                            <div
+                                class="col-12 border-bottom border-start border-end p-2 d-flex gap-4 align-items-center ps-4">
+                                <small class="fw-bold" style="min-width: 5.6rem">Monday</small>
+                                <div class="w-100 overflow-auto">
+                                    <div style="min-width: 15rem; border-left: 4px solid rgb(0, 136, 255)"
+                                        class="bg-info-subtle rounded-2 px-2 py-1 w-100 mb-2">
+                                        <small class="fw-semibold">9:00 AM</small>
+                                        <small>Meeting</small>
+                                        <div class="d-flex justify-content-end gap-1">
+                                            <label for="">Booked</label>
+                                            <input type="checkbox" name="" id="">
+                                        </div>
+                                    </div>
+
+                                    <div style="min-width: 15rem; border-left: 4px solid rgb(255, 200, 0)"
+                                        class="bg-warning-subtle rounded-2 px-2 py-1 w-100 mb-2">
+                                        <small class="fw-semibold">9:00 AM</small>
+                                        <small>Meeting</small>
+                                        <div class="d-flex justify-content-end gap-1">
+                                            <label for="">Booked</label>
+                                            <input type="checkbox" name="" id="">
+                                        </div>
+                                    </div>
+
+                                    <div style="min-width: 15rem; border-left: 4px solid rgb(34, 255, 0)"
+                                        class="bg-success-subtle rounded-2 px-2 py-1 w-100">
+                                        <small class="fw-semibold">9:00 AM</small>
+                                        <small>Meeting</small>
+                                        <div class="d-flex justify-content-end gap-1">
+                                            <label for="">Booked</label>
+                                            <input type="checkbox" name="" id="">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div
+                                class="col-12 border-bottom border-start border-end p-2 d-flex gap-4 align-items-center ps-4">
+                                <small class="fw-bold" style="min-width: 5.6rem">Tuesday</small>
+                                <div class="w-100 overflow-auto">
+                                    <div style="min-width: 15rem; border-left: 4px solid rgb(0, 136, 255)"
+                                        class="bg-info-subtle rounded-2 px-2 py-1 w-100 mb-2">
+                                        <small class="fw-semibold">9:00 AM</small>
+                                        <small>Meeting</small>
+                                        <div class="d-flex justify-content-end gap-1">
+                                            <label for="">Booked</label>
+                                            <input type="checkbox" name="" id="">
+                                        </div>
+                                    </div>
+
+                                    <div style="min-width: 15rem; border-left: 4px solid rgb(255, 200, 0)"
+                                        class="bg-warning-subtle rounded-2 px-2 py-1 w-100 mb-2">
+                                        <small class="fw-semibold">9:00 AM</small>
+                                        <small>Meeting</small>
+                                        <div class="d-flex justify-content-end gap-1">
+                                            <label for="">Booked</label>
+                                            <input type="checkbox" name="" id="">
+                                        </div>
+                                    </div>
+
+                                    <div style="min-width: 15rem; border-left: 4px solid rgb(34, 255, 0)"
+                                        class="bg-success-subtle rounded-2 px-2 py-1 w-100">
+                                        <small class="fw-semibold">9:00 AM</small>
+                                        <small>Meeting</small>
+                                        <div class="d-flex justify-content-end gap-1">
+                                            <label for="">Booked</label>
+                                            <input type="checkbox" name="" id="">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div
+                                class="col-12 border-bottom border-start border-end p-2 d-flex gap-4 align-items-center ps-4">
+                                <small class="fw-bold" style="min-width: 5.6rem">Wednesday</small>
+                                <div class="w-100 overflow-auto">
+                                    <div style="min-width: 15rem; border-left: 4px solid rgb(0, 136, 255)"
+                                        class="bg-info-subtle rounded-2 px-2 py-1 w-100 mb-2">
+                                        <small class="fw-semibold">9:00 AM</small>
+                                        <small>Meeting</small>
+                                        <div class="d-flex justify-content-end gap-1">
+                                            <label for="">Booked</label>
+                                            <input type="checkbox" name="" id="">
+                                        </div>
+                                    </div>
+
+                                    <div style="min-width: 15rem; border-left: 4px solid rgb(255, 200, 0)"
+                                        class="bg-warning-subtle rounded-2 px-2 py-1 w-100 mb-2">
+                                        <small class="fw-semibold">9:00 AM</small>
+                                        <small>Meeting</small>
+                                        <div class="d-flex justify-content-end gap-1">
+                                            <label for="">Booked</label>
+                                            <input type="checkbox" name="" id="">
+                                        </div>
+                                    </div>
+
+                                    <div style="min-width: 15rem; border-left: 4px solid rgb(34, 255, 0)"
+                                        class="bg-success-subtle rounded-2 px-2 py-1 w-100">
+                                        <small class="fw-semibold">9:00 AM</small>
+                                        <small>Meeting</small>
+                                        <div class="d-flex justify-content-end gap-1">
+                                            <label for="">Booked</label>
+                                            <input type="checkbox" name="" id="">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div
+                                class="col-12 border-bottom border-start border-end p-2 d-flex gap-4 align-items-center ps-4">
+                                <small class="fw-bold" style="min-width: 5.6rem">Thursday</small>
+                            </div>
+
+                            <div
+                                class="col-12 border-bottom border-start border-end p-2 d-flex gap-4 align-items-center ps-4">
+                                <small class="fw-bold" style="min-width: 5.6rem">Friday</small>
+                            </div>
+
+                            <div
+                                class="col-12 border-bottom border-start border-end p-2 d-flex gap-4 align-items-center ps-4">
+                                <small class="fw-bold" style="min-width: 5.6rem">Saturday</small>
+                            </div>
+
+                            <div
+                                class="col-12 border-bottom border-start border-end p-2 d-flex gap-4 align-items-center ps-4">
+                                <small class="fw-bold" style="min-width: 5.6rem">Sunday</small>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -730,10 +952,10 @@
 
             </div>
 
-            <div class="tab-pane fade px-2" id="week-tab-pane" role="tabpanel" aria-labelledby="week-tab"
+            {{-- <div class="tab-pane fade px-2" id="week-tab-pane" role="tabpanel" aria-labelledby="week-tab"
                 tabindex="0">
 
-                {{-- <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="d-flex justify-content-between align-items-center mb-3">
                         <h4 class="mb-0 fs-5">Weekly Schedule</h4>
                         <button class="btn btn-danger btn-sm" id="toggleTimeBtn">Switch to 12-hour</button>
                     </div>
@@ -746,129 +968,8 @@
                             </thead>
                             <tbody id="scheduleBody"></tbody>
                         </table>
-                    </div> --}}
-
-                <div class="d-flex align-items-center justify-content-between border px-2">
-                    <small style="padding-left: 8.2rem" class="pe-4">00:00</small>
-                    <span style="background: linear-gradient(303deg,rgba(255, 255, 255, 1) 0%, rgba(188, 28, 28, 0.434) 57%, rgba(255, 255, 255, 1) 100%);" class="w-100 d-flex align-items-center justify-content-center">AM</span>
-                    <span style="background: linear-gradient(303deg,rgba(255, 255, 255, 1) 0%, rgba(188, 28, 28, 0.414) 57%, rgba(255, 255, 255, 1) 100%);" class="border-start w-100 d-flex align-items-center justify-content-center">PM</span>
-                    <small class="ps-4">24:00</small>
-                </div>
-                
-                <div class="row g-0">
-                    <div class="col-12 border-bottom border-start border-end p-2 d-flex gap-4 align-items-center ps-4">
-                        <small class="fw-bold" style="min-width: 5.6rem">Monday</small>
-                        <div class="w-100 overflow-auto">
-                            <div style="min-width: 15rem; border-left: 4px solid rgb(0, 136, 255)" class="bg-info-subtle rounded-2 px-2 py-1 w-100 mb-2">
-                                <small class="fw-semibold">9:00 AM</small>
-                                <small>Meeting</small>
-                                <div class="d-flex justify-content-end gap-1">
-                                    <label for="">Booked</label>
-                                    <input type="checkbox" name="" id="">
-                                </div>
-                            </div>
-
-                            <div style="min-width: 15rem; border-left: 4px solid rgb(255, 200, 0)" class="bg-warning-subtle rounded-2 px-2 py-1 w-100 mb-2">
-                                <small class="fw-semibold">9:00 AM</small>
-                                <small>Meeting</small>
-                                <div class="d-flex justify-content-end gap-1">
-                                    <label for="">Booked</label>
-                                    <input type="checkbox" name="" id="">
-                                </div>
-                            </div>
-
-                            <div style="min-width: 15rem; border-left: 4px solid rgb(34, 255, 0)" class="bg-success-subtle rounded-2 px-2 py-1 w-100">
-                                <small class="fw-semibold">9:00 AM</small>
-                                <small>Meeting</small>
-                                <div class="d-flex justify-content-end gap-1">
-                                    <label for="">Booked</label>
-                                    <input type="checkbox" name="" id="">
-                                </div>
-                            </div>
-                        </div>
                     </div>
-
-                    <div class="col-12 border-bottom border-start border-end p-2 d-flex gap-4 align-items-center ps-4">
-                        <small class="fw-bold" style="min-width: 5.6rem">Tuesday</small>
-                        <div class="w-100 overflow-auto">
-                            <div style="min-width: 15rem; border-left: 4px solid rgb(0, 136, 255)" class="bg-info-subtle rounded-2 px-2 py-1 w-100 mb-2">
-                                <small class="fw-semibold">9:00 AM</small>
-                                <small>Meeting</small>
-                                <div class="d-flex justify-content-end gap-1">
-                                    <label for="">Booked</label>
-                                    <input type="checkbox" name="" id="">
-                                </div>
-                            </div>
-
-                            <div style="min-width: 15rem; border-left: 4px solid rgb(255, 200, 0)" class="bg-warning-subtle rounded-2 px-2 py-1 w-100 mb-2">
-                                <small class="fw-semibold">9:00 AM</small>
-                                <small>Meeting</small>
-                                <div class="d-flex justify-content-end gap-1">
-                                    <label for="">Booked</label>
-                                    <input type="checkbox" name="" id="">
-                                </div>
-                            </div>
-
-                            <div style="min-width: 15rem; border-left: 4px solid rgb(34, 255, 0)" class="bg-success-subtle rounded-2 px-2 py-1 w-100">
-                                <small class="fw-semibold">9:00 AM</small>
-                                <small>Meeting</small>
-                                <div class="d-flex justify-content-end gap-1">
-                                    <label for="">Booked</label>
-                                    <input type="checkbox" name="" id="">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-12 border-bottom border-start border-end p-2 d-flex gap-4 align-items-center ps-4">
-                        <small class="fw-bold" style="min-width: 5.6rem">Wednesday</small>
-                        <div class="w-100 overflow-auto">
-                            <div style="min-width: 15rem; border-left: 4px solid rgb(0, 136, 255)" class="bg-info-subtle rounded-2 px-2 py-1 w-100 mb-2">
-                                <small class="fw-semibold">9:00 AM</small>
-                                <small>Meeting</small>
-                                <div class="d-flex justify-content-end gap-1">
-                                    <label for="">Booked</label>
-                                    <input type="checkbox" name="" id="">
-                                </div>
-                            </div>
-
-                            <div style="min-width: 15rem; border-left: 4px solid rgb(255, 200, 0)" class="bg-warning-subtle rounded-2 px-2 py-1 w-100 mb-2">
-                                <small class="fw-semibold">9:00 AM</small>
-                                <small>Meeting</small>
-                                <div class="d-flex justify-content-end gap-1">
-                                    <label for="">Booked</label>
-                                    <input type="checkbox" name="" id="">
-                                </div>
-                            </div>
-
-                            <div style="min-width: 15rem; border-left: 4px solid rgb(34, 255, 0)" class="bg-success-subtle rounded-2 px-2 py-1 w-100">
-                                <small class="fw-semibold">9:00 AM</small>
-                                <small>Meeting</small>
-                                <div class="d-flex justify-content-end gap-1">
-                                    <label for="">Booked</label>
-                                    <input type="checkbox" name="" id="">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-12 border-bottom border-start border-end p-2 d-flex gap-4 align-items-center ps-4">
-                        <small class="fw-bold" style="min-width: 5.6rem">Thursday</small>
-                    </div>
-
-                    <div class="col-12 border-bottom border-start border-end p-2 d-flex gap-4 align-items-center ps-4">
-                        <small class="fw-bold" style="min-width: 5.6rem">Friday</small>
-                    </div>
-
-                    <div class="col-12 border-bottom border-start border-end p-2 d-flex gap-4 align-items-center ps-4">
-                        <small class="fw-bold" style="min-width: 5.6rem">Saturday</small>
-                    </div>
-
-                    <div class="col-12 border-bottom border-start border-end p-2 d-flex gap-4 align-items-center ps-4">
-                        <small class="fw-bold" style="min-width: 5.6rem">Sunday</small>
-                    </div>
-                </div>
-            </div>
+            </div> --}}
 
         </div>
     </div>
