@@ -272,7 +272,7 @@
             padding: 5px;
             cursor: pointer;
             /* position: absolute;
-                                                                                                                                        z-index: 1000; */
+                                                        z-index: 1000; */
         }
 
         .status-dropdown li:hover {
@@ -322,6 +322,7 @@
             color: #fff;
             padding: .3rem .8rem;
         }
+
         .upload-btn {
             white-space: nowrap;
             overflow: hidden;
@@ -329,26 +330,31 @@
             display: inline-block;
             max-width: 100%;
         }
-        .fc-event-title, .fc-event-time{
+
+        .fc-event-title,
+        .fc-event-time {
             font-size: 12px !important;
             font-weight: unset !important;
         }
-        .fc-event{
-            margin-top:3px !important;
+
+        .fc-event {
+            margin-top: 3px !important;
             border-color: unset !important;
             border: unset !important;
         }
 
-        .hover-red:hover{
-            background-color:#FFFCBB !important;
+        .hover-red:hover {
+            background-color: #FFFCBB !important;
         }
-        .hover-green:hover{
-            background-color:#C9FFBB !important;
+
+        .hover-green:hover {
+            background-color: #C9FFBB !important;
         }
-        .hover-yellow:hover{
-            background-color:#FFBBBB !important;
+
+        .hover-yellow:hover {
+            background-color: #FFBBBB !important;
         }
- 
+
         .cancel-icon {
             position: absolute !important;
             top: -10px !important;
@@ -360,14 +366,16 @@
             padding: 1px 5px 0px 5px;
             font-size: 12px;
         }
+
         .image-item-land p {
-            font-size:12px;
+            font-size: 12px;
             color: #dc2f2b;
             background: transparent;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
+
         .image-item-land img {
             width: 70px;
             height: 70px;
@@ -375,6 +383,7 @@
             /* border: 1px solid #dc2f2b; */
             border-radius: 10px;
         }
+
         .image-item-land {
             position: relative !important;
             display: inline-block !important;
@@ -383,21 +392,26 @@
             text-align: center !important;
             vertical-align: top !important;
         }
+
         .image-container {
             overflow-x: auto;
             width: 100%;
             margin-left: 0;
         }
+
         .select2-container {
             z-index: 9999 !important;
         }
+
         .select2-container .select2-dropdown {
             margin-top: -25px;
         }
 
         .fc-event {
-            position: relative; /* Required for absolute positioning inside */
+            position: relative;
+            /* Required for absolute positioning inside */
         }
+
         .tick-icon {
             position: absolute;
             right: 0px;
@@ -408,6 +422,7 @@
             font-size: 16px !important;
             vertical-align: text-top;
         }
+
         .left-bar {
             display: inline-block;
             width: 5px;
@@ -416,397 +431,608 @@
             margin-right: 6px;
             vertical-align: text-top;
         }
+
         .fc-timegrid-event {
             min-width: 70px;
         }
+
+        label {
+            font-size: 12px !important
+        }
+
+        /* .schedule-table {
+            table-layout: fixed;
+            width: 100%;
+        } */
+
+        /* .schedule-table th,
+        .schedule-table td {
+            text-align: center;
+            vertical-align: middle;
+            border: 1px solid #dee2e6;
+            min-height: 50px;
+            min-width: 100px;
+        }
+
+        .time-header {
+            background-color: #f8f9fa;
+        }
+
+        .day-header {
+            font-weight: bold;
+            background-color: #f1f1f1;
+        }
+
+        .sticky-top-left {
+            position: sticky;
+            left: 0;
+            z-index: 4 !important;
+            background-color: #f1f1f1;
+        }
+
+        .sticky-header {
+            position: sticky;
+            top: 0;
+            z-index: 3;
+            background-color: #fff;
+        }
+
+        .event {
+            border-radius: 5px;
+            padding: 4px;
+            font-size: 10px;
+            line-height: 1.2;
+            color: #000;
+        } */
     </style>
 @endpush
 
 @section('content')
-<div class="dashboard py-4">
-    <ul class="nav nav-tabs mb-3 d-flex align-items-center justify-content-between" id="myTab" role="tablist">
-        <div class="breadcrumb mb-0 mx-2 d-flex align-items-center gap-1">
-            <a class="d-flex" href="{{url('dashboard')}}">
-                <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" viewBox="0 0 24 24">
-                    <path fill="red"
-                        d="M3 13h1v7c0 1.103.897 2 2 2h12c1.103 0 2-.897 2-2v-7h1a1 1 0 0 0 .707-1.707l-9-9a.999.999 0 0 0-1.414 0l-9 9A1 1 0 0 0 3 13m7 7v-5h4v5zm2-15.586l6 6V15l.001 5H16v-5c0-1.103-.897-2-2-2h-4c-1.103 0-2 .897-2 2v5H6v-9.586z" />
-                </svg>
-                <small>
-                    Dashboard
-                </small>
-            </a>
-        </div>
-        <div class="d-flex align-items-center">
-            <div class="legends d-flex gap-3 align-items-center justify-content-center me-3">
-                <div class="d-flex align-items-center gap-1">
-                    <div style="background-color: #0000ff; height: 13px; width: 7px;"></div>
-                    <small>SCCI(Logistic)</small>
+    <div class="dashboard py-4">
+        <ul class="nav nav-tabs mb-3 d-flex align-items-center justify-content-between" id="myTab" role="tablist">
+            <div class="breadcrumb mb-0 mx-2 d-flex align-items-center gap-1">
+                <a class="d-flex" href="{{ url('dashboard') }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" viewBox="0 0 24 24">
+                        <path fill="red"
+                            d="M3 13h1v7c0 1.103.897 2 2 2h12c1.103 0 2-.897 2-2v-7h1a1 1 0 0 0 .707-1.707l-9-9a.999.999 0 0 0-1.414 0l-9 9A1 1 0 0 0 3 13m7 7v-5h4v5zm2-15.586l6 6V15l.001 5H16v-5c0-1.103-.897-2-2-2h-4c-1.103 0-2 .897-2 2v5H6v-9.586z" />
+                    </svg>
+                    <small>
+                        Dashboard
+                    </small>
+                </a>
+            </div>
+            <div class="d-flex align-items-center">
+                <div class="legends d-flex gap-3 align-items-center justify-content-center me-3">
+                    <div class="d-flex align-items-center gap-1">
+                        <div style="background-color: #0000ff; height: 13px; width: 7px;"></div>
+                        <small>SCCI(Logistic)</small>
+                    </div>
+                    <div class="d-flex align-items-center gap-1">
+                        <div style="background-color: #ffa500; height: 13px; width: 7px;"></div>
+                        <small>Crane</small>
+                    </div>
+                    <div class="d-flex align-items-center gap-1">
+                        <div style="background-color: #ff0000; height: 13px; width: 7px;"></div>
+                        <small>Crane & Logistics</small>
+                    </div>
+                    <div class="d-flex align-items-center gap-1">
+                        <div style="background-color: #800080; height: 13px; width: 7px;"></div>
+                        <small>Other</small>
+                    </div>
                 </div>
-                <div class="d-flex align-items-center gap-1">
-                    <div style="background-color: #ffa500; height: 13px; width: 7px;"></div>
-                    <small>Crane</small>
-                </div>
-                <div class="d-flex align-items-center gap-1">
-                    <div style="background-color: #ff0000; height: 13px; width: 7px;"></div>
-                    <small>Crane & Logistics</small>
-                </div>
-                <div class="d-flex align-items-center gap-1">
-                    <div style="background-color: #800080; height: 13px; width: 7px;"></div>
-                    <small>Other</small>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="calender-tab" data-bs-toggle="tab"
+                        data-bs-target="#calender-tab-pane" type="button" role="tab" aria-controls="calender-tab-pane"
+                        aria-selected="true" title="Calendar View">
+                        <i class="fa-regular fa-calendar-days fs-5"></i>
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="list-tab" data-bs-toggle="tab" data-bs-target="#list-tab-pane"
+                        type="button" role="tab" aria-controls="list-tab-pane" aria-selected="false" title="List View">
+                        <i class="fa-solid fa-table-list fs-5"></i>
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="week-tab" data-bs-toggle="tab" data-bs-target="#week-tab-pane"
+                        type="button" role="tab" aria-controls="week-tab-pane" aria-selected="false" title="week View">
+                        <i class="fa-solid fa-calendar-week fs-5"></i>
+                    </button>
+                </li>
+            </div>
+        </ul>
+
+
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active px-2" id="calender-tab-pane" role="tabpanel"
+                aria-labelledby="calender-tab" tabindex="0">
+                <div id="container">
+                    <div id="calendar"></div>
                 </div>
             </div>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="calender-tab" data-bs-toggle="tab"
-                    data-bs-target="#calender-tab-pane" type="button" role="tab" aria-controls="calender-tab-pane"
-                    aria-selected="true" title="Calendar View">
-                    <i class="fa-regular fa-calendar-days fs-5"></i>
-                </button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="list-tab" data-bs-toggle="tab" data-bs-target="#list-tab-pane"
-                    type="button" role="tab" aria-controls="list-tab-pane" aria-selected="false" title="List View">
-                    <i class="fa-solid fa-table-list fs-5"></i>
-                </button>
-            </li>
-        </div>
-    </ul>
 
 
-    <div class="tab-content" id="myTabContent">
-        <div class="tab-pane fade show active px-2" id="calender-tab-pane" role="tabpanel"
-            aria-labelledby="calender-tab" tabindex="0">
-            <div id="container">
-                <div id="calendar"></div>
-            </div>
-            
-        </div>
+            <div class="tab-pane fade" id="list-tab-pane" role="tabpanel" aria-labelledby="list-tab" tabindex="0">
+                <div class="all-jobs px-2">
+                    <div class="row align-items-center mb-5 g-0 pe-2">
 
+                        <div class="col">
+                            <div class="counters d-flex gap-2 align-items-center ">
+                                <!-- <img src="{{ asset('assets/images/customer-service.png') }}" width="40" alt=""> -->
+                                <img src="{{ asset('assets/images/supplier.png') }}" width="40" alt="">
+                                <div class="pt-2">
+                                    <h6 class="mb-0">Total SCCI (Logistics)</h6>
+                                    <small id="total_scci">0</small>
+                                </div>
+                            </div>
+                        </div>
 
-        <div class="tab-pane fade" id="list-tab-pane" role="tabpanel" aria-labelledby="list-tab" tabindex="0">
-            <div class="all-jobs px-2">
-                <div class="row align-items-center mb-5 g-0 pe-2">
+                        <div class="col">
+                            <div class="counters  d-flex gap-2 align-items-center justify-content-center">
+                                <img src="{{ asset('assets/images/tour.png') }}" width="50" alt="">
+                                <div class="pt-2">
+                                    <h6 class="mb-0">Total Crane Jobs</h6>
+                                    <small id="total_crane">0</small>
+                                </div>
+                            </div>
+                        </div>
 
-                    <div class="col">
-                        <div class="counters d-flex gap-2 align-items-center ">
-                            <!-- <img src="{{asset('assets/images/customer-service.png')}}" width="40" alt=""> -->
-                            <img src="{{asset('assets/images/supplier.png')}}" width="40" alt="">
-                            <div class="pt-2">
-                                <h6 class="mb-0">Total SCCI (Logistics)</h6>
-                                <small id="total_scci">0</small>
+                        <div class="col">
+                            <div class="counters d-flex gap-2 align-items-center justify-content-end">
+                                <img src="{{ asset('assets/images/tour.png') }}" width="50" alt="">
+                                <div class="pt-2">
+                                    <h6 class="mb-0">Total Crane & Logistics Jobs</h6>
+                                    <small id="total_crane_logistic">0</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div class="counters d-flex gap-2 align-items-center justify-content-end">
+                                <!-- <img src="{{ asset('assets/images/tour.png') }}" width="50" alt=""> -->
+                                <img src="{{ asset('assets/images/supplier.png') }}" width="40" alt="">
+                                <div class="pt-2">
+                                    <h6 class="mb-0">Total Other Jobs</h6>
+                                    <small id="total_other">0</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div class="counters d-flex gap-2 align-items-center justify-content-end">
+                                <img src="{{ asset('assets/images/businessman.png') }}" width="50" alt="">
+                                <div class="pt-2">
+                                    <h6 class="mb-0">Total Jobs</h6>
+                                    <small id="total_jobs">0</small>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col">
-                        <div class="counters  d-flex gap-2 align-items-center justify-content-center">
-                            <img src="{{asset('assets/images/tour.png')}}" width="50" alt="">
-                            <div class="pt-2">
-                                <h6 class="mb-0">Total Crane Jobs</h6>
-                                <small id="total_crane">0</small>
+                    <div class="job-list">
+                        <div class="d-flex align-items-center justify-content-between mb-4">
+                            <button class="collapse-btn d-flex align-items-center gap-1" type="button"
+                                data-bs-toggle="collapse" data-bs-target="#filterSection" aria-expanded="false"
+                                aria-controls="filterSection">
+                                <svg id="filterArrow" style="rotate: 90deg" xmlns="http://www.w3.org/2000/svg"
+                                    width="1.4em" height="1.4em" viewBox="0 0 24 24">
+                                    <g fill="red">
+                                        <path
+                                            d="m14.829 11.948l1.414-1.414L12 6.29l-4.243 4.243l1.415 1.414L11 10.12v7.537h2V10.12z" />
+                                        <path fill-rule="evenodd"
+                                            d="M19.778 4.222c-4.296-4.296-11.26-4.296-15.556 0c-4.296 4.296-4.296 11.26 0 15.556c4.296 4.296 11.26 4.296 15.556 0c4.296-4.296 4.296-11.26 0-15.556m-1.414 1.414A9 9 0 1 0 5.636 18.364A9 9 0 0 0 18.364 5.636"
+                                            clip-rule="evenodd" />
+                                    </g>
+                                </svg>
+                                <h6 class="mb-0 text-danger">
+                                    Advance search
+                                </h6>
+                            </button>
+                        </div>
+
+                        <div class="collapse mb-4" id="filterSection">
+                            <div class="filter">
+                                <form id="filterJobs_form">
+                                    <div class="row gy-3">
+                                        <div class="col-4 col-md-3 d-none">
+                                            <label class="fw-semibold">Job Number</label>
+                                            <input type="text" class="py-1 px-3 rounded-1 form-control"
+                                                id="search_job_no" name="search_job_no" placeholder="Type here">
+                                        </div>
+                                        <div class="col-4 col-md-3">
+                                            <label class="fw-semibold">Client Name</label>
+                                            <input type="text" class="py-1 px-3 rounded-1 form-control"
+                                                id="search_client" name="search_client" placeholder="Type here">
+                                        </div>
+                                        <div class="col-4 col-md-3">
+                                            <label class="fw-semibold">Address</label>
+                                            <input type="text" class="py-1 px-3 rounded-1 form-control"
+                                                id="search_address" name="search_address" placeholder="Type here">
+                                        </div>
+
+                                        <div class="col-4 col-md-3">
+                                            <label class="fw-semibold">Job Type</label>
+                                            <select class="form-control" id="search_job_type" name="search_job_type">
+                                                <option value="">Choose</option>
+                                                <option value="1">SCCI(Logistic Job)</option>
+                                                <option value="2">Crane Job</option>
+                                                <option value="4">Crane & Logistics</option>
+                                                <option value="3">Other</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-4 col-md-3">
+                                            <label class="fw-semibold">Status</label>
+                                            <select class="form-control" id="search_status" name="search_status">
+                                                <option value="">Choose</option>
+                                                <option value="1">Good to go</option>
+                                                <option value="0">Problem</option>
+                                                <option value="2">On-Hold</option>
+                                                <option value="3">Completed</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-4 col-md-3">
+                                            <label class="fw-semibold">From Date</label>
+                                            <input type="date" class="py-1 px-3 rounded-1 form-control"
+                                                id="search_from_date" name="search_from_date">
+                                        </div>
+                                        <div class="col-4 col-md-3">
+                                            <label class="fw-semibold">To Date</label>
+                                            <input type="date" class="py-1 px-3 rounded-1 form-control"
+                                                id="search_to_date" name="search_to_date">
+                                        </div>
+                                        <div class="col-4 col-md-3">
+                                            <label class="fw-semibold">Rigger/Driver</label>
+                                            <select class="form-control" id="search_assigned_user"
+                                                name="search_assigned_user">
+                                                <option value="">Choose</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-4 col-md-3">
+                                            <label class="fw-semibold">Supplier Name</label>
+                                            <input type="text" class="py-1 px-3 rounded-1 form-control"
+                                                id="search_supplier" name="search_supplier" placeholder="Type here">
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-end gap-2">
+                                        <button type="button" class="mt-3 py-1 px-3 text-white rounded-1 clear_filter">
+                                            Clear Filter
+                                        </button>
+                                        <button type="button" class="mt-3 py-1 px-3 text-white rounded-1 searchJob_btn">
+                                            Search
+                                        </button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
-                    </div>
+                        <div class="table-container">
+                            <table id="jobsListing_table" class="table-responsive w-100">
+                                <thead>
+                                    <tr>
+                                        <th class="px3" scope="col">Job No#</th>
+                                        <th class="px3" scope="col">Client Name</th>
+                                        <th class="px-3" scope="col">Address</th>
+                                        <th class="px3" scope="col">Job Type</th>
+                                        <th class="px3" scope="col">Status</th>
+                                        <th class="px3" scope="col">Date</th>
+                                        <th class="px3" scope="col">Assigned (Rigger/Driver)</th>
+                                        <th class="px3" scope="col">Supplier Name</th>
+                                        <th scope="col">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="jobsListing_body">
 
-                    <div class="col">
-                        <div class="counters d-flex gap-2 align-items-center justify-content-end">
-                        <img src="{{asset('assets/images/tour.png')}}" width="50" alt="">
-                            <div class="pt-2">
-                                <h6 class="mb-0">Total Crane & Logistics Jobs</h6>
-                                <small id="total_crane_logistic">0</small>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col">
-                        <div class="counters d-flex gap-2 align-items-center justify-content-end">
-                            <!-- <img src="{{asset('assets/images/tour.png')}}" width="50" alt=""> -->
-                            <img src="{{asset('assets/images/supplier.png')}}" width="40" alt="">
-                            <div class="pt-2">
-                                <h6 class="mb-0">Total Other Jobs</h6>
-                                <small id="total_other">0</small>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col">
-                        <div class="counters d-flex gap-2 align-items-center justify-content-end">
-                            <img src="{{asset('assets/images/businessman.png')}}" width="50" alt="">
-                            <div class="pt-2">
-                                <h6 class="mb-0">Total Jobs</h6>
-                                <small id="total_jobs">0</small>
-                            </div>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
 
-                <div class="job-list">
-                    <div class="d-flex align-items-center justify-content-between mb-4">
-                        <button class="collapse-btn d-flex align-items-center gap-1" type="button"
-                            data-bs-toggle="collapse" data-bs-target="#filterSection" aria-expanded="false"
-                            aria-controls="filterSection">
-                            <svg id="filterArrow" style="rotate: 90deg" xmlns="http://www.w3.org/2000/svg" width="1.4em"
-                                height="1.4em" viewBox="0 0 24 24">
-                                <g fill="red">
-                                    <path
-                                        d="m14.829 11.948l1.414-1.414L12 6.29l-4.243 4.243l1.415 1.414L11 10.12v7.537h2V10.12z" />
-                                    <path fill-rule="evenodd"
-                                        d="M19.778 4.222c-4.296-4.296-11.26-4.296-15.556 0c-4.296 4.296-4.296 11.26 0 15.556c4.296 4.296 11.26 4.296 15.556 0c4.296-4.296 4.296-11.26 0-15.556m-1.414 1.414A9 9 0 1 0 5.636 18.364A9 9 0 0 0 18.364 5.636"
-                                        clip-rule="evenodd" />
-                                </g>
-                            </svg>
-                            <h6 class="mb-0 text-danger">
-                                Advance search
-                            </h6>
-                        </button>
-                    </div>
 
-                    <div class="collapse mb-4" id="filterSection">
-                        <div class="filter">
-                            <form id="filterJobs_form">
-                                <div class="row gy-3">
-                                    <div class="col-4 col-md-3 d-none">
-                                        <label class="fw-semibold">Job Number</label>
-                                        <input type="text" class="py-1 px-3 rounded-1 form-control" id="search_job_no" name="search_job_no" placeholder="Type here">
-                                    </div>
-                                    <div class="col-4 col-md-3">
-                                        <label class="fw-semibold">Client Name</label>
-                                        <input type="text" class="py-1 px-3 rounded-1 form-control" id="search_client" name="search_client" placeholder="Type here">
-                                    </div>
-                                    <div class="col-4 col-md-3">
-                                        <label class="fw-semibold">Address</label>
-                                        <input type="text" class="py-1 px-3 rounded-1 form-control" id="search_address" name="search_address" placeholder="Type here">
-                                    </div>
-                                    
-                                    <div class="col-4 col-md-3">
-                                        <label class="fw-semibold">Job Type</label>
-                                        <select class="form-control" id="search_job_type" name="search_job_type">
-                                            <option value="">Choose</option>
-                                            <option value="1">SCCI(Logistic Job)</option>
-                                            <option value="2">Crane Job</option>
-                                            <option value="4">Crane & Logistics</option>
-                                            <option value="3">Other</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-4 col-md-3">
-                                        <label class="fw-semibold">Status</label>
-                                        <select class="form-control" id="search_status" name="search_status">
-                                            <option value="">Choose</option>
-                                            <option value="1">Good to go</option>
-                                            <option value="0">Problem</option>
-                                            <option value="2">On-Hold</option>
-                                            <option value="3">Completed</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-4 col-md-3">
-                                        <label class="fw-semibold">From Date</label>
-                                        <input type="date" class="py-1 px-3 rounded-1 form-control" id="search_from_date" name="search_from_date">
-                                    </div>
-                                    <div class="col-4 col-md-3">
-                                        <label class="fw-semibold">To Date</label>
-                                        <input type="date" class="py-1 px-3 rounded-1 form-control" id="search_to_date" name="search_to_date">
-                                    </div>
-                                    <div class="col-4 col-md-3">
-                                        <label class="fw-semibold">Rigger/Driver</label>
-                                        <select class="form-control" id="search_assigned_user" name="search_assigned_user" >
-                                            <option value="">Choose</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-4 col-md-3">
-                                        <label class="fw-semibold">Supplier Name</label>
-                                        <input type="text" class="py-1 px-3 rounded-1 form-control" id="search_supplier" name="search_supplier" placeholder="Type here">
-                                    </div>
-                                </div>
-                                <div class="d-flex justify-content-end gap-2">
-                                    <button type="button" class="mt-3 py-1 px-3 text-white rounded-1 clear_filter">
-                                        Clear Filter
-                                    </button>
-                                    <button type="button" class="mt-3 py-1 px-3 text-white rounded-1 searchJob_btn">
-                                        Search
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
+            </div>
+
+            <div class="tab-pane fade px-2" id="week-tab-pane" role="tabpanel" aria-labelledby="week-tab"
+                tabindex="0">
+
+                {{-- <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="mb-0 fs-5">Weekly Schedule</h4>
+                        <button class="btn btn-danger btn-sm" id="toggleTimeBtn">Switch to 12-hour</button>
                     </div>
-                    <div class="table-container">
-                        <table id="jobsListing_table" class="table-responsive w-100">
+                    <div class="table-responsive">
+                        <table class="table schedule-table" id="scheduleTable">
                             <thead>
                                 <tr>
-                                    <th class="px3" scope="col">Job No#</th>
-                                    <th class="px3" scope="col">Client Name</th>
-                                    <th class="px-3" scope="col">Address</th>
-                                    <th class="px3" scope="col">Job Type</th>
-                                    <th class="px3" scope="col">Status</th>
-                                    <th class="px3" scope="col">Date</th>
-                                    <th class="px3" scope="col">Assigned (Rigger/Driver)</th>
-                                    <th class="px3" scope="col">Supplier Name</th>
-                                    <th scope="col">Action</th>
+                                    <th class="sticky-header sticky-top-left">Day / Time</th>
                                 </tr>
                             </thead>
-                            <tbody id="jobsListing_body">
-                                
-                            </tbody>
+                            <tbody id="scheduleBody"></tbody>
                         </table>
+                    </div> --}}
+
+                <div class="d-flex align-items-center justify-content-between border px-2">
+                    <small style="padding-left: 8.2rem" class="pe-4">00:00</small>
+                    <span style="background: linear-gradient(303deg,rgba(255, 255, 255, 1) 0%, rgba(188, 28, 28, 0.434) 57%, rgba(255, 255, 255, 1) 100%);" class="w-100 d-flex align-items-center justify-content-center">AM</span>
+                    <span style="background: linear-gradient(303deg,rgba(255, 255, 255, 1) 0%, rgba(188, 28, 28, 0.414) 57%, rgba(255, 255, 255, 1) 100%);" class="border-start w-100 d-flex align-items-center justify-content-center">PM</span>
+                    <small class="ps-4">24:00</small>
+                </div>
+                
+                <div class="row g-0">
+                    <div class="col-12 border-bottom border-start border-end p-2 d-flex gap-4 align-items-center ps-4">
+                        <small class="fw-bold" style="min-width: 5.6rem">Monday</small>
+                        <div class="w-100 overflow-auto">
+                            <div style="min-width: 15rem; border-left: 4px solid rgb(0, 136, 255)" class="bg-info-subtle rounded-2 px-2 py-1 w-100 mb-2">
+                                <small class="fw-semibold">9:00 AM</small>
+                                <small>Meeting</small>
+                                <div class="d-flex justify-content-end gap-1">
+                                    <label for="">Booked</label>
+                                    <input type="checkbox" name="" id="">
+                                </div>
+                            </div>
+
+                            <div style="min-width: 15rem; border-left: 4px solid rgb(255, 200, 0)" class="bg-warning-subtle rounded-2 px-2 py-1 w-100 mb-2">
+                                <small class="fw-semibold">9:00 AM</small>
+                                <small>Meeting</small>
+                                <div class="d-flex justify-content-end gap-1">
+                                    <label for="">Booked</label>
+                                    <input type="checkbox" name="" id="">
+                                </div>
+                            </div>
+
+                            <div style="min-width: 15rem; border-left: 4px solid rgb(34, 255, 0)" class="bg-success-subtle rounded-2 px-2 py-1 w-100">
+                                <small class="fw-semibold">9:00 AM</small>
+                                <small>Meeting</small>
+                                <div class="d-flex justify-content-end gap-1">
+                                    <label for="">Booked</label>
+                                    <input type="checkbox" name="" id="">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 border-bottom border-start border-end p-2 d-flex gap-4 align-items-center ps-4">
+                        <small class="fw-bold" style="min-width: 5.6rem">Tuesday</small>
+                        <div class="w-100 overflow-auto">
+                            <div style="min-width: 15rem; border-left: 4px solid rgb(0, 136, 255)" class="bg-info-subtle rounded-2 px-2 py-1 w-100 mb-2">
+                                <small class="fw-semibold">9:00 AM</small>
+                                <small>Meeting</small>
+                                <div class="d-flex justify-content-end gap-1">
+                                    <label for="">Booked</label>
+                                    <input type="checkbox" name="" id="">
+                                </div>
+                            </div>
+
+                            <div style="min-width: 15rem; border-left: 4px solid rgb(255, 200, 0)" class="bg-warning-subtle rounded-2 px-2 py-1 w-100 mb-2">
+                                <small class="fw-semibold">9:00 AM</small>
+                                <small>Meeting</small>
+                                <div class="d-flex justify-content-end gap-1">
+                                    <label for="">Booked</label>
+                                    <input type="checkbox" name="" id="">
+                                </div>
+                            </div>
+
+                            <div style="min-width: 15rem; border-left: 4px solid rgb(34, 255, 0)" class="bg-success-subtle rounded-2 px-2 py-1 w-100">
+                                <small class="fw-semibold">9:00 AM</small>
+                                <small>Meeting</small>
+                                <div class="d-flex justify-content-end gap-1">
+                                    <label for="">Booked</label>
+                                    <input type="checkbox" name="" id="">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 border-bottom border-start border-end p-2 d-flex gap-4 align-items-center ps-4">
+                        <small class="fw-bold" style="min-width: 5.6rem">Wednesday</small>
+                        <div class="w-100 overflow-auto">
+                            <div style="min-width: 15rem; border-left: 4px solid rgb(0, 136, 255)" class="bg-info-subtle rounded-2 px-2 py-1 w-100 mb-2">
+                                <small class="fw-semibold">9:00 AM</small>
+                                <small>Meeting</small>
+                                <div class="d-flex justify-content-end gap-1">
+                                    <label for="">Booked</label>
+                                    <input type="checkbox" name="" id="">
+                                </div>
+                            </div>
+
+                            <div style="min-width: 15rem; border-left: 4px solid rgb(255, 200, 0)" class="bg-warning-subtle rounded-2 px-2 py-1 w-100 mb-2">
+                                <small class="fw-semibold">9:00 AM</small>
+                                <small>Meeting</small>
+                                <div class="d-flex justify-content-end gap-1">
+                                    <label for="">Booked</label>
+                                    <input type="checkbox" name="" id="">
+                                </div>
+                            </div>
+
+                            <div style="min-width: 15rem; border-left: 4px solid rgb(34, 255, 0)" class="bg-success-subtle rounded-2 px-2 py-1 w-100">
+                                <small class="fw-semibold">9:00 AM</small>
+                                <small>Meeting</small>
+                                <div class="d-flex justify-content-end gap-1">
+                                    <label for="">Booked</label>
+                                    <input type="checkbox" name="" id="">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 border-bottom border-start border-end p-2 d-flex gap-4 align-items-center ps-4">
+                        <small class="fw-bold" style="min-width: 5.6rem">Thursday</small>
+                    </div>
+
+                    <div class="col-12 border-bottom border-start border-end p-2 d-flex gap-4 align-items-center ps-4">
+                        <small class="fw-bold" style="min-width: 5.6rem">Friday</small>
+                    </div>
+
+                    <div class="col-12 border-bottom border-start border-end p-2 d-flex gap-4 align-items-center ps-4">
+                        <small class="fw-bold" style="min-width: 5.6rem">Saturday</small>
+                    </div>
+
+                    <div class="col-12 border-bottom border-start border-end p-2 d-flex gap-4 align-items-center ps-4">
+                        <small class="fw-bold" style="min-width: 5.6rem">Sunday</small>
                     </div>
                 </div>
             </div>
 
-
         </div>
+    </div>
 
-        <!-- Modal to add/update Job -->
-        <div id="addJob_modal" class="modal fade modal-lg" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="addEventModalLabel">Job Details</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="addJob_from">
-                            <input type="hidden" id="add_job_id" name="job_id" value="">
-                            <div class="row add-form rounded-1">
-                                <div class="row">
-                                    <div class="d-flex align-items-center gap-1 col-md-12">
-                                        <label style="margin-top: 0rem !important" class="form-label m-0">
-                                            Job Type<span class="text-danger">**</span>
-                                        </label>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <input type="radio" name="job_type" id="job_type_logistic" value="1">
-                                        <label style="margin-top: 0rem !important" class="form-label m-0"
-                                            for="job_type_logistic">SCCI(Logistic Job)</label>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <input type="radio" name="job_type" id="job_type_crane" value="2">
-                                        <label style="margin-top: 0rem !important" class="form-label m-0"
-                                            for="job_type_crane">Crane Job</label>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <input type="radio" name="job_type" id="job_type_crane_logistic" value="4">
-                                        <label style="margin-top: 0rem !important" class="form-label m-0"
-                                            for="job_type_crane_logistic">Crane & Logistics</label>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <input type="radio" name="job_type" id="job_type_other" value="3">
-                                        <label style="margin-top: 0rem !important" class="form-label m-0"
-                                            for="job_type_other">Other</label>
-                                    </div>
-                                    <div class="col-md-5" id="viewPdf_btns">
-                                    
-                                    </div>
-                                </div>
-
-                                <div class="col-12 col-md-6 d-flex flex-column d-none">
-                                    <label class="pb-2 form-label" for="job_time">
-                                        Job Time
+    <!-- Modal to add/update Job -->
+    <div id="addJob_modal" class="modal fade modal-lg" tabindex="-1" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addEventModalLabel">Job Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addJob_from">
+                        <input type="hidden" id="add_job_id" name="job_id" value="">
+                        <div class="row add-form rounded-1">
+                            <div class="row">
+                                <div class="d-flex align-items-center gap-1 col-md-12">
+                                    <label style="margin-top: 0rem !important" class="form-label m-0">
+                                        Job Type<span class="text-danger">**</span>
                                     </label>
-                                    <input type="time" class="rounded-1 py-1 px-2 w-100 form-control" id="job_time" name="job_time" 
-                                        placeholder="Enter a Job Time. Here">
                                 </div>
-
-                                <div class="col-12 col-md-6 d-flex flex-column">
-                                    <label class="pb-2 form-label" for="client_name">
-                                        Client Name<span class="text-danger">*</span>
-                                    </label>
-                                    <input class="form-control rounded-1 py-1 px-2 w-100" id="client_name" type="text"
-                                        name="client_name" placeholder="Enter Client Name Here" maxlength="50">
-                                </div>
-                                <div class="col-12 col-md-6 d-flex flex-column">
-                                    <label class="form-label pb-2" for="date">
-                                        Date<span class="text-danger">*</span>
-                                    </label>
-                                    <input class="form-control rounded-1 py-1 px-2 w-100" id="date" type="date"
-                                        name="date" placeholder="Enter Client Name Here">
-                                </div>
-                                <div class="col-12 col-md-6 d-flex flex-column">
-                                    <label for="add_eventStart" class="pb-2 form-label">Start Time<span class="text-danger">*</span></label>
-                                    <input type="time" class="form-control rounded-1 py-1 px-2 w-100"
-                                        id="add_eventStart" name="start_time" required>
-                                </div>
-
-                                <div class="col-12 col-md-6 d-flex flex-column  d-none">
-                                    <label for="add_eventEnd" class="pb-2 form-label">End Time<span class="text-danger">*</span></label>
-                                    <input type="time" class="form-control rounded-1 py-1 px-2 w-100"
-                                        id="add_eventEnd" name="end_time" required>
-                                </div>
-                                <div class="col-12 col-md-6 d-flex flex-column">
-                                    <label class="pb-2 form-label" for="address">
-                                        Address<span class="text-danger">*</span>
-                                    </label>
-                                    <input class="form-control rounded-1 py-1 px-2 w-100" id="address" type="text"
-                                        name="address" placeholder="Enter Address Here" maxlength="200">
-                                </div>
-                                <div class="col-12 col-md-6 d-flex flex-column">
-                                    <label class="pb-2 form-label" for="equip">
-                                        Equipment To Be Used<span class="text-danger equip_staric">*</span>
-                                    </label>
-                                    <input class="form-control rounded-1 py-1 px-2 w-100" id="equipment_to_be_used" 
-                                        name="equipment_to_be_used" type="text"
-                                        placeholder="Enter Equipment To Be Used Here" >
-                                </div>
-                                <div class="col-12 col-md-6 flex-column" id="riggerAssigned_div">
-                                    <label class="form-label pb-2" for="rigger_assigned">
-                                        <span id="riggerAssign_label">Assign Rigger</span><span class="text-danger">*</span>
-                                    </label>
-                                    <select class="form-control select2-choose" name="rigger_assigned[]" id="rigger_assigned" multiple="multiple">
-                                        
-                                    </select>
-                                </div>
-                                <div class="col-12 col-md-6 flex-column" id="userAssigned_div" style="display:none;">
-                                    <label class="form-label pb-2" for="user_assigned">
-                                        <span id="">User Assigned</span>
-                                    </label>
-                                    <input class="form-control rounded-1 py-1 px-2 w-100" id="user_assigned" type="text"
-                                        name="user_assigned" placeholder="Enter User Assigned Here" maxlength="50" >
-                                </div>
-                                <div class="col-12 col-md-6 d-flex flex-column">
-                                    <label class="pb-2 form-label" for="supplier_name">
-                                        Supplier Name
-                                    </label>
-                                    <input class="form-control rounded-1 py-1 px-2 w-100" id="supplier_name" type="text"
-                                        name="supplier_name" placeholder="Enter Supplier Name Here" maxlength="50">
-                                </div>
-                                
-                                <div class="mb-3 col-md-4 status_input" style="display:none;">
-                                    <label for="add_status" class="pb-2 form-label">Status<span class="text-danger">*</span></label>
-                                    <select class="form-control" name="status" id="add_status" required>
-                                        <option value="">Select Status</option>
-                                        <option value="2">On-Hold</option>
-                                        <option value="1">Good To Go</option>
-                                        <option value="0">Problem</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-2 mt-5">
-                                    <input type="checkbox" name="booked_check" id="booked_check" value="1" style="accent-color:#db2a2a;">
+                                <div class="col-md-3">
+                                    <input type="radio" name="job_type" id="job_type_logistic" value="1">
                                     <label style="margin-top: 0rem !important" class="form-label m-0"
-                                        for="booked_check">Booked</label>
+                                        for="job_type_logistic">SCCI(Logistic Job)</label>
                                 </div>
-                                <div class="col-12 col-md-12 flex-column" id="driver_instructions_div" style="display:none;">
-                                    <label class="pb-2 form-label" for="driver_instructions">
-                                        Driver Instructions
-                                    </label>
-                                    <textarea class="form-control" name="driver_instructions" id="driver_instructions" rows="5"
-                                    placeholder="Type Notes Here....." maxlength="500" style="resize:none;"></textarea>
+                                <div class="col-md-2">
+                                    <input type="radio" name="job_type" id="job_type_crane" value="2">
+                                    <label style="margin-top: 0rem !important" class="form-label m-0"
+                                        for="job_type_crane">Crane Job</label>
                                 </div>
-                                <div class="col-12 col-md-12 d-flex flex-column">
-                                    <label class="pb-2 form-label" for="notes">
-                                        Notes
-                                    </label>
-                                    <textarea class="form-control" name="notes" id="add_notes" rows="5"
-                                        name="notes" placeholder="Type Notes Here....." maxlength="500" style="resize:none;"></textarea>
+                                <div class="col-md-3">
+                                    <input type="radio" name="job_type" id="job_type_crane_logistic" value="4">
+                                    <label style="margin-top: 0rem !important" class="form-label m-0"
+                                        for="job_type_crane_logistic">Crane & Logistics</label>
                                 </div>
-                                
-                                <div class="col-12 col-md-12 d-flex flex-column">
-                                    <label class="pb-2 form-label" for="add_notes">
-                                        Upload Attachment
-                                    </label>
+                                <div class="col-md-2">
+                                    <input type="radio" name="job_type" id="job_type_other" value="3">
+                                    <label style="margin-top: 0rem !important" class="form-label m-0"
+                                        for="job_type_other">Other</label>
+                                </div>
+                                <div class="col-md-5" id="viewPdf_btns">
 
-                                    <input type="hidden" id="deletedFileIds" name="deletedFileIds" value="">
-                                    
-                                    <div id="file-dropzone" class="dropzone"></div>
                                 </div>
-                                
-                                {{-- <div class="col-12 col-md-8 d-flex flex-column">
+                            </div>
+
+                            <div class="col-12 col-md-6 d-flex flex-column d-none">
+                                <label class="pb-2 form-label" for="job_time">
+                                    Job Time
+                                </label>
+                                <input type="time" class="rounded-1 py-1 px-2 w-100 form-control" id="job_time"
+                                    name="job_time" placeholder="Enter a Job Time. Here">
+                            </div>
+
+                            <div class="col-12 col-md-6 d-flex flex-column">
+                                <label class="pb-2 form-label" for="client_name">
+                                    Client Name<span class="text-danger">*</span>
+                                </label>
+                                <input class="form-control rounded-1 py-1 px-2 w-100" id="client_name" type="text"
+                                    name="client_name" placeholder="Enter Client Name Here" maxlength="50">
+                            </div>
+                            <div class="col-12 col-md-6 d-flex flex-column">
+                                <label class="form-label pb-2" for="date">
+                                    Date<span class="text-danger">*</span>
+                                </label>
+                                <input class="form-control rounded-1 py-1 px-2 w-100" id="date" type="date"
+                                    name="date" placeholder="Enter Client Name Here">
+                            </div>
+                            <div class="col-12 col-md-6 d-flex flex-column">
+                                <label for="add_eventStart" class="pb-2 form-label">Start Time<span
+                                        class="text-danger">*</span></label>
+                                <input type="time" class="form-control rounded-1 py-1 px-2 w-100" id="add_eventStart"
+                                    name="start_time" required>
+                            </div>
+
+                            <div class="col-12 col-md-6 d-flex flex-column  d-none">
+                                <label for="add_eventEnd" class="pb-2 form-label">End Time<span
+                                        class="text-danger">*</span></label>
+                                <input type="time" class="form-control rounded-1 py-1 px-2 w-100" id="add_eventEnd"
+                                    name="end_time" required>
+                            </div>
+                            <div class="col-12 col-md-6 d-flex flex-column">
+                                <label class="pb-2 form-label" for="address">
+                                    Address<span class="text-danger">*</span>
+                                </label>
+                                <input class="form-control rounded-1 py-1 px-2 w-100" id="address" type="text"
+                                    name="address" placeholder="Enter Address Here" maxlength="200">
+                            </div>
+                            <div class="col-12 col-md-6 d-flex flex-column">
+                                <label class="pb-2 form-label" for="equip">
+                                    Equipment To Be Used<span class="text-danger equip_staric">*</span>
+                                </label>
+                                <input class="form-control rounded-1 py-1 px-2 w-100" id="equipment_to_be_used"
+                                    name="equipment_to_be_used" type="text"
+                                    placeholder="Enter Equipment To Be Used Here">
+                            </div>
+                            <div class="col-12 col-md-6 flex-column" id="riggerAssigned_div">
+                                <label class="form-label pb-2" for="rigger_assigned">
+                                    <span id="riggerAssign_label">Assign Rigger</span><span class="text-danger">*</span>
+                                </label>
+                                <select class="form-control select2-choose" name="rigger_assigned[]" id="rigger_assigned"
+                                    multiple="multiple">
+
+                                </select>
+                            </div>
+                            <div class="col-12 col-md-6 flex-column" id="userAssigned_div" style="display:none;">
+                                <label class="form-label pb-2" for="user_assigned">
+                                    <span id="">User Assigned</span>
+                                </label>
+                                <input class="form-control rounded-1 py-1 px-2 w-100" id="user_assigned" type="text"
+                                    name="user_assigned" placeholder="Enter User Assigned Here" maxlength="50">
+                            </div>
+                            <div class="col-12 col-md-6 d-flex flex-column">
+                                <label class="pb-2 form-label" for="supplier_name">
+                                    Supplier Name
+                                </label>
+                                <input class="form-control rounded-1 py-1 px-2 w-100" id="supplier_name" type="text"
+                                    name="supplier_name" placeholder="Enter Supplier Name Here" maxlength="50">
+                            </div>
+
+                            <div class="mb-3 col-md-4 status_input" style="display:none;">
+                                <label for="add_status" class="pb-2 form-label">Status<span
+                                        class="text-danger">*</span></label>
+                                <select class="form-control" name="status" id="add_status" required>
+                                    <option value="">Select Status</option>
+                                    <option value="2">On-Hold</option>
+                                    <option value="1">Good To Go</option>
+                                    <option value="0">Problem</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2 mt-5">
+                                <input type="checkbox" name="booked_check" id="booked_check" value="1"
+                                    style="accent-color:#db2a2a;">
+                                <label style="margin-top: 0rem !important" class="form-label m-0"
+                                    for="booked_check">Booked</label>
+                            </div>
+                            <div class="col-12 col-md-12 flex-column" id="driver_instructions_div" style="display:none;">
+                                <label class="pb-2 form-label" for="driver_instructions">
+                                    Driver Instructions
+                                </label>
+                                <textarea class="form-control" name="driver_instructions" id="driver_instructions" rows="5"
+                                    placeholder="Type Notes Here....." maxlength="500" style="resize:none;"></textarea>
+                            </div>
+                            <div class="col-12 col-md-12 d-flex flex-column">
+                                <label class="pb-2 form-label" for="notes">
+                                    Notes
+                                </label>
+                                <textarea class="form-control" name="notes" id="add_notes" rows="5" name="notes"
+                                    placeholder="Type Notes Here....." maxlength="500" style="resize:none;"></textarea>
+                            </div>
+
+                            <div class="col-12 col-md-12 d-flex flex-column">
+                                <label class="pb-2 form-label" for="add_notes">
+                                    Upload Attachment
+                                </label>
+
+                                <input type="hidden" id="deletedFileIds" name="deletedFileIds" value="">
+
+                                <div id="file-dropzone" class="dropzone"></div>
+                            </div>
+
+                            {{-- <div class="col-12 col-md-8 d-flex flex-column">
                                     <button class="py-1 px-5 w-50 mt-2 add-btn rounded-1" type="button" id="addAttachment_btn">
                                         Add Attachment
                                     </button>
@@ -817,123 +1043,135 @@
                                     </div>
                                 </div> --}}
 
-                                <div class="col-12 d-flex flex-column my-3">
-                                    <div class="accordion" id="accordionExample">
-                                        <div class="accordion-item" id="uploaded_attachment" style="display:none;">
-                                            <h2 class="accordion-header" id="headingZero">
-                                                <button class="accordion-button p-2" type="button" data-bs-toggle="collapse" data-bs-target="#uploadedAtt" aria-expanded="true" aria-controls="uploadedAtt">
-                                                    Uploaded Attachments
-                                                </button>
-                                            </h2>
-                                            <div id="uploadedAtt" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-                                                <div class="white image-container mx-4" id="uploads_section1">
-                                                    
-                                                </div>
+                            <div class="col-12 d-flex flex-column my-3">
+                                <div class="accordion" id="accordionExample">
+                                    <div class="accordion-item" id="uploaded_attachment" style="display:none;">
+                                        <h2 class="accordion-header" id="headingZero">
+                                            <button class="accordion-button p-2" type="button" data-bs-toggle="collapse"
+                                                data-bs-target="#uploadedAtt" aria-expanded="true"
+                                                aria-controls="uploadedAtt">
+                                                Uploaded Attachments
+                                            </button>
+                                        </h2>
+                                        <div id="uploadedAtt" class="accordion-collapse collapse show"
+                                            aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                                            <div class="white image-container mx-4" id="uploads_section1">
+
                                             </div>
                                         </div>
-                                        <div class="accordion-item ticket_attachments" id="rigger_att_section">
-                                            <h2 class="accordion-header" id="headingOne">
-                                                <button class="accordion-button p-2" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                                                    Rigger's Attachments
-                                                </button>
-                                            </h2>
-                                            <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-                                                <div class="white image-container mx-4" id="rigger_attachments">
-                                                    
-                                                </div>
+                                    </div>
+                                    <div class="accordion-item ticket_attachments" id="rigger_att_section">
+                                        <h2 class="accordion-header" id="headingOne">
+                                            <button class="accordion-button p-2" type="button" data-bs-toggle="collapse"
+                                                data-bs-target="#collapseOne" aria-expanded="false"
+                                                aria-controls="collapseOne">
+                                                Rigger's Attachments
+                                            </button>
+                                        </h2>
+                                        <div id="collapseOne" class="accordion-collapse collapse"
+                                            aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                                            <div class="white image-container mx-4" id="rigger_attachments">
 
-                                                <div class="accordion" id="accordionExample1">
-                                                    <div class="accordion-item ticket_attachments" id="payduty_att_section">
-                                                        <h2 class="accordion-header" id="headingTwo">
-                                                            <button class="accordion-button p-2" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                                                Pay Duty Attachments
-                                                            </button>
-                                                        </h2>
-                                                        <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample1">
-                                                            <div class="white image-container mx-4" id="payduty_attachments">
-                                                                
-                                                            </div>
+                                            </div>
+
+                                            <div class="accordion" id="accordionExample1">
+                                                <div class="accordion-item ticket_attachments" id="payduty_att_section">
+                                                    <h2 class="accordion-header" id="headingTwo">
+                                                        <button class="accordion-button p-2" type="button"
+                                                            data-bs-toggle="collapse" data-bs-target="#collapseTwo"
+                                                            aria-expanded="false" aria-controls="collapseTwo">
+                                                            Pay Duty Attachments
+                                                        </button>
+                                                    </h2>
+                                                    <div id="collapseTwo" class="accordion-collapse collapse"
+                                                        aria-labelledby="headingTwo" data-bs-parent="#accordionExample1">
+                                                        <div class="white image-container mx-4" id="payduty_attachments">
+
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        
-                                        <div class="accordion-item ticket_attachments" id="transporter_att_section">
-                                            <h2 class="accordion-header" id="headingThree">
-                                                <button class="accordion-button p-2" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                                                    Transporter's Attachments
-                                                </button>
-                                            </h2>
-                                            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
-                                                <div class="white image-container mx-4" id="transporter_attachments">
-                                                    
-                                                </div>
+                                    </div>
+
+                                    <div class="accordion-item ticket_attachments" id="transporter_att_section">
+                                        <h2 class="accordion-header" id="headingThree">
+                                            <button class="accordion-button p-2" type="button" data-bs-toggle="collapse"
+                                                data-bs-target="#collapseThree" aria-expanded="false"
+                                                aria-controls="collapseThree">
+                                                Transporter's Attachments
+                                            </button>
+                                        </h2>
+                                        <div id="collapseThree" class="accordion-collapse collapse"
+                                            aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                                            <div class="white image-container mx-4" id="transporter_attachments">
+
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-
-                                    
-                                    
-                                
-
-                                <div class="row">
-                                    <div class="col-md-3">
-                                        <div class="updatedInfo_div pt-2" style="font-size:12px; display:none;">
-                                            Created By:
-                                            <span id="created_by"></span>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="d-flex justify-content-center gap-2">
-                                            <button type="button" id="closeJob_modal" class="py-1 px-5 add-btn rounded-1">
-                                                Close
-                                            </button>
-                                            <button type="button" id="saveJob_btn" class="py-1 px-5 add-btn rounded-1">
-                                                Save
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="updatedInfo_div pt-2" style="font-size:12px; text-align:right; display:none;">
-                                            Updated By:
-                                            <span id="updated_by"></span>
-                                        </div>
-                                    </div>
-                                    
-                                </div>
                             </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <!-- Delete Confirmation Modal -->
-        <div class="modal fade" id="delete_confirm" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-            aria-labelledby="staticBackdropLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-body text-center">
-                        <img src="{{asset('assets/images/remove.png')}}" width="60" alt="">
-                        <h6 class="text-danger mt-3">
-                            Are you sure you want to delete this record?
-                        </h6>
-                    </div>
-                    <div class="modal-footer d-flex align-items-center justify-content-center" style="border: none" >
-                        <button type="button" class="btn btn-secondary px-5" id="close_confirm">No</button>
-                        <button type="button" class="btn btn-danger px-5" id="delete_confirmed">Yes</button>
-                    </div>
+
+
+
+
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="updatedInfo_div pt-2" style="font-size:12px; display:none;">
+                                        Created By:
+                                        <span id="created_by"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="d-flex justify-content-center gap-2">
+                                        <button type="button" id="closeJob_modal" class="py-1 px-5 add-btn rounded-1">
+                                            Close
+                                        </button>
+                                        <button type="button" id="saveJob_btn" class="py-1 px-5 add-btn rounded-1">
+                                            Save
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="updatedInfo_div pt-2"
+                                        style="font-size:12px; text-align:right; display:none;">
+                                        Updated By:
+                                        <span id="updated_by"></span>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
-</div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="delete_confirm" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body text-center">
+                    <img src="{{ asset('assets/images/remove.png') }}" width="60" alt="">
+                    <h6 class="text-danger mt-3">
+                        Are you sure you want to delete this record?
+                    </h6>
+                </div>
+                <div class="modal-footer d-flex align-items-center justify-content-center" style="border: none">
+                    <button type="button" class="btn btn-secondary px-5" id="close_confirm">No</button>
+                    <button type="button" class="btn btn-danger px-5" id="delete_confirmed">Yes</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('scripts')
     <script src="{{ asset('assets_admin/customjs/script_dashboard.js') }}"></script>
+
     <script>
         Dropzone.autoDiscover = false;
 
@@ -945,24 +1183,201 @@
             addRemoveLinks: true,
             maxFilesize: 10, // MB
             acceptedFiles: ".jpeg,.jpg,.png,.gif,.pdf",
-            init: function () {
-                this.on("addedfile", function (file) {
+            init: function() {
+                this.on("addedfile", function(file) {
                     uploadedFiles.push(file);
                     console.log(uploadedFiles);
                 });
 
-                this.on("removedfile", function (file) {
+                this.on("removedfile", function(file) {
                     uploadedFiles = uploadedFiles.filter(f => f.name !== file.name);
                     console.log(uploadedFiles);
                 });
             }
         });
+
         function resetDropzone() {
             myDropzone.removeAllFiles(true); // true = force remove
             uploadedFiles = []; // reset your custom array
         }
-        $('#addJob_modal').on('show.bs.modal', function () {
+        $('#addJob_modal').on('show.bs.modal', function() {
             resetDropzone();
         });
+
+
+
+        // const scheduleTable = document.getElementById('scheduleTable');
+        // const scheduleBody = document.getElementById('scheduleBody');
+        // const toggleBtn = document.getElementById('toggleTimeBtn');
+        // // const legendContainer = document.getElementById('legend');
+        // let is24Hour = true;
+
+        // const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
+        // // Sample data with time and type
+        // const scheduleData = [
+        //     { day: "Friday", hour: 7, minute: 0, title: "Equipment Setup", type: "crane_logistics" },
+        //     { day: "Thursday", hour: 0, minute: 40, title: "Equipment Setup", type: "crane_logistics" },
+        //     { day: "Sunday", hour: 15, minute: 35, title: "Load Test", type: "crane" },
+        //     { day: "Wednesday", hour: 2, minute: 10, title: "Load Test", type: "crane" },
+        //     { day: "Wednesday", hour: 12, minute: 15, title: "Team Sync", type: "scci" },
+        //     { day: "Tuesday", hour: 11, minute: 20, title: "One-on-One", type: "other" },
+        //     { day: "Monday", hour: 0, minute: 10, title: "Team Sync", type: "scci" },
+        //     { day: "Friday", hour: 4, minute: 50, title: "Team Sync", type: "scci" },
+        //     { day: "Thursday", hour: 1, minute: 40, title: "Misc Meeting", type: "other" },
+        //     { day: "Tuesday", hour: 22, minute: 35, title: "Equipment Setup", type: "crane_logistics" },
+        //     { day: "Wednesday", hour: 8, minute: 15, title: "Route Mapping", type: "crane_logistics" },
+        //     { day: "Tuesday", hour: 4, minute: 25, title: "Safety Drill", type: "crane" },
+        //     { day: "Sunday", hour: 14, minute: 20, title: "SCCI Briefing", type: "scci" },
+        //     { day: "Tuesday", hour: 8, minute: 25, title: "Team Sync", type: "scci" },
+        //     { day: "Wednesday", hour: 21, minute: 45, title: "Misc Meeting", type: "other" },
+        //     { day: "Sunday", hour: 16, minute: 0, title: "Route Mapping", type: "crane_logistics" },
+        //     { day: "Friday", hour: 13, minute: 25, title: "Route Mapping", type: "crane_logistics" },
+        //     { day: "Tuesday", hour: 7, minute: 50, title: "Misc Meeting", type: "other" },
+        //     { day: "Saturday", hour: 19, minute: 25, title: "Load Test", type: "crane" },
+        //     { day: "Thursday", hour: 6, minute: 20, title: "Load Test", type: "crane" },
+        //     { day: "Monday", hour: 20, minute: 15, title: "One-on-One", type: "other" },
+        //     { day: "Sunday", hour: 3, minute: 5, title: "Equipment Setup", type: "crane_logistics" },
+        //     { day: "Thursday", hour: 17, minute: 15, title: "Misc Meeting", type: "other" },
+        //     { day: "Wednesday", hour: 1, minute: 55, title: "Weekly Review", type: "other" },
+        //     { day: "Friday", hour: 0, minute: 35, title: "Team Sync", type: "scci" },
+        //     { day: "Saturday", hour: 23, minute: 20, title: "One-on-One", type: "other" },
+        //     { day: "Monday", hour: 4, minute: 30, title: "Safety Drill", type: "crane" },
+        //     { day: "Monday", hour: 19, minute: 0, title: "Weekly Review", type: "other" },
+        //     { day: "Saturday", hour: 7, minute: 10, title: "Team Sync", type: "scci" },
+        //     { day: "Wednesday", hour: 5, minute: 5, title: "Load Test", type: "crane" },
+        //     { day: "Sunday", hour: 17, minute: 10, title: "Load Test", type: "crane" },
+        //     { day: "Monday", hour: 1, minute: 10, title: "Project Kickoff", type: "scci" },
+        //     { day: "Friday", hour: 16, minute: 45, title: "One-on-One", type: "other" },
+        //     { day: "Tuesday", hour: 12, minute: 30, title: "Logistics Planning", type: "crane_logistics" },
+        //     { day: "Thursday", hour: 23, minute: 15, title: "Weekly Review", type: "other" },
+        //     { day: "Monday", hour: 12, minute: 35, title: "Route Mapping", type: "crane_logistics" },
+        //     { day: "Thursday", hour: 18, minute: 30, title: "Team Sync", type: "scci" },
+        //     { day: "Wednesday", hour: 14, minute: 30, title: "Misc Meeting", type: "other" },
+        //     { day: "Monday", hour: 16, minute: 25, title: "SCCI Briefing", type: "scci" },
+        //     { day: "Friday", hour: 14, minute: 10, title: "Logistics Planning", type: "crane_logistics" },
+        //     { day: "Sunday", hour: 20, minute: 30, title: "Weekly Review", type: "other" },
+        //     { day: "Saturday", hour: 9, minute: 15, title: "Weekly Review", type: "other" },
+        //     { day: "Wednesday", hour: 18, minute: 30, title: "Weekly Review", type: "other" },
+        //     { day: "Saturday", hour: 5, minute: 50, title: "Misc Meeting", type: "other" },
+        //     { day: "Friday", hour: 20, minute: 15, title: "Team Sync", type: "scci" },
+        //     { day: "Tuesday", hour: 19, minute: 35, title: "SCCI Briefing", type: "scci" },
+        //     { day: "Monday", hour: 3, minute: 30, title: "Weekly Review", type: "other" },
+        //     { day: "Saturday", hour: 10, minute: 40, title: "Misc Meeting", type: "other" },
+        //     { day: "Wednesday", hour: 0, minute: 5, title: "Misc Meeting", type: "other" }
+        // ];
+
+
+
+
+        // // Legend mapping
+        // const eventTypes = {
+        //     scci: {
+        //         label: "SCCI",
+        //         color: "rgba(0, 0, 255, 0.29)"
+        //     },
+        //     crane: {
+        //         label: "Crane",
+        //         color: "rgba(255, 165, 0, 0.29)"
+        //     },
+        //     crane_logistics: {
+        //         label: "Crane & Logistics",
+        //         color: "rgba(255, 0, 0, 0.29)"
+        //     },
+        //     other: {
+        //         label: "Other",
+        //         color: "rgba(128, 0, 128, 0.29)"
+        //     }
+        // };
+
+        // function formatTime(hour, minute) {
+        //     if (is24Hour) {
+        //         return `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+        //     } else {
+        //         const period = hour >= 12 ? "PM" : "AM";
+        //         let displayHour = hour % 12 || 12;
+        //         return `${displayHour}:${minute.toString().padStart(2, '0')} ${period}`;
+        //     }
+        // }
+
+        // function renderTimeHeaders() {
+        //     const theadRow = scheduleTable.querySelector('thead tr');
+        //     while (theadRow.children.length > 1) {
+        //         theadRow.removeChild(theadRow.lastChild);
+        //     }
+
+        //     for (let hour = 0; hour < 24; hour++) {
+        //         const th = document.createElement('th');
+        //         th.className = 'time-header sticky-header';
+
+        //         th.innerText = is24Hour ? `${hour}:00` : formatTime(hour, 0);
+        //         theadRow.appendChild(th);
+        //     }
+        // }
+
+        // function renderScheduleBody() {
+        //     scheduleBody.innerHTML = '';
+
+        //     for (let day of days) {
+        //         const row = document.createElement('tr');
+        //         const dayCell = document.createElement('td');
+        //         dayCell.className = "day-header sticky-top-left";
+        //         dayCell.innerText = day;
+        //         row.appendChild(dayCell);
+
+        //         for (let hour = 0; hour < 24; hour++) {
+        //             const td = document.createElement('td');
+
+        //             // Find ALL events at this hour
+        //             const events = scheduleData.filter(item =>
+        //                 item.day === day && item.hour === hour
+        //             );
+
+        //             if (events.length > 0) {
+        //                 events.forEach(event => {
+        //                     const timeStr = formatTime(event.hour, event.minute);
+        //                     const color = eventTypes[event.type]?.color || "#e2e3e5";
+        //                     const eventDiv = document.createElement('div');
+        //                     eventDiv.className = "event mb-1";
+        //                     eventDiv.style.backgroundColor = color;
+        //                     eventDiv.innerHTML = `<strong>${timeStr}</strong><br>${event.title}`;
+        //                     td.appendChild(eventDiv);
+        //                 });
+        //             }
+
+        //             row.appendChild(td);
+        //         }
+
+        //         scheduleBody.appendChild(row);
+        //     }
+        // }
+
+
+        // function renderLegend() {
+        //     legendContainer.innerHTML = '<h6>Legend:</h6>';
+        //     const row = document.createElement('div');
+        //     row.className = "d-flex flex-wrap gap-3";
+
+        //     for (const [type, info] of Object.entries(eventTypes)) {
+        //         const item = document.createElement('div');
+        //         item.className = "d-flex align-items-center gap-2";
+        //         item.innerHTML =
+        //             `<div style="width:16px; height:16px; background-color:${info.color}; border:1px solid #ccc;"></div><span>${info.label}</span>`;
+        //         row.appendChild(item);
+        //     }
+
+        //     legendContainer.appendChild(row);
+        // }
+
+        // toggleBtn.addEventListener('click', () => {
+        //     is24Hour = !is24Hour;
+        //     renderTimeHeaders();
+        //     renderScheduleBody();
+        //     toggleBtn.innerText = is24Hour ? "Switch to 12-hour" : "Switch to 24-hour";
+        // });
+
+        // renderTimeHeaders();
+        // renderScheduleBody();
+        // renderLegend();
     </script>
 @endpush
