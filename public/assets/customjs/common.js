@@ -125,16 +125,29 @@ function formatDate(dateString) {
 
     return `${day} ${month} ${year}`;
 }
+// function formatTime(timeString) {
+//     // Split the time string into components
+//     var timeParts = timeString.split(':');
+    
+//     // Extract hours and minutes
+//     var hours = timeParts[0];
+//     var minutes = timeParts[1];
+    
+//     // Return the formatted time
+//     return hours + ':' + minutes;
+// }
 function formatTime(timeString) {
-    // Split the time string into components
     var timeParts = timeString.split(':');
-    
-    // Extract hours and minutes
-    var hours = timeParts[0];
+    var hours = parseInt(timeParts[0], 10);
     var minutes = timeParts[1];
-    
-    // Return the formatted time
-    return hours + ':' + minutes;
+
+    var period = hours >= 12 ? 'PM' : 'AM';
+
+    // Convert to 12-hour format
+    hours = hours % 12;
+    hours = hours === 0 ? 12 : hours;
+
+    return hours + ':' + minutes + ' ' + period;
 }
 
 function formatTime1(timeString) {

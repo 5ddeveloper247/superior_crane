@@ -46,6 +46,104 @@ function getDashboardPageDataResponse(response) {
 
 }
 
+function loadDashboardWeekViewData() {
+    
+    let form = '';
+    let data = '';
+    let type = 'POST';
+    let url = '/admin/getDashboardWeekViewData';
+    SendAjaxRequestToServer(type, url, data, '', getDashboardWeekViewDataResponse, '', '');
+}
+
+function getDashboardWeekViewDataResponse(response) {
+
+    var data = response.data;
+    
+    var total_weeks = data.total_weeks; 
+    var week_value = data.current_week_number; 
+    var listing = data.listing; 
+    
+    
+    
+    makeWeeksLov(total_weeks, week_value);
+    makeWeekViewListing(listing);
+    
+    $("#week_filter_year").val(data.current_year);
+    $("#week_filter_month").val(data.current_month);
+}
+
+function makeWeeksLov(weeks='', week_value=''){
+   
+    var options = '<option value="">Select Week</option>';
+    if(weeks != ''){
+        for(var i=1; i<=weeks; i++){
+            options += `<option value="${i}">Week 0${i}</option>`;
+        }
+    }
+
+    $("#week_filter_week").html(options);
+
+    setTimeout(function(){
+        $("#week_filter_week").val(week_value);
+    }, 500)
+}
+
+function makeWeekViewListing(weeks_list){
+    
+    console.log(weeks_list);
+    var html = '';
+    if(weeks_list.length > 0){
+        $.each(weeks_list, function (index, value) {
+            html += `<div class="col-12 border-bottom border-start border-end p-2 d-flex gap-4 align-items-center ps-4">
+                                <small class="${value.is_today == true ? 'fw-bold' : ''}" style="min-width: 5.6rem">${value.day}<br>${value.date_formated}</small>
+                                <div class="w-100 overflow-auto">`;
+
+                                var jobs_list = value.jobs;
+                                $.each(jobs_list, function (index1, job) {
+                                    if (job.status === 1) {
+                                        var statusClass = 'bg-success-subtle';//'#C9FFBB'; // Light green background
+                                    } 
+                                    else if (job.status === 0) {
+                                        var statusClass = 'bg-warning-subtle';//'#FFBBBB'; // Light red background
+                                    } 
+                                    else if (job.status === 2) {
+                                        var statusClass = 'bg-info-subtle';//'#FFFCBB'; // Light yellow background
+                                    }
+                                    else {
+                                        var statusClass = 'bg-default-subtle';//'#dfdfdf'; // Light gray background
+                                    }
+
+                                    var barColor = '';
+                                    var type = job.job_type;
+
+                                    if (type === 1) barColor = '#0000ff';
+                                    else if (type === 2) barColor = '#ffa500';
+                                    else if (type === 3) barColor = '#800080';
+                                    else if (type === 4) barColor = '#ff0000';
+
+                                    html += `<div style="min-width: 15rem; border-left: 4px solid ${barColor}"
+                                            class="${statusClass} rounded-2 px-2 py-1 w-100 mb-2 viewJob_btn" data-id="${value.id}">
+                                            <small class="fw-semibold">${job.start_time != null ? formatTime(job.start_time) : ''}</small> |
+                                            <small> <strong>Client:</strong> ${job.client_name} | 
+                                                    <strong>Supplier:</strong> ${job.supplier_name} | 
+                                                    <strong>Equipment:</strong> ${job.equipment_to_be_used} | 
+                                                    <strong>Address:</strong> ${job.address} | 
+                                                    <strong>Assigned Users:</strong> ${job.user_assigned}</small>
+                                            ${job.booked_flag == 1 ? 
+                                                '<div class="d-flex justify-content-end gap-1"><label for="">Booked</label><span class="fa fa-square-check tick-icon-week" title="Booked"></span></div>' : 
+                                                ''}
+                                            
+                                        </div>`;
+                                });
+                                    
+                                html += `</div>
+                            </div>`;
+        });
+    }
+    $("#weekView_section").html(html);
+
+}
+
 function makeJobsListing(jobs_list){
     
     if ($.fn.DataTable.isDataTable('#jobsListing_table')) {
@@ -148,6 +246,7 @@ function saveJobDataResponse(response) {
 
         $("#addJob_modal").modal('hide');
 
+        loadDashboardWeekViewData();
         calendar.refetchEvents();
         
     }else{
@@ -357,6 +456,7 @@ function changeJobStatusResponse(response) {
             timeOut: 3000
         });
 
+        loadDashboardWeekViewData();
         calendar.refetchEvents();
         
     }else{
@@ -641,12 +741,21 @@ function searchJobsListingResponse(response) {
 $(document).ready(function () {
 
     loadDashboardPageData();
+    loadDashboardWeekViewData();
     
     $(document).on('click', '.clear_filter', function (e) {
         let form = $('#filterJobs_form');
         form.trigger("reset");
         
         loadDashboardPageData();
+    });
+
+    $(document).on('change', '#week_filter_year', function (e) {
+        $("#week_filter_month").val('');
+        $("#week_filter_week").val('');
+    });
+    $(document).on('change', '#week_filter_week', function (e) {
+        $("#week_filter_week").val('');
     });
 });
 
@@ -724,7 +833,7 @@ $('#client_name,#supplier_name').on('keydown', function(e) {
               duration: { days: 3 },
               buttonText: "day's"
             }
-          },
+        },
         // events: events,
         events: function(fetchInfo, successCallback, failureCallback) {
             fetch('/admin/getAllJobs') // URL to fetch jobs from Laravel
@@ -775,11 +884,14 @@ $('#client_name,#supplier_name').on('keydown', function(e) {
             // set event background color wrt status
             if (info.event.extendedProps.status === 1) {
                 eventEl.style.backgroundColor = '#C9FFBB'; // Light green background
-            } else if (info.event.extendedProps.status === 0) {
+            } 
+            else if (info.event.extendedProps.status === 0) {
                 eventEl.style.backgroundColor = '#FFBBBB'; // Light red background
-            } else if (info.event.extendedProps.status === 2) {
+            } 
+            else if (info.event.extendedProps.status === 2) {
                 eventEl.style.backgroundColor = '#FFFCBB'; // Light yellow background
-            }else {
+            }
+            else {
                 eventEl.style.backgroundColor = '#dfdfdf'; // Light gray background
             }
             

@@ -54,6 +54,7 @@ Route::group(['prefix' => '/'], function () {
         Route::post('/admin/deleteSpecificUser', [AdminController::class, 'deleteSpecificUser'])->name('admin.deleteSpecificUser');
         
         Route::post('/admin/getDashboardPageData', [AdminController::class, 'getDashboardPageData'])->name('admin.getDashboardPageData');
+        Route::post('/admin/getDashboardWeekViewData', [AdminController::class, 'getDashboardWeekViewData'])->name('admin.getDashboardWeekViewData');
         Route::post('/admin/saveJobData', [AdminController::class, 'saveJobData'])->name('admin.saveJobData');
         Route::get('/admin/getAllJobs', [AdminController::class, 'getAllJobs'])->name('admin.getAllJobs');
         Route::post('/admin/changeJobStatus', [AdminController::class, 'changeJobStatus'])->name('admin.changeJobStatus');

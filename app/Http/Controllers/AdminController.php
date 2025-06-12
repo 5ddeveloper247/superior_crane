@@ -520,18 +520,61 @@ class AdminController extends Controller
                 $jobs_list_new[] = $value;
             }
         }
-        // dd($jobs_list_new);
+        
         $users_list = User::whereIn('role_id', ['2','3','4','5'])->get();
         $data['users_list'] = $users_list;
         $data['jobs_list'] = $jobs_list_new;
+        $jobs_list_new = collect($jobs_list_new); 
         $data['total_scci'] = JobModel::where('job_type', '1')->count();
         $data['total_crane'] = JobModel::where('job_type', '2')->count();
         $data['total_other'] = JobModel::where('job_type', '3')->count();
         $data['total_crane_logistic'] = JobModel::where('job_type', '4')->count();
         $data['total_jobs'] = JobModel::count();
-        
-        $result = $this->getStrictWeekRange(2025, 7, 1);
-        // dd($result['dates']);
+
+        return response()->json(['status' => 200, 'message' => "",'data' => $data]);
+    }
+
+    public function getDashboardWeekViewData(Request $request){
+
+        $weekData = $this->getCurrentWeekData();
+        $jobsArray = [];
+        if(isset($weekData['dates']) && count($weekData['dates']) > 0){
+            foreach($weekData['dates'] as  $index => $date){
+                $jobsArray[$index]['date'] = $date;
+                $jobsArray[$index]['date_formated'] = date('d M,Y', strtotime($date));
+                $jobsArray[$index]['day'] = date('l', strtotime($date));
+                $jobsArray[$index]['is_today'] = $date == date('Y-m-d') ? true : false;
+                
+
+                $jobs_list_new = [];
+                $jobs_list = JobModel::where('date', $date)->orderBy('start_time','asc')->get();
+                if($jobs_list){
+                    foreach ($jobs_list as $index1 => $value) {
+                        $riggerAssignedIds = json_decode($value->rigger_assigned, true);
+                    
+                        if (is_array($riggerAssignedIds)) {
+                            $assignedUsers = User::whereIn('id', $riggerAssignedIds)->pluck('name')->toArray();
+                        } else {
+                            $assignedUsers = array();
+                        }
+                        $value->user_assigned = implode(', ', $assignedUsers);
+                        $jobs_list_new[] = $value;
+                    }
+                }
+
+                $jobsArray[$index]['jobs'] = $jobs_list_new;
+            }
+        }
+
+        $data['current_year'] = date('Y');
+        $data['current_month'] = date('m');
+        $data['current_week_number'] = $weekData['current_week_number'];
+        $data['total_weeks'] = $weekData['total_weeks'];
+        $data['listing'] = $jobsArray;
+        // $result = $this->getStrictWeekData($year, $month, 7);
+        // print_r("<pre>");
+        // print_r($weekDate);
+        // exit;
         return response()->json(['status' => 200, 'message' => "",'data' => $data]);
     }
 
@@ -612,36 +655,84 @@ class AdminController extends Controller
         return response()->json($events);
     }
 
-    public function getStrictWeekRange($year, $month, $week)
+    public function getCurrentWeekData()
     {
-        $year = $year;       // e.g., 2025
-        $month = $month;     // e.g., 6 (June)
-        $weekNumber = $week; // e.g., 1 (Week 1)
+        $today = Carbon::today();
+        $year = $today->year;
+        $month = $today->month;
 
-        // Get the first day of the month
-        $firstOfMonth = Carbon::createFromDate($year, $month, 1)->startOfDay();
+        $weeksData = $this->getStrictWeekData($year, $month);
 
-        // Get the first Monday on or **before** the 1st of the month
-        $firstMonday = $firstOfMonth->copy()->startOfWeek(Carbon::MONDAY);
-
-        // Calculate week start and end
-        $weekStart = $firstMonday->copy()->addWeeks($weekNumber - 1);
-        $weekEnd = $weekStart->copy()->endOfWeek(Carbon::SUNDAY);
-
-        // Create array of all dates in this week
-        $dates = [];
-        $current = $weekStart->copy();
-        while ($current->lte($weekEnd)) {
-            $dates[] = $current->toDateString();
-            $current->addDay();
+        foreach ($weeksData['weeks'] as $week) {
+            if ($today->between(Carbon::parse($week['start_date']), Carbon::parse($week['end_date']))) {
+                return [
+                    'current_date' => $today->toDateString(),
+                    'current_week_number' => $week['week'],
+                    'total_weeks' => $weeksData['total_weeks'],
+                    'dates' => $week['dates']
+                ];
+            }
         }
-        return array(
-            'week' => $weekNumber,
-            'start_date' => $weekStart->toDateString(),
-            'end_date' => $weekEnd->toDateString(),
-            'dates' => $dates,
-        );
+
+        // If not found, maybe it’s part of previous or next month’s overlapping week
+        return [
+            'message' => 'Current date does not fall in any defined week of this month.'
+        ];
     }
+    public function getStrictWeekData(int $year, int $month, int $week = null)
+    {
+        $weeks = [];
+        $firstOfMonth = Carbon::createFromDate($year, $month, 1);
+        $lastOfMonth = $firstOfMonth->copy()->endOfMonth();
+
+        $start = $firstOfMonth->copy()->startOfWeek(Carbon::MONDAY);
+        $end = $lastOfMonth->copy()->endOfWeek(Carbon::SUNDAY);
+
+        $weekNumber = 1;
+
+        while ($start->lte($end)) {
+            $weekStart = $start->copy();
+            $weekEnd = $weekStart->copy()->endOfWeek(Carbon::SUNDAY);
+
+            $dates = [];
+            $inMonthDays = 0;
+
+            $current = $weekStart->copy();
+            while ($current->lte($weekEnd)) {
+                $dates[] = $current->toDateString();
+                if ($current->month === $month) {
+                    $inMonthDays++;
+                }
+                $current->addDay();
+            }
+
+            if ($inMonthDays >= 4) {
+                $weekData = [
+                    'week' => $weekNumber,
+                    'start_date' => $weekStart->toDateString(),
+                    'end_date' => $weekEnd->toDateString(),
+                    'dates' => $dates,
+                ];
+
+                if ($week === $weekNumber) {
+                    return [
+                        'week_data' => $weekData
+                    ];
+                }
+
+                $weeks[] = $weekData;
+                $weekNumber++;
+            }
+
+            $start->addWeek();
+        }
+
+        return [
+            'total_weeks' => count($weeks),
+            'weeks' => $weeks
+        ];
+    }
+
 
     public function saveJobData(Request $request){
         
