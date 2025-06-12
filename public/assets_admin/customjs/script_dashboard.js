@@ -94,7 +94,7 @@ function makeWeekViewListing(weeks_list){
     var html = '';
     if(weeks_list.length > 0){
         $.each(weeks_list, function (index, value) {
-            html += `<div class="col-12 border-bottom border-start border-end p-2 d-flex gap-4 align-items-center ps-4">
+            html += `<div class="col-12 border-bottom border-start border-end p-2 d-flex gap-4 align-items-center ps-4" style="${value.is_today == true ? 'background-color: #eae8e8;' : ''}">
                                 <small class="${value.is_today == true ? 'fw-bold' : ''}" style="min-width: 5.6rem">${value.day}<br>${value.date_formated}</small>
                                 <div class="w-100 overflow-auto">`;
 
@@ -122,7 +122,7 @@ function makeWeekViewListing(weeks_list){
                                     else if (type === 4) barColor = '#ff0000';
 
                                     html += `<div style="min-width: 15rem; border-left: 4px solid ${barColor}"
-                                            class="${statusClass} rounded-2 px-2 py-1 w-100 mb-2 viewJob_btn" data-id="${value.id}">
+                                            class="${statusClass} rounded-2 px-2 py-1 w-100 mb-2 pointer viewJob_btn" data-id="${job.id}" title="View Job">
                                             <small class="fw-semibold">${job.start_time != null ? formatTime(job.start_time) : ''}</small> |
                                             <small> <strong>Client:</strong> ${job.client_name} | 
                                                     <strong>Supplier:</strong> ${job.supplier_name} | 
@@ -246,7 +246,7 @@ function saveJobDataResponse(response) {
 
         $("#addJob_modal").modal('hide');
 
-        loadDashboardWeekViewData();
+        loadJobsWeekView();
         calendar.refetchEvents();
         
     }else{
@@ -456,7 +456,7 @@ function changeJobStatusResponse(response) {
             timeOut: 3000
         });
 
-        loadDashboardWeekViewData();
+        loadJobsWeekView();
         calendar.refetchEvents();
         
     }else{
@@ -753,11 +753,81 @@ $(document).ready(function () {
     $(document).on('change', '#week_filter_year', function (e) {
         $("#week_filter_month").val('');
         $("#week_filter_week").val('');
+        $("#weekView_section").html('<p class="text-center w-100 p-4">No record found...</p>');
+        makeWeeksLov();
     });
-    $(document).on('change', '#week_filter_week', function (e) {
+    $(document).on('change', '#week_filter_month', function (e) {
         $("#week_filter_week").val('');
+        $("#weekView_section").html('<p class="text-center w-100 p-4">No record found...</p>');
+        makeWeeksLov();
+        
+        var year = $("#week_filter_year").val();
+        var month = $("#week_filter_month").val();
+        if(year != '' && month != ''){
+            let data = new FormData();
+            data.append('year', $("#week_filter_year").val());
+            data.append('month', $("#week_filter_month").val());
+            let type = 'POST';
+            let url = '/admin/getWeekFilterValues';
+            SendAjaxRequestToServer(type, url, data, '', getWeekFilterValuesResponse, '', '');
+        }
     });
+
+    $(document).on('change', '#week_filter_week', function (e) {
+        
+        var year = $("#week_filter_year").val();
+        var month = $("#week_filter_month").val();
+        var week = $("#week_filter_week").val();
+
+        if(year != '' && month != '' && week != ''){
+
+            loadJobsWeekView();
+        }
+    });
+
 });
+
+function getWeekFilterValuesResponse(response){
+
+    var data = response.data;
+    
+    makeWeeksLov(data?.weeksData?.total_weeks ?? '');
+}
+
+function loadJobsWeekView(){
+
+    var year = $("#week_filter_year").val();
+    var month = $("#week_filter_month").val();
+    var week = $("#week_filter_week").val();
+
+    if(year != '' && month != '' && week != ''){
+
+        let data = new FormData();
+        data.append('year', year);
+        data.append('month', month);
+        data.append('week', week);
+
+        let type = 'POST';
+        let url = '/admin/searchJobsWeekView';
+        SendAjaxRequestToServer(type, url, data, '', searchJobsWeekViewResponse, '', '');
+    }
+}
+
+function searchJobsWeekViewResponse(response){
+    
+    if (response.status == 200) {
+        
+        var data = response.data;
+
+        makeWeekViewListing(data.listing);
+        
+    }else{
+         
+        toastr.error(error, '', {
+            timeOut: 3000
+        });
+    }
+}
 
 $('#client_name,#supplier_name').on('keydown', function(e) {
     var key = e.keyCode || e.which;
@@ -825,15 +895,15 @@ $('#client_name,#supplier_name').on('keydown', function(e) {
         headerToolbar: {
             left: 'prev,next today',
             center: 'title',
-            right: 'dayGridMonth,timeGridDay'//,timeGridWeek
+            right: ''//dayGridMonth,timeGridWeek,timeGridDay
         },
-        views: {
-            timeGridDay: {
-              type: 'timeGrid',
-              duration: { days: 3 },
-              buttonText: "day's"
-            }
-        },
+        // views: {
+        //     timeGridDay: {
+        //       type: 'timeGrid',
+        //       duration: { days: 3 },
+        //       buttonText: "day's"
+        //     }
+        // },
         // events: events,
         events: function(fetchInfo, successCallback, failureCallback) {
             fetch('/admin/getAllJobs') // URL to fetch jobs from Laravel

@@ -61,7 +61,10 @@ Route::group(['prefix' => '/'], function () {
         Route::post('/admin/viewJobDetails', [AdminController::class, 'viewJobDetails'])->name('admin.viewJobDetails');
         Route::post('/admin/deleteSpecificJob', [AdminController::class, 'deleteSpecificJob'])->name('admin.deleteSpecificJob');
         Route::post('/admin/searchJobsListing', [AdminController::class, 'searchJobsListing'])->name('admin.searchJobsListing');
+        Route::post('/admin/getWeekFilterValues', [AdminController::class, 'getWeekFilterValues'])->name('admin.getWeekFilterValues');
+        Route::post('/admin/searchJobsWeekView', [AdminController::class, 'searchJobsWeekView'])->name('admin.searchJobsWeekView');
         
+
         Route::post('/admin/getJobsPageData', [AdminController::class, 'getJobsPageData'])->name('admin.getJobsPageData');
         Route::post('/admin/getRiggerTicketPageData', [AdminController::class, 'getRiggerTicketPageData'])->name('admin.getRiggerTicketPageData');
         Route::post('/admin/searchRiggerTicketListing', [AdminController::class, 'searchRiggerTicketListing'])->name('admin.searchRiggerTicketListing');

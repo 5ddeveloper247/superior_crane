@@ -541,7 +541,7 @@ class AdminController extends Controller
         if(isset($weekData['dates']) && count($weekData['dates']) > 0){
             foreach($weekData['dates'] as  $index => $date){
                 $jobsArray[$index]['date'] = $date;
-                $jobsArray[$index]['date_formated'] = date('d M,Y', strtotime($date));
+                $jobsArray[$index]['date_formated'] = date('d M, y', strtotime($date));
                 $jobsArray[$index]['day'] = date('l', strtotime($date));
                 $jobsArray[$index]['is_today'] = $date == date('Y-m-d') ? true : false;
                 
@@ -571,10 +571,66 @@ class AdminController extends Controller
         $data['current_week_number'] = $weekData['current_week_number'];
         $data['total_weeks'] = $weekData['total_weeks'];
         $data['listing'] = $jobsArray;
-        // $result = $this->getStrictWeekData($year, $month, 7);
-        // print_r("<pre>");
-        // print_r($weekDate);
-        // exit;
+        
+        return response()->json(['status' => 200, 'message' => "",'data' => $data]);
+    }
+
+    public function getWeekFilterValues(Request $request){
+
+        $year = $request->year;
+        $month = $request->month;
+
+        $weeksData = $this->getStrictWeekData($year, $month);
+
+        
+        $data['weeksData'] = $weeksData;
+        
+        return response()->json(['status' => 200, 'message' => "",'data' => $data]);
+    }
+
+    public function searchJobsWeekView(Request $request){
+
+        $year = $request->year;
+        $month = $request->month;
+        $week = $request->week;
+
+        if($year == '' || $month == '' || $week == ''){
+            return response()->json(['status' => 400, 'message' => "Something went wrong...",'data' => $data]);
+        }
+
+        $weekData = $this->getStrictWeekData($year, $month, $week);
+        
+        $jobsArray = [];
+        if(isset($weekData['dates']) && count($weekData['dates']) > 0){
+            foreach($weekData['dates'] as  $index => $date){
+                $jobsArray[$index]['date'] = $date;
+                $jobsArray[$index]['date_formated'] = date('d M,Y', strtotime($date));
+                $jobsArray[$index]['day'] = date('l', strtotime($date));
+                $jobsArray[$index]['is_today'] = $date == date('Y-m-d') ? true : false;
+                
+
+                $jobs_list_new = [];
+                $jobs_list = JobModel::where('date', $date)->orderBy('start_time','asc')->get();
+                if($jobs_list){
+                    foreach ($jobs_list as $index1 => $value) {
+                        $riggerAssignedIds = json_decode($value->rigger_assigned, true);
+                    
+                        if (is_array($riggerAssignedIds)) {
+                            $assignedUsers = User::whereIn('id', $riggerAssignedIds)->pluck('name')->toArray();
+                        } else {
+                            $assignedUsers = array();
+                        }
+                        $value->user_assigned = implode(', ', $assignedUsers);
+                        $jobs_list_new[] = $value;
+                    }
+                }
+
+                $jobsArray[$index]['jobs'] = $jobs_list_new;
+            }
+        }
+
+        $data['listing'] = $jobsArray;
+        
         return response()->json(['status' => 200, 'message' => "",'data' => $data]);
     }
 
@@ -679,6 +735,7 @@ class AdminController extends Controller
             'message' => 'Current date does not fall in any defined week of this month.'
         ];
     }
+
     public function getStrictWeekData(int $year, int $month, int $week = null)
     {
         $weeks = [];
@@ -715,9 +772,10 @@ class AdminController extends Controller
                 ];
 
                 if ($week === $weekNumber) {
-                    return [
-                        'week_data' => $weekData
-                    ];
+                    // return [
+                    //     'week_data' => $weekData
+                    // ];
+                    return $weekData;
                 }
 
                 $weeks[] = $weekData;

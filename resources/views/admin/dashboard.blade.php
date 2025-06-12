@@ -527,6 +527,9 @@
         .bg-default-subtle{
             background-color: #dfdfdf !important;    /* Light fray background */
         }
+        .pointer{
+            cursor: pointer;
+        }
     </style>
 @endpush
 
@@ -589,7 +592,7 @@
         <div class="tab-content" id="myTabContent">
             <div class="tab-pane fade show active px-2" id="calender-tab-pane" role="tabpanel"
                 aria-labelledby="calender-tab" tabindex="0">
-                <ul class="nav nav-tabs mb-3" id="pills-tab" role="tablist">
+                <ul class="nav nav-tabs mb-3 justify-content-end" id="pills-tab" role="tablist">
                     <li class="nav-item" role="presentation">
                         <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill"
                             data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home"
