@@ -272,7 +272,7 @@
             padding: 5px;
             cursor: pointer;
             /* position: absolute;
-                                                                        z-index: 1000; */
+                                                                                z-index: 1000; */
         }
 
         .status-dropdown li:hover {
@@ -447,49 +447,49 @@
         }
 
         /* .schedule-table {
-                            table-layout: fixed;
-                            width: 100%;
-                        } */
+                                    table-layout: fixed;
+                                    width: 100%;
+                                } */
 
         /* .schedule-table th,
-                        .schedule-table td {
-                            text-align: center;
-                            vertical-align: middle;
-                            border: 1px solid #dee2e6;
-                            min-height: 50px;
-                            min-width: 100px;
-                        }
+                                .schedule-table td {
+                                    text-align: center;
+                                    vertical-align: middle;
+                                    border: 1px solid #dee2e6;
+                                    min-height: 50px;
+                                    min-width: 100px;
+                                }
 
-                        .time-header {
-                            background-color: #f8f9fa;
-                        }
+                                .time-header {
+                                    background-color: #f8f9fa;
+                                }
 
-                        .day-header {
-                            font-weight: bold;
-                            background-color: #f1f1f1;
-                        }
+                                .day-header {
+                                    font-weight: bold;
+                                    background-color: #f1f1f1;
+                                }
 
-                        .sticky-top-left {
-                            position: sticky;
-                            left: 0;
-                            z-index: 4 !important;
-                            background-color: #f1f1f1;
-                        }
+                                .sticky-top-left {
+                                    position: sticky;
+                                    left: 0;
+                                    z-index: 4 !important;
+                                    background-color: #f1f1f1;
+                                }
 
-                        .sticky-header {
-                            position: sticky;
-                            top: 0;
-                            z-index: 3;
-                            background-color: #fff;
-                        }
+                                .sticky-header {
+                                    position: sticky;
+                                    top: 0;
+                                    z-index: 3;
+                                    background-color: #fff;
+                                }
 
-                        .event {
-                            border-radius: 5px;
-                            padding: 4px;
-                            font-size: 10px;
-                            line-height: 1.2;
-                            color: #000;
-                        } */
+                                .event {
+                                    border-radius: 5px;
+                                    padding: 4px;
+                                    font-size: 10px;
+                                    line-height: 1.2;
+                                    color: #000;
+                                } */
 
         .filter-bar {
             padding: 1rem;
@@ -515,19 +515,28 @@
             background-color: #ff0000 !important;
             color: #fff;
         }
-        .bg-success-subtle{
-            background-color: #C9FFBB !important;    /* Light green background */
+
+        .bg-success-subtle {
+            background-color: #C9FFBB !important;
+            /* Light green background */
         }
-        .bg-warning-subtle{
-            background-color: #FFBBBB !important;    /* Light red background */
+
+        .bg-warning-subtle {
+            background-color: #FFBBBB !important;
+            /* Light red background */
         }
-        .bg-info-subtle{
-            background-color: #FFFCBB !important;    /* Light yellow background */
+
+        .bg-info-subtle {
+            background-color: #FFFCBB !important;
+            /* Light yellow background */
         }
-        .bg-default-subtle{
-            background-color: #dfdfdf !important;    /* Light fray background */
+
+        .bg-default-subtle {
+            background-color: #dfdfdf !important;
+            /* Light fray background */
         }
-        .pointer{
+
+        .pointer {
             cursor: pointer;
         }
     </style>
@@ -611,56 +620,70 @@
                             <div id="calendar"></div>
                         </div>
                     </div>
-                    <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab" tabindex="0">
-                        <div class="filter-bar mb-3 d-flex align-items-center justify-content-between gap-3 rounded-2 p-2">
-                            @php
-                                $currentYear = date('Y');
-                                $currentMonth = date('m');
-                                $startYear = $currentYear - 5;
-                                $endYear = $currentYear + 5;
-                            @endphp
-                            <select class="form-select" name="year" id="week_filter_year">
-                                <option value="">Select Year</option>
-                                @for ($year = $startYear; $year <= $endYear; $year++)
-                                    <option @if($currentYear == $year) selected @endif value="{{ $year }}">{{ $year }}</option>
-                                @endfor
-                            </select>
+                    <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab"
+                        tabindex="0">
+                        <div class="row justify-content-center">
+                            <div
+                                class="filter-bar col-6 mb-3 d-flex align-items-center justify-content-end gap-3 rounded-2 p-2">
+                                @php
+                                    $currentYear = date('Y');
+                                    $currentMonth = date('m');
+                                    $startYear = $currentYear - 5;
+                                    $endYear = $currentYear + 5;
+                                @endphp
+                                <select class="form-select" name="year" id="week_filter_year">
+                                    <option value="">Select Year</option>
+                                    @for ($year = $startYear; $year <= $endYear; $year++)
+                                        <option @if ($currentYear == $year) selected @endif
+                                            value="{{ $year }}">{{ $year }}</option>
+                                    @endfor
+                                </select>
 
-                            <select class="form-select" name="month" id="week_filter_month">
-                                <option value="">Select Month</option>
-                                <option @if($currentMonth == '01') selected @endif value="01">January</option>
-                                <option @if($currentMonth == '02') selected @endif value="02">February</option>
-                                <option @if($currentMonth == '03') selected @endif value="03">March</option>
-                                <option @if($currentMonth == '04') selected @endif value="04">April</option>
-                                <option @if($currentMonth == '05') selected @endif value="05">May</option>
-                                <option @if($currentMonth == '06') selected @endif value="06">June</option>
-                                <option @if($currentMonth == '07') selected @endif value="07">July</option>
-                                <option @if($currentMonth == '08') selected @endif value="08">August</option>
-                                <option @if($currentMonth == '09') selected @endif value="09">September</option>
-                                <option @if($currentMonth == '10') selected @endif value="10">October</option>
-                                <option @if($currentMonth == '11') selected @endif value="11">November</option>
-                                <option @if($currentMonth == '12') selected @endif value="12">December</option>
-                            </select>
+                                <select class="form-select" name="month" id="week_filter_month">
+                                    <option value="">Select Month</option>
+                                    <option @if ($currentMonth == '01') selected @endif value="01">January
+                                    </option>
+                                    <option @if ($currentMonth == '02') selected @endif value="02">February
+                                    </option>
+                                    <option @if ($currentMonth == '03') selected @endif value="03">March</option>
+                                    <option @if ($currentMonth == '04') selected @endif value="04">April</option>
+                                    <option @if ($currentMonth == '05') selected @endif value="05">May</option>
+                                    <option @if ($currentMonth == '06') selected @endif value="06">June</option>
+                                    <option @if ($currentMonth == '07') selected @endif value="07">July</option>
+                                    <option @if ($currentMonth == '08') selected @endif value="08">August
+                                    </option>
+                                    <option @if ($currentMonth == '09') selected @endif value="09">September
+                                    </option>
+                                    <option @if ($currentMonth == '10') selected @endif value="10">October
+                                    </option>
+                                    <option @if ($currentMonth == '11') selected @endif value="11">November
+                                    </option>
+                                    <option @if ($currentMonth == '12') selected @endif value="12">December
+                                    </option>
+                                </select>
 
-                            <select class="form-select" name="week" id="week_filter_week">
-                                <option value="">Select Week</option>
-                            </select>
+                                <select class="form-select" name="week" id="week_filter_week">
+                                    <option value="">Select Week</option>
+                                </select>
+                            </div>
                         </div>
 
-                        <div class="d-flex align-items-center justify-content-between border px-2">
-                            <small style="padding-left: 8.2rem" class="fw-bold pe-4">00:00</small>
-                            <span style="background: linear-gradient(303deg,rgba(255, 255, 255, 1) 0%, rgba(188, 28, 28, 0.434) 57%, rgba(255, 255, 255, 1) 100%);"
+                        <div style="background-color: #db2a2a; box-shadow: #dc3545 0px 5px 0px, rgb(0 0 0 / 20%) 0px 27px 25px 5px, rgb(0 0 0 / 17%) 0px 11px 0px inset;" class="d-flex align-items-center justify-content-between border px-3 py-1 rounded-4 text-white">
+                            <small class="fw-bold">Day/Time</small>
+                            <small style="padding-left: 6rem" class="fw-bold pe-5">00:00</small>
+                            {{-- <span
+                                style="background: linear-gradient(303deg,rgba(255, 255, 255, 1) 0%, rgba(188, 28, 28, 0.434) 57%, rgba(255, 255, 255, 1) 100%);"
                                 class="w-100 d-flex align-items-center justify-content-center fw-bold">AM</span>
-                            <span style="background: linear-gradient(303deg,rgba(255, 255, 255, 1) 0%, rgba(188, 28, 28, 0.414) 57%, rgba(255, 255, 255, 1) 100%);"
-                                class="border-start w-100 d-flex align-items-center justify-content-center fw-bold">PM</span>
-                            <small class="fw-bold ps-4">24:00</small>
+                            <span
+                                style="background: linear-gradient(303deg,rgba(255, 255, 255, 1) 0%, rgba(188, 28, 28, 0.414) 57%, rgba(255, 255, 255, 1) 100%);"
+                                class="border-start w-100 d-flex align-items-center justify-content-center fw-bold">PM</span> --}}
+                            <span class="w-100 d-flex align-items-center justify-content-center fw-bold text-white">AM</span>
+                            <span class="border-start w-100 d-flex align-items-center justify-content-center fw-bold text-white">PM</span>
+                            <small class="fw-bold ps-5">24:00</small>
                         </div>
 
-                        <div class="row g-0" id="weekView_section">
-                            
-                            
+                        <div class="row g-0 p-3 bg-white mx-3" style="border-radius: 0 0 14px 14px; box-shadow: #dc3545 0px 5px 0px, rgb(0 0 0 / 20%) 0px 27px 25px 5px, rgb(0 0 0 / 17%) 0px 11px 0px inset;" id="weekView_section">
 
-                            
                         </div>
                     </div>
                 </div>
@@ -1021,9 +1044,12 @@
                                     Upload Attachment
                                 </label>
 
-                                <input type="hidden" id="deletedFileIds" name="deletedFileIds" value="">
+                                <div class="position-relative">
+                                    <input type="hidden" id="deletedFileIds" name="deletedFileIds" value="">
+                                    <img src="https://cdn-icons-png.flaticon.com/128/14156/14156146.png" class="position-absolute" style="top: 50%; left: 50%; transform: translate(-50%, 40%);" width="40" alt="">
+                                </div>
 
-                                <div id="file-dropzone" class="dropzone"></div>
+                                <div id="file-dropzone" class="dropzone rounded-3" style="border-color: #0101011c"></div>
                             </div>
 
                             {{-- <div class="col-12 col-md-8 d-flex flex-column">
