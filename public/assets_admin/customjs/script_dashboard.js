@@ -94,7 +94,7 @@ function makeWeekViewListing(weeks_list){
     var html = '';
     if(weeks_list.length > 0){
         $.each(weeks_list, function (index, value) {
-            html += `<div class="col-12 border-bottom border-start border-end p-2 d-flex gap-4 align-items-center ps-4" style="${value.is_today == true ? 'background-color: #eae8e8;' : ''}">
+            html += `<div class="col-12 border rounded-2 p-2 d-flex gap-4 align-items-center" style="${value.is_today == true ? 'background-color: #eae8e8;' : ''} box-shadow: rgb(0 0 0 / 4%) 0px 12px 12px 0px inset, rgb(0 0 0 / 0%) 0px -36px 30px 0px inset, rgb(0 0 0 / 0%) 0px -79px 40px 0px inset, rgb(0 0 0 / 0%) 0px 2px 1px, rgb(0 0 0 / 13%) 0px 4px 2px, rgb(0 0 0 / 0%) 0px 8px 4px, rgb(0 0 0 / 0%) 0px 11px 0px, rgb(0 0 0 / 0%) 0px 32px 16px;">
                                 <small class="${value.is_today == true ? 'fw-bold' : ''}" style="min-width: 5.6rem">${value.day}<br>${value.date_formated}</small>
                                 <div class="w-100 overflow-auto">`;
 
