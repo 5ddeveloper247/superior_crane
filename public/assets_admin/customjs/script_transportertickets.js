@@ -322,13 +322,15 @@ function getSpecificTicketResponse(response) {
         $("#customer_table_body").html(customer_html);
 
         var att_html = '';
-        if(ticket_images != null){
+        if(ticket_images.length > 0){
             $.each(ticket_images, function (index, value) {
                 att_html += `<div class="image-item-land mt-3">
                                 <a href="${value.path}" target="_default"><img src="${value.type == 'pdf' ? base_url+'/assets/images/pdf_icon_book.png' : value.path}"></a>
                                 <p>${value.file_name}</p>
                             </div>`;
             });
+        }else{
+            att_html = '<p class="mt-2" style="font-size:12px;">No attachments found...</p>';
         }
         $("#uploaded_attachment").show();
         $("#uploads_section1").html(att_html);

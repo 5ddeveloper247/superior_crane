@@ -602,6 +602,22 @@
                         <!-- <button class="px-4 rounded-1 py-1 clear-btn" id="clear_signature1">Clear</button> -->
                     </div>
                 </div>
+                <div class="col-12 col-md-6 d-flex flex-column my-3">
+                    <div class="accordion" id="accordionExample">
+                        <div class="accordion-item" id="uploaded_attachment" style="display:none;">
+                            <h2 class="accordion-header" id="headingZero">
+                                <button class="accordion-button  p-2" type="button" data-bs-toggle="collapse" data-bs-target="#uploadedAtt" aria-expanded="true" aria-controls="uploadedAtt">
+                                    Uploaded Attachments
+                                </button>
+                            </h2>
+                            <div id="uploadedAtt" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                                <div class="white image-container mx-4" id="uploads_section1">
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="col-12 col-md-12"></div>
 
                 <!-- /////////////////////////////////////////////////////////////////////// -->
@@ -706,22 +722,7 @@
                     </div>
                 </div>
                 
-                <div class="col-12 col-md-6 d-flex flex-column my-3">
-                    <div class="accordion" id="accordionExample">
-                        <div class="accordion-item" id="uploaded_attachment" style="display:none;">
-                            <h2 class="accordion-header" id="headingZero">
-                                <button class="accordion-button  p-2" type="button" data-bs-toggle="collapse" data-bs-target="#uploadedAtt" aria-expanded="true" aria-controls="uploadedAtt">
-                                    Uploaded Attachments
-                                </button>
-                            </h2>
-                            <div id="uploadedAtt" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-                                <div class="white image-container mx-4" id="uploads_section1">
-                                    
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                
 
             </div>
             <div class="d-flex justify-content-center gap-2">
