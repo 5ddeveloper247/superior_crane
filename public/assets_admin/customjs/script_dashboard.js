@@ -94,9 +94,9 @@ function makeWeekViewListing(weeks_list){
     var html = '';
     if(weeks_list.length > 0){
         $.each(weeks_list, function (index, value) {
-            html += `<div class="col-12 border rounded-2 p-2 d-flex gap-4 align-items-center" style="${value.is_today == true ? 'background-color: #eae8e8;' : ''} box-shadow: rgb(0 0 0 / 4%) 0px 12px 12px 0px inset, rgb(0 0 0 / 0%) 0px -36px 30px 0px inset, rgb(0 0 0 / 0%) 0px -79px 40px 0px inset, rgb(0 0 0 / 0%) 0px 2px 1px, rgb(0 0 0 / 13%) 0px 4px 2px, rgb(0 0 0 / 0%) 0px 8px 4px, rgb(0 0 0 / 0%) 0px 11px 0px, rgb(0 0 0 / 0%) 0px 32px 16px;">
+            html += `<div class="col-12 border rounded-2 p-2 d-flex gap-4 align-items-center mb-2 week_event_div" style="${value.is_today == true ? 'background-color: #eae8e8;' : ''} box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;">
                                 <small class="${value.is_today == true ? 'fw-bold' : ''}" style="min-width: 5.6rem">${value.day}<br>${value.date_formated}</small>
-                                <div class="w-100 overflow-auto">`;
+                                <div class="w-100 overflow-auto px-3">`;
 
                                 var jobs_list = value.jobs;
                                 $.each(jobs_list, function (index1, job) {
@@ -121,21 +121,36 @@ function makeWeekViewListing(weeks_list){
                                     else if (type === 3) barColor = '#800080';
                                     else if (type === 4) barColor = '#ff0000';
 
-                                    html += `<div style="min-width: 15rem; border-left: 4px solid ${barColor}"
-                                            class="${statusClass} rounded-2 px-2 py-1 w-100 mb-2 pointer viewJob_btn" data-id="${job.id}" title="View Job">
+                                    html += `
+
+                                    <div style="min-width: 15rem; box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset; border-left: 4px solid 
+                                        ${barColor}"
+                                        class="${statusClass} rounded-2 px-2 py-1 w-100 mb-2 pointer "  data-bs-toggle="dropdown" aria-expanded="false"  title="View Job">
                                             <small class="fw-semibold">${job.start_time != null ? formatTime(job.start_time) : ''}</small> |
-                                            <small> <strong>Client:</strong> ${job.client_name} | 
-                                                    <strong>Supplier:</strong> ${job.supplier_name} | 
-                                                    <strong>Equipment:</strong> ${job.equipment_to_be_used} | 
-                                                    <strong>Address:</strong> ${job.address} | 
-                                                    <strong>Assigned Users:</strong> ${job.user_assigned}</small>
+                                            <small>
+                                                <strong>Client:</strong> ${job.client_name} | 
+                                                <strong>Supplier:</strong> ${job.supplier_name} | 
+                                                <strong>Equipment:</strong> ${job.equipment_to_be_used} | 
+                                                <strong>Address:</strong> ${job.address} | 
+                                                <strong>Assigned Users:</strong> ${job.user_assigned}
+                                            </small>
+
                                             ${job.booked_flag == 1 ? 
                                                 '<div class="d-flex justify-content-end gap-1"><label for="">Booked</label><span class="fa fa-square-check tick-icon-week" title="Booked"></span></div>' : 
                                                 ''}
-                                            
-                                        </div>`;
-                                });
+                                    </div>
                                     
+                                    <ul class="dropdown-menu p-3" style="min-width: fit-content">
+                                        <li class="viewJob_btn" data-id=""><button class="btn btn-danger btn-sm py-1 mb-2 w-100" style="font-size: 13px !important">View Job</button></li>
+                                        <li style="font-size: 13px;" class=""></li>
+                                        <li style="font-size: 13px;" class="changeStatus_btn px-2 py-1 hover-red" data-id="" data-status="2" style="background-color:#FFFCBB;">On-Hold</li>
+                                        <li style="font-size: 13px;" class="changeStatus_btn px-2 py-1 hover-green" data-id="" data-status="1" style="background-color:#C9FFBB;">Good To Go</li>
+                                        <li style="font-size: 13px;" class="changeStatus_btn px-2 py-1 hover-yellow" data-id="" data-status="0" style="background-color:#FFBBBB;">Problem</li>
+                                    </ul>
+
+                                    `;
+                                });
+                                    //viewJob_btn   data-id="${job.id}"
                                 html += `</div>
                             </div>`;
         });
