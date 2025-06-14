@@ -339,6 +339,7 @@
                     <tr>
                         <th class="px3" scope="col">Ticket No#</th>
                         <th class="px3" scope="col">Transporter Name</th>
+                        <th class="px-3" scope="col">Job ID#</th>
                         <th class="px-3" scope="col">Job Client Name</th>
                         <th class="px-3" scope="col">Job Date</th>
                         <th class="px-3" scope="col">Pickup Address</th>
@@ -369,7 +370,7 @@
                         <th class="px3" scope="col">Pickup Time Out</th>
 
                         <th class="px3" scope="col">Total Shipper's</th>
-                        <th class="px3" scope="col">Total Customer's</th>
+                        <th class="px3" scope="col">Total Consignee's</th>
 
                         <!-- <th class="px3" scope="col">Customer Name</th>
                         <th class="px3" scope="col">Customer Email</th>
@@ -699,7 +700,7 @@
                         </div>
                         <div class="col-6">
                             <label class="fw-semibold form-label" for="customer_date">
-                                Customers
+                                Consignee
                             </label>
                             <table id="customer_table" class="table-responsive w-100">
                                 <thead>

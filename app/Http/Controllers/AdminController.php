@@ -542,7 +542,7 @@ class AdminController extends Controller
             foreach($weekData['dates'] as  $index => $date){
                 $jobsArray[$index]['date'] = $date;
                 $jobsArray[$index]['date_formated'] = date('d M, y', strtotime($date));
-                $jobsArray[$index]['day'] = date('l', strtotime($date));
+                $jobsArray[$index]['day'] = date('D', strtotime($date));
                 $jobsArray[$index]['is_today'] = $date == date('Y-m-d') ? true : false;
                 
 
@@ -605,7 +605,7 @@ class AdminController extends Controller
             foreach($weekData['dates'] as  $index => $date){
                 $jobsArray[$index]['date'] = $date;
                 $jobsArray[$index]['date_formated'] = date('d M,Y', strtotime($date));
-                $jobsArray[$index]['day'] = date('l', strtotime($date));
+                $jobsArray[$index]['day'] = date('D', strtotime($date));
                 $jobsArray[$index]['is_today'] = $date == date('Y-m-d') ? true : false;
                 
 

@@ -449,7 +449,7 @@
             <table id="jobsListing_table" class="table-responsive w-100">
                 <thead>
                     <tr>
-                        <th class="px3" scope="col">Job No#</th>
+                        <th class="px3" scope="col">Job ID#</th>
                         <th class="px3" scope="col">Client Name</th>
                         <th class="px-3" scope="col">Address</th>
                         <th class="px3" scope="col">Job Type</th>

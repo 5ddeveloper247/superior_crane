@@ -603,12 +603,12 @@
                 aria-labelledby="calender-tab" tabindex="0">
                 <ul class="nav nav-tabs mb-3 justify-content-end" id="pills-tab" role="tablist">
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill"
+                        <button class="nav-link active month-tab-btn" id="pills-home-tab" data-bs-toggle="pill"
                             data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home"
                             aria-selected="true">Month</button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="pills-profile-tab" data-bs-toggle="pill"
+                        <button class="nav-link week-tab-btn" id="pills-profile-tab" data-bs-toggle="pill"
                             data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile"
                             aria-selected="false">Week</button>
                     </li>
@@ -624,7 +624,7 @@
                         tabindex="0">
                         <div class="row justify-content-center">
                             <div
-                                class="filter-bar col-6 mb-3 d-flex align-items-center justify-content-end gap-3 rounded-2 p-2">
+                                class="filter filter-bar col-6 mb-3 d-flex align-items-center justify-content-end gap-3 rounded-2 p-2">
                                 @php
                                     $currentYear = date('Y');
                                     $currentMonth = date('m');
@@ -665,6 +665,10 @@
                                 <select class="form-select" name="week" id="week_filter_week">
                                     <option value="">Select Week</option>
                                 </select>
+
+                                <button type="button" class="mt-1 py-1 px-3 text-white rounded-1 w-50" onclick="loadDashboardWeekViewData();">
+                                    This Week
+                                </button>
                             </div>
                         </div>
 
@@ -846,7 +850,7 @@
                             <table id="jobsListing_table" class="table-responsive w-100">
                                 <thead>
                                     <tr>
-                                        <th class="px3" scope="col">Job No#</th>
+                                        <th class="px3" scope="col">Job ID#</th>
                                         <th class="px3" scope="col">Client Name</th>
                                         <th class="px-3" scope="col">Address</th>
                                         <th class="px3" scope="col">Job Type</th>

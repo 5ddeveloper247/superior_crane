@@ -56,6 +56,7 @@ function makeTransporterTicketListing(tickets_list){
             html += `<tr>
                         <td class="viewTicket_btn" data-id="${value.id}">TTKT-${value.id}</td>
                         <td>${value.user_detail != null ? value.user_detail.name : 'null'}</td>
+                        <td>${value.job_id != null ? 'J-' + value.job_id : 'null'}</td>
                         <td>${value.job_detail != null ? value.job_detail.client_name : 'null'}</td>
                         <td>${value.job_detail != null ? formatDate(value.job_detail.date) : 'null'}</td>
                         <td>${value.pickup_address != null ? trimText(value.pickup_address, 20) : 'null'}</td>

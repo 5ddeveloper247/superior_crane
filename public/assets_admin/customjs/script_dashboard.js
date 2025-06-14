@@ -753,12 +753,12 @@ $(document).ready(function () {
     $(document).on('change', '#week_filter_year', function (e) {
         $("#week_filter_month").val('');
         $("#week_filter_week").val('');
-        $("#weekView_section").html('<p class="text-center w-100 p-4">No record found...</p>');
+        $("#weekView_section").html('<p class="text-center w-100 p-4">Please choose month & week to see the record...</p>');
         makeWeeksLov();
     });
     $(document).on('change', '#week_filter_month', function (e) {
         $("#week_filter_week").val('');
-        $("#weekView_section").html('<p class="text-center w-100 p-4">No record found...</p>');
+        $("#weekView_section").html('<p class="text-center w-100 p-4">Please choose week to see the record...</p>');
         makeWeeksLov();
         
         var year = $("#week_filter_year").val();
@@ -785,6 +785,12 @@ $(document).ready(function () {
         }
     });
 
+    $(document).on('click', '.month-tab-btn', function (e) {
+        
+        calendar.refetchEvents();
+    });
+
+    
 });
 
 function getWeekFilterValuesResponse(response){
