@@ -125,6 +125,19 @@ function formatDate(dateString) {
 
     return `${day} ${month} ${year}`;
 }
+function formatDateMonth(dateString) {
+    const months = [
+        "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+    ];
+
+    const date = new Date(dateString);
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = months[date.getMonth()];
+    const year = date.getFullYear();
+
+    return `${day} ${month}`;
+}
 // function formatTime(timeString) {
 //     // Split the time string into components
 //     var timeParts = timeString.split(':');

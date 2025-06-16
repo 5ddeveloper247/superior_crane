@@ -75,6 +75,7 @@ function makeInventoryListing(inventory_list){
         $('#inventory_table').DataTable({
             dom: 'Bfrtip',
             pageLength: 10,
+            order: [],
             buttons: [{
                 extend: 'csv',
                 text: 'Export'

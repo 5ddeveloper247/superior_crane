@@ -82,6 +82,7 @@ function makeAdminsListing(admin_list){
             "fixedHeader": true ,
             dom: 'Bfrtip',
             pageLength: 10,
+            order: [],
             buttons: [{
                 extend: 'csv',
                 text: 'Export'
@@ -138,6 +139,7 @@ function makeManagersListing(manager_list){
         $('#managers_listing_table').DataTable({
             dom: 'Bfrtip',
             pageLength: 10,
+            order: [],
             buttons: [{
                 extend: 'csv',
                 text: 'Export'
@@ -205,6 +207,7 @@ function makeUsersListing(users_list){
         $('#users_listing_table').DataTable({
             dom: 'Bfrtip',
             pageLength: 10,
+            order: [],
             buttons: [{
                 extend: 'csv',
                 text: 'Export'

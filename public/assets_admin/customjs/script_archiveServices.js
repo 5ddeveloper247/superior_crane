@@ -80,6 +80,7 @@ function makeServicesListing(services_list){
         $('#services_table').DataTable({
             dom: 'Bfrtip',
             pageLength: 10,
+            order: [],
             buttons: [{
                 extend: 'csv',
                 text: 'Export'
@@ -138,6 +139,7 @@ function makeCompletedServicesListing(services_list){
         $('#completed_services_table').DataTable({
             dom: 'Bfrtip',
             pageLength: 10,
+            order: [],
             buttons: [{
                 extend: 'csv',
                 text: 'Export'

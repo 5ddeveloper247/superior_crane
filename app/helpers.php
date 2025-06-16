@@ -11,7 +11,10 @@ use App\Models\Notifications;
 
 use Illuminate\Support\Facades\Config;
 use App\Models\EmailSetting;
+use App\Jobs\SendEmailJob;
+use App\Jobs\SendEmailWithAttachmentJob;
 use Carbon\Carbon;
+
 
 if (!function_exists('saveMultipleImages')) {
 
@@ -81,95 +84,117 @@ if (!function_exists('deleteImage')) {
 }
 
 if (!function_exists('sendMail')) {
+    // function sendMail($send_to_name, $send_to_email, $email_from_name, $subject, $body)
+    // {
+
+    //     if (env('USE_DYNAMIC_SMTP', false)) {
+    //         $emailSettings = EmailSetting::find(1);
+    //     }  
+
+    //     try {
+    //         $mail_val = [
+    //             'send_to_name' => $send_to_name,
+    //             'send_to' => $send_to_email,
+    //             'email_from' => $emailSettings->from_email ?? 'donotreplyscci@scserver.org',
+    //             'email_from_name' => $email_from_name,
+    //             'subject' => $subject,
+    //         ];
+
+    //         Mail::send('emails.mail', ['body' => $body], function ($send) use ($mail_val) {
+    //             $send->from($mail_val['email_from'], $mail_val['email_from_name']);
+    //             $send->replyto($mail_val['email_from'], $mail_val['email_from_name']);
+    //             $send->to($mail_val['send_to'], $mail_val['send_to_name'])->subject($mail_val['subject']);
+    //         });
+    //         return true;
+    //     } catch (\Exception $e) {
+    //         Log::error($e->getMessage());
+    //         // echo "An error occurred while sending the email: " . $e->getMessage();
+    //         return false;
+    //     }
+    // }
     function sendMail($send_to_name, $send_to_email, $email_from_name, $subject, $body)
     {
-
-        if (env('USE_DYNAMIC_SMTP', false)) {
-            $emailSettings = EmailSetting::find(1);
-        }  
-
         try {
-            $mail_val = [
-                'send_to_name' => $send_to_name,
-                'send_to' => $send_to_email,
-                'email_from' => $emailSettings->from_email ?? 'donotreplyscci@scserver.org',
-                'email_from_name' => $email_from_name,
-                'subject' => $subject,
-            ];
-
-            Mail::send('emails.mail', ['body' => $body], function ($send) use ($mail_val) {
-                $send->from($mail_val['email_from'], $mail_val['email_from_name']);
-                $send->replyto($mail_val['email_from'], $mail_val['email_from_name']);
-                $send->to($mail_val['send_to'], $mail_val['send_to_name'])->subject($mail_val['subject']);
-            });
+            dispatch(new SendEmailJob($send_to_name, $send_to_email, $email_from_name, $subject, $body));
             return true;
         } catch (\Exception $e) {
-            Log::error($e->getMessage());
-            // echo "An error occurred while sending the email: " . $e->getMessage();
+            \Log::error("Failed to dispatch email job: " . $e->getMessage());
             return false;
         }
     }
 }
 
+// if (!function_exists('sendMailAttachment')) {
+//     function sendMailAttachment($send_to_name, $send_to_email, $email_from_name, $subject, $body, $attachment_path)
+//     {
+//         if (env('USE_DYNAMIC_SMTP', false)) {
+//             $emailSettings = EmailSetting::find(1);
+//         }
+
+//         try {
+//             $mail_val = [
+//                 'send_to_name' => $send_to_name,
+//                 'send_to' => $send_to_email,
+//                 'email_from' => $emailSettings->from_email ?? 'donotreplyscci@scserver.org',
+//                 'email_from_name' => $email_from_name,
+//                 'subject' => $subject,
+//             ];
+
+//             Mail::send('emails.mail', ['body' => $body], function ($send) use ($mail_val, $attachment_path) {
+//                 $send->from($mail_val['email_from'], $mail_val['email_from_name']);
+//                 $send->replyTo($mail_val['email_from'], $mail_val['email_from_name']);
+//                 $send->to($mail_val['send_to'], $mail_val['send_to_name'])->subject($mail_val['subject']);
+                
+//                 // Attach the file
+//                 if (!empty($attachment_path) && file_exists($attachment_path)) {
+//                     $send->attach($attachment_path);
+//                 }
+//             });
+
+//             return true;
+//         } catch (\Exception $e) {
+//             Log::error($e->getMessage());
+//             // echo "An error occurred while sending the email: " . $e->getMessage();
+//             return false;
+//         }
+//     }
+// }
+
 if (!function_exists('sendMailAttachment')) {
+    // function sendMailAttachment($send_to_name, $send_to_email, $email_from_name, $subject, $body, $attachment_path)
+    // {
+    //     try {
+    //         $mail_val = [
+    //             'send_to_name' => $send_to_name,
+    //             'send_to' => $send_to_email,
+    //             'email_from' => 'noreply@pancard.com',
+    //             'email_from_name' => $email_from_name,
+    //             'subject' => $subject,
+    //         ];
+
+    //         Mail::send('emails.mail', ['body' => $body], function ($send) use ($mail_val, $attachment_path) {
+    //             $send->from($mail_val['email_from'], $mail_val['email_from_name']);
+    //             $send->replyTo($mail_val['email_from'], $mail_val['email_from_name']);
+    //             $send->to($mail_val['send_to'], $mail_val['send_to_name'])->subject($mail_val['subject']);
+                
+    //             // Attach the file
+    //             if (!empty($attachment_path) && file_exists($attachment_path)) {
+    //                 $send->attach($attachment_path);
+    //             }
+    //         });
+
+    //         return true;
+    //     } catch (\Exception $e) {
+    //         Log::error($e->getMessage());
+    //         // echo "An error occurred while sending the email: " . $e->getMessage();
+    //         return false;
+    //     }
+    // }
+
     function sendMailAttachment($send_to_name, $send_to_email, $email_from_name, $subject, $body, $attachment_path)
     {
-        if (env('USE_DYNAMIC_SMTP', false)) {
-            $emailSettings = EmailSetting::find(1);
-        }
-
         try {
-            $mail_val = [
-                'send_to_name' => $send_to_name,
-                'send_to' => $send_to_email,
-                'email_from' => $emailSettings->from_email ?? 'donotreplyscci@scserver.org',
-                'email_from_name' => $email_from_name,
-                'subject' => $subject,
-            ];
-
-            Mail::send('emails.mail', ['body' => $body], function ($send) use ($mail_val, $attachment_path) {
-                $send->from($mail_val['email_from'], $mail_val['email_from_name']);
-                $send->replyTo($mail_val['email_from'], $mail_val['email_from_name']);
-                $send->to($mail_val['send_to'], $mail_val['send_to_name'])->subject($mail_val['subject']);
-                
-                // Attach the file
-                if (!empty($attachment_path) && file_exists($attachment_path)) {
-                    $send->attach($attachment_path);
-                }
-            });
-
-            return true;
-        } catch (\Exception $e) {
-            Log::error($e->getMessage());
-            // echo "An error occurred while sending the email: " . $e->getMessage();
-            return false;
-        }
-    }
-}
-
-if (!function_exists('sendMailAttachment')) {
-    function sendMailAttachment($send_to_name, $send_to_email, $email_from_name, $subject, $body, $attachment_path)
-    {
-        try {
-            $mail_val = [
-                'send_to_name' => $send_to_name,
-                'send_to' => $send_to_email,
-                'email_from' => 'noreply@pancard.com',
-                'email_from_name' => $email_from_name,
-                'subject' => $subject,
-            ];
-
-            Mail::send('emails.mail', ['body' => $body], function ($send) use ($mail_val, $attachment_path) {
-                $send->from($mail_val['email_from'], $mail_val['email_from_name']);
-                $send->replyTo($mail_val['email_from'], $mail_val['email_from_name']);
-                $send->to($mail_val['send_to'], $mail_val['send_to_name'])->subject($mail_val['subject']);
-                
-                // Attach the file
-                if (!empty($attachment_path) && file_exists($attachment_path)) {
-                    $send->attach($attachment_path);
-                }
-            });
-
+            dispatch(new SendEmailWithAttachmentJob($send_to_name, $send_to_email, $email_from_name, $subject, $body, $attachment_path));
             return true;
         } catch (\Exception $e) {
             Log::error($e->getMessage());

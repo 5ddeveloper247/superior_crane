@@ -105,6 +105,7 @@ function makeJobsListing(jobs_list){
             "fixedHeader": true ,
             dom: 'Bfrtip',
             pageLength: 10,
+            order: [],
             buttons: [{
                 extend: 'csv',
                 text: 'Export'

@@ -460,27 +460,27 @@ class PayDutyController extends Controller
                 $mailData['text1'] = "New Pay Duty Form has been created. Pay Duty details are as under.";
                 $mailData['text2'] = "For more details please contact the Manager/Admin.";
 
-                // $body = view('emails.pay_duty_form_template', $mailData);
+                // $body = view('emails.pay_duty_form_template', $mailData)->render();
                 // $userEmailsSend = $managerDetail->email;//'hamza@5dsolutions.ae';//
                 // sendMailAttachment($managerDetail->name, $userEmailsSend, 'Superior Crane', 'Pay Duty Form Creation', $body, $attachment_pdf);
 
                 if($jobDetail->job_type != 3){
                     foreach($assignedUsers as $user){
                         $mailData['user'] = $user->name;
-                        $body = view('emails.pay_duty_form_template', $mailData);
+                        $body = view('emails.pay_duty_form_template', $mailData)->render();
                         sendMailAttachment($user->name, $user->email, 'Superior Crane', 'Pay Duty Form Creation', $body, $attachment_pdf);
                     }
                 }
 
                 if($ticketDetail->email !=  null && $ticketDetail->email != ''){
                     $mailData['user'] = $ticketDetail->customer_name;
-                    $body = view('emails.pay_duty_form_template', $mailData);
+                    $body = view('emails.pay_duty_form_template', $mailData)->render();
                     sendMailAttachment($ticketDetail->customer_name, $ticketDetail->email, 'Superior Crane', 'Pay Duty Form Creation', $body, $attachment_pdf);
                 }
                 
                 if($formDetail->email !=  null && $formDetail->email != ''){
                     $mailData['user'] = $formDetail->officer_name;
-                    $body = view('emails.pay_duty_form_template', $mailData);
+                    $body = view('emails.pay_duty_form_template', $mailData)->render();
                     sendMailAttachment($formDetail->officer_name, $formDetail->email, 'Superior Crane', 'Pay Duty Form Creation', $body, $attachment_pdf);
                 }
 
@@ -502,7 +502,7 @@ class PayDutyController extends Controller
                 // if($allAdmins){
                 //     foreach($allAdmins as $value){
                 //         $mailData['user'] = $value->name;
-                //         $body = view('emails.pay_duty_form_template', $mailData);
+                //         $body = view('emails.pay_duty_form_template', $mailData)->render();
                 //         $userEmailsSend = $value->email;//'hamza@5dsolutions.ae';//
                 //         sendMailAttachment($value->name, $userEmailsSend, 'Superior Crane', 'Pay Duty Form Creation', $body, $attachment_pdf);
                 //     }

@@ -274,6 +274,9 @@
         .select2-container .select2-dropdown {
             margin-top: -25px;
         }
+        .dropzone .dz-preview{
+            margin: 12px !important;
+        }
     </style>
 @endpush
 
@@ -639,8 +642,14 @@
                                 Upload Attachment
                             </label>
 
-                            <input type="hidden" id="deletedFileIds" name="deletedFileIds" value="">
-                            
+                            <div class="position-relative">
+                                <input type="hidden" id="deletedFileIds" name="deletedFileIds" value="">
+                                <img src="https://cdn-icons-png.flaticon.com/128/14156/14156146.png" 
+                                    class="position-absolute" id="dragdrop_placeholder_img"
+                                    style="top: 50%; left: 50%; transform: translate(-50%, 40%);" width="40"
+                                    alt="">
+                            </div>
+
                             <div id="file-dropzone" class="dropzone"></div>
                         </div>
                         
@@ -759,10 +768,20 @@
             init: function () {
                 this.on("addedfile", function (file) {
                     uploadedFiles.push(file);
+                    if(uploadedFiles.length > 0){
+                        $("#dragdrop_placeholder_img").hide();
+                    }else{
+                        $("#dragdrop_placeholder_img").show();
+                    }
                 });
 
                 this.on("removedfile", function (file) {
                     uploadedFiles = uploadedFiles.filter(f => f.name !== file.name);
+                    if(uploadedFiles.length > 0){
+                        $("#dragdrop_placeholder_img").hide();
+                    }else{
+                        $("#dragdrop_placeholder_img").show();
+                    }
                 });
             }
         });

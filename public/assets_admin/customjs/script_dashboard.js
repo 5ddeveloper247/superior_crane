@@ -59,7 +59,7 @@ function getDashboardWeekViewDataResponse(response) {
 
     var data = response.data;
     
-    var total_weeks = data.total_weeks; 
+    var total_weeks = data.weeks_data; 
     var week_value = data.current_week_number; 
     var listing = data.listing; 
     
@@ -72,12 +72,13 @@ function getDashboardWeekViewDataResponse(response) {
     $("#week_filter_month").val(data.current_month);
 }
 
-function makeWeeksLov(weeks='', week_value=''){
+function makeWeeksLov(weeks=[], week_value=''){
    
+    console.log(weeks);
     var options = '<option value="">Select Week</option>';
-    if(weeks != ''){
-        for(var i=1; i<=weeks; i++){
-            options += `<option value="${i}">Week 0${i}</option>`;
+    if(weeks.length > 0){
+        for(var i=0; i<weeks.length; i++){
+            options += `<option value="${i+1}">Week 0${i+1} <small>(${formatDateMonth(weeks[i].start_date)} - ${formatDateMonth(weeks[i].end_date)})</small></option>`;
         }
     }
 
@@ -94,65 +95,66 @@ function makeWeekViewListing(weeks_list){
     var html = '';
     if(weeks_list.length > 0){
         $.each(weeks_list, function (index, value) {
-            html += `<div class="col-12 border rounded-2 p-2 d-flex gap-4 align-items-center mb-2 week_event_div" style="${value.is_today == true ? 'background-color: #eae8e8;' : ''} box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;">
-                                <small class="${value.is_today == true ? 'fw-bold' : ''}" style="min-width: 5.6rem">${value.day}<br>${value.date_formated}</small>
-                                <div class="w-100 overflow-auto px-3">`;
+            html += `<div class="col-12 border rounded-2 p-2 d-flex gap-4 align-items-center mb-2 week_event_div pointer" 
+                        id="addNewJob_btn" style="${value.is_today == true ? 'background-color: #eae8e8;' : ''} box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;" title="Add Job">
+                        <small class="${value.is_today == true ? 'fw-bold' : ''}" style="min-width: 5.6rem">${value.day}<br>${value.date_formated}</small>
+                        <div class="w-100 overflow-auto px-3">`;
 
-                                var jobs_list = value.jobs;
-                                $.each(jobs_list, function (index1, job) {
-                                    if (job.status === 1) {
-                                        var statusClass = 'bg-success-subtle';//'#C9FFBB'; // Light green background
-                                    } 
-                                    else if (job.status === 0) {
-                                        var statusClass = 'bg-warning-subtle';//'#FFBBBB'; // Light red background
-                                    } 
-                                    else if (job.status === 2) {
-                                        var statusClass = 'bg-info-subtle';//'#FFFCBB'; // Light yellow background
-                                    }
-                                    else {
-                                        var statusClass = 'bg-default-subtle';//'#dfdfdf'; // Light gray background
-                                    }
+                        var jobs_list = value.jobs;
+                        $.each(jobs_list, function (index1, job) {
+                            if (job.status === 1) {
+                                var statusClass = 'bg-success-subtle';//'#C9FFBB'; // Light green background
+                            } 
+                            else if (job.status === 0) {
+                                var statusClass = 'bg-warning-subtle';//'#FFBBBB'; // Light red background
+                            } 
+                            else if (job.status === 2) {
+                                var statusClass = 'bg-info-subtle';//'#FFFCBB'; // Light yellow background
+                            }
+                            else {
+                                var statusClass = 'bg-default-subtle';//'#dfdfdf'; // Light gray background
+                            }
 
-                                    var barColor = '';
-                                    var type = job.job_type;
+                            var barColor = '';
+                            var type = job.job_type;
 
-                                    if (type === 1) barColor = '#0000ff';
-                                    else if (type === 2) barColor = '#ffa500';
-                                    else if (type === 3) barColor = '#800080';
-                                    else if (type === 4) barColor = '#ff0000';
+                            if (type === 1) barColor = '#0000ff';
+                            else if (type === 2) barColor = '#ffa500';
+                            else if (type === 3) barColor = '#800080';
+                            else if (type === 4) barColor = '#ff0000';
 
-                                    html += `
+                            html += `
 
-                                    <div style="min-width: 15rem; box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset; border-left: 4px solid 
-                                        ${barColor}"
-                                        class="${statusClass} rounded-2 px-2 py-1 w-100 mb-2 pointer "  data-bs-toggle="dropdown" aria-expanded="false"  title="View Job">
-                                            <small class="fw-semibold">${job.start_time != null ? formatTime(job.start_time) : ''}</small> |
-                                            <small>
-                                                <strong>Client:</strong> ${job.client_name} | 
-                                                <strong>Supplier:</strong> ${job.supplier_name} | 
-                                                <strong>Equipment:</strong> ${job.equipment_to_be_used} | 
-                                                <strong>Address:</strong> ${job.address} | 
-                                                <strong>Assigned Users:</strong> ${job.user_assigned}
-                                            </small>
+                            <div id="dd_menu_event" style="min-width: 15rem; box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset; border-left: 4px solid 
+                                ${barColor}"
+                                class="${statusClass} rounded-2 px-2 py-1 w-100 mb-2 pointer "  data-bs-toggle="dropdown" aria-expanded="false"  title="View Job">
+                                    <small class="fw-semibold">${job.start_time != null ? formatTime(job.start_time) : ''}</small> |
+                                    <small>
+                                        <strong>Client:</strong> ${job.client_name} | 
+                                        <strong>Supplier:</strong> ${job.supplier_name} | 
+                                        <strong>Equipment:</strong> ${job.equipment_to_be_used} | 
+                                        <strong>Address:</strong> ${job.address} | 
+                                        <strong>Assigned Users:</strong> ${job.user_assigned}
+                                    </small>
 
-                                            ${job.booked_flag == 1 ? 
-                                                '<div class="d-flex justify-content-end gap-1"><label for="">Booked</label><span class="fa fa-square-check tick-icon-week" title="Booked"></span></div>' : 
-                                                ''}
-                                    </div>
-                                    
-                                    <ul class="dropdown-menu p-3" style="min-width: fit-content">
-                                        <li class="viewJob_btn" data-id=""><button class="btn btn-danger btn-sm py-1 mb-2 w-100" style="font-size: 13px !important">View Job</button></li>
-                                        <li style="font-size: 13px;" class=""></li>
-                                        <li style="font-size: 13px;" class="changeStatus_btn px-2 py-1 hover-red" data-id="" data-status="2" style="background-color:#FFFCBB;">On-Hold</li>
-                                        <li style="font-size: 13px;" class="changeStatus_btn px-2 py-1 hover-green" data-id="" data-status="1" style="background-color:#C9FFBB;">Good To Go</li>
-                                        <li style="font-size: 13px;" class="changeStatus_btn px-2 py-1 hover-yellow" data-id="" data-status="0" style="background-color:#FFBBBB;">Problem</li>
-                                    </ul>
+                                    ${job.booked_flag == 1 ? 
+                                        '<div class="d-flex justify-content-end gap-1"><label for="">Booked</label><span class="fa fa-square-check tick-icon-week" title="Booked"></span></div>' : 
+                                        ''}
+                            </div>
+                            
+                            <ul class="dropdown-menu p-3" style="min-width: fit-content" title="">
+                                <li class="btn btn-danger btn-sm py-1 mb-2 w-100 viewJob_btn" data-id="${job.id}" title="View Job" style="font-size:14px;">View Job</li>
+                                <li style="font-size: 13px;" class=""></li>
+                                <li style="font-size: 13px;" class="changeStatus_btn px-2 py-1 hover-red" data-id="${job.id}" data-status="2" title="Mark Status" style="background-color:#FFFCBB;">On-Hold</li>
+                                <li style="font-size: 13px;" class="changeStatus_btn px-2 py-1 hover-green" data-id="${job.id}" data-status="1" title="Mark Status" style="background-color:#C9FFBB;">Good To Go</li>
+                                <li style="font-size: 13px;" class="changeStatus_btn px-2 py-1 hover-yellow" data-id="${job.id}" data-status="0" title="Mark Status" style="background-color:#FFBBBB;">Problem</li>
+                            </ul>
 
-                                    `;
-                                });
+                            `;
+                        });
                                     //viewJob_btn   data-id="${job.id}"
-                                html += `</div>
-                            </div>`;
+                html += `</div>
+            </div>`;
         });
     }
     $("#weekView_section").html(html);
@@ -216,6 +218,7 @@ function makeJobsListing(jobs_list){
             fixedHeader: true ,
             dom: 'Bfrtip',
             pageLength: 10,
+            order: [],
             buttons: [{
                 extend: 'csv',
                 text: 'Export'
@@ -262,6 +265,9 @@ function saveJobDataResponse(response) {
         $("#addJob_modal").modal('hide');
 
         loadJobsWeekView();
+
+        $("#calendar_container").hide();
+        $('#uiBlocker').show();
         calendar.refetchEvents();
         
     }else{
@@ -453,6 +459,7 @@ $(document).on('click', '#closeJob_modal', function (e) {
 
 $(document).on('click', '.changeStatus_btn', function (e) {
     
+    console.log('sdf');
     var job_id = $(this).attr('data-id');
     var status = $(this).attr('data-status');
     
@@ -472,6 +479,9 @@ function changeJobStatusResponse(response) {
         });
 
         loadJobsWeekView();
+
+        $("#calendar_container").hide();
+        $('#uiBlocker').show();
         calendar.refetchEvents();
         
     }else{
@@ -485,6 +495,7 @@ function changeJobStatusResponse(response) {
 
 $(document).on('click', '.viewJob_btn', function (e) {
     
+    console.log('sdf');
     var job_id = $(this).attr('data-id');
     
     let data = new FormData();
@@ -802,9 +813,26 @@ $(document).ready(function () {
 
     $(document).on('click', '.month-tab-btn', function (e) {
         
+        $("#calendar_container").hide();
+        $('#uiBlocker').show();
         calendar.refetchEvents();
     });
 
+    // $(document).on('click', '#addNewJob_btn', function (e) {
+    //     resetRiggerForm();
+    //     $("#addJob_modal").modal('show');
+    // });
+
+    $(document).on('click', '#addNewJob_btn', function (e) {
+        resetRiggerForm();
+        $("#addJob_modal").modal('show');
+        // Do something like open job details
+    });
+    
+    // Prevent inner clicks (dropdown, buttons) from triggering the parent
+    $(document).on('click', '#dd_menu_event, #dd_menu_event *, .dropdown-menu, .dropdown-menu *', function (e) {
+        e.stopPropagation();
+    });
     
 });
 
@@ -812,7 +840,7 @@ function getWeekFilterValuesResponse(response){
 
     var data = response.data;
     
-    makeWeeksLov(data?.weeksData?.total_weeks ?? '');
+    makeWeeksLov(data?.weeksData?.weeks ?? '');
 }
 
 function loadJobsWeekView(){
@@ -914,9 +942,9 @@ $('#client_name,#supplier_name').on('keydown', function(e) {
         },
         selectable: true,
         headerToolbar: {
-            left: 'prev,next today',
+            left: 'prev,next',
             center: 'title',
-            right: ''//dayGridMonth,timeGridWeek,timeGridDay
+            right: 'today'//dayGridMonth,timeGridWeek,timeGridDay
         },
         // views: {
         //     timeGridDay: {
@@ -953,7 +981,7 @@ $('#client_name,#supplier_name').on('keydown', function(e) {
            
             var statusDropdown = document.createElement('ul');
             statusDropdown.className = 'status-dropdown';
-            statusDropdown.innerHTML = `<li class="viewJob_btn" data-id="${event.id}"><button class="btn btn-danger btn-sm">View Job</button></li>
+            statusDropdown.innerHTML = `<li ><button class="btn btn-danger btn-sm viewJob_btn" data-id="${event.id}">View Job</button></li>
                                         <li class=""></li>
                                         <li class="changeStatus_btn hover-red" data-id="${event.id}" data-status="2" ${event.extendedProps.status == 2 ? 'style="background-color:#FFFCBB;"' : ''}>On-Hold</li>
                                         <li class="changeStatus_btn hover-green" data-id="${event.id}" data-status="1" ${event.extendedProps.status == 1 ? 'style="background-color:#C9FFBB;"' : ''}>Good To Go</li>
@@ -971,6 +999,8 @@ $('#client_name,#supplier_name').on('keydown', function(e) {
         },
 
         eventDidMount: function(info) {
+            $("#calendar_container").show();
+            $('#uiBlocker').hide();
             const eventEl = info.el;
             // set event background color wrt status
             if (info.event.extendedProps.status === 1) {

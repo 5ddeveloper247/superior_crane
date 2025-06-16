@@ -91,7 +91,7 @@ class RegistrationController extends Controller
 
             
 
-            $body = view('emails.signup_welcome', $mailData);
+            $body = view('emails.signup_welcome', $mailData)->render();
             $userEmailsSend = $user->email;//'hamza@5dsolutions.ae';//
             sendMail($user->name, $userEmailsSend, 'Superior Crane', 'Register User', $body);
 
@@ -101,7 +101,7 @@ class RegistrationController extends Controller
             $mailData['text1'] = "A new user has just signed up on Superior Crane.";
             $mailData['text2'] = "Please review their details in the admin panel.";
             $userEmailsSend1 = $emailSettings->from_email ?? 'donotreplyscci@scserver.org';// admin email
-            $body = view('emails.signup_welcome', $mailData);
+            $body = view('emails.signup_welcome', $mailData)->render();
             sendMail($user->name, $userEmailsSend1, 'Superior Crane', 'Register User', $body);
             
             return response()->json([

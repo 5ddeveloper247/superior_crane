@@ -1037,14 +1037,14 @@ class TransportationTicketController extends Controller
                     $mailData['text1'] = "New Transporter Ticket has been created. Ticket details are as under.";
                     $mailData['text2'] = "For more details please contact the Manager/Admin.";
     
-                    // $body = view('emails.transporter_ticket_template', $mailData);
+                    // $body = view('emails.transporter_ticket_template', $mailData)->render();
                     // $userEmailsSend = $managerDetail->email;//'hamza@5dsolutions.ae';//
                     // sendMailAttachment($managerDetail->name, $userEmailsSend, 'Superior Crane', 'Transporter Ticket Creation', $body, $attachment_pdf);
 
                     if($jobDetail->job_type != 3){
                         foreach($assignedUsers as $user){
                             $mailData['user'] = $user->name;
-                            $body = view('emails.transporter_ticket_template', $mailData);
+                            $body = view('emails.transporter_ticket_template', $mailData)->render();
                             sendMailAttachment($user->name, $user->email, 'Superior Crane', 'Transporter Ticket Creation', $body, $attachment_pdf);
                         }
                     }
@@ -1055,7 +1055,7 @@ class TransportationTicketController extends Controller
                         foreach($customers as $customer){
                             if(isset($customer->customer_email) && $customer->customer_email != null){
                                 $mailData['user'] = $customer->customer_name;
-                                $body = view('emails.transporter_ticket_template', $mailData);
+                                $body = view('emails.transporter_ticket_template', $mailData)->render();
                                 sendMailAttachment($customer->customer_name, $customer->customer_email, 'Superior Crane', 'Transporter Ticket Creation', $body, $attachment_pdf);
                             }
                         }
@@ -1079,7 +1079,7 @@ class TransportationTicketController extends Controller
                     // if($allAdmins){
                     //     foreach($allAdmins as $value){
                     //         $mailData['user'] = $value->name;
-                    //         $body = view('emails.transporter_ticket_template', $mailData);
+                    //         $body = view('emails.transporter_ticket_template', $mailData)->render();
                     //         $userEmailsSend = $value->email;//'hamza@5dsolutions.ae';//
                     //         sendMailAttachment($value->name, $userEmailsSend, 'Superior Crane', 'Transporter Ticket Creation', $body, $attachment_pdf);
                     //     }

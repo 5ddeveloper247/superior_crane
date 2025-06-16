@@ -159,14 +159,14 @@ class JobController extends Controller
             $mailData['status'] = $status_txt;
             $mailData['text1'] = "New job has been assigned by " . $createdBy->name . ". Job details are as under.";
             $mailData['text2'] = "For more details please contact the Manager/Admin.";
-            $body = view('emails.job_template', $mailData);
+            $body = view('emails.job_template', $mailData)->render();
 
             if($jobDetail->job_type != 3){
                 foreach($assignedUsers as $user){
                     $mailData['user'] = isset($user->name) ? $user->name : $jobDetail->user_assigned;
                     $mailData['username'] = isset($user->name) ? $user->name : $jobDetail->user_assigned;
                     $mailData['assigned_to'] = isset($userNames) ? $userNames : $jobDetail->user_assigned;
-                    $body = view('emails.job_template', $mailData);
+                    $body = view('emails.job_template', $mailData)->render();
                     $userEmailsSend = $user->email;//'hamza@5dsolutions.ae';//
                     sendMail(isset($user->name) ? $user->name : $jobDetail->user_assigned, $userEmailsSend, 'Superior Crane', 'Job Creation', $body);
                 }
@@ -194,7 +194,7 @@ class JobController extends Controller
             // if($allAdmins){
             //     foreach($allAdmins as $value){
             //         $mailData['user'] = 'Admin';
-            //         $body = view('emails.job_template', $mailData);
+            //         $body = view('emails.job_template', $mailData)->render();
             //         $userEmailsSend = $value->email;//'hamza@5dsolutions.ae';//
             //         sendMail('Admin', $userEmailsSend, 'Superior Crane', 'Job Creation', $body);
             //     }
@@ -748,7 +748,7 @@ class JobController extends Controller
                 // if($allUsers){
                 //     foreach($allUsers as $value){
                 //         $mailData['user'] = $value->name;
-                //         $body = view('emails.job_template', $mailData);
+                //         $body = view('emails.job_template', $mailData)->render();
                 //         $userEmailsSend = $value->email;//'hamza@5dsolutions.ae';//
                 //         sendMail($value->name, $userEmailsSend, 'Superior Crane', 'Job Status Change', $body);
                 //     }

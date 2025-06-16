@@ -339,7 +339,7 @@ class AdminController extends Controller
             $mailData['text1'] = "Welcome to Superior Crane! We're thrilled to have you on board.";
             $mailData['text2'] = "If you have any questions, feel free to reach out to us at support@superiorcrane.com.";
 
-            $body = view('emails.signup_welcome', $mailData);
+            $body = view('emails.signup_welcome', $mailData)->render();
             $userEmailsSend[] = $user->email;//'hamza@5dsolutions.ae';//
 
             sendMail($user->name, $userEmailsSend, 'Superior Crane', 'Register User', $body);
@@ -350,7 +350,7 @@ class AdminController extends Controller
                 $mailData['text1'] = "Your password is updated by admin, your login details are mention below";
                 $mailData['text2'] = "If you have any questions, feel free to reach out to us at support@superiorcrane.com.";
 
-                $body = view('emails.signup_welcome', $mailData);
+                $body = view('emails.signup_welcome', $mailData)->render();
                 $userEmailsSend[] = $user->email;//'hamza@5dsolutions.ae';//
 
                 sendMail($user->name, $userEmailsSend, 'Superior Crane', 'Change Password', $body);
@@ -367,9 +367,9 @@ class AdminController extends Controller
     public function getUsersPageData(Request $request){
 
         
-        $data['admin_list'] = User::where('role_id', '1')->get();
-        $data['manager_list'] = User::where('role_id', '2')->get();
-        $data['users_list'] = User::whereIn('role_id', ['3','4','5'])->get();
+        $data['admin_list'] = User::where('role_id', '1')->orderBy('created_at', 'desc')->get();
+        $data['manager_list'] = User::where('role_id', '2')->orderBy('created_at', 'desc')->get();
+        $data['users_list'] = User::whereIn('role_id', ['3','4','5'])->orderBy('created_at', 'desc')->get();
 
         $data['admin_count'] = User::where('role_id', '1')->count();
         $data['manager_count'] = User::where('role_id', '2')->count();
@@ -410,7 +410,7 @@ class AdminController extends Controller
             
             $mailData['text2'] = "If you have any questions, feel free to reach out to us at support@superiorcrane.com.";
 
-            $body = view('emails.signup_welcome', $mailData);
+            $body = view('emails.signup_welcome', $mailData)->render();
             $userEmailsSend[] = $user->email;//'hamza@5dsolutions.ae';//
             sendMail($user->name, $userEmailsSend, 'Superior Crane', $subject, $body);
 
@@ -570,6 +570,7 @@ class AdminController extends Controller
         $data['current_month'] = date('m');
         $data['current_week_number'] = $weekData['current_week_number'];
         $data['total_weeks'] = $weekData['total_weeks'];
+        $data['weeks_data'] = $weekData['all_week_dates'];
         $data['listing'] = $jobsArray;
         
         return response()->json(['status' => 200, 'message' => "",'data' => $data]);
@@ -725,6 +726,7 @@ class AdminController extends Controller
                     'current_date' => $today->toDateString(),
                     'current_week_number' => $week['week'],
                     'total_weeks' => $weeksData['total_weeks'],
+                    'all_week_dates' => $weeksData['weeks'],
                     'dates' => $week['dates']
                 ];
             }
@@ -1005,7 +1007,7 @@ class AdminController extends Controller
                     $mailData['user'] = isset($user->name) ? $user->name : $jobDetail->user_assigned;
                     $mailData['username'] = isset($user->name) ? $user->name : $jobDetail->user_assigned;
                     $mailData['assigned_to'] = isset($userNames) ? $userNames : $jobDetail->user_assigned;
-                    $body = view('emails.job_template', $mailData);
+                    $body = view('emails.job_template', $mailData)->render();
                     $userEmailsSend = $user->email;//'hamza@5dsolutions.ae';//
                     sendMail(isset($user->name) ? $user->name : $jobDetail->user_assigned, $userEmailsSend, 'Superior Crane', 'Job Creation', $body);
                 }
@@ -1016,7 +1018,7 @@ class AdminController extends Controller
             // if($allUsers){
             //     foreach($allUsers as $value){
             //         $mailData['user'] = $value->name;
-            //         $body = view('emails.job_template', $mailData);
+            //         $body = view('emails.job_template', $mailData)->render();
             //         $userEmailsSend = $value->email;//'hamza@5dsolutions.ae';//
             //         sendMail($value->name, $userEmailsSend, 'Superior Crane', 'Job Creation', $body);
             //     }
@@ -1092,7 +1094,7 @@ class AdminController extends Controller
                         $mailData['user'] = isset($user->name) ? $user->name : $jobDetail->user_assigned;
                         $mailData['username'] = isset($user->name) ? $user->name : $jobDetail->user_assigned;
                         $mailData['assigned_to'] = isset($userNames) ? $userNames : $jobDetail->user_assigned;
-                        $body = view('emails.job_template', $mailData);
+                        $body = view('emails.job_template', $mailData)->render();
                         $userEmailsSend = $user->email;//'hamza@5dsolutions.ae';//
                         sendMail(isset($user->name) ? $user->name : $jobDetail->user_assigned, $userEmailsSend, 'Superior Crane', 'Job Creation', $body);
                     }
@@ -1103,7 +1105,7 @@ class AdminController extends Controller
                 // if($allUsers){
                 //     foreach($allUsers as $value){
                 //         $mailData['user'] = $value->name;
-                //         $body = view('emails.job_template', $mailData);
+                //         $body = view('emails.job_template', $mailData)->render();
                 //         $userEmailsSend = $value->email;//'hamza@5dsolutions.ae';//
                 //         sendMail($value->name, $userEmailsSend, 'Superior Crane', 'Job Status Change', $body);
                 //     }
@@ -1305,7 +1307,7 @@ class AdminController extends Controller
 
     public function getRiggerTicketPageData(Request $request){
 
-        $data['tickets_list'] = RiggerTicket::with(['jobDetail','userDetail'])->get();
+        $data['tickets_list'] = RiggerTicket::with(['jobDetail','userDetail'])->orderBy('created_at', 'desc')->get();
         $data['total_tickets'] = RiggerTicket::count();
         $data['total_draft'] = RiggerTicket::where('status', '1')->count();
         $data['total_completed'] = RiggerTicket::where('status', '3')->count();
@@ -1415,7 +1417,7 @@ class AdminController extends Controller
 
     public function getTransporterTicketPageData(Request $request){
 
-        $data['tickets_list'] = TransportationTicketModel::with(['jobDetail','userDetail'])->withCount(['shippers','customers'])->get();
+        $data['tickets_list'] = TransportationTicketModel::with(['jobDetail','userDetail'])->withCount(['shippers','customers'])->orderBy('created_at', 'desc')->get();
         $data['total_tickets'] = TransportationTicketModel::count();
         $data['total_draft'] = TransportationTicketModel::where('status', '1')->count();
         $data['total_completed'] = TransportationTicketModel::where('status', '3')->count();
@@ -1592,7 +1594,7 @@ class AdminController extends Controller
 
     public function getPayDutyPageData(Request $request){
 
-        $data['forms_list'] = PayDutyModel::with(['userDetail'])->get();
+        $data['forms_list'] = PayDutyModel::with(['userDetail'])->orderBy('created_at', 'desc')->get();
         $data['total_forms'] = PayDutyModel::count();
         $data['total_draft'] = PayDutyModel::where('status', '1')->count();
         $data['total_completed'] = PayDutyModel::where('status', '3')->count();
@@ -1701,7 +1703,7 @@ class AdminController extends Controller
 
     public function getInventoryPageData(Request $request){
 
-        $data['inventory_list'] = InventoryModel::get();
+        $data['inventory_list'] = InventoryModel::orderBy('created_at', 'desc')->get();
         $data['total_inventory'] = InventoryModel::count();
         $data['total_active'] = InventoryModel::where('status', '1')->count();
         $data['total_inactive'] = InventoryModel::where('status', '0')->count();
@@ -2060,7 +2062,7 @@ class AdminController extends Controller
 
     public function getServicesPageData(Request $request){
 
-        $data['services_list'] = ArchiveService::get();
+        $data['services_list'] = ArchiveService::orderBy('created_at', 'desc')->get();
         $data['total_services'] = ArchiveService::count();
         $data['total_pending'] = ArchiveService::where('status', '0')->count();
         $data['total_inprocess'] = ArchiveService::where('status', '1')->count();

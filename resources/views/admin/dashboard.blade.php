@@ -544,6 +544,9 @@
                 box-shadow: none !important;
                 transition: box-shadow ease .4s
             } */
+        .dropzone .dz-preview{
+            margin: 12px !important;
+        }
     </style>
 @endpush
 
@@ -619,17 +622,15 @@
                     </li>
                 </ul>
                 <div class="tab-content" id="pills-tabContent">
-                    <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab"
-                        tabindex="0">
-                        <div id="container">
+                    <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab" tabindex="0">
+                        <div id="calendar_container">
                             <div id="calendar"></div>
                         </div>
                     </div>
                     <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab"
                         tabindex="0">
                         <div class="row justify-content-center">
-                            <div
-                                class="filter filter-bar col-6 mb-3 d-flex align-items-center justify-content-end gap-3 rounded-2 p-2">
+                            <div class="filter filter-bar col-7 mb-3 d-flex align-items-center justify-content-end gap-3 rounded-2 p-2">
                                 @php
                                     $currentYear = date('Y');
                                     $currentMonth = date('m');
@@ -1060,8 +1061,8 @@
 
                                 <div class="position-relative">
                                     <input type="hidden" id="deletedFileIds" name="deletedFileIds" value="">
-                                    <img src="https://cdn-icons-png.flaticon.com/128/14156/14156146.png"
-                                        class="position-absolute"
+                                    <img src="https://cdn-icons-png.flaticon.com/128/14156/14156146.png" 
+                                        class="position-absolute" id="dragdrop_placeholder_img"
                                         style="top: 50%; left: 50%; transform: translate(-50%, 40%);" width="40"
                                         alt="">
                                 </div>
@@ -1223,12 +1224,20 @@
             init: function() {
                 this.on("addedfile", function(file) {
                     uploadedFiles.push(file);
-                    console.log(uploadedFiles);
+                    if(uploadedFiles.length > 0){
+                        $("#dragdrop_placeholder_img").hide();
+                    }else{
+                        $("#dragdrop_placeholder_img").show();
+                    }
                 });
 
                 this.on("removedfile", function(file) {
                     uploadedFiles = uploadedFiles.filter(f => f.name !== file.name);
-                    console.log(uploadedFiles);
+                    if(uploadedFiles.length > 0){
+                        $("#dragdrop_placeholder_img").hide();
+                    }else{
+                        $("#dragdrop_placeholder_img").show();
+                    }
                 });
             }
         });
