@@ -43,6 +43,7 @@ class JobController extends Controller
             'supplier_name' => 'max:50',
             'driver_instructions' => 'nullable|string',
             'notes' => 'nullable|string',
+            'is_booked' => 'boolean',
             // 'scci' => 'boolean',
             // 'job_images' => 'required',
             'job_images.*.file' => 'string',
@@ -75,6 +76,7 @@ class JobController extends Controller
             $job->supplier_name = $request->supplier_name;
             $job->notes = $request->notes;
             $job->driver_instructions = $request->driver_instructions;
+            $job->booked_flag = $request->is_booked ?? 0;
             // $job->scci = $request->scci ?? false;
             $job->status = $request->status != '' ? $request->status : '1';     //2=>on-hold, 1=>goodtogo , 3=>complete
             $job->created_by = $request->created_by;
@@ -237,6 +239,7 @@ class JobController extends Controller
             'supplier_name' => 'max:50',
             'driver_instructions' => 'nullable|string',
             'notes' => 'nullable|string',
+            'is_booked' => 'boolean',
             // 'scci' => 'boolean',
             // 'job_images' => 'required',
             // 'job_image.*' => 'image|mimes:jpeg,png,jpg,gif|max:1024',
@@ -268,6 +271,7 @@ class JobController extends Controller
                 $job->supplier_name = $request->supplier_name;
                 $job->notes = $request->notes;
                 $job->driver_instructions = $request->driver_instructions;
+                $job->booked_flag = $request->is_booked ?? 0;
                 // $job->scci = $request->scci ?? false;
                 $job->status = $request->status;
                 $job->updated_by = $request->created_by;
